@@ -27,7 +27,8 @@ src/main/webapp/WEB-INF/config.properties
 src/main/resources/config.properties
 
 # Upload files
-uploads/
+uploads/*
+!uploads/.gitkeep
 WebContent/uploads/
 src/main/webapp/uploads/
 
