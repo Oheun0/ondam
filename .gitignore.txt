@@ -1,0 +1,40 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Eclipse
+.metadata/
+bin/
+.settings/
+.classpath
+.project
+
+# Java
+*.class
+
+# Build
+target/
+out/
+build/
+
+# Logs
+*.log
+
+# Sensitive config
+config.properties
+WebContent/WEB-INF/config.properties
+src/main/webapp/WEB-INF/config.properties
+src/main/resources/config.properties
+
+# Upload files
+uploads/
+WebContent/uploads/
+src/main/webapp/uploads/
+
+# IDE
+.idea/
+.vscode/
+
+# env
+.env
+.env.*
