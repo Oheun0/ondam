@@ -486,7 +486,7 @@
     transform: translateX(-50%);
     width: 100%;
     max-width: var(--content-width);
-    height: 60px;
+    height: 80px;
     background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(12px);
     border-top: 1px solid #eceff2;
@@ -497,7 +497,7 @@
 }
 
 .nav-label {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.01em;
@@ -523,7 +523,7 @@
 }
 
 .nav-icon {
-    font-size: 26px;
+    font-size: 30px;
 }
 
 @media (max-width: 360px) {
