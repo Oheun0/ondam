@@ -17,31 +17,31 @@ public class AdminDAO {
 	}
 
 	// Select
-	public Vector<AdminDTO> getAdmin() {
+	public AdminDTO getAdminById(String adminId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
-		Vector<AdminDTO> vlist = new Vector<AdminDTO>();
+		AdminDTO dto = null;
 		try {
 			con = pool.getConnection();
-			sql = "SELECT * FROM admin";
+			sql = "SELECT * FROM admin WHERE adminId = ?";
 			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, adminId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				AdminDTO dto = new AdminDTO();
+				dto = new AdminDTO();
 				dto.setAdminNo(rs.getInt("adminNo"));
 				dto.setAdminId(rs.getString("adminId"));
 				dto.setAdminPwd(rs.getString("adminPwd"));
 				dto.setAdminName(rs.getString("adminName"));
-				vlist.addElement(dto);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			pool.freeConnection(con, pstmt, rs);
 		}
-		return vlist;
+		return dto;
 	}
 
 	// Insert

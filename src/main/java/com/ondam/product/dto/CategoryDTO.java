@@ -6,14 +6,16 @@ public class CategoryDTO {
     private int upCategoryNo;
     private int categoryLevel;
     private String categoryName;
+    private String categoryImg;
 
     public CategoryDTO() {}
 
-    public CategoryDTO(int categoryNo, int upCategoryNo, int categoryLevel, String categoryName) {
+    public CategoryDTO(int categoryNo, int upCategoryNo, int categoryLevel, String categoryName, String categoryImg) {
         this.categoryNo = categoryNo;
         this.upCategoryNo = upCategoryNo;
         this.categoryLevel = categoryLevel;
         this.categoryName = categoryName;
+        this.categoryImg = categoryImg;
     }
 
     public int getCategoryNo() {
@@ -47,4 +49,12 @@ public class CategoryDTO {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
+
+	public String getCategoryImg() {
+		return categoryImg;
+	}
+
+	public void setCategoryImg(String categoryImg) {
+		this.categoryImg = categoryImg;
+	}
 }
