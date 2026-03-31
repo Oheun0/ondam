@@ -14,7 +14,7 @@
 	}
 
 	function categoryUrl() {
-		return getContextPath() + "/views/product/category.jsp";
+		return getContextPath() + "/category";
 	}
 
 	document.addEventListener("DOMContentLoaded", function () {
