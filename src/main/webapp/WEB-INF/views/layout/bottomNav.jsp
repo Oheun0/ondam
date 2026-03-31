@@ -4,7 +4,7 @@
 	if (bottomNav == null) bottomNav = "home";
 %>
 <nav class="bottom-nav" aria-label="하단 메뉴">
-    <a href="${pageContext.request.contextPath}/views/home/home.jsp" class="nav-item <%= "home".equals(bottomNav) ? "active" : "" %>" aria-label="홈">
+    <a href="${pageContext.request.contextPath}/main" class="nav-item <%= "home".equals(bottomNav) ? "active" : "" %>" aria-label="홈">
         <span class="material-icons nav-icon">home</span>
         <span class="nav-label">홈</span>
     </a>

@@ -7,12 +7,12 @@
             </button>
         </div>
 
-        <a href="${pageContext.request.contextPath}/views/home/home.jsp" class="logo-box" aria-label="온담 홈으로 이동">
+        <a href="${pageContext.request.contextPath}/main" class="logo-box" aria-label="온담 홈으로 이동">
             <img src="${pageContext.request.contextPath}/images/logo.svg" alt="온담 로고" class="logo-img">
         </a>
 
         <div class="top-right">
-            <a href="${pageContext.request.contextPath}/views/notification/list.jsp" 
+            <a href="${pageContext.request.contextPath}/notification" 
 			   class="icon-btn badge-wrap" 
 			   aria-label="알림 보기">
                 <span class="material-icons-outlined">notifications</span>

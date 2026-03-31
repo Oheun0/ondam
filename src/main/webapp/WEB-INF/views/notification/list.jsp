@@ -1,4 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Vector" %>
+<%@ page import="com.ondam.notification.dto.NotificationDTO" %>
+<%
+    Vector<NotificationDTO> vlist = (Vector<NotificationDTO>) request.getAttribute("vlist");
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -63,6 +68,35 @@
 					</div>
 				</a>
 
+				<%-- <%
+                // 1. 리스트가 비어있는지 확인
+                if (vlist != null && vlist.size() > 0) {
+                    // 2. 반복문을 돌며 데이터 출력
+                    for (int i = 0; i < vlist.size(); i++) {
+                        NotificationDTO dto = vlist.get(i);
+                        
+                        // 읽지 않은 알림(isRead == 0)일 때 클래스 추가 로직
+                        String unreadClass = (dto.getIsRead() == 0) ? "unread" : "";
+            	%>
+                        <a href="#" class="notification-item <%= unreadClass %>">
+                            <div class="notification-content">
+                                <p class="notification-text"><%= dto.getNotificationContent() %></p>
+                                <span class="notification-time"><%= dto.getCreatedAt() %></span>
+                            </div>
+                            <% if (dto.getIsRead() == 0) { %>
+                                <span class="notification-dot"></span>
+                            <% } %>
+                        </a>
+           	 	<%
+                    } // for end
+                } else { 
+            	%>
+                    <div class="notification-empty">
+                        <p>새로운 알림이 없어요.</p>
+                    </div>
+           		 <%
+                } // if end
+            	%> --%>
 			</div>
 
 			<div class="notification-empty" style="display:none;">
