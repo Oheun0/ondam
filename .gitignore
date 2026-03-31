@@ -20,6 +20,14 @@ build/
 # Logs
 *.log
 
+<<<<<<< HEAD
+=======
+# Tomcat
+work/
+temp/
+logs/
+
+>>>>>>> ui
 # Sensitive config
 config.properties
 WebContent/WEB-INF/config.properties
@@ -39,3 +47,10 @@ src/main/webapp/uploads/
 # env
 .env
 .env.*
+<<<<<<< HEAD
+=======
+
+.settings/
+.classpath
+.project
+>>>>>>> ui
