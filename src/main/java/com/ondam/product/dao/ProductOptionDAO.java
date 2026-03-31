@@ -1,0 +1,121 @@
+package com.ondam.product.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Vector;
+
+import com.ondam.common.DBConnectionMgr;
+import com.ondam.product.dto.ProductOptionDTO;
+
+public class ProductOptionDAO {
+
+	private DBConnectionMgr pool;
+
+	public ProductOptionDAO() {
+		pool = DBConnectionMgr.getInstance();
+	}
+
+	// Select
+	public Vector<ProductOptionDTO> getProductOption() {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		Vector<ProductOptionDTO> vlist = new Vector<ProductOptionDTO>();
+		try {
+			con = pool.getConnection();
+			sql = "SELECT * FROM productOption";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ProductOptionDTO dto = new ProductOptionDTO();
+				dto.setProductOptionNo(rs.getInt("productOptionNo"));
+				dto.setProductNo(rs.getInt("productNo"));
+				dto.setOptionSize(rs.getString("optionSize"));
+				dto.setOptionColor(rs.getString("optionColor"));
+				dto.setOptionAddPrice(rs.getInt("optionAddPrice"));
+				dto.setOptionStock(rs.getInt("optionStock"));
+				vlist.addElement(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
+
+	// Insert
+	public boolean insertProductOption(ProductOptionDTO dto) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			sql = "INSERT ProductOption (productNo, optionSize, optionColor, optionAddPrice, optionStock) VALUES (?, ?, ?, ?, ?)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, dto.getProductNo());
+			pstmt.setString(2, dto.getOptionSize());
+			pstmt.setString(3, dto.getOptionColor());
+			pstmt.setInt(4, dto.getOptionAddPrice());
+			pstmt.setInt(5, dto.getOptionStock());
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
+	}
+
+	// Update
+	public boolean updateProductOption(ProductOptionDTO dto, int productOptionNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			sql = "UPDATE ProductOption SET productNo = ?, optionSize = ?, optionColor = ?, optionAddPrice = ?, optionStock = ? WHERE productOptionNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, dto.getProductNo());
+			pstmt.setString(2, dto.getOptionSize());
+			pstmt.setString(3, dto.getOptionColor());
+			pstmt.setInt(4, dto.getOptionAddPrice());
+			pstmt.setInt(5, dto.getOptionStock());
+			pstmt.setInt(6, productOptionNo);
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
+	}
+
+	// Delete
+	public boolean deleteProductOption(int productOptionNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			sql = "DELETE FROM ProductOption WHERE productOptionNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productOptionNo);
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
+	}
+}
+
