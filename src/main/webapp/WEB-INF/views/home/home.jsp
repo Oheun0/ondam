@@ -60,6 +60,7 @@
                     <span>겉옷</span>
                 </a>
                 <a href="${pageContext.request.contextPath}/category" class="category-chip home-category-chip" data-category-tab="type" data-category-type="set">
+
                     <img src="${pageContext.request.contextPath}/images/category/type-set-dress.jpg" class="home-category-img" alt="한 벌 옷" onerror="this.style.display='none'">
                     <span>한 벌 옷</span>
                 </a>
