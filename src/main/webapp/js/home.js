@@ -13,7 +13,7 @@
 	}
 
 	function categoryUrl(params) {
-		var base = getContextPath() + "/views/product/category.jsp";
+		var base = getContextPath() + "/category";
 		if (params && typeof params === "string") {
 			return base + (params.charAt(0) === "?" ? params : "?" + params);
 		}

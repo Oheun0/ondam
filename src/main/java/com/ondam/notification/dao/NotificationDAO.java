@@ -17,7 +17,7 @@ public class NotificationDAO {
 	}
 
 	// Select
-	public Vector<NotificationDTO> getNotification() {
+	public Vector<NotificationDTO> getNotification(int userNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -25,8 +25,9 @@ public class NotificationDAO {
 		Vector<NotificationDTO> vlist = new Vector<NotificationDTO>();
 		try {
 			con = pool.getConnection();
-			sql = "SELECT * FROM notification";
+			sql = "SELECT * FROM notification WHERE userNo = ?";
 			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, userNo);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				NotificationDTO dto = new NotificationDTO();

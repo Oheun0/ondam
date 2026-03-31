@@ -44,22 +44,23 @@
         <section class="section-box" id="homeClothesSection">
             <div class="section-title">
                 <h2>옷 종류</h2>
-                <a href="#" id="homeCategoryAllView" class="section-title-link">전체 보기</a>
+                <a href="${pageContext.request.contextPath}/category" id="homeCategoryAllView" class="section-title-link">전체 보기</a>
             </div>
             <div class="category-list">
-                <a href="#" class="category-chip home-category-chip" data-category-tab="type" data-category-type="top">
+                <a href="${pageContext.request.contextPath}/category" class="category-chip home-category-chip" data-category-tab="type" data-category-type="top">
                     <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" class="home-category-img" alt="윗옷" onerror="this.style.display='none'">
                     <span>윗옷</span>
                 </a>
-                <a href="#" class="category-chip home-category-chip" data-category-tab="type" data-category-type="bottom">
+                <a href="${pageContext.request.contextPath}/category" class="category-chip home-category-chip" data-category-tab="type" data-category-type="bottom">
                     <img src="${pageContext.request.contextPath}/images/category/type-bottom-long.jpg" class="home-category-img" alt="아랫옷" onerror="this.style.display='none'">
                     <span>아랫옷</span>
                 </a>
-                <a href="#" class="category-chip home-category-chip" data-category-tab="type" data-category-type="outer">
+                <a href="${pageContext.request.contextPath}/category" class="category-chip home-category-chip" data-category-tab="type" data-category-type="outer">
                     <img src="${pageContext.request.contextPath}/images/category/type-outer-coat.jpg" class="home-category-img" alt="겉옷" onerror="this.style.display='none'">
                     <span>겉옷</span>
                 </a>
-                <a href="#" class="category-chip home-category-chip" data-category-tab="type" data-category-type="set">
+                <a href="${pageContext.request.contextPath}/category" class="category-chip home-category-chip" data-category-tab="type" data-category-type="set">
+
                     <img src="${pageContext.request.contextPath}/images/category/type-set-dress.jpg" class="home-category-img" alt="한 벌 옷" onerror="this.style.display='none'">
                     <span>한 벌 옷</span>
                 </a>

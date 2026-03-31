@@ -13,8 +13,8 @@ public class NotificationService {
 		this.dao = new NotificationDAO();
 	}
 
-	public Vector<NotificationDTO> getNotificationList() {
-		return dao.getNotification();
+	public Vector<NotificationDTO> getNotificationList(int userNo) {
+		return dao.getNotification(userNo);
 	}
 
 	public boolean createNotification(NotificationDTO dto) {
