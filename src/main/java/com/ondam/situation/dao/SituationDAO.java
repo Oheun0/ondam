@@ -34,6 +34,7 @@ public class SituationDAO {
 				dto.setUpSituationNo(rs.getInt("upSituationNo"));
 				dto.setSituationLevel(rs.getInt("situationLevel"));
 				dto.setSituationName(rs.getString("situationName"));
+				dto.setSituationImg(rs.getString("situationImg"));
 				vlist.addElement(dto);
 			}
 		} catch (Exception e) {
@@ -52,11 +53,12 @@ public class SituationDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT Situation (upSituationNo, situationLevel, situationName) VALUES (?, ?, ?)";
+			sql = "INSERT Situation (upSituationNo, situationLevel, situationName, situationImg) VALUES (?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getUpSituationNo());
 			pstmt.setInt(2, dto.getSituationLevel());
 			pstmt.setString(3, dto.getSituationName());
+			pstmt.setString(4, dto.getSituationImg());
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -75,12 +77,13 @@ public class SituationDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE Situation SET upSituationNo = ?, situationLevel = ?, situationName = ? WHERE situationNo = ?";
+			sql = "UPDATE Situation SET upSituationNo = ?, situationLevel = ?, situationName = ?, situationImg = ? WHERE situationNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getUpSituationNo());
 			pstmt.setInt(2, dto.getSituationLevel());
 			pstmt.setString(3, dto.getSituationName());
-			pstmt.setInt(4, situationNo);
+			pstmt.setString(4, dto.getSituationImg());
+			pstmt.setInt(5, situationNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
