@@ -7,7 +7,7 @@ public class ShortsDTO {
     private int productNo;
     private String videoFile;
     private String thumbnailImg;
-    private int shortsState;
+    private int shortsState; // -1: 실패, 0: 생성 중, 1: 공개, 2: 비공개(나만보기)
     private String createdAt;
 
     public ShortsDTO() {}
