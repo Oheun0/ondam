@@ -1,5 +1,7 @@
 package com.ondam.common;
 
+import java.io.InputStream;
+
 /**
  * Copyright(c) 2001 iSavvix Corporation (http://www.isavvix.com/)
  *
@@ -24,8 +26,13 @@ package com.ondam.common;
  * TO THE SOFTWARE.
  *
  */
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -36,17 +43,40 @@ import java.util.Vector;
  */
 public class DBConnectionMgr {
     private Vector connections = new Vector(10);
-    private String _driver = "com.mysql.cj.jdbc.Driver",
-    _url = "jdbc:mysql://localhost:3306/Ondam?characterEncoding=UTF-8&serverTimezone=UTC",
-    _user = "root",
-    _password = "1234";
+    private String _driver;
+    private String _url;
+    private String _user;
+    private String _password;
     
     private boolean _traceOn = false;
     private boolean initialized = false;
     private int _openConnections = 50;
     private static DBConnectionMgr instance = null;
 
-    private DBConnectionMgr() {}
+    private DBConnectionMgr() {
+        try {
+            Properties props = new Properties();
+            InputStream is = DBConnectionMgr.class.getClassLoader().getResourceAsStream("config.properties");
+            
+            if (is == null) {
+                is = getClass().getResourceAsStream("/config.properties");
+            }
+
+            if (is != null) {
+                props.load(is);
+                this._driver = props.getProperty("db.driver");
+                this._url = props.getProperty("db.url");
+                this._user = props.getProperty("db.user");
+                this._password = props.getProperty("db.password");
+                is.close();
+//                System.out.println("성공: config.properties 로드 완료 (" + _url + ")");
+            } else {
+                System.err.println("실패: 모든 경로에서 config.properties를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /** Use this method to set the maximum number of open connections before
      unused connections are closed.
@@ -245,23 +275,19 @@ public class DBConnectionMgr {
 
     private Connection createConnection()
             throws SQLException {
-        Connection con = null;
-
+    	Connection con = null;
         try {
-            if (_user == null)
-                _user = "";
-            if (_password == null)
-                _password = "";
+            String user = (_user != null) ? _user : "";
+            String password = (_password != null) ? _password : "";
 
             Properties props = new Properties();
-            props.put("user", _user);
-            props.put("password", _password);
+            props.put("user", user);
+            props.put("password", password);
 
             con = DriverManager.getConnection(_url, props);
         } catch (Throwable t) {
             throw new SQLException(t.getMessage());
         }
-
         return con;
     }
 
