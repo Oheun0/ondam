@@ -28,5 +28,9 @@ public class CouponService {
 	public boolean removeCoupon(int couponNo) {
 		return dao.deleteCoupon(couponNo);
 	}
+	
+	public CouponDTO getCouponById(int couponNo) {
+        return dao.getCouponById(couponNo);
+    }
 }
 

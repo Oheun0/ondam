@@ -448,3 +448,18 @@ a {
   min-width: 96px;
   padding: 0 10px;
 }
+
+.error-msg {
+  display: none;
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+  margin-left: 4px;
+}
+
+.input.error-border,
+.select.error-border {
+  border-color: var(--danger) !important;
+  background-color: #fffafb;
+}

@@ -102,7 +102,7 @@ public class ShortsDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			String sql = "UPDATE Shorts SET shortsState = ? WHERE productNo = ?";
+			String sql = "UPDATE shorts SET shortsState = ? WHERE productNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, state);
 			pstmt.setInt(2, productNo);
@@ -118,7 +118,7 @@ public class ShortsDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			String sql = "UPDATE Shorts SET videoFile = ?, thumbnailImg = ?, shortsState = ? WHERE productNo = ?";
+			String sql = "UPDATE shorts SET videoFile = ?, thumbnailImg = ?, shortsState = ? WHERE productNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, dto.getVideoFile());
 			pstmt.setString(2, dto.getThumbnailImg());
@@ -136,7 +136,7 @@ public class ShortsDAO {
 	    ShortsDTO dto = null;
 	    try {
 	        con = pool.getConnection();
-	        String sql = "SELECT * FROM Shorts WHERE productNo = ?";
+	        String sql = "SELECT * FROM shorts WHERE productNo = ?";
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setInt(1, productNo);
 	        rs = pstmt.executeQuery();
@@ -161,7 +161,7 @@ public class ShortsDAO {
 	    Vector<ShortsDTO> vlist = new Vector<>();
 	    try {
 	        con = pool.getConnection();
-	        String sql = "SELECT * FROM Shorts WHERE vendorNo = ? ORDER BY createdAt DESC";
+	        String sql = "SELECT * FROM shorts WHERE vendorNo = ? ORDER BY createdAt DESC";
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setInt(1, vendorNo);
 	        rs = pstmt.executeQuery();
