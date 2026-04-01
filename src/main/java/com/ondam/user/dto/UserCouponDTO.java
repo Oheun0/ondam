@@ -7,7 +7,7 @@ public class UserCouponDTO {
 		private int isUsed;
 		private String issuedAt;
 		private String usedAt;
-		private int orderNo;
+		private Integer orderNo;
 		
 		public int getUserCouponNo() {
 			return userCouponNo;
@@ -45,10 +45,10 @@ public class UserCouponDTO {
 		public void setUsedAt(String usedAt) {
 			this.usedAt = usedAt;
 		}
-		public int getOrderNo() {
+		public Integer getOrderNo() {
 			return orderNo;
 		}
-		public void setOrderNo(int orderNo) {
+		public void setOrderNo(Integer orderNo) {
 			this.orderNo = orderNo;
 		}
 }

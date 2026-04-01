@@ -6,6 +6,8 @@ import java.util.Map;
 import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
 import com.ondam.product.controller.CategoryController;
+import com.ondam.shorts.controller.ShortsApiController;
+import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.KakaoCallbackController;
 import com.ondam.user.controller.KakaoLoginController;
 import com.ondam.user.controller.LoginController;
@@ -34,6 +36,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/notification", new NotificationController());
         handlerMapping.put("/main", new MainController());
         handlerMapping.put("/category", new CategoryController());
+        handlerMapping.put("/shorts", new ShortsController());
+        handlerMapping.put("/shorts/api", new ShortsApiController());
         handlerMapping.put("/family", new FamilyGroupController());
         handlerMapping.put("/mock-login", new MockLoginController());
         handlerMapping.put("/signup-start", new SignupStartController());

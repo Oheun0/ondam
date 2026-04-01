@@ -3,6 +3,7 @@ package com.ondam.coupon.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.Vector;
 
 import com.ondam.common.DBConnectionMgr;
@@ -35,7 +36,10 @@ public class CouponDAO {
 				dto.setDiscountType(rs.getInt("discountType"));
 				dto.setDiscountValue(rs.getInt("discountValue"));
 				dto.setMinOrderAmount(rs.getInt("minOrderAmount"));
-				dto.setMaxDiscountAmount(rs.getInt("maxDiscountAmount"));
+				
+				int maxDiscount = rs.getInt("maxDiscountAmount");
+				dto.setMaxDiscountAmount(rs.wasNull() ? null : maxDiscount);
+				
 				dto.setValidFrom(rs.getString("validFrom"));
 				dto.setValidUntil(rs.getString("validUntil"));
 				dto.setCreatedAt(rs.getString("createdAt"));
@@ -63,7 +67,13 @@ public class CouponDAO {
 			pstmt.setInt(2, dto.getDiscountType());
 			pstmt.setInt(3, dto.getDiscountValue());
 			pstmt.setInt(4, dto.getMinOrderAmount());
-			pstmt.setInt(5, dto.getMaxDiscountAmount());
+			
+			if (dto.getMaxDiscountAmount() == null) {
+			    pstmt.setNull(5, Types.INTEGER);
+			} else {
+			    pstmt.setInt(5, dto.getMaxDiscountAmount());
+			}
+			
 			pstmt.setString(6, dto.getValidFrom());
 			pstmt.setString(7, dto.getValidUntil());
 			pstmt.setString(8, dto.getCreatedAt());
@@ -91,7 +101,13 @@ public class CouponDAO {
 			pstmt.setInt(2, dto.getDiscountType());
 			pstmt.setInt(3, dto.getDiscountValue());
 			pstmt.setInt(4, dto.getMinOrderAmount());
-			pstmt.setInt(5, dto.getMaxDiscountAmount());
+			
+			if (dto.getMaxDiscountAmount() == null) {
+			    pstmt.setNull(5, Types.INTEGER);
+			} else {
+			    pstmt.setInt(5, dto.getMaxDiscountAmount());
+			}
+			
 			pstmt.setString(6, dto.getValidFrom());
 			pstmt.setString(7, dto.getValidUntil());
 			pstmt.setString(8, dto.getCreatedAt());
@@ -126,5 +142,42 @@ public class CouponDAO {
 		}
 		return flag;
 	}
+	
+	// 특정 쿠폰 단건 조회 (수정 폼 용도)
+    public CouponDTO getCouponById(int couponNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        CouponDTO dto = null;
+        
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT * FROM coupon WHERE couponNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, couponNo);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+            	dto = new CouponDTO();
+				dto.setCouponNo(rs.getInt("couponNo"));
+				dto.setCouponName(rs.getString("couponName"));
+				dto.setDiscountType(rs.getInt("discountType"));
+				dto.setDiscountValue(rs.getInt("discountValue"));
+				dto.setMinOrderAmount(rs.getInt("minOrderAmount"));
+				
+				int maxDiscount = rs.getInt("maxDiscountAmount");
+				dto.setMaxDiscountAmount(rs.wasNull() ? null : maxDiscount);
+				
+				dto.setValidFrom(rs.getString("validFrom"));
+				dto.setValidUntil(rs.getString("validUntil"));
+				dto.setCreatedAt(rs.getString("createdAt"));
+			}
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return dto;
+    }
 }
 
