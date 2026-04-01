@@ -1,0 +1,474 @@
+.wallet-page {
+  padding: 20px 16px 120px;
+}
+
+.wallet-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.back-btn .material-icons {
+  font-size: 20px;
+}
+
+.back-btn {
+  width: 120px;
+  height: 40px;
+  border-radius: 20px;
+  font-weight: 800;
+  background: #fff;
+  display: flex;
+  color: #111;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  gap: 2px;
+}
+
+.balance-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.balance-card p {
+  color: #888;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.balance-card strong {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.charge-input-box {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.charge-input-box .won {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.charge-input-box input {
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+  width: 100%;
+  outline: none;
+}
+
+.quick-amount {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.quick-amount button {
+  height: 48px;
+  border-radius: 12px;
+  background: #eaeaea;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.charge-btn {
+  width: 100%;
+  height: 54px;
+  border-radius: 999px;
+  background: #4caf50;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  border: none;
+}
+
+/* 추가 영역 */
+.wallet-section {
+  margin-top: 4px;
+}
+
+.wallet-section-title {
+  margin-bottom: 16px;
+}
+
+.wallet-section-title h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 6px;
+}
+
+.wallet-section-title p {
+  font-size: 15px;
+  color: #777;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.wallet-link-box {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.wallet-link {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 700;
+  color: #4caf50;
+  text-decoration: none;
+}
+
+/* 사용내역 */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.history-text {
+  min-width: 0;
+}
+
+.history-text strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.history-text p {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.history-amount {
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.history-amount.plus {
+  color: #4caf50;
+}
+
+.history-amount.minus {
+  color: #111;
+}
+
+.history-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.history-balance {
+  font-size: 13px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.wallet-page {
+  padding: 20px 16px 120px;
+}
+
+.wallet-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.back-btn .material-icons {
+  font-size: 20px;
+}
+
+.back-btn {
+  width: 120px;
+  height: 40px;
+  border-radius: 20px;
+  font-weight: 800;
+  background: #fff;
+  display: flex;
+  color: #111;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  gap: 2px;
+}
+
+.balance-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.balance-card p {
+  color: #888;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.balance-card strong {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.charge-input-box {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.charge-input-box .won {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.charge-input-box input {
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+  width: 100%;
+  outline: none;
+}
+
+.quick-amount {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.quick-amount button {
+  height: 48px;
+  border-radius: 12px;
+  background: #eaeaea;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.charge-btn {
+  width: 100%;
+  height: 54px;
+  border-radius: 999px;
+  background: #4caf50;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  border: none;
+}
+
+/* 추가 */
+.wallet-section {
+  margin-top: 4px;
+}
+
+.wallet-desc {
+  font-size: 15px;
+  color: #777;
+  line-height: 1.5;
+  margin: 0 0 18px;
+  text-align: center;
+}
+
+.wallet-action-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.wallet-action-btn {
+  flex: 1;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.wallet-action-btn.charge {
+  background: #4caf50;
+  color: #fff;
+}
+
+.wallet-action-btn.withdraw {
+  background: #eaeaea;
+  color: #111;
+}
+
+.wallet-section-title {
+  margin-bottom: 16px;
+}
+
+.wallet-section-title h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+}
+
+.history-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.more-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: #4caf50;
+  text-decoration: none;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.history-text {
+  min-width: 0;
+}
+
+.history-text strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.history-text p {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.history-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.history-amount {
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.history-amount.plus {
+  color: #4caf50;
+}
+
+.history-amount.minus {
+  color: #111;
+}
+
+.history-balance {
+  font-size: 13px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* 공통 input */
+.input-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.input-box input {
+  border: none;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 700;
+  outline: none;
+}
+
+/* 금액 입력 + 전액 */
+.amount-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.amount-input {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.amount-input .won {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.amount-input input {
+  border: none;
+  font-size: 18px;
+  font-weight: 800;
+  width: 100%;
+  outline: none;
+}
+
+/* 전액 버튼 */
+.all-btn {
+  width: 80px;
+  border-radius: 16px;
+  border: none;
+  background: #eaeaea;
+  font-weight: 800;
+  font-size: 17px;
+}
