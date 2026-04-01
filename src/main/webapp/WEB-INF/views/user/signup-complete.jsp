@@ -22,7 +22,7 @@
 
         <div class="btn-row">
           <button type="button" class="btn btn-primary"
-                  onclick="location.href='<%=request.getContextPath()%>/home/main.do'">
+                  onclick="location.href='${pageContext.request.contextPath}/main'">
             온담 시작하기
           </button>
         </div>

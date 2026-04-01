@@ -1,9 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.Vector" %>
-<%@ page import="com.ondam.notification.dto.NotificationDTO" %>
-<%
-    Vector<NotificationDTO> vlist = (Vector<NotificationDTO>) request.getAttribute("vlist");
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -31,12 +27,24 @@
 
 			<div class="notification-page-header">
 				<div class="notification-actions">
-					<button type="button" class="text-btn" id="markAllReadBtn">전체 읽음</button>
-					<button type="button" class="text-btn danger" id="deleteAllBtn">전체 삭제</button>
-				</div>
+					<!-- <button type="button" class="text-btn" id="markAllReadBtn">전체 읽음</button>
+					<button type="button" class="text-btn danger" id="deleteAllBtn">전체 삭제</button> -->
+						<form method="post"
+							action="${pageContext.request.contextPath}/notification"
+							style="display: inline;">
+							<input type="hidden" name="action" value="markAllRead">
+							<button type="submit" class="text-btn">전체 읽음</button>
+						</form>
+						<form method="post"
+							action="${pageContext.request.contextPath}/notification"
+							style="display: inline;">
+							<input type="hidden" name="action" value="deleteAll">
+							<button type="submit" class="text-btn danger">전체 삭제</button>
+						</form>
+					</div>
 			</div>
 
-			<div class="notification-list">
+			<!-- <div class="notification-list">
 
 				<a href="#" class="notification-item unread">
 					<div class="notification-content">
@@ -68,42 +76,34 @@
 					</div>
 				</a>
 
-				<%-- <%
-                // 1. 리스트가 비어있는지 확인
-                if (vlist != null && vlist.size() > 0) {
-                    // 2. 반복문을 돌며 데이터 출력
-                    for (int i = 0; i < vlist.size(); i++) {
-                        NotificationDTO dto = vlist.get(i);
-                        
-                        // 읽지 않은 알림(isRead == 0)일 때 클래스 추가 로직
-                        String unreadClass = (dto.getIsRead() == 0) ? "unread" : "";
-            	%>
-                        <a href="#" class="notification-item <%= unreadClass %>">
-                            <div class="notification-content">
-                                <p class="notification-text"><%= dto.getNotificationContent() %></p>
-                                <span class="notification-time"><%= dto.getCreatedAt() %></span>
-                            </div>
-                            <% if (dto.getIsRead() == 0) { %>
-                                <span class="notification-dot"></span>
-                            <% } %>
-                        </a>
-           	 	<%
-                    } // for end
-                } else { 
-            	%>
-                    <div class="notification-empty">
-                        <p>새로운 알림이 없어요.</p>
-                    </div>
-           		 <%
-                } // if end
-            	%> --%>
 			</div>
 
 			<div class="notification-empty" style="display:none;">
 				<p>새로운 알림이 없어요.</p>
-			</div>
+			</div> -->
 
-		</section>
+				<div class="notification-list">
+					<c:forEach var="dto" items="${vlist}">
+						<a href="#"
+							class="notification-item ${dto.isRead == 0 ? 'unread' : ''}"
+							data-no="${dto.notificationNo}">
+							<div class="notification-content">
+								<p class="notification-text">${dto.notificationContent}</p>
+								<span class="notification-time">${dto.createdAt}</span>
+							</div> <c:if test="${dto.isRead == 0}">
+								<span class="notification-dot"></span>
+							</c:if>
+						</a>
+					</c:forEach>
+				</div>
+
+				<c:if test="${empty vlist}">
+					<div class="notification-empty">
+						<p>새로운 알림이 없어요.</p>
+					</div>
+				</c:if>
+
+			</section>
 	</main>
 
 	<jsp:include page="../layout/bottomNav.jsp" />

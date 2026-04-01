@@ -121,5 +121,61 @@ public class NotificationDAO {
 		}
 		return flag;
 	}
-}
+	
+	// 전체 읽음 처리
+	public boolean markAllRead(int userNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE notification SET isRead = 1 WHERE userNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, userNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return flag;
+	}
 
+	// 전체 삭제
+	public boolean deleteAllNotification(int userNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "DELETE FROM notification WHERE userNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, userNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return flag;
+	}
+	
+	// 1건 읽음 (클릭으로)
+	public boolean markOneRead(int notificationNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE notification SET isRead = 1 WHERE notificationNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, notificationNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return flag;
+	}
+}

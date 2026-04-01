@@ -28,5 +28,16 @@ public class NotificationService {
 	public boolean removeNotification(int notificationNo) {
 		return dao.deleteNotification(notificationNo);
 	}
-}
+	
+	public boolean markAllRead(int userNo) {
+	    return dao.markAllRead(userNo);
+	}
 
+	public boolean removeAllNotification(int userNo) {
+	    return dao.deleteAllNotification(userNo);
+	}
+	
+	public boolean markOneRead(int notificationNo) {
+	    return dao.markOneRead(notificationNo);
+	}
+}

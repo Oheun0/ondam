@@ -6,14 +6,16 @@ public class SituationDTO {
     private int upSituationNo;
     private int situationLevel;
     private String situationName;
+    private String situationImg;
 
     public SituationDTO() {}
 
-    public SituationDTO(int situationNo, int upSituationNo, int situationLevel, String situationName) {
+    public SituationDTO(int situationNo, int upSituationNo, int situationLevel, String situationName, String situationImg) {
         this.situationNo = situationNo;
         this.upSituationNo = upSituationNo;
         this.situationLevel = situationLevel;
         this.situationName = situationName;
+        this.situationImg = situationImg;
     }
 
     public int getSituationNo() {
@@ -47,4 +49,12 @@ public class SituationDTO {
     public void setSituationName(String situationName) {
         this.situationName = situationName;
     }
+
+	public String getSituationImg() {
+		return situationImg;
+	}
+
+	public void setSituationImg(String situationImg) {
+		this.situationImg = situationImg;
+	}
 }
