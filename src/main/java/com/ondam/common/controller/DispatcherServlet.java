@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.ondam.notification.controller.NotificationController;
 import com.ondam.product.controller.CategoryController;
+import com.ondam.shorts.controller.ShortsApiController;
+import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.LoginController;
 
 import jakarta.servlet.ServletException;
@@ -26,6 +28,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/notification", new NotificationController());
         handlerMapping.put("/main", new MainController());
         handlerMapping.put("/category", new CategoryController());
+        handlerMapping.put("/shorts", new ShortsController());
+        handlerMapping.put("/shorts/api", new ShortsApiController());
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 
