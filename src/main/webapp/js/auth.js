@@ -1,3 +1,4 @@
+let isIdChecked = false;
 document.addEventListener("DOMContentLoaded", function () {
   bindSelectableCards();
   bindUserIdInputReset();
@@ -5,13 +6,27 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function validate() {
-  const checkList = [
-    { id: "userNick", errId: "err-userNick", msg: "사용하실 닉네임을 입력해주세요." },
-    { id: "phone2", errId: "err-phone", msg: "휴대폰 번호를 모두 입력해주세요." },
-    { id: "phone3", errId: "err-phone", msg: "휴대폰 번호를 모두 입력해주세요." },
-    { id: "email1", errId: "err-email", msg: "이메일 주소를 입력해주세요." },
-    { id: "email2", errId: "err-email", msg: "이메일 도메인을 선택해주세요." }
-  ];
+	const checkList = [
+	  { id: "userName", errId: "err-userName", msg: "이름을 입력해주세요." },
+	  { id: "userNick", errId: "err-userNick", msg: "사용하실 닉네임을 입력해주세요." },
+	  { id: "userId", errId: "err-userId", msg: "아이디를 입력해주세요." },
+	  { id: "userPwd", errId: "err-userPwd", msg: "비밀번호를 입력해주세요." },
+	  { id: "userPwdCheck", errId: "err-userPwdCheck", msg: "비밀번호를 한 번 더 입력해주세요." },
+	  { id: "phone2", errId: "err-phone", msg: "휴대폰 번호를 모두 입력해주세요." },
+	  { id: "phone3", errId: "err-phone", msg: "휴대폰 번호를 모두 입력해주세요." },
+	  { id: "email1", errId: "err-email", msg: "이메일 주소를 입력해주세요." },
+	  { id: "emailSelect", errId: "err-email", msg: "이메일 도메인을 선택해주세요." }, // emailSelect로 맞춤
+	  { id: "birthYear", errId: "err-birth", msg: "생년월일을 모두 선택해주세요." },
+	  { id: "birthMonth", errId: "err-birth", msg: "생년월일을 모두 선택해주세요." },
+	  { id: "birthDay", errId: "err-birth", msg: "생년월일을 모두 선택해주세요." },
+	  { id: "addressName", errId: "err-addressName", msg: "배송지 이름을 입력해주세요." },
+      { id: "receiverName", errId: "err-receiverName", msg: "받는 분 이름을 입력해주세요." },
+      { id: "userZipcode", errId: "err-userZipcode", msg: "우편번호를 검색해주세요." },
+      { id: "userAddress", errId: "err-userAddress", msg: "주소를 입력해주세요." },
+      { id: "userDetailAddress", errId: "err-userAddress", msg: "상세 주소를 입력해주세요." },
+	  { id: "userHeight", errId: "err-userHeight", msg: "키를 선택해주세요." },
+	  { id: "userWeight", errId: "err-userWeight", msg: "몸무게를 선택해주세요." }
+	];
 
   for (let item of checkList) {
     const target = document.getElementById(item.id);
@@ -30,14 +45,70 @@ function validate() {
       target.classList.add("error-border");
 
       target.scrollIntoView({ behavior: "smooth", block: "center" });
-
       setTimeout(() => { target.focus(); }, 500);
 
       return false;
     }
   }
-  return true;
-}
+  
+  if (!isIdChecked) {
+      hideAllErrors();
+      const errMsg = document.getElementById("err-userId");
+      if (errMsg) {
+        errMsg.textContent = "아이디 중복 확인을 진행해주세요.";
+        errMsg.style.display = "block";
+      }
+      const userIdInput = document.getElementById("userId");
+      userIdInput.classList.add("error-border");
+      userIdInput.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => { userIdInput.focus(); }, 500);
+      return false;
+    }
+  
+  const pwd = document.getElementById("userPwd").value;
+    const pwdCheck = document.getElementById("userPwdCheck").value;
+
+    if (pwd !== pwdCheck) {
+      hideAllErrors();
+      const errMsg = document.getElementById("err-userPwdCheck");
+      if (errMsg) {
+        errMsg.textContent = "비밀번호가 일치하지 않습니다.";
+        errMsg.style.display = "block";
+      }
+      const pwdCheckInput = document.getElementById("userPwdCheck");
+      pwdCheckInput.classList.add("error-border");
+      pwdCheckInput.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => { pwdCheckInput.focus(); }, 500);
+      return false;
+    }
+	
+	const paymentRadios = document.getElementsByName("preferPayment");
+	  if (paymentRadios.length > 0) {
+	    let isSelected = false;
+	    for (let radio of paymentRadios) {
+	      if (radio.checked) {
+	        isSelected = true;
+	        break;
+	      }
+	    }
+	    
+	    if (!isSelected) {
+	      hideAllErrors();
+	      const errMsg = document.getElementById("err-preferPayment");
+	      if (errMsg) {
+	        errMsg.textContent = "결제 수단을 선택해주세요.";
+	        errMsg.style.display = "block";
+	      }
+	      const paymentGrid = document.getElementById("paymentGrid");
+	      if (paymentGrid) {
+	        paymentGrid.scrollIntoView({ behavior: "smooth", block: "center" });
+	      }
+	      return false;
+	    }
+	  }
+
+	  return true;
+	}
 
 function hideAllErrors() {
   document.querySelectorAll(".error-msg").forEach(el => el.style.display = "none");
@@ -94,8 +165,14 @@ function bindSelectableCards() {
 function checkUserId() {
   var userIdInput = document.getElementById("userId");
   var msg = document.getElementById("idCheckMessage");
+  var errMsg = document.getElementById("err-userId");
 
   if (!userIdInput || !msg) return;
+  
+  userIdInput.classList.remove("error-border");
+    if (errMsg) {
+      errMsg.style.display = "none";
+    }
 
   var userId = userIdInput.value.trim();
 
@@ -114,25 +191,69 @@ function checkUserId() {
     return;
   }
 
-  /* 예시용 가짜 중복체크 */
-  if (userId === "admin" || userId === "test" || userId === "ondam") {
-    msg.classList.add("error");
-    msg.textContent = "이미 사용 중인 아이디예요.";
-  } else {
-    msg.classList.add("success");
-    msg.textContent = "사용할 수 있는 아이디예요.";
+  fetch(ctxPath + "/check-userid?userId=" + userId)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("서버 응답 에러");
+          }
+          return response.text();
+        })
+		.then(data => {
+		    if (data.trim() === "duplicate") {
+		        msg.classList.add("error");
+		        msg.textContent = "이미 사용 중인 아이디예요.";
+		        isIdChecked = false;
+		    } else {
+		        msg.classList.add("success");
+		        msg.textContent = "사용할 수 있는 아이디예요.";
+		        isIdChecked = true;
+		    }
+		})
+        .catch(error => {
+          console.error("중복확인 통신 실패:", error);
+          msg.classList.add("error");
+          msg.textContent = "서버 통신 오류가 발생했습니다.";
+        });
+        
   }
-}
 
 function bindUserIdInputReset() {
   var userIdInput = document.getElementById("userId");
+  
   var msg = document.getElementById("idCheckMessage");
 
   if (!userIdInput || !msg) return;
 
   userIdInput.addEventListener("input", function () {
+	isIdChecked = false;
     msg.style.display = "none";
     msg.textContent = "";
     msg.classList.remove("success", "error");
   });
+}
+
+function openPostcode() {
+  new daum.Postcode({
+    oncomplete: function(data) {
+      var addr = ''; 
+
+      if (data.userSelectedType === 'R') {
+        addr = data.roadAddress;
+      } else {
+        addr = data.jibunAddress;
+      }
+
+      document.getElementById('userZipcode').value = data.zonecode;
+      document.getElementById("userAddress").value = addr;
+
+      document.getElementById('userZipcode').classList.remove("error-border");
+      document.getElementById('userAddress').classList.remove("error-border");
+      const errAddr = document.getElementById('err-userAddress');
+      const errZip = document.getElementById('err-userZipcode');
+      if (errAddr) errAddr.style.display = "none";
+      if (errZip) errZip.style.display = "none";
+
+      document.getElementById("userDetailAddress").focus();
+    }
+  }).open();
 }

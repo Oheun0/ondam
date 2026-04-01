@@ -6,7 +6,11 @@
   <title>회원가입 - 취향 설정</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
-  <script defer src="${pageContext.request.contextPath}/js/auth.js"></script>
+  
+  <script>
+      const ctxPath = "${pageContext.request.contextPath}";
+  </script>
+  <script defer src="${pageContext.request.contextPath}/js/auth.js?ver=6"></script>
 </head>
 <body>
   <div class="auth-page">
@@ -17,7 +21,7 @@
         <h1 class="page-title">취향을 알려주세요</h1>
         <p class="page-desc">자주 찾는 옷을 기준으로 추천해드려요</p>
 
-        <form action="${pageContext.request.contextPath}/signup-step3-preference" method="post">
+        <form action="${pageContext.request.contextPath}/signup-step3-preference" method="post" onsubmit="return validate();">
 
           <h2 class="section-title">몸에 잘 맞는 옷을 추천해드릴게요</h2>
           <p class="section-desc">키와 몸무게를 선택해주세요</p>
@@ -35,6 +39,7 @@
               <option value="175">171~175cm</option>
               <option value="180">176cm 이상</option>
             </select>
+            <span class="error-msg" id="err-userHeight"></span>
           </div>
 
           <div class="form-group">
@@ -52,6 +57,7 @@
               <option value="85">81~85kg</option>
               <option value="90">86kg 이상</option>
             </select>
+            <span class="error-msg" id="err-userWeight"></span>
           </div>
 
           <h2 class="section-title">좋아하는 색상을 골라주세요</h2>
@@ -93,7 +99,7 @@
           <h2 class="section-title">결제는 어떻게 하고 싶으세요?</h2>
           <p class="section-desc">다음부터 더 간편하게 선택할 수 있어요</p>
 
-          <div class="option-grid">
+          <div class="option-grid" id="paymentGrid">
           	<label class="option-card">
               <input type="radio" name="preferPayment" value="3">
               함께 지갑
@@ -111,6 +117,7 @@
               아직 잘 모르겠어요
             </label>
           </div>
+          <span class="error-msg" id="err-preferPayment"></span>
 
           <div class="btn-row">
             <button type="button" class="btn btn-outline" onclick="history.back()">이전</button>
