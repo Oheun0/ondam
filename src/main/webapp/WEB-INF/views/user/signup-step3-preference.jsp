@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <title>회원가입 - 취향 설정</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
-  <script defer src="<%=request.getContextPath()%>/js/auth.js"></script>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
+  <script defer src="${pageContext.request.contextPath}/js/auth.js"></script>
 </head>
 <body>
   <div class="auth-page">
@@ -17,7 +17,7 @@
         <h1 class="page-title">취향을 알려주세요</h1>
         <p class="page-desc">자주 찾는 옷을 기준으로 추천해드려요</p>
 
-        <form action="<%=request.getContextPath()%>/user/signupStep3Proc.do" method="post">
+        <form action="${pageContext.request.contextPath}/signup-step3-preference" method="post">
 
           <h2 class="section-title">몸에 잘 맞는 옷을 추천해드릴게요</h2>
           <p class="section-desc">키와 몸무게를 선택해주세요</p>
