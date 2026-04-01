@@ -8,19 +8,23 @@ import com.ondam.common.DBConnectionMgr;
 import com.ondam.user.dao.UserAddressDAO;
 import com.ondam.user.dao.UserDAO;
 import com.ondam.user.dao.UserHobbyDAO;
+import com.ondam.user.dao.UserPreferColorDAO;
 import com.ondam.user.dto.UserAddressDTO;
 import com.ondam.user.dto.UserDTO;
 import com.ondam.user.dto.UserHobbyDTO;
+import com.ondam.user.dto.UserPreferColorDTO;
 
 public class UserService {
 		private UserDAO userDAO;
 		private UserAddressDAO addressDAO;
 		private UserHobbyDAO hobbyDAO;
+		private UserPreferColorDAO colorDAO;
 		
 		public UserService() {
 			userDAO = new UserDAO();
 			addressDAO = new UserAddressDAO();
 			hobbyDAO = new UserHobbyDAO();
+			colorDAO = new UserPreferColorDAO();
 		}
 		
 		/*로그인 로직 처리
@@ -76,7 +80,8 @@ public class UserService {
 	    }
 		
 		/*회원가입 로직 처리, user, userAddress, userhobby를 삽입*/
-		public int insertCompleteSignup(UserDTO user, UserAddressDTO address, List<UserHobbyDTO> hobbyList) {
+		public int insertCompleteSignup(UserDTO user, UserAddressDTO address, 
+				List<UserHobbyDTO> hobbyList, List<UserPreferColorDTO> colorList) {
 	        DBConnectionMgr pool = null;
 	        Connection conn = null;
 	        int result = 0;
@@ -112,7 +117,17 @@ public class UserService {
 	                    }
 	                }
 	                
-	                if (addressResult > 0 && hobbyResult > 0) {
+	                colorDAO.deleteUserPreferColor(conn, userNo);
+	                int colorResult = 1;
+	                if (colorList != null && !colorList.isEmpty()) {
+	                    for (UserPreferColorDTO color : colorList) {
+	                        color.setUserNo(userNo);
+	                        int res = colorDAO.insertUserPreferColor(conn, color);
+	                        if (res == 0) colorResult = 0;
+	                    }
+	                }
+	                
+	                if (addressResult > 0 && hobbyResult > 0 &&colorResult > 0) {
 	                    conn.commit();
 	                    result = 1;
 	                } else {

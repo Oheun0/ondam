@@ -43,7 +43,6 @@ public class UserDAO {
 				user.setUserBirth(rs.getString("userBirth"));
 				user.setUserGender(rs.getInt("userGender"));
 				user.setUserHeight(rs.getInt("userHeight"));
-				user.setUserPreferColor(rs.getString("userPreferColor"));
 				user.setUserProfileImg(rs.getString("userProfileImg"));
 				user.setJoinReason(rs.getInt("joinReason"));
 				user.setIsActive(rs.getInt("isActive"));
@@ -67,9 +66,9 @@ public class UserDAO {
         ResultSet rs = null;
         
         String sql = "insert into user (userId, userPwd, userName, userNick, userPhoneNumber, "
-                   + "userEmail, userBirth, userGender, userHeight, userWeight, userPreferColor, "
+                   + "userEmail, userBirth, userGender, userHeight, userWeight, "
                    + "joinReason, preferPayment, signupStep, signUpCompleted) "
-                   + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                   + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                    
         try {
             pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -83,12 +82,11 @@ public class UserDAO {
             pstmt.setString(7, user.getUserBirth());
             pstmt.setInt(8, user.getUserGender());
             pstmt.setInt(9, user.getUserHeight());
-            pstmt.setInt(10, user.getUserWeight());
-            pstmt.setString(11, user.getUserPreferColor());
-            pstmt.setInt(12, user.getJoinReason());
-            pstmt.setInt(13, user.getPreferPayment());
-            pstmt.setInt(14, user.getSignupStep());
-            pstmt.setInt(15, user.getSignUpCompleted());
+            pstmt.setInt(10, user.getUserWeight());  
+            pstmt.setInt(11, user.getJoinReason());
+            pstmt.setInt(12, user.getPreferPayment());
+            pstmt.setInt(13, user.getSignupStep());
+            pstmt.setInt(14, user.getSignUpCompleted());
             
             pstmt.executeUpdate();
             
@@ -110,7 +108,7 @@ public class UserDAO {
 	    PreparedStatement pstmt = null;
 
 	    String sql = "UPDATE user SET userNick=?, userPhoneNumber = ?, userEmail = ?, userBirth = ?, "
-	               + "userGender = ?, userHeight = ?, userWeight = ?, userPreferColor = ?, "
+	               + "userGender = ?, userHeight = ?, userWeight = ?, "
 	               + "joinReason = ?, preferPayment = ?, signupStep = ?, signUpCompleted = ? "
 	               + "WHERE userId = ?";
 	    try {
@@ -122,12 +120,11 @@ public class UserDAO {
 	        pstmt.setInt(5, user.getUserGender());
 	        pstmt.setInt(6, user.getUserHeight());
 	        pstmt.setInt(7, user.getUserWeight());
-	        pstmt.setString(8, user.getUserPreferColor());
-	        pstmt.setInt(9, user.getJoinReason());
-	        pstmt.setInt(10, user.getPreferPayment());
-	        pstmt.setInt(11, user.getSignupStep());
-	        pstmt.setInt(12, user.getSignUpCompleted());
-	        pstmt.setString(13, user.getUserId());
+	        pstmt.setInt(8, user.getJoinReason());
+	        pstmt.setInt(9, user.getPreferPayment());
+	        pstmt.setInt(10, user.getSignupStep());
+	        pstmt.setInt(11, user.getSignUpCompleted());
+	        pstmt.setString(12, user.getUserId());
 
 	        result = pstmt.executeUpdate();
 
