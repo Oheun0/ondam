@@ -117,5 +117,34 @@ public class ProductOptionDAO {
 		}
 		return flag;
 	}
+	
+	// 특정 상품의 옵션 목록
+	public Vector<ProductOptionDTO> getByProductNo(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<ProductOptionDTO> vlist = new Vector<>();
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM productoption WHERE productNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            ProductOptionDTO dto = new ProductOptionDTO();
+	            dto.setProductOptionNo(rs.getInt("productOptionNo"));
+	            dto.setProductNo(rs.getInt("productNo"));
+	            dto.setOptionSize(rs.getString("optionSize"));
+	            dto.setOptionColor(rs.getString("optionColor"));
+	            dto.setOptionAddPrice(rs.getInt("optionAddPrice"));
+	            dto.setOptionStock(rs.getInt("optionStock"));
+	            vlist.addElement(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vlist;
+	}
 }
-

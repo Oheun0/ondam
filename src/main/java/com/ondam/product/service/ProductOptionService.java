@@ -28,5 +28,8 @@ public class ProductOptionService {
 	public boolean removeProductOption(int productOptionNo) {
 		return dao.deleteProductOption(productOptionNo);
 	}
+	
+	public Vector<ProductOptionDTO> getOptionsByProductNo(int productNo) {
+	    return dao.getByProductNo(productNo);
+	}
 }
-
