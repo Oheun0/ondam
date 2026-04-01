@@ -16,7 +16,7 @@ public class ShortsGenerator {
     
     private final ShortsDAO shortsDAO = new ShortsDAO();
     private final ProductDAO productDAO = new ProductDAO();
-    private final ExecutorService executor = Executors.newFixedThreadPool(3);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(3);
 
     public void generateShortsAsync(int vendorNo, int productNo, String realPath) {
         

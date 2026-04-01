@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ondam.coupon.controller.CouponController;
+import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
 import com.ondam.product.controller.CategoryController;
@@ -47,6 +49,9 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/signup-complete", new SignupCompleteController());
         handlerMapping.put("/kakao-login", new KakaoLoginController());
         handlerMapping.put("/kakao-callback", new KakaoCallbackController());
+        handlerMapping.put("/coupon", new CouponController());
+        handlerMapping.put("/gift", new GiftController());        
+        
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 
