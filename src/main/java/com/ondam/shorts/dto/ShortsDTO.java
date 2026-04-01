@@ -5,6 +5,8 @@ public class ShortsDTO {
     private int shortsNo;
     private int vendorNo;
     private int productNo;
+    private String shortsTitle;
+    private String shortsContent;    
     private String videoFile;
     private String thumbnailImg;
     private int shortsState; // -1: 실패, 0: 생성 중, 1: 공개, 2: 비공개(나만보기)
@@ -12,11 +14,13 @@ public class ShortsDTO {
 
     public ShortsDTO() {}
 
-    public ShortsDTO(int shortsNo, int vendorNo, int productNo, String videoFile, String thumbnailImg,
+    public ShortsDTO(int shortsNo, int vendorNo, int productNo, String shortsTitle, String shortsContent, String videoFile, String thumbnailImg,
                      int shortsState, String createdAt) {
         this.shortsNo = shortsNo;
         this.vendorNo = vendorNo;
         this.productNo = productNo;
+        this.shortsTitle = shortsTitle;
+        this.shortsContent = shortsContent;
         this.videoFile = videoFile;
         this.thumbnailImg = thumbnailImg;
         this.shortsState = shortsState;
@@ -27,7 +31,23 @@ public class ShortsDTO {
         return shortsNo;
     }
 
-    public void setShortsNo(int shortsNo) {
+    public String getShortsTitle() {
+		return shortsTitle;
+	}
+
+	public void setShortsTitle(String shortsTitle) {
+		this.shortsTitle = shortsTitle;
+	}
+
+	public String getShortsContent() {
+		return shortsContent;
+	}
+
+	public void setShortsContent(String shortsContent) {
+		this.shortsContent = shortsContent;
+	}
+
+	public void setShortsNo(int shortsNo) {
         this.shortsNo = shortsNo;
     }
 
