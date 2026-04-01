@@ -22,13 +22,15 @@ public class ShortsDAO {
 		Vector<ShortsDTO> vlist = new Vector<ShortsDTO>();
 		try {
 			con = pool.getConnection();
-			pstmt = con.prepareStatement("SELECT * FROM Shorts");
+			pstmt = con.prepareStatement("SELECT * FROM shorts");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				ShortsDTO dto = new ShortsDTO();
 				dto.setShortsNo(rs.getInt("shortsNo"));
 				dto.setVendorNo(rs.getInt("vendorNo"));
 				dto.setProductNo(rs.getInt("productNo"));
+				dto.setShortsTitle(rs.getString("shortsTitle"));
+				dto.setShortsContent(rs.getString("shortsContent"));
 				dto.setVideoFile(rs.getString("videoFile"));
 				dto.setThumbnailImg(rs.getString("thumbnailImg"));
 				dto.setShortsState(rs.getInt("shortsState"));
@@ -46,14 +48,16 @@ public class ShortsDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			String sql = "INSERT Shorts (vendorNo, productNo, videoFile, thumbnailImg, shortsState, createdAt) VALUES (?, ?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO shorts (vendorNo, productNo, shortsTitle, shortsContent, videoFile, thumbnailImg, shortsState, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getVendorNo());
 			pstmt.setInt(2, dto.getProductNo());
-			pstmt.setString(3, dto.getVideoFile());
-			pstmt.setString(4, dto.getThumbnailImg());
-			pstmt.setInt(5, dto.getShortsState());
-			pstmt.setString(6, dto.getCreatedAt());
+			pstmt.setString(3, dto.getShortsTitle());
+			pstmt.setString(4, dto.getShortsContent());
+			pstmt.setString(5, dto.getVideoFile());
+			pstmt.setString(6, dto.getThumbnailImg());
+			pstmt.setInt(7, dto.getShortsState());
+			pstmt.setString(8, dto.getCreatedAt());
 			if (pstmt.executeUpdate() > 0) flag = true;
 		} catch (Exception e) { e.printStackTrace(); } 
 		finally { pool.freeConnection(con, pstmt); }
@@ -66,15 +70,17 @@ public class ShortsDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			String sql = "UPDATE Shorts SET vendorNo = ?, productNo = ?, videoFile = ?, thumbnailImg = ?, shortsState = ?, createdAt = ? WHERE shortsNo = ?";
+			String sql = "UPDATE shorts SET vendorNo = ?, productNo = ?, shortsTitle = ?, shortsContent = ?, videoFile = ?, thumbnailImg = ?, shortsState = ?, createdAt = ? WHERE shortsNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getVendorNo());
 			pstmt.setInt(2, dto.getProductNo());
-			pstmt.setString(3, dto.getVideoFile());
-			pstmt.setString(4, dto.getThumbnailImg());
-			pstmt.setInt(5, dto.getShortsState());
-			pstmt.setString(6, dto.getCreatedAt());
-			pstmt.setInt(7, shortsNo);
+			pstmt.setString(3, dto.getShortsTitle());
+			pstmt.setString(4, dto.getShortsContent());
+			pstmt.setString(5, dto.getVideoFile());
+			pstmt.setString(6, dto.getThumbnailImg());
+			pstmt.setInt(7, dto.getShortsState());
+			pstmt.setString(8, dto.getCreatedAt());
+			pstmt.setInt(9, shortsNo);
 			if (pstmt.executeUpdate() > 0) flag = true;
 		} catch (Exception e) { e.printStackTrace(); } 
 		finally { pool.freeConnection(con, pstmt); }
@@ -87,7 +93,7 @@ public class ShortsDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			String sql = "DELETE FROM Shorts WHERE shortsNo = ?";
+			String sql = "DELETE FROM shorts WHERE shortsNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, shortsNo);
 			if (pstmt.executeUpdate() > 0) flag = true;
@@ -112,18 +118,20 @@ public class ShortsDAO {
 		return flag;
 	}
 
-	// productNo 기준으로 파일정보 및 상태 갱신 (파이썬 성공 시 사용)
+	// productNo 기준으로 파일정보 및 상태 갱신 (파이썬 자동 생성 성공 시 사용)
 	public boolean updateShortsByProductNo(ShortsDTO dto) {
 		Connection con = null; PreparedStatement pstmt = null;
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			String sql = "UPDATE shorts SET videoFile = ?, thumbnailImg = ?, shortsState = ? WHERE productNo = ?";
+			String sql = "UPDATE shorts SET videoFile = ?, thumbnailImg = ?, shortsTitle = ?, shortsContent = ?, shortsState = ? WHERE productNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, dto.getVideoFile());
 			pstmt.setString(2, dto.getThumbnailImg());
-			pstmt.setInt(3, dto.getShortsState());
-			pstmt.setInt(4, dto.getProductNo());
+			pstmt.setString(3, dto.getShortsTitle());
+			pstmt.setString(4, dto.getShortsContent());
+			pstmt.setInt(5, dto.getShortsState());
+			pstmt.setInt(6, dto.getProductNo());
 			if (pstmt.executeUpdate() > 0) flag = true;
 		} catch (Exception e) { e.printStackTrace(); } 
 		finally { pool.freeConnection(con, pstmt); }
@@ -145,6 +153,8 @@ public class ShortsDAO {
 	            dto.setShortsNo(rs.getInt("shortsNo"));
 	            dto.setVendorNo(rs.getInt("vendorNo"));
 	            dto.setProductNo(rs.getInt("productNo"));
+	            dto.setShortsTitle(rs.getString("shortsTitle"));
+				dto.setShortsContent(rs.getString("shortsContent"));
 	            dto.setVideoFile(rs.getString("videoFile"));
 	            dto.setThumbnailImg(rs.getString("thumbnailImg"));
 	            dto.setShortsState(rs.getInt("shortsState"));
@@ -155,7 +165,7 @@ public class ShortsDAO {
 	    return dto;
 	}
 	
-	// 특정 사용자의 숏폼 조회 (매핑 완성)
+	// 특정 사용자의 숏폼 목록 조회 (벤더별 숏폼 관리용)
 	public Vector<ShortsDTO> getShortsByVendor(int vendorNo) {
 	    Connection con = null; PreparedStatement pstmt = null; ResultSet rs = null;
 	    Vector<ShortsDTO> vlist = new Vector<>();
@@ -170,6 +180,8 @@ public class ShortsDAO {
 	            dto.setShortsNo(rs.getInt("shortsNo"));
 				dto.setVendorNo(rs.getInt("vendorNo"));
 				dto.setProductNo(rs.getInt("productNo"));
+				dto.setShortsTitle(rs.getString("shortsTitle"));
+				dto.setShortsContent(rs.getString("shortsContent"));
 				dto.setVideoFile(rs.getString("videoFile"));
 				dto.setThumbnailImg(rs.getString("thumbnailImg"));
 				dto.setShortsState(rs.getInt("shortsState"));
@@ -179,5 +191,25 @@ public class ShortsDAO {
 	    } catch (Exception e) { e.printStackTrace(); } 
 	    finally { pool.freeConnection(con, pstmt, rs); }
 	    return vlist;
+	}
+
+	// [로직 추가] 수동 업로드 시 영상, 썸네일, 제목, 내용, 상태를 모두 업데이트
+	public boolean updateManualShorts(ShortsDTO dto) {
+		Connection con = null; PreparedStatement pstmt = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			String sql = "UPDATE shorts SET videoFile = ?, thumbnailImg = ?, shortsTitle = ?, shortsContent = ?, shortsState = ? WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, dto.getVideoFile());
+			pstmt.setString(2, dto.getThumbnailImg());
+			pstmt.setString(3, dto.getShortsTitle());
+			pstmt.setString(4, dto.getShortsContent());
+			pstmt.setInt(5, dto.getShortsState());
+			pstmt.setInt(6, dto.getProductNo());
+			if (pstmt.executeUpdate() > 0) flag = true;
+		} catch (Exception e) { e.printStackTrace(); } 
+		finally { pool.freeConnection(con, pstmt); }
+		return flag;
 	}
 }
