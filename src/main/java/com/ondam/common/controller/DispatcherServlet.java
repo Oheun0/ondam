@@ -6,6 +6,11 @@ import java.util.Map;
 import com.ondam.notification.controller.NotificationController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.user.controller.LoginController;
+import com.ondam.user.controller.SignupCompleteController;
+import com.ondam.user.controller.SignupStartController;
+import com.ondam.user.controller.SignupStep1BasicController;
+import com.ondam.user.controller.SignupStep2AddressController;
+import com.ondam.user.controller.SignupStep3PreferenceController;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,6 +31,11 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/notification", new NotificationController());
         handlerMapping.put("/main", new MainController());
         handlerMapping.put("/category", new CategoryController());
+        handlerMapping.put("/signup-start", new SignupStartController());
+        handlerMapping.put("/signup-step1-basic", new SignupStep1BasicController());
+        handlerMapping.put("/signup-step2-address", new SignupStep2AddressController());
+        handlerMapping.put("/signup-step3-preference", new SignupStep3PreferenceController());
+        handlerMapping.put("/signup-complete", new SignupCompleteController());
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 

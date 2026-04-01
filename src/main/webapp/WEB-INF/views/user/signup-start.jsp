@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>온담 회원가입</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
 </head>
 <body>
   <div class="auth-page">
@@ -20,10 +20,10 @@
 
         <div class="btn-row">
           <button type="button" class="btn btn-kakao"
-                  onclick="location.href='<%=request.getContextPath()%>/user/kakaoLogin.do'">
-                  <img src="<%=request.getContextPath()%>/images/kakao.png" 
-				       alt="카카오 로고" 
-				       class="kakao-icon">
+                  onclick="location.href='${pageContext.request.contextPath}/kakao-login'">
+                  <img src="${pageContext.request.contextPath}/images/kakao.png" 
+                       alt="카카오 로고" 
+                       class="kakao-icon">
 				
 				  <span>카카오로 빠르게 시작하기</span>
           </button>
@@ -32,12 +32,12 @@
         <div class="divider">또는</div>
 
         <button type="button" class="btn btn-primary"
-                onclick="location.href='<%=request.getContextPath()%>/user/signupStep1.do'">
+                onclick="location.href='${pageContext.request.contextPath}/signup-step1-basic'">
           일반 회원가입
         </button>
 
         <div class="quick-links">
-          <a href="<%=request.getContextPath()%>/user/login.do">이미 계정이 있어요</a>
+          <a href="${pageContext.request.contextPath}/login">이미 계정이 있어요</a>
         </div>
       </div>
 

@@ -47,4 +47,37 @@ public class UserAddressDAO {
 		}
 		return list;
 	}
+	
+	public int insertUserAddress(Connection con, UserAddressDTO address) {
+        int result = 0;
+        PreparedStatement pstmt = null;
+        
+        String sql = "insert into userAddress (userNo, addressName, isDefault, receiverName, "
+                   + "receiverTel, userAddress, userDetailAddress, userZipcode) "
+                   + "values (?, ?, ?, ?, ?, ?, ?, ?)";
+                   
+        try {
+            pstmt = con.prepareStatement(sql);
+            
+            pstmt.setInt(1, address.getUserNo());
+            pstmt.setString(2, address.getAddressName());
+            pstmt.setInt(3, address.getIsDefault());
+            pstmt.setString(4, address.getReceiverName());
+            pstmt.setString(5, address.getReceiverTel());
+            pstmt.setString(6, address.getUserAddress());
+            pstmt.setString(7, address.getUserDetailAddress());
+            pstmt.setString(8, address.getUserZipcode());
+            
+            result = pstmt.executeUpdate();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { 
+                if (pstmt != null) pstmt.close(); 
+            } catch (Exception e) {}
+        }
+        
+        return result;
+    }
 }

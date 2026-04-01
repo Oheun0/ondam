@@ -31,7 +31,7 @@
 
         <div class="divider">또는</div>
 
-        <form action="<%=request.getContextPath()%>/user/loginProc.do" method="post">
+        <form action="${pageContext.request.contextPath}/login" method="post">
           <div class="form-group">
             <label class="form-label" for="userId">아이디</label>
             <input type="text" id="userId" name="userId" class="input" placeholder="아이디를 입력하세요">
@@ -46,11 +46,11 @@
         </form>
 
         <div class="quick-links">
-          <a href="<%=request.getContextPath()%>/user/findId.do">아이디 찾기</a>
+          <a href="${pageContext.request.contextPath}/find-id">아이디 찾기</a>
           <span>|</span>
-          <a href="<%=request.getContextPath()%>/user/findPwd.do">비밀번호 찾기</a>
+         <a href="${pageContext.request.contextPath}/find-pwd">비밀번호 찾기</a>
           <span>|</span>
-          <a href="<%=request.getContextPath()%>/user/signupStart.do">회원가입</a>
+          <a href="${pageContext.request.contextPath}/signup-start">회원가입</a>
         </div>
       </div>
 
