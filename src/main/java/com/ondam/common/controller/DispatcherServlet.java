@@ -28,6 +28,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/main", new MainController());
         handlerMapping.put("/category", new CategoryController());
         handlerMapping.put("/family", new FamilyGroupController());
+        handlerMapping.put("/mock-login", new MockLoginController());
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 
