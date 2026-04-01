@@ -6,7 +6,8 @@
 <title>회원가입 - 기본 정보</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
-<script defer src="${pageContext.request.contextPath}/js/auth.js"></script>
+<script>const ctxPath = "${pageContext.request.contextPath}";</script>
+<script defer src="${pageContext.request.contextPath}/js/auth.js?ver=3"></script>
 </head>
 
 <body>
@@ -18,73 +19,67 @@
 				<h1 class="page-title">기본 정보를 알려주세요</h1>
 				<p class="page-desc">간단한 정보부터 차근차근 입력해볼게요</p>
 
-				<form action="${pageContext.request.contextPath}/signup-step1-basic"
-					method="post">
+				<form action="${pageContext.request.contextPath}/signup-step1-basic" method="post" onsubmit="return validate();">
 
-					<!-- 이름 -->
 					<div class="form-group">
-						<label class="form-label">이름</label> <input type="text"
-							name="userName" class="input" placeholder="이름을 입력하세요">
+						<label class="form-label">이름</label> 
+						<input type="text" name="userName" id="userName" class="input" placeholder="이름을 입력하세요">
+						<span class="error-msg" id="err-userName"></span>
 					</div>
 
-					<!-- 닉네임 -->
 					<div class="form-group">
-						<label class="form-label">닉네임</label> <input type="text"
-							name="userNick" class="input" placeholder="부를 이름을 입력하세요">
+						<label class="form-label">닉네임</label> 
+						<input type="text" name="userNick" id="userNick" class="input" placeholder="부를 이름을 입력하세요">
+						<span class="error-msg" id="err-userNick"></span>
 					</div>
 
-					<!-- 아이디 + 중복확인 -->
 					<div class="form-group">
 						<label class="form-label">아이디</label>
 						<div class="input-row">
-							<input type="text" name="userId" class="input"
-								placeholder="아이디 입력">
-							<button type="button" class="btn-check" style="max-width: 110px;">
+							<input type="text" name="userId" id="userId" class="input" placeholder="아이디 입력">
+							<button type="button" class="btn-check" style="max-width: 110px;" onclick="checkUserId()">
 						      중복확인
 						    </button>
 						</div>
 						<p id="idCheckMessage" class="check-message" style="display:none;"></p>
+						<span class="error-msg" id="err-userId"></span>
 					</div>
 
-					<!-- 비밀번호 -->
 					<div class="form-group">
-						<label class="form-label">비밀번호</label> <input type="password"
-							name="userPwd" class="input" placeholder="비밀번호 입력">
+						<label class="form-label">비밀번호</label> 
+						<input type="password" name="userPwd" id="userPwd" class="input" placeholder="비밀번호 입력">
+						<span class="error-msg" id="err-userPwd"></span>
 					</div>
 
-					<!-- 비밀번호 확인 -->
 					<div class="form-group">
-						<label class="form-label">비밀번호 확인</label> <input type="password"
-							name="userPwdCheck" class="input" placeholder="한 번 더 입력해주세요">
+						<label class="form-label">비밀번호 확인</label> 
+						<input type="password" name="userPwdCheck" id="userPwdCheck" class="input" placeholder="한 번 더 입력해주세요">
+						<span class="error-msg" id="err-userPwdCheck"></span>
 					</div>
 
-					<!-- 휴대폰 -->
 					<div class="form-group">
 						<label class="form-label">휴대폰 번호</label>
-
 						<div class="input-row">
-							<select class="select" style="max-width: 110px;" name="phone1">
+							<select class="select" style="max-width: 110px;" name="phone1" id="phone1">
 								<option selected>010</option>
 								<option>011</option>
 								<option>016</option>
 								<option>017</option>
 								<option>018</option>
 								<option>019</option>
-							</select> <input type="text" name="phone2" class="input"
-								placeholder="1234"> <input type="text" name="phone3"
-								class="input" placeholder="5678">
+							</select> 
+							<input type="text" name="phone2" id="phone2" class="input" placeholder="1234"> 
+							<input type="text" name="phone3" id="phone3" class="input" placeholder="5678">
 						</div>
+						<span class="error-msg" id="err-phone"></span>
 					</div>
 
-					<!-- 이메일 -->
 					<div class="form-group">
 						<label class="form-label">이메일</label>
-
 						<div class="input-row">
-							<input type="text" name="email1" class="input"
-								placeholder="ondam"> <span
-								style="display: flex; align-items: center;">@</span> <select
-								class="select" name="email2" id="emailSelect">
+							<input type="text" name="email1" id="email1" class="input" placeholder="ondam"> 
+							<span style="display: flex; align-items: center;">@</span> 
+							<select class="select" name="email2" id="emailSelect">
 								<option value="">선택하기</option>
 								<option value="naver.com">naver.com</option>
 								<option value="gmail.com">gmail.com</option>
@@ -93,48 +88,36 @@
 								<option value="nate.com">nate.com</option>
 							</select>
 						</div>
+						<span class="error-msg" id="err-email"></span>
 					</div>
 
-					<!-- 생년월일 -->
 					<div class="form-group">
 						<label class="form-label">생년월일</label>
-
 						<div class="input-row">
-							<select class="select" name="birthYear">
+							<select class="select" name="birthYear" id="birthYear">
 								<option>년도</option>
-								<%
-								for (int i = 2024; i >= 1930; i--) {
-								%>
+								<% for (int i = 2024; i >= 1930; i--) { %>
 								<option value="<%=i%>"><%=i%></option>
-								<%
-								}
-								%>
-							</select> <select class="select" name="birthMonth">
+								<% } %>
+							</select> 
+							<select class="select" name="birthMonth" id="birthMonth">
 								<option>월</option>
-								<%
-								for (int i = 1; i <= 12; i++) {
-								%>
+								<% for (int i = 1; i <= 12; i++) { %>
 								<option value="<%=i%>"><%=i%></option>
-								<%
-								}
-								%>
-							</select> <select class="select" name="birthDay">
+								<% } %>
+							</select> 
+							<select class="select" name="birthDay" id="birthDay">
 								<option>일</option>
-								<%
-								for (int i = 1; i <= 31; i++) {
-								%>
+								<% for (int i = 1; i <= 31; i++) { %>
 								<option value="<%=i%>"><%=i%></option>
-								<%
-								}
-								%>
+								<% } %>
 							</select>
 						</div>
+						<span class="error-msg" id="err-birth"></span>
 					</div>
 
-					<!-- 성별 -->
 					<div class="form-group">
 						<label class="form-label">성별</label>
-
 						<div class="option-grid">
 							<label class="option-card active"> <input type="radio"
 								name="userGender" value="0" checked> 선택 안 함
@@ -146,12 +129,9 @@
 						</div>
 					</div>
 
-					<!-- 가입 이유 -->
 					<div class="form-group">
 						<label class="form-label">온담을 사용하는 이유</label>
-
 						<div class="option-grid">
-
 							<label class="option-card active"> <input type="radio"
 								name="joinReason" value="1" checked> 내 옷을 직접 고르려고요
 							</label> <label class="option-card"> <input type="radio"
@@ -161,11 +141,9 @@
 							</label> <label class="option-card"> <input type="radio"
 								name="joinReason" value="4"> 추천을 받아보고 싶어요
 							</label>
-
 						</div>
 					</div>
 
-					<!-- 버튼 -->
 					<div class="btn-row">
 						<button type="button" class="btn btn-outline"
 							onclick="history.back()">이전</button>

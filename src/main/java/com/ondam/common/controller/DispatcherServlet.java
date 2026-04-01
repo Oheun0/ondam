@@ -20,6 +20,7 @@ import com.ondam.user.controller.SignupStep0BasicController;
 import com.ondam.user.controller.SignupStep1BasicController;
 import com.ondam.user.controller.SignupStep2AddressController;
 import com.ondam.user.controller.SignupStep3PreferenceController;
+import com.ondam.user.controller.UserIdCheckController;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -52,6 +53,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/signup-complete", new SignupCompleteController());
         handlerMapping.put("/kakao-login", new KakaoLoginController());
         handlerMapping.put("/kakao-callback", new KakaoCallbackController());
+        handlerMapping.put("/check-userid", new UserIdCheckController());
         handlerMapping.put("/coupon", new CouponController());
         handlerMapping.put("/gift", new GiftController());        
         
