@@ -3,6 +3,7 @@ package com.ondam.user.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.ondam.common.DBConnectionMgr;
@@ -42,7 +43,6 @@ public class UserDAO {
 				user.setUserBirth(rs.getString("userBirth"));
 				user.setUserGender(rs.getInt("userGender"));
 				user.setUserHeight(rs.getInt("userHeight"));
-				user.setUserPreferColor(rs.getString("userPreferColor"));
 				user.setUserProfileImg(rs.getString("userProfileImg"));
 				user.setJoinReason(rs.getInt("joinReason"));
 				user.setIsActive(rs.getInt("isActive"));
@@ -65,14 +65,12 @@ public class UserDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
-        // 작성하신 컬럼명 형식(camelCase)에 맞춰 쿼리를 작성했습니다.
         String sql = "insert into user (userId, userPwd, userName, userNick, userPhoneNumber, "
-                   + "userEmail, userBirth, userGender, userHeight, userWeight, userPreferColor, "
+                   + "userEmail, userBirth, userGender, userHeight, userWeight, "
                    + "joinReason, preferPayment, signupStep, signUpCompleted) "
-                   + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                   + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                    
         try {
-            // INSERT 후 자동 생성된 PK를 가져오기 위한 세팅
             pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             
             pstmt.setString(1, user.getUserId());
@@ -84,12 +82,11 @@ public class UserDAO {
             pstmt.setString(7, user.getUserBirth());
             pstmt.setInt(8, user.getUserGender());
             pstmt.setInt(9, user.getUserHeight());
-            pstmt.setInt(10, user.getUserWeight());
-            pstmt.setString(11, user.getUserPreferColor());
-            pstmt.setInt(12, user.getJoinReason());
-            pstmt.setInt(13, user.getPreferPayment());
-            pstmt.setInt(14, user.getSignupStep());
-            pstmt.setInt(15, user.getSignUpCompleted());
+            pstmt.setInt(10, user.getUserWeight());  
+            pstmt.setInt(11, user.getJoinReason());
+            pstmt.setInt(12, user.getPreferPayment());
+            pstmt.setInt(13, user.getSignupStep());
+            pstmt.setInt(14, user.getSignUpCompleted());
             
             pstmt.executeUpdate();
             
@@ -103,7 +100,40 @@ public class UserDAO {
             try { if (rs != null) rs.close(); } catch (Exception e) {}
             try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
         }
-        
         return userNo;
     }
+	
+	public int updateUserForSignup(Connection con, UserDTO user) {
+	    int result = 0;
+	    PreparedStatement pstmt = null;
+
+	    String sql = "UPDATE user SET userNick=?, userPhoneNumber = ?, userEmail = ?, userBirth = ?, "
+	               + "userGender = ?, userHeight = ?, userWeight = ?, "
+	               + "joinReason = ?, preferPayment = ?, signupStep = ?, signUpCompleted = ? "
+	               + "WHERE userId = ?";
+	    try {
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, user.getUserNick());
+	        pstmt.setString(2, user.getUserPhoneNumber());
+	        pstmt.setString(3, user.getUserEmail());
+	        pstmt.setString(4, user.getUserBirth());
+	        pstmt.setInt(5, user.getUserGender());
+	        pstmt.setInt(6, user.getUserHeight());
+	        pstmt.setInt(7, user.getUserWeight());
+	        pstmt.setInt(8, user.getJoinReason());
+	        pstmt.setInt(9, user.getPreferPayment());
+	        pstmt.setInt(10, user.getSignupStep());
+	        pstmt.setInt(11, user.getSignUpCompleted());
+	        pstmt.setString(12, user.getUserId());
+
+	        result = pstmt.executeUpdate();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+	    }
+
+	    return result;
+	}
 }

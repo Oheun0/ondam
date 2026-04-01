@@ -1,7 +1,62 @@
 document.addEventListener("DOMContentLoaded", function () {
   bindSelectableCards();
   bindUserIdInputReset();
+  bindErrorReset();
 });
+
+function validate() {
+  const checkList = [
+    { id: "userNick", errId: "err-userNick", msg: "사용하실 닉네임을 입력해주세요." },
+    { id: "phone2", errId: "err-phone", msg: "휴대폰 번호를 모두 입력해주세요." },
+    { id: "phone3", errId: "err-phone", msg: "휴대폰 번호를 모두 입력해주세요." },
+    { id: "email1", errId: "err-email", msg: "이메일 주소를 입력해주세요." },
+    { id: "email2", errId: "err-email", msg: "이메일 도메인을 선택해주세요." }
+  ];
+
+  for (let item of checkList) {
+    const target = document.getElementById(item.id);
+    const errMsg = document.getElementById(item.errId);
+
+    if (!target) continue;
+
+    if (target.value.trim() === "" || target.value === "년도" || target.value === "월" || target.value === "일") {
+
+      hideAllErrors();
+
+      if (errMsg) {
+        errMsg.textContent = item.msg;
+        errMsg.style.display = "block";
+      }
+      target.classList.add("error-border");
+
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      setTimeout(() => { target.focus(); }, 500);
+
+      return false;
+    }
+  }
+  return true;
+}
+
+function hideAllErrors() {
+  document.querySelectorAll(".error-msg").forEach(el => el.style.display = "none");
+  document.querySelectorAll(".input, .select").forEach(el => el.classList.remove("error-border"));
+}
+
+function bindErrorReset() {
+  const inputs = document.querySelectorAll(".input, .select");
+  inputs.forEach(input => {
+    input.addEventListener("input", function() {
+      this.classList.remove("error-border");
+      const group = this.closest(".form-group");
+      if (group) {
+        const msg = group.querySelector(".error-msg");
+        if (msg) msg.style.display = "none";
+      }
+    });
+  });
+}
 
 function bindSelectableCards() {
   var optionCards = document.querySelectorAll(".option-card");

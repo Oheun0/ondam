@@ -13,6 +13,7 @@ import com.ondam.user.controller.KakaoLoginController;
 import com.ondam.user.controller.LoginController;
 import com.ondam.user.controller.SignupCompleteController;
 import com.ondam.user.controller.SignupStartController;
+import com.ondam.user.controller.SignupStep0BasicController;
 import com.ondam.user.controller.SignupStep1BasicController;
 import com.ondam.user.controller.SignupStep2AddressController;
 import com.ondam.user.controller.SignupStep3PreferenceController;
@@ -41,6 +42,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/family", new FamilyGroupController());
         handlerMapping.put("/mock-login", new MockLoginController());
         handlerMapping.put("/signup-start", new SignupStartController());
+        handlerMapping.put("/signup-step0-basic", new SignupStep0BasicController());
         handlerMapping.put("/signup-step1-basic", new SignupStep1BasicController());
         handlerMapping.put("/signup-step2-address", new SignupStep2AddressController());
         handlerMapping.put("/signup-step3-preference", new SignupStep3PreferenceController());

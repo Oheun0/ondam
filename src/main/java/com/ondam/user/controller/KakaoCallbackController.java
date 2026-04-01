@@ -42,16 +42,16 @@ public class KakaoCallbackController implements Controller {
 
             if (loginUser != null) {
                 HttpSession session = request.getSession();
+                session.setAttribute("signupUser", loginUser);
                 session.setAttribute("loginUser", loginUser);
                 
-                return "redirect:/main";
+                return "redirect:/signup-step0-basic";
             }
         }
         return "redirect:/login";
     }
 
     // --- 통신 메서드 ---
-
     private String getAccessToken(String code) throws Exception {
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
         URL url = new URL(tokenUrl);

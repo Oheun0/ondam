@@ -7,6 +7,7 @@ import com.ondam.common.controller.Controller;
 import com.ondam.user.dto.UserAddressDTO;
 import com.ondam.user.dto.UserDTO;
 import com.ondam.user.dto.UserHobbyDTO;
+import com.ondam.user.dto.UserPreferColorDTO;
 import com.ondam.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,17 +43,21 @@ public class SignupStep3PreferenceController implements Controller {
             signupUser.setUserWeight(parseInt(request.getParameter("userWeight"), 0));
             signupUser.setPreferPayment(parseInt(request.getParameter("preferPayment"), 0));
 
-            String[] colors = request.getParameterValues("userPreferColor");
-            if (colors != null) {
-                signupUser.setUserPreferColor(String.join(",", colors));
-            }
-
             signupUser.setSignupStep(3);
             signupUser.setSignUpCompleted(1);
+            
+            String[] colors = request.getParameterValues("userPreferColor");
+            List<UserPreferColorDTO> colorList = new ArrayList<>();
+            if (colors != null) {
+                for (String color : colors) {
+                    UserPreferColorDTO colorDTO = new UserPreferColorDTO();
+                    colorDTO.setPreferColor(color);
+                    colorList.add(colorDTO);
+                }
+            }
 
             String[] hobbies = request.getParameterValues("userHobby");
             List<UserHobbyDTO> hobbyList = new ArrayList<>();
-            
             if (hobbies != null) {
                 for (String hobby : hobbies) {
                     UserHobbyDTO hobbyDTO = new UserHobbyDTO();
@@ -61,7 +66,7 @@ public class SignupStep3PreferenceController implements Controller {
                 }
             }
 
-            int result = userService.insertCompleteSignup(signupUser, signupAddress, hobbyList);
+            int result = userService.insertCompleteSignup(signupUser, signupAddress, hobbyList, colorList);
 
             if (result > 0) {
                 session.removeAttribute("signupUser");
