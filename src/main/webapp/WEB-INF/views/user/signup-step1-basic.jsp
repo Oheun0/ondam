@@ -5,8 +5,8 @@
 <meta charset="UTF-8">
 <title>회원가입 - 기본 정보</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
-<script defer src="<%=request.getContextPath()%>/js/auth.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
+<script defer src="${pageContext.request.contextPath}/js/auth.js"></script>
 </head>
 
 <body>
@@ -18,7 +18,7 @@
 				<h1 class="page-title">기본 정보를 알려주세요</h1>
 				<p class="page-desc">간단한 정보부터 차근차근 입력해볼게요</p>
 
-				<form action="<%=request.getContextPath()%>/user/signupStep1Proc.do"
+				<form action="${pageContext.request.contextPath}/signup-step1-basic"
 					method="post">
 
 					<!-- 이름 -->

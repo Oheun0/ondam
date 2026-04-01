@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>회원가입 - 배송 정보</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
 </head>
 <body>
   <div class="auth-page">
@@ -16,7 +16,7 @@
         <h1 class="page-title">받으실 주소를 알려주세요</h1>
         <p class="page-desc">상품을 받을 주소를 입력해주세요</p>
 
-        <form action="<%=request.getContextPath()%>/user/signupStep2Proc.do" method="post">
+        <form action="${pageContext.request.contextPath}/signup-step2-address" method="post">
 
           <!-- 상단 체크 옵션 -->
           <div class="form-group">
