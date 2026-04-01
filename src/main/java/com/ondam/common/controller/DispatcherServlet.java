@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.ondam.notification.controller.NotificationController;
 import com.ondam.product.controller.CategoryController;
+import com.ondam.user.controller.KakaoCallbackController;
+import com.ondam.user.controller.KakaoLoginController;
 import com.ondam.user.controller.LoginController;
 import com.ondam.user.controller.SignupCompleteController;
 import com.ondam.user.controller.SignupStartController;
@@ -36,6 +38,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/signup-step2-address", new SignupStep2AddressController());
         handlerMapping.put("/signup-step3-preference", new SignupStep3PreferenceController());
         handlerMapping.put("/signup-complete", new SignupCompleteController());
+        handlerMapping.put("/kakao-login", new KakaoLoginController());
+        handlerMapping.put("/kakao-callback", new KakaoCallbackController());
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 

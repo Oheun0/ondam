@@ -21,7 +21,7 @@
 
       <div class="auth-card">
         <button type="button" class="btn btn-kakao"
-                onclick="location.href='<%=request.getContextPath()%>/user/kakaoLogin.do'">
+                onclick="location.href='${pageContext.request.contextPath}/kakao-login'">
           <img src="<%=request.getContextPath()%>/images/kakao.png" 
 		       alt="카카오 로고" 
 		       class="kakao-icon">

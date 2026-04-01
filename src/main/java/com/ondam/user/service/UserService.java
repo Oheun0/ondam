@@ -36,6 +36,44 @@ public class UserService {
 			return null;
 		}
 		
+		//카카오 로그인
+		public UserDTO loginKakao(String kakaoId, String nickname) {
+	        UserDTO user = userDAO.getUserId(kakaoId);
+
+	        if (user == null) {
+	            DBConnectionMgr pool = null;
+	            Connection conn = null;
+	            
+	            try {
+	                pool = DBConnectionMgr.getInstance();
+	                conn = pool.getConnection();
+	                conn.setAutoCommit(false);
+	                
+	                UserDTO newUser = new UserDTO();
+	                newUser.setUserId(kakaoId);
+	                newUser.setUserName(nickname);
+
+	                int result = userDAO.insertUser(conn, newUser);
+
+	                if (result > 0) {
+	                	conn.commit();
+	                    user = userDAO.getUserId(kakaoId);
+	                }else {
+	                	conn.rollback();
+	                }
+	                
+	            } catch (Exception e) {
+	            	try { if(conn != null) conn.rollback(); } catch(Exception ex) {}
+	                e.printStackTrace();
+	            } finally {
+	                if (pool != null && conn != null) {
+	                    pool.freeConnection(conn);
+	                }
+	            }
+	        }
+	        return user;
+	    }
+		
 		/*회원가입 로직 처리, user, userAddress, userhobby를 삽입*/
 		public int insertCompleteSignup(UserDTO user, UserAddressDTO address, List<UserHobbyDTO> hobbyList) {
 	        DBConnectionMgr pool = null;
