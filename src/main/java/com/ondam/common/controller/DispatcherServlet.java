@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.user.controller.KakaoCallbackController;
@@ -33,6 +34,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/notification", new NotificationController());
         handlerMapping.put("/main", new MainController());
         handlerMapping.put("/category", new CategoryController());
+        handlerMapping.put("/family", new FamilyGroupController());
+        handlerMapping.put("/mock-login", new MockLoginController());
         handlerMapping.put("/signup-start", new SignupStartController());
         handlerMapping.put("/signup-step1-basic", new SignupStep1BasicController());
         handlerMapping.put("/signup-step2-address", new SignupStep2AddressController());

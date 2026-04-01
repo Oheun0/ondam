@@ -14,6 +14,10 @@ public class AdminService {
 	public AdminService() {
 		this.dao = new AdminDAO();
 	}
+	
+	public AdminDTO getAdminInfo(String adminId) {
+	    return dao.getAdminById(adminId);
+	}
 
 	public boolean loginAdmin(String adminId, String inputPwd) {
          AdminDTO admin = dao.getAdminById(adminId);
@@ -39,7 +43,7 @@ public class AdminService {
     }
 
 	public boolean modifyAdmin(AdminDTO dto, int adminNo) {
-        // 수정 시에도 비밀번호가 변경되었다면 암호화 로직이 들어가야 합니다.
+        // 수정 시에도 비밀번호가 변경되었다면 암호화 로직 사용
         if (dto.getAdminPwd() != null && !dto.getAdminPwd().isEmpty()) {
             dto.setAdminPwd(BCrypt.hashpw(dto.getAdminPwd(), BCrypt.gensalt()));
         }
