@@ -13,8 +13,12 @@ public class FamilyMemberService {
 		this.dao = new FamilyMemberDAO();
 	}
 
-	public Vector<FamilyMemberDTO> getFamilyMemberList() {
-		return dao.getFamilyMember();
+	public FamilyMemberDTO getFamilyMemberByUserNo(int userNo) {
+	    return dao.getFamilyMemberByUserNo(userNo);
+	}
+	
+	public Vector<FamilyMemberDTO> getFamilyMembersByFamilyNo(int familyNo) {
+	    return dao.getFamilyMembersByFamilyNo(familyNo);
 	}
 
 	public boolean createFamilyMember(FamilyMemberDTO dto) {
@@ -23,6 +27,10 @@ public class FamilyMemberService {
 
 	public boolean modifyFamilyMember(FamilyMemberDTO dto, int familyMemberNo) {
 		return dao.updateFamilyMember(dto, familyMemberNo);
+	}
+	
+	public boolean changeFamilyAuth(int familyMemberNo, int familyAuth) {
+	    return dao.updateFamilyAuth(familyMemberNo, familyAuth);
 	}
 
 	public boolean removeFamilyMember(int familyMemberNo) {
