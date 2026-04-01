@@ -8,6 +8,7 @@ import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
 import com.ondam.product.controller.CategoryController;
+import com.ondam.product.controller.ProductController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.KakaoCallbackController;
@@ -15,6 +16,7 @@ import com.ondam.user.controller.KakaoLoginController;
 import com.ondam.user.controller.LoginController;
 import com.ondam.user.controller.SignupCompleteController;
 import com.ondam.user.controller.SignupStartController;
+import com.ondam.user.controller.SignupStep0BasicController;
 import com.ondam.user.controller.SignupStep1BasicController;
 import com.ondam.user.controller.SignupStep2AddressController;
 import com.ondam.user.controller.SignupStep3PreferenceController;
@@ -43,6 +45,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/family", new FamilyGroupController());
         handlerMapping.put("/mock-login", new MockLoginController());
         handlerMapping.put("/signup-start", new SignupStartController());
+        handlerMapping.put("/signup-step0-basic", new SignupStep0BasicController());
         handlerMapping.put("/signup-step1-basic", new SignupStep1BasicController());
         handlerMapping.put("/signup-step2-address", new SignupStep2AddressController());
         handlerMapping.put("/signup-step3-preference", new SignupStep3PreferenceController());
@@ -52,6 +55,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/coupon", new CouponController());
         handlerMapping.put("/gift", new GiftController());        
         
+        handlerMapping.put("/product", new ProductController());
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 

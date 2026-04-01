@@ -157,8 +157,19 @@ public class ProductDAO {
 			if (rs.next()) {
 				dto = new ProductDTO();
 				dto.setProductNo(rs.getInt("productNo"));
-				dto.setProductName(rs.getString("productName"));
-				// 필요한 필드만 세팅하거나 전체 세팅
+	            dto.setVendorNo(rs.getInt("vendorNo"));
+	            dto.setCategoryNo(rs.getInt("categoryNo"));
+	            dto.setProductName(rs.getString("productName"));
+	            dto.setProductBrand(rs.getString("productBrand"));
+	            dto.setProductEx(rs.getString("productEx"));
+	            dto.setProductPrice(rs.getInt("productPrice"));
+	            dto.setProductOriginPrice(rs.getInt("productOriginPrice"));
+	            dto.setProductMaterial(rs.getString("productMaterial"));
+	            dto.setProductPattern(rs.getString("productPattern"));
+	            dto.setProductFit(rs.getString("productFit"));
+	            dto.setProductThickness(rs.getString("productThickness"));
+	            dto.setProductSeason(rs.getString("productSeason"));
+	            dto.setProductState(rs.getInt("productState"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

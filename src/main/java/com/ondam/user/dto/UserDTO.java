@@ -12,7 +12,6 @@ public class UserDTO {
 	private int userGender;
 	private int userHeight;
 	private int userWeight;
-	private String userPreferColor;
 	private String userProfileImg;
 	private int joinReason;
 	private int isActive;
@@ -20,7 +19,6 @@ public class UserDTO {
 	private int preferPayment;
 	private int signupStep;
 	private int signUpCompleted;
-	
 	
 	public int getUserNo() {
 		return userNo;
@@ -87,12 +85,6 @@ public class UserDTO {
 	}
 	public void setUserWeight(int userWeight) {
 		this.userWeight = userWeight;
-	}
-	public String getUserPreferColor() {
-		return userPreferColor;
-	}
-	public void setUserPreferColor(String userPreferColor) {
-		this.userPreferColor = userPreferColor;
 	}
 	public String getUserProfileImg() {
 		return userProfileImg;

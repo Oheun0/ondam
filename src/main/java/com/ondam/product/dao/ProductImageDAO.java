@@ -114,5 +114,33 @@ public class ProductImageDAO {
 		}
 		return flag;
 	}
-}
 
+	// 특정 상품의 이미지 목록 (imgOrder 순)
+	public Vector<ProductImageDTO> getByProductNo(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<ProductImageDTO> vlist = new Vector<>();
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT * FROM productimage WHERE productNo = ? ORDER BY imgOrder ASC";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ProductImageDTO dto = new ProductImageDTO();
+				dto.setProductImgNo(rs.getInt("productImgNo"));
+				dto.setProductNo(rs.getInt("productNo"));
+				dto.setImgFile(rs.getString("imgFile"));
+				dto.setImgType(rs.getInt("imgType"));
+				dto.setImgOrder(rs.getInt("imgOrder"));
+				vlist.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
+}
