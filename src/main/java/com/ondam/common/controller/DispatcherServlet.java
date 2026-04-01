@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
 import com.ondam.product.controller.CategoryController;
+import com.ondam.product.controller.ProductController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.KakaoCallbackController;
@@ -49,6 +50,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/signup-complete", new SignupCompleteController());
         handlerMapping.put("/kakao-login", new KakaoLoginController());
         handlerMapping.put("/kakao-callback", new KakaoCallbackController());
+        handlerMapping.put("/product", new ProductController());
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 
