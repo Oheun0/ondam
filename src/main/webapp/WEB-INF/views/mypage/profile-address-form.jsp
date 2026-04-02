@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%-- 🚩 1. JSTL 태그 라이브러리 추가 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <% request.setAttribute("bottomNav", "mypage"); %>
 <!DOCTYPE html>
@@ -77,7 +76,6 @@
                     <div class="address-inline-row">
                         <input type="text" id="userZipcode" name="userZipcode" class="input-box"
                                value="${addrInfo.userZipcode}" placeholder="우편번호" readonly>
-                        <%-- 🚩 클릭 시 하단에 작성한 execDaumPostcode 함수 실행 --%>
                         <button type="button" class="zip-lookup-btn" onclick="execDaumPostcode()">우편번호 조회</button>
                     </div>
                 </div>
