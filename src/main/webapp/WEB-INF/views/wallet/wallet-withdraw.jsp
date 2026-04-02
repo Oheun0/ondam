@@ -27,7 +27,7 @@
             <!-- 뒤로가기 -->
             <div class="wallet-top">
                 <a href="${pageContext.request.contextPath}/wallet/wallet-manage.jsp" class="back-btn">
-                    <span class="material-icons">chevron_left</span>
+                    <span class="material-icons">arrow_back_ios</span>
                     <span>뒤로가기</span>
                 </a>
             </div>

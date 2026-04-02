@@ -10,6 +10,8 @@ import com.ondam.notification.controller.NotificationController;
 import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
+import com.ondam.review.controller.ReviewController;
+import com.ondam.review.controller.ReviewImageController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.FindIdController;
@@ -66,6 +68,9 @@ public class DispatcherServlet extends HttpServlet {
         
         handlerMapping.put("/product", new ProductController());
         handlerMapping.put("/poke", new PokeController());
+        handlerMapping.put("/review", new ReviewController());
+        handlerMapping.put("/reviewImage", new ReviewImageController());
+        
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 
