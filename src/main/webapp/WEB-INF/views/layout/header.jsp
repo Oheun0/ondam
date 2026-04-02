@@ -17,8 +17,10 @@
 			   class="icon-btn badge-wrap" 
 			   aria-label="알림 보기">
                 <span class="material-icons-outlined">notifications</span>
-                <span class="badge">2</span>
-            </a>
+                <c:if test="${sessionScope.unreadCount > 0}">
+					<span class="badge">${sessionScope.unreadCount}</span>
+				</c:if>
+			</a>
             <a href="${pageContext.request.contextPath}/cart" class="icon-btn badge-wrap" aria-label="장바구니 보기">
                 <span class="material-icons-outlined">shopping_cart</span>
                 <span class="badge">1</span>

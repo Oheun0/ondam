@@ -40,4 +40,12 @@ public class NotificationService {
 	public boolean markOneRead(int notificationNo) {
 	    return dao.markOneRead(notificationNo);
 	}
+	
+	public NotificationDTO getNotificationByNo(int notificationNo) {
+	    return dao.getByNotificationNo(notificationNo);
+	}
+	
+	public int getUnreadCount(int userNo) {
+	    return dao.getUnreadCount(userNo);
+	}
 }

@@ -10,13 +10,13 @@ public class PokeDTO {
     private String pokeMsg;
     private int sendState;
     private String sendDate;
-    private int connectedOrderNo;
+    private Integer connectedOrderNo;
 
     public PokeDTO() {}
 
     public PokeDTO(int pokeNo, int productNo, int senderNo, int receiverNo,
                    int familyNo, String pokeMsg, int sendState,
-                   String sendDate, int connectedOrderNo) {
+                   String sendDate, Integer connectedOrderNo) {
         this.pokeNo = pokeNo;
         this.productNo = productNo;
         this.senderNo = senderNo;
@@ -92,11 +92,11 @@ public class PokeDTO {
         this.sendDate = sendDate;
     }
 
-    public int getConnectedOrderNo() {
+    public Integer getConnectedOrderNo() {
         return connectedOrderNo;
     }
 
-    public void setConnectedOrderNo(int connectedOrderNo) {
+    public void setConnectedOrderNo(Integer connectedOrderNo) {
         this.connectedOrderNo = connectedOrderNo;
     }
 }

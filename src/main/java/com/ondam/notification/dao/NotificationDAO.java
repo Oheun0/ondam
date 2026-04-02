@@ -121,61 +121,115 @@ public class NotificationDAO {
 		}
 		return flag;
 	}
-	
+
 	// 전체 읽음 처리
 	public boolean markAllRead(int userNo) {
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    boolean flag = false;
-	    try {
-	        con = pool.getConnection();
-	        String sql = "UPDATE notification SET isRead = 1 WHERE userNo = ?";
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, userNo);
-	        if (pstmt.executeUpdate() > 0) flag = true;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        pool.freeConnection(con, pstmt);
-	    }
-	    return flag;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			String sql = "UPDATE notification SET isRead = 1 WHERE userNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, userNo);
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
 	}
 
 	// 전체 삭제
 	public boolean deleteAllNotification(int userNo) {
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    boolean flag = false;
-	    try {
-	        con = pool.getConnection();
-	        String sql = "DELETE FROM notification WHERE userNo = ?";
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, userNo);
-	        if (pstmt.executeUpdate() > 0) flag = true;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        pool.freeConnection(con, pstmt);
-	    }
-	    return flag;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			String sql = "DELETE FROM notification WHERE userNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, userNo);
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
 	}
-	
+
 	// 1건 읽음 (클릭으로)
 	public boolean markOneRead(int notificationNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			String sql = "UPDATE notification SET isRead = 1 WHERE notificationNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, notificationNo);
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
+	}
+
+	// 단건 조회
+	public NotificationDTO getByNotificationNo(int notificationNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		NotificationDTO dto = null;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT * FROM notification WHERE notificationNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, notificationNo);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				dto = new NotificationDTO();
+				dto.setNotificationNo(rs.getInt("notificationNo"));
+				dto.setUserNo(rs.getInt("userNo"));
+				dto.setNotificationType(rs.getInt("notificationType"));
+				dto.setNotificationContent(rs.getString("notificationContent"));
+				dto.setIsRead(rs.getInt("isRead"));
+				dto.setRefNo(rs.getInt("refNo"));
+				dto.setCreatedAt(rs.getString("createdAt"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return dto;
+	}
+	
+	// 안 읽은 알림 수 조회
+	public int getUnreadCount(int userNo) {
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
-	    boolean flag = false;
+	    ResultSet rs = null;
+	    int count = 0;
 	    try {
 	        con = pool.getConnection();
-	        String sql = "UPDATE notification SET isRead = 1 WHERE notificationNo = ?";
+	        String sql = "SELECT COUNT(*) FROM notification WHERE userNo = ? AND isRead = 0";
 	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, notificationNo);
-	        if (pstmt.executeUpdate() > 0) flag = true;
+	        pstmt.setInt(1, userNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) count = rs.getInt(1);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
-	        pool.freeConnection(con, pstmt);
+	        pool.freeConnection(con, pstmt, rs);
 	    }
-	    return flag;
+	    return count;
 	}
 }

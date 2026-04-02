@@ -43,13 +43,25 @@ document.addEventListener("DOMContentLoaded", function () {
 	    item.addEventListener("click", function (e) {
 	        e.preventDefault();
 	        const no = this.dataset.no;
+	        
+	        // UI 업데이트
 	        this.classList.remove("unread");
 	        const dot = this.querySelector(".notification-dot");
 	        if (dot) dot.remove();
 
-	        // DB 반영
+	        // DB 반영 + 응답 처리
 	        fetch(contextPath + "/notification?action=markOneRead&notificationNo=" + no, {
 	            method: "POST"
+	        })
+	        .then(res => res.json())
+	        .then(data => {
+	            if (data.notificationType === 1) {
+	                // 조르기 알림 → detail 페이지 이동
+	                location.href = contextPath + "/poke?action=detail&pokeNo=" + data.refNo;
+	            } else {
+	                // 다른 알림 → 새로고침
+	                location.reload();
+	            }
 	        });
 	    });
 	});
