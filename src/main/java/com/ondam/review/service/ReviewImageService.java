@@ -7,26 +7,33 @@ import com.ondam.review.dto.ReviewImageDTO;
 
 public class ReviewImageService {
 
-	private ReviewImageDAO dao;
+    private ReviewImageDAO dao;
 
-	public ReviewImageService() {
-		this.dao = new ReviewImageDAO();
-	}
+    public ReviewImageService() {
+        this.dao = new ReviewImageDAO();
+    }
 
-	public Vector<ReviewImageDTO> getReviewImageList() {
-		return dao.getReviewImage();
-	}
+    public ReviewImageDTO getReviewImage(int reviewImgNo) {
+        return dao.getReviewImageByNo(reviewImgNo);
+    }
 
-	public boolean createReviewImage(ReviewImageDTO dto) {
-		return dao.insertReviewImage(dto);
-	}
+    public Vector<ReviewImageDTO> getImagesByReviewNo(int reviewNo) {
+        return dao.getReviewImagesByReviewNo(reviewNo);
+    }
 
-	public boolean modifyReviewImage(ReviewImageDTO dto, int reviewImgNo) {
-		return dao.updateReviewImage(dto, reviewImgNo);
-	}
+    public boolean uploadReviewImage(ReviewImageDTO dto) {
+        return dao.insertReviewImage(dto);
+    }
 
-	public boolean removeReviewImage(int reviewImgNo) {
-		return dao.deleteReviewImage(reviewImgNo);
-	}
+    public boolean modifyReviewImage(ReviewImageDTO dto) {
+        return dao.updateReviewImage(dto);
+    }
+
+    public boolean removeReviewImage(int reviewImgNo) {
+        return dao.deleteReviewImage(reviewImgNo);
+    }
+
+    public boolean removeAllImagesByReviewNo(int reviewNo) {
+        return dao.deleteReviewImagesByReviewNo(reviewNo);
+    }
 }
-
