@@ -28,5 +28,24 @@ public class PokeService {
 	public boolean removePoke(int pokeNo) {
 		return dao.deletePoke(pokeNo);
 	}
-}
+	
+	public Vector<PokeDTO> getReceivedPokeList(int receiverNo) {
+	    return dao.getByReceiverNo(receiverNo);
+	}
 
+	public Vector<PokeDTO> getSentPokeList(int senderNo) {
+	    return dao.getBySenderNo(senderNo);
+	}
+
+	public PokeDTO getPokeById(int pokeNo) {
+	    return dao.getPokeById(pokeNo);
+	}
+
+	public boolean updateSendState(int pokeNo, int sendState) {
+	    return dao.updateSendState(pokeNo, sendState);
+	}
+	
+	public int createPokeAndGetNo(PokeDTO dto) {
+	    return dao.insertPokeAndGetNo(dto);
+	}
+}

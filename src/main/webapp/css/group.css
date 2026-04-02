@@ -1,5 +1,21 @@
+/* 내 사람: 짧은 화면에서도 회색 배경이 뷰포트 하단까지 이어지도록 */
+.app-shell--group {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg-light);
+}
+
+.app-shell--group .group-main {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  background-color: var(--bg-light);
+}
+
 .group-main {
-  background: #f3f3f3;
+  background: var(--bg-light);
 }
 
 .group-page {
@@ -40,7 +56,7 @@
   padding: 20px 18px;
   border-radius: 28px;
   background: #f8f8f8;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--main-card-shadow);
 }
 
 .member-thumb-wrap {
@@ -229,4 +245,230 @@
   .group-fixed-btn {
     font-size: 16px;
   }
+}
+
+.group-empty-card {
+  background: #f8f8f8;
+  border-radius: 28px;
+  padding: 34px 22px 28px;
+  text-align: center;
+  box-shadow: var(--main-card-shadow);
+}
+
+.group-empty-icon {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #7BBE7E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.group-empty-icon .material-icons {
+  font-size: 46px;
+  color: #fff;
+}
+
+.group-empty-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.group-empty-desc {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.6;
+  margin: 0 0 22px;
+}
+
+.group-empty-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.group-empty-btn--secondary {
+  background: #ececec;
+  color: #111;
+}
+
+.group-empty-btn {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.group-empty-btn--primary {
+  background: #49b34a;
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .group-empty-card {
+    padding: 28px 18px 24px;
+    border-radius: 24px;
+  }
+
+  .group-empty-icon {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 16px;
+  }
+
+  .group-empty-icon .material-icons {
+    font-size: 40px;
+  }
+
+  .group-empty-title {
+    font-size: 20px;
+  }
+
+  .group-empty-desc {
+    font-size: 14px;
+  }
+}
+
+/* 초대하기 화면 */
+.group-invite-head {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.group-invite-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.3;
+  margin: 0 0 6px;
+}
+
+.group-invite-desc {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.group-invite-card {
+  background: #fff;
+  border-radius: 28px;
+  padding: 22px 18px 24px;
+  box-shadow: var(--main-card-shadow);
+}
+
+.group-invite-label {
+  padding-left: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 10px;
+}
+
+.group-invite-code-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.group-invite-code-box {
+  flex: 1;
+  height: 56px;
+  border-radius: 18px;
+  background: #eaeaea;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+
+.group-invite-code {
+  font-size: 22px;
+  font-weight: 800;
+  color: #898989;
+  letter-spacing: 0.04em;
+}
+
+.group-copy-btn {
+  flex-shrink: 0;
+  min-width: 74px;
+  height: 56px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 18px;
+  background: var(--brand-color);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.10);
+}
+
+.group-copy-btn:active {
+  transform: scale(0.98);
+}
+
+.group-invite-guide {
+  font-size: 14px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .group-invite-card {
+    border-radius: 24px;
+    padding: 18px 14px 20px;
+  }
+
+  .group-invite-code-row {
+    gap: 8px;
+  }
+
+  .group-invite-code-box {
+    height: 52px;
+    padding: 0 14px;
+    border-radius: 16px;
+  }
+
+  .group-invite-code {
+    font-size: 18px;
+  }
+
+  .group-copy-btn {
+    min-width: 68px;
+    height: 52px;
+    border-radius: 16px;
+    font-size: 14px;
+    padding: 0 14px;
+  }
+}
+
+/* 초대 코드 입력 (group-join): 입력/버튼은 profile.css .input-box, .save-btn */
+
+.group-page .edit-card .edit-form > .form-block {
+  margin-bottom: 10px;
+}
+
+.group-page .edit-card .edit-form > .save-btn {
+  margin-top: 0;
+}
+
+.group-page .edit-card .group-invite-guide {
+  margin-top: 16px;
 }

@@ -7,6 +7,7 @@ import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
+import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
 import com.ondam.shorts.controller.ShortsApiController;
@@ -64,6 +65,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/gift", new GiftController());
         
         handlerMapping.put("/product", new ProductController());
+        handlerMapping.put("/poke", new PokeController());
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 
