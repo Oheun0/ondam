@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <header class="fixed-area">
     <div class="top-bar">
         <div class="top-left">
@@ -13,15 +14,18 @@
         </a>
 
         <div class="top-right">
-            <a href="${pageContext.request.contextPath}/notification" 
-			   class="icon-btn badge-wrap" 
-			   aria-label="알림 보기">
-                <span class="material-icons-outlined">notifications</span>
-                <c:if test="${sessionScope.unreadCount > 0}">
-					<span class="badge">${sessionScope.unreadCount}</span>
-				</c:if>
-			</a>
-            <a href="${pageContext.request.contextPath}/cart" class="icon-btn badge-wrap" aria-label="장바구니 보기">
+			<a href="${pageContext.request.contextPath}/notification"
+				class="icon-btn badge-wrap" aria-label="알림 보기"> <span
+				class="material-icons-outlined">notifications</span> <c:choose>
+					<c:when test="${sessionScope.unreadCount >= 99}">
+						<span class="badge">99+</span>
+					</c:when>
+					<c:when test="${sessionScope.unreadCount > 0}">
+						<span class="badge">${sessionScope.unreadCount}</span>
+					</c:when>
+					<%-- 0이면 badge 자체 미출력 --%>
+				</c:choose>
+			</a> <a href="${pageContext.request.contextPath}/cart" class="icon-btn badge-wrap" aria-label="장바구니 보기">
                 <span class="material-icons-outlined">shopping_cart</span>
                 <span class="badge">1</span>
             </a>

@@ -1,6 +1,7 @@
 package com.ondam.user.controller;
 
 import com.ondam.common.controller.Controller;
+import com.ondam.notification.service.NotificationService;
 import com.ondam.user.dto.UserDTO;
 import com.ondam.user.service.UserService;
 
@@ -11,9 +12,12 @@ import jakarta.servlet.http.HttpSession;
 public class LoginController implements Controller {
 
 	private UserService userService;
+	private NotificationService notificationService;
 
 	public LoginController() {
 		userService = new UserService();
+		notificationService = new NotificationService();
+		
 	}
 
 	@Override
@@ -33,6 +37,8 @@ public class LoginController implements Controller {
 			if (loginUser != null) {
 				HttpSession session = request.getSession();
 				session.setAttribute("loginUser", loginUser);
+				int unreadCount = notificationService.getUnreadCount(loginUser.getUserNo());
+			    session.setAttribute("unreadCount", unreadCount);
 
 				return "redirect:/main";
 			} else {
