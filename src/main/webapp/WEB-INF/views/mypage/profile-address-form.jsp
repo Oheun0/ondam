@@ -55,9 +55,9 @@
             </div>
 
             <div class="step-tab-wrap">
-                <a href="${pageContext.request.contextPath}/mypage/profile.jsp" class="step-tab">기본 정보</a>
-                <a href="${pageContext.request.contextPath}/mypage/profile-address.jsp" class="step-tab active">배송지 관리</a>
-                <a href="${pageContext.request.contextPath}/mypage/profile-preference.jsp" class="step-tab">취향 정보</a>
+                <a href="${pageContext.request.contextPath}/profile" class="step-tab active">기본 정보</a>
+				<a href="${pageContext.request.contextPath}/profile-address" class="step-tab">배송지 관리</a>
+				<a href="${pageContext.request.contextPath}/preference" class="step-tab">취향 정보</a>
             </div>
         </section>
 
@@ -73,7 +73,7 @@
                 </p>
             </div>
 
-            <form action="${pageContext.request.contextPath}/mypage/address/save" method="post" class="edit-form">
+            <form action="${pageContext.request.contextPath}/address/save" method="post" class="edit-form">
                 <input type="hidden" name="mode" value="<%= mode %>">
                 <% if (isEdit) { %>
                     <input type="hidden" name="addressId" value="1">
