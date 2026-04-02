@@ -119,7 +119,7 @@
     background: #ffffff;
     border-radius: 22px;
     border: 1px solid #eceff2;
-    box-shadow: var(--shadow-soft);
+    box-shadow: var(--main-card-shadow);
 }
 
 .search-box {

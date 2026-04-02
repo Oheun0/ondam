@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>회원가입 - 취향 설정</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
   <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
   <script defer src="<%=request.getContextPath()%>/js/auth.js"></script>
 </head>

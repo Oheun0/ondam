@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>회원가입 - 배송 정보</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
   <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
 </head>
 <body>
