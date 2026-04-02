@@ -68,14 +68,16 @@
                 </div>
 
             <div class="address-button-row">
-                    <c:if test="${addr.isDefault == 0}">
-                        <button type="button" class="sub-action-btn">기본으로 설정</button>
-                    </c:if>
 
                     <button type="button" class="sub-action-btn upload-btn" 
                             onclick="location.href='${pageContext.request.contextPath}/address/form?mode=edit&addressId=${addr.userAddressNo}'">
                         변경하기</button>
-                    <button type="button" class="sub-action-btn reset-btn">삭제하기</button>
+                    <c:if test="${addr.isDefault == 0}">
+				        <button type="button" class="sub-action-btn reset-btn" 
+				                onclick="if(confirm('정말 삭제하시겠습니까?')) { location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}'; }">
+				            삭제하기
+				        </button>
+				    </c:if>
                 </div>
             </section>
         </c:forEach>

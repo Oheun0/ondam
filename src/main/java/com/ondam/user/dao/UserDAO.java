@@ -235,4 +235,27 @@ public class UserDAO {
 	    
 	    return result;
 	}
+	
+	public int updateBodyInfo(int userNo, int height, int weight) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    int result = 0;
+
+	    try {
+	        con = pool.getConnection(); 
+	        String sql = "UPDATE user SET userHeight = ?, userWeight = ? WHERE userNo = ?";
+	        
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, height);
+	        pstmt.setInt(2, weight);
+	        pstmt.setInt(3, userNo);
+	        
+	        result = pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return result;
+	}
 }

@@ -162,4 +162,63 @@ public class UserService {
 	        
 	        return result;
 	    }
+		
+		//마이페이지 취향 정보 업데이트
+		public int updateUserPreferences(int userNo, String[] colors, String[] hobbies) {
+		    DBConnectionMgr pool = null;
+		    Connection conn = null;
+		    int result = 0;
+
+		    try {
+		        pool = DBConnectionMgr.getInstance();
+		        conn = pool.getConnection();
+		        conn.setAutoCommit(false);
+
+		        colorDAO.deleteUserPreferColor(conn, userNo);
+		        hobbyDAO.deleteUserHobby(conn, userNo);
+
+		        int colorResult = 1;
+		        int hobbyResult = 1;
+
+		        if (colors != null && colors.length > 0) {
+		            for (String color : colors) {
+		                UserPreferColorDTO colorDTO = new UserPreferColorDTO();
+		                colorDTO.setUserNo(userNo);
+		                colorDTO.setPreferColor(color);
+		                int res = colorDAO.insertUserPreferColor(conn, colorDTO);
+		                if (res == 0) colorResult = 0;
+		            }
+		        }
+
+		        if (hobbies != null && hobbies.length > 0) {
+		            for (String hobby : hobbies) {
+		                UserHobbyDTO hobbyDTO = new UserHobbyDTO();
+		                hobbyDTO.setUserNo(userNo);
+		                hobbyDTO.setUserHobby(hobby);
+		                int res = hobbyDAO.insertUserHobby(conn, hobbyDTO);
+		                if (res == 0) hobbyResult = 0;
+		            }
+		        }
+
+		        if (colorResult > 0 && hobbyResult > 0) {
+		            conn.commit();
+		            result = 1;
+		        } else {
+		            conn.rollback();
+		        }
+		    } catch (Exception e) {
+		        if (conn != null) {
+		            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+		        }
+		        e.printStackTrace();
+		    } finally {
+		        if (conn != null) {
+		            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+		        }
+		        if (pool != null && conn != null) {
+		            pool.freeConnection(conn);
+		        }
+		    }
+		    return result;
+		}
 	}
