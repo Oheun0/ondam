@@ -11,9 +11,12 @@ import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
+import com.ondam.user.controller.FindIdController;
+import com.ondam.user.controller.FindPwdController;
 import com.ondam.user.controller.KakaoCallbackController;
 import com.ondam.user.controller.KakaoLoginController;
 import com.ondam.user.controller.LoginController;
+import com.ondam.user.controller.ResetPwdController;
 import com.ondam.user.controller.SignupCompleteController;
 import com.ondam.user.controller.SignupStartController;
 import com.ondam.user.controller.SignupStep0BasicController;
@@ -54,8 +57,11 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/kakao-login", new KakaoLoginController());
         handlerMapping.put("/kakao-callback", new KakaoCallbackController());
         handlerMapping.put("/check-userid", new UserIdCheckController());
+        handlerMapping.put("/find-id", new FindIdController());
+        handlerMapping.put("/find-pwd", new FindPwdController());
+        handlerMapping.put("/reset-pwd", new ResetPwdController());
         handlerMapping.put("/coupon", new CouponController());
-        handlerMapping.put("/gift", new GiftController());        
+        handlerMapping.put("/gift", new GiftController());
         
         handlerMapping.put("/product", new ProductController());
     }
