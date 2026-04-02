@@ -11,7 +11,7 @@
 <body>
   <div class="auth-page">
     <div class="auth-wrap">
-
+		
       <div class="auth-card" style="text-align:center;">
         <div class="brand-logo">
 		  <img src="<%=request.getContextPath()%>/images/logo.svg" alt="온담 로고">

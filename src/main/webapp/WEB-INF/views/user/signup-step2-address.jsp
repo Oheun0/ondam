@@ -92,5 +92,6 @@ ain
       </div>
     </div>
   </div>
+  <jsp:include page="../layout/bottomNav.jsp" />
 </body>
 </html>
