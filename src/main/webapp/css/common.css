@@ -4,10 +4,12 @@
     --text-main: #222222;
     --text-sub: #666666;
     --text-muted: #8a8a8a;
-    --bg-light: #f6f7f8;
+    --bg-light: #f3f3f3;
     --bg-white: #ffffff;
     --border-color: #e5e7eb;
     --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
+    /* 스크롤 콘텐츠 영역 최상위 흰 카드(헤더·하단 네비 제외) */
+    --main-card-shadow: var(--shadow-soft);
     --radius-lg: 22px;
     --radius-md: 16px;
     --radius-sm: 12px;
@@ -23,6 +25,7 @@
 
 html {
     scroll-behavior: smooth;
+    background: var(--bg-light);
 }
 
 body {
@@ -75,7 +78,7 @@ img {
     background: var(--bg-white);
     border-radius: var(--radius-lg);
     padding: 20px 16px;
-    box-shadow: var(--shadow-soft);
+    box-shadow: var(--main-card-shadow);
     margin-bottom: 14px;
 }
 

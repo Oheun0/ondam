@@ -5,12 +5,15 @@
   <meta charset="UTF-8">
   <title>회원가입 - 취향 설정</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
-  
+
+  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
+  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
+
   <script>
       const ctxPath = "${pageContext.request.contextPath}";
   </script>
   <script defer src="${pageContext.request.contextPath}/js/auth.js?ver=6"></script>
+
 </head>
 <body>
   <div class="auth-page">

@@ -9,59 +9,62 @@
   margin-bottom: 20px;
 }
 
-.back-btn .material-icons {
-  font-size: 20px;
-}
-
-.back-btn {
+.wallet-top .back-btn {
   width: 120px;
   height: 40px;
   border-radius: 20px;
   font-weight: 800;
-  background: #fff;
+  background: #dcdcdc;
   display: flex;
-  color: #111;
+  color: #515151;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   gap: 2px;
 }
 
-.balance-card {
+.wallet-top .back-btn .material-icons {
+  font-size: 18px;
+  color: #515151;
+}
+
+.wallet-page .balance-card {
   background: #fff;
   border-radius: 20px;
   padding: 20px;
   text-align: center;
   margin-bottom: 20px;
+  box-shadow: var(--main-card-shadow);
 }
 
-.balance-card p {
+.wallet-page .balance-card p {
   color: #888;
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 6px;
 }
 
-.balance-card strong {
+.wallet-page .balance-card strong {
   font-size: 28px;
   font-weight: 800;
 }
 
-.charge-input-box {
+.wallet-page .charge-input-box {
   display: flex;
   align-items: center;
   background: #fff;
   border-radius: 20px;
   padding: 16px;
   margin-bottom: 16px;
+  box-shadow: var(--main-card-shadow);
 }
 
-.charge-input-box .won {
+.wallet-page .charge-input-box .won {
   font-size: 20px;
   margin-right: 8px;
 }
 
-.charge-input-box input {
+.wallet-page .charge-input-box input {
   border: none;
   font-size: 20px;
   font-weight: 700;
@@ -139,7 +142,7 @@
   gap: 12px;
 }
 
-.history-item {
+.wallet-page .history-item {
   background: #fff;
   border-radius: 20px;
   padding: 16px;
@@ -147,6 +150,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  box-shadow: var(--main-card-shadow);
 }
 
 .history-text {
@@ -205,59 +209,62 @@
   margin-bottom: 20px;
 }
 
-.back-btn .material-icons {
-  font-size: 20px;
-}
-
-.back-btn {
+.wallet-top .back-btn {
   width: 120px;
   height: 40px;
   border-radius: 20px;
   font-weight: 800;
-  background: #fff;
+  background: #dcdcdc;
   display: flex;
-  color: #111;
+  color: #515151;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   gap: 2px;
 }
 
-.balance-card {
+.wallet-top .back-btn .material-icons {
+  font-size: 18px;
+  color: #515151;
+}
+
+.wallet-page .balance-card {
   background: #fff;
   border-radius: 20px;
   padding: 20px;
   text-align: center;
   margin-bottom: 20px;
+  box-shadow: var(--main-card-shadow);
 }
 
-.balance-card p {
+.wallet-page .balance-card p {
   color: #888;
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 6px;
 }
 
-.balance-card strong {
+.wallet-page .balance-card strong {
   font-size: 28px;
   font-weight: 800;
 }
 
-.charge-input-box {
+.wallet-page .charge-input-box {
   display: flex;
   align-items: center;
   background: #fff;
   border-radius: 20px;
   padding: 16px;
   margin-bottom: 16px;
+  box-shadow: var(--main-card-shadow);
 }
 
-.charge-input-box .won {
+.wallet-page .charge-input-box .won {
   font-size: 20px;
   margin-right: 8px;
 }
 
-.charge-input-box input {
+.wallet-page .charge-input-box input {
   border: none;
   font-size: 20px;
   font-weight: 700;
@@ -363,7 +370,7 @@
   gap: 12px;
 }
 
-.history-item {
+.wallet-page .history-item {
   background: #fff;
   border-radius: 20px;
   padding: 16px;
@@ -371,6 +378,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  box-shadow: var(--main-card-shadow);
 }
 
 .history-text {
@@ -419,14 +427,15 @@
 }
 
 /* 공통 input */
-.input-box {
+.wallet-page .input-box {
   background: #fff;
   border-radius: 20px;
   padding: 16px;
   margin-bottom: 16px;
+  box-shadow: var(--main-card-shadow);
 }
 
-.input-box input {
+.wallet-page .input-box input {
   border: none;
   width: 100%;
   font-size: 16px;
@@ -441,21 +450,22 @@
   margin-bottom: 20px;
 }
 
-.amount-input {
+.wallet-page .amount-input {
   flex: 1;
   display: flex;
   align-items: center;
   background: #fff;
   border-radius: 20px;
   padding: 16px;
+  box-shadow: var(--main-card-shadow);
 }
 
-.amount-input .won {
+.wallet-page .amount-input .won {
   font-size: 20px;
   margin-right: 8px;
 }
 
-.amount-input input {
+.wallet-page .amount-input input {
   border: none;
   font-size: 18px;
   font-weight: 800;
