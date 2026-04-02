@@ -43,6 +43,7 @@ public class UserDAO {
 				user.setUserBirth(rs.getString("userBirth"));
 				user.setUserGender(rs.getInt("userGender"));
 				user.setUserHeight(rs.getInt("userHeight"));
+				user.setUserWeight(rs.getInt("userWeight"));
 				user.setUserProfileImg(rs.getString("userProfileImg"));
 				user.setJoinReason(rs.getInt("joinReason"));
 				user.setIsActive(rs.getInt("isActive"));
@@ -199,6 +200,56 @@ public class UserDAO {
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setString(1, newPwd);
 	        pstmt.setInt(2, userNo);
+	        result = pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return result;
+	}
+	
+	public int updateUserProfile(int userNo, String userName, String birthDate, int gender, String phone, String profileImgName) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    int result = 0;
+
+	    try {
+	        con = pool.getConnection(); 
+	        String sql = "UPDATE user SET userName = ?, userBirth = ?, userGender = ?, userPhoneNumber = ?, userProfileImg = ? WHERE userNo = ?";
+	        
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, userName);
+	        pstmt.setString(2, birthDate);
+	        pstmt.setInt(3, gender);
+	        pstmt.setString(4, phone);
+	        pstmt.setString(5, profileImgName);
+	        pstmt.setInt(6, userNo);
+	        
+	        result = pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    
+	    return result;
+	}
+	
+	public int updateBodyInfo(int userNo, int height, int weight) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    int result = 0;
+
+	    try {
+	        con = pool.getConnection(); 
+	        String sql = "UPDATE user SET userHeight = ?, userWeight = ? WHERE userNo = ?";
+	        
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, height);
+	        pstmt.setInt(2, weight);
+	        pstmt.setInt(3, userNo);
+	        
 	        result = pstmt.executeUpdate();
 	    } catch (Exception e) {
 	        e.printStackTrace();

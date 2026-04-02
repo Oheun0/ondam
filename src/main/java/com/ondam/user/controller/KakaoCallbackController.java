@@ -42,10 +42,15 @@ public class KakaoCallbackController implements Controller {
 
             if (loginUser != null) {
                 HttpSession session = request.getSession();
-                session.setAttribute("signupUser", loginUser);
-                session.setAttribute("loginUser", loginUser);
-                
-                return "redirect:/signup-step0-basic";
+                if (loginUser.getSignUpCompleted() == 1) {
+                    session.setAttribute("loginUser", loginUser);
+                    return "redirect:/main"; // (또는 홈으로 가는 URL)
+                    
+                } else {
+                    session.setAttribute("signupUser", loginUser);
+                    session.setAttribute("loginUser", loginUser); 
+                    return "redirect:/signup-step0-basic";
+                }
             }
         }
         return "redirect:/login";
