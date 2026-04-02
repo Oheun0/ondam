@@ -29,6 +29,6 @@ public class ShortsController implements Controller {
 
         request.setAttribute("shortsList", publicShorts);
             
-        return "shorts";
+        return "shorts/shorts";
     }
 }

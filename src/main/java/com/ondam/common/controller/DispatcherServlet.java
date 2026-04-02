@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ondam.cart.controller.CartController;
 import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
@@ -94,6 +95,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/poke", new PokeController());
         handlerMapping.put("/review", new ReviewController());
         handlerMapping.put("/reviewImage", new ReviewImageController());
+        handlerMapping.put("/cart", new CartController());
         
     }
 
