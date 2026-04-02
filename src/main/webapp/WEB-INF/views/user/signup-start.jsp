@@ -5,7 +5,10 @@
   <meta charset="UTF-8">
   <title>온담 회원가입</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
+
+  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
+  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
+
 </head>
 <body>
   <div class="auth-page">

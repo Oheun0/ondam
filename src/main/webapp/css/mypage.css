@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 :root {
-  --mypage-bg: #f5f6f3;
+  --mypage-bg: #f3f3f3;
   --mypage-card: #ffffff;
   --mypage-line: #e7ece4;
   --mypage-text: #1f2720;
@@ -9,7 +9,6 @@
   --mypage-green: #4caf50;
   --mypage-green-deep: #2f8f43;
   --mypage-green-soft: #eef8ef;
-  --mypage-shadow: 0 10px 28px rgba(44, 77, 46, 0.08);
 }
 
 body {
@@ -40,7 +39,7 @@ body {
   background: var(--mypage-card);
   border: 1px solid var(--mypage-line);
   border-radius: 28px;
-  box-shadow: var(--mypage-shadow);
+  box-shadow: var(--main-card-shadow);
 }
 
 .profile-card {

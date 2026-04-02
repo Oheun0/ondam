@@ -4,13 +4,12 @@
   --primary: #4caf50;
   --primary-dark: #3f9443;
   --primary-light: #eaf7eb;
-  --bg: #f7f8f6;
+  --bg: #f3f3f3;
   --card: #ffffff;
   --text: #222222;
   --sub-text: #666666;
   --line: #e4e7e2;
   --danger: #d9534f;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   --radius-xl: 24px;
   --radius-lg: 18px;
   --radius-md: 14px;
@@ -77,7 +76,7 @@ a {
 .auth-card {
   background: var(--card);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
+  box-shadow: var(--main-card-shadow);
   padding: 24px 20px;
   margin-bottom: 16px;
 }
