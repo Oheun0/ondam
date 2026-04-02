@@ -24,7 +24,7 @@
         <!-- 상단 안내 -->
         <section class="profile-intro-card">
             <div class="profile-intro-top">
-                <a href="${pageContext.request.contextPath}/mypage/mypage.jsp" class="back-btn">
+                <a href="${pageContext.request.contextPath}/mypage" class="back-btn">
                     <span class="material-icons">chevron_left</span>
                 </a>
                 <div class="intro-text">
@@ -32,11 +32,10 @@
                     <p>수정할 항목을 골라 바꿔보세요</p>
                 </div>
             </div>
-
             <div class="step-tab-wrap">
-                <a href="${pageContext.request.contextPath}/mypage/profile.jsp" class="step-tab active">기본 정보</a>
-                <a href="${pageContext.request.contextPath}/mypage/profile-address.jsp" class="step-tab">배송지 관리</a>
-                <a href="${pageContext.request.contextPath}/mypage/profile-preference.jsp" class="step-tab">취향 정보</a>
+				<a href="${pageContext.request.contextPath}/profile" class="step-tab active">기본 정보</a>
+				<a href="${pageContext.request.contextPath}/profile-address" class="step-tab">배송지 관리</a>
+				<a href="${pageContext.request.contextPath}/preference" class="step-tab">취향 정보</a>
             </div>
         </section>
 
@@ -47,7 +46,7 @@
                 <p>이름, 생년월일, 성별, 연락처를 수정할 수 있어요</p>
             </div>
 
-            <form action="${pageContext.request.contextPath}/mypage/profile/update" method="post" enctype="multipart/form-data" class="edit-form">
+            <form action="${pageContext.request.contextPath}/profile/update" method="post" enctype="multipart/form-data" class="edit-form">
                 
                 <!-- 프로필 이미지 -->
                 <div class="form-block">
@@ -55,7 +54,9 @@
 
                     <div class="profile-image-edit">
                         <div class="profile-preview-box">
-                            <img src="${pageContext.request.contextPath}/images/profile/test.jpg" alt="기본 프로필 이미지" class="profile-preview">
+							<img src="${pageContext.request.contextPath}/images/profile/${loginUser.userProfileImg != null ? loginUser.userProfileImg : 'default-profile.png'}" 
+							     alt="프로필 이미지" class="profile-preview"
+							     onerror="this.src='${pageContext.request.contextPath}/images/profile/default-profile.png'">
                         </div>
 
                         <div class="profile-image-actions">
@@ -70,34 +71,34 @@
                 <!-- 이름 -->
                 <div class="form-block">
                     <label for="userName" class="block-label">이름</label>
-                    <input type="text" id="userName" name="userName" class="input-box" value="김지현" placeholder="이름을 입력하세요">
+                    <input type="text" id="userName" name="userName" class="input-box" value="${loginUser.userName}" placeholder="이름을 입력하세요">
                 </div>
 
                 <!-- 생년월일 -->
                 <div class="form-block">
                     <label for="birthDate" class="block-label">생년월일</label>
-                    <input type="date" id="birthDate" name="birthDate" class="input-box" value="2003-01-01">
+                    <input type="date" id="birthDate" name="birthDate" class="input-box" value="${loginUser.userBirth}">
                 </div>
 
                 <!-- 성별 -->
                 <div class="form-block">
-                    <label class="block-label">성별</label>
-                    <div class="radio-group">
-                        <label class="radio-chip">
-                            <input type="radio" name="gender" value="female" checked>
-                            <span>여성</span>
-                        </label>
-                        <label class="radio-chip">
-                            <input type="radio" name="gender" value="male">
-                            <span>남성</span>
-                        </label>
-                    </div>
-                </div>
+				    <label class="block-label">성별</label>
+				    <div class="radio-group">
+				        <label class="radio-chip">
+				            <input type="radio" name="gender" value="1" ${loginUser.userGender == 1 ? 'checked' : ''}>
+				            <span>여성</span>
+				        </label>
+				        <label class="radio-chip">
+				            <input type="radio" name="gender" value="2" ${loginUser.userGender == 2 ? 'checked' : ''}>
+				            <span>남성</span>
+				        </label>
+				    </div>
+				</div>
 
                 <!-- 연락처 -->
                 <div class="form-block">
                     <label for="phone" class="block-label">연락처</label>
-                    <input type="text" id="phone" name="phone" class="input-box" value="010-1234-5678" placeholder="연락처를 입력하세요">
+                    <input type="text" id="phone" name="phone" class="input-box" value="${loginUser.userPhoneNumber}" placeholder="연락처를 입력하세요">
                 </div>
 
                 <!-- 수정 불가 정보 -->
@@ -122,6 +123,26 @@
 
     <jsp:include page="../layout/bottomNav.jsp" />
 </div>
+<script>
+    const profileInput = document.getElementById('profileImage');
+    const profilePreview = document.querySelector('.profile-preview');
+
+    profileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profilePreview.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    document.querySelector('.reset-btn').addEventListener('click', function() {
+        profileInput.value = '';
+        profilePreview.src = '${pageContext.request.contextPath}/images/profile/default-profile.png';
+    });
+</script>
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>

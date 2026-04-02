@@ -99,8 +99,8 @@ public class UserService {
 	                userNo = userDAO.insertUser(conn, user);
 	            } else {
 	                // 카카오 회원가입
-	                userNo = userDAO.updateUserForSignup(conn, user); 
-	                if(userNo == 0) userNo = existingUser.getUserNo(); 
+	            	userDAO.updateUserForSignup(conn, user); 
+	                userNo = existingUser.getUserNo();
 	            }
 	            
 	            if (userNo > 0) {
