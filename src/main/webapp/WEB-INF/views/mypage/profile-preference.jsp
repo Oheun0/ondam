@@ -96,7 +96,7 @@
     <main class="profile-page">
         <section class="profile-intro-card">
             <div class="profile-intro-top">
-                <a href="${pageContext.request.contextPath}/mypage/mypage.jsp" class="back-btn">
+                <a href="${pageContext.request.contextPath}/mypage" class="back-btn">
                     <span class="material-icons">chevron_left</span>
                 </a>
                 <div class="intro-text">
@@ -104,15 +104,14 @@
                     <p>나의 취향 정보를 수정할 수 있어요</p>
                 </div>
             </div>
-
-            <div class="step-tab-wrap">
-                <a href="${pageContext.request.contextPath}/mypage/profile.jsp" class="step-tab">기본 정보</a>
-                <a href="${pageContext.request.contextPath}/mypage/profile-address.jsp" class="step-tab">배송지 관리</a>
-                <a href="${pageContext.request.contextPath}/mypage/profile-preference.jsp" class="step-tab active">취향 정보</a>
-            </div>
+			<div class="step-tab-wrap">
+			    <a href="${pageContext.request.contextPath}/profile" class="step-tab">기본 정보</a>
+			    <a href="${pageContext.request.contextPath}/profile-address" class="step-tab">배송지 관리</a>
+			    <a href="${pageContext.request.contextPath}/preference" class="step-tab active">취향 정보</a>
+			</div>
         </section>
 
-        <form action="${pageContext.request.contextPath}/mypage/profile/preference" method="post" class="profile-pref-form profile-pref-form--body">
+        <form action="${pageContext.request.contextPath}/profile/preference" method="post" class="profile-pref-form profile-pref-form--body">
             <input type="hidden" name="saveScope" value="body">
 
             <section class="edit-card">
@@ -123,7 +122,7 @@
 
                 <div class="edit-form">
                     <div class="form-block">
-                        <label class="block-label" for="userHeight">키</label>
+                        <label class="block-label" for="userHeight">키 (cm)</label>
                         <select id="userHeight" name="userHeight" class="input-box">
                             <option value="">선택하세요</option>
                             <% for (int i = 0; i < HEIGHT_VALS.length; i++) {
@@ -153,7 +152,7 @@
             <button type="submit" class="save-btn">체형 정보 저장하기</button>
         </form>
 
-        <form action="${pageContext.request.contextPath}/mypage/profile/preference" method="post" class="profile-pref-form profile-pref-form--taste">
+        <form action="${pageContext.request.contextPath}/profile/preference" method="post" class="profile-pref-form profile-pref-form--taste">
             <input type="hidden" name="saveScope" value="preference">
 
             <section class="edit-card">

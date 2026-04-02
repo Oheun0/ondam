@@ -15,11 +15,21 @@ import com.ondam.review.controller.ReviewController;
 import com.ondam.review.controller.ReviewImageController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
+import com.ondam.user.controller.AddressDeleteController;
+import com.ondam.user.controller.AddressFormController;
+import com.ondam.user.controller.AddressSaveController;
 import com.ondam.user.controller.FindIdController;
 import com.ondam.user.controller.FindPwdController;
 import com.ondam.user.controller.KakaoCallbackController;
 import com.ondam.user.controller.KakaoLoginController;
 import com.ondam.user.controller.LoginController;
+import com.ondam.user.controller.LogoutController;
+import com.ondam.user.controller.MyPageController;
+import com.ondam.user.controller.PreferenceSaveController;
+import com.ondam.user.controller.ProfileAddressController;
+import com.ondam.user.controller.ProfileController;
+import com.ondam.user.controller.ProfilePreferenceController;
+import com.ondam.user.controller.ProfileUpdateController;
 import com.ondam.user.controller.ResetPwdController;
 import com.ondam.user.controller.SignupCompleteController;
 import com.ondam.user.controller.SignupStartController;
@@ -30,12 +40,17 @@ import com.ondam.user.controller.SignupStep3PreferenceController;
 import com.ondam.user.controller.UserIdCheckController;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/") // 모든 요청 받기
+@MultipartConfig(
+		maxFileSize = 1024 * 1024 * 5,    		 // 최대 파일 크기 5MB
+	    maxRequestSize = 1024 * 1024 * 10
+		) //사진 받아오기
 public class DispatcherServlet extends HttpServlet {
     
     // URL과 실행할 컨트롤러를 매핑해서 저장하는 저장소
@@ -66,7 +81,16 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/reset-pwd", new ResetPwdController());
         handlerMapping.put("/coupon", new CouponController());
         handlerMapping.put("/gift", new GiftController());
-        
+        handlerMapping.put("/mypage", new MyPageController());
+        handlerMapping.put("/logout", new LogoutController());
+        handlerMapping.put("/profile", new ProfileController());
+        handlerMapping.put("/profile/update", new ProfileUpdateController());
+        handlerMapping.put("/profile-address", new ProfileAddressController());
+        handlerMapping.put("/preference", new ProfilePreferenceController());
+        handlerMapping.put("/address/save", new AddressSaveController());
+        handlerMapping.put("/address/form", new AddressFormController());
+        handlerMapping.put("/address/delete", new AddressDeleteController());
+        handlerMapping.put("/profile/preference", new PreferenceSaveController());
         handlerMapping.put("/product", new ProductController());
         handlerMapping.put("/poke", new PokeController());
         handlerMapping.put("/review", new ReviewController());
