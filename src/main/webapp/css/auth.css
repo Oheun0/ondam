@@ -458,6 +458,19 @@ a {
   margin-left: 4px;
 }
 
+.error-alert {
+  display: block;
+  color: var(--danger);
+  background-color: #fffafb;
+  border: 1px solid var(--danger);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .input.error-border,
 .select.error-border {
   border-color: var(--danger) !important;

@@ -51,19 +51,21 @@ function validate() {
     }
   }
   
-  if (!isIdChecked) {
-      hideAllErrors();
-      const errMsg = document.getElementById("err-userId");
-      if (errMsg) {
-        errMsg.textContent = "아이디 중복 확인을 진행해주세요.";
-        errMsg.style.display = "block";
-      }
-      const userIdInput = document.getElementById("userId");
-      userIdInput.classList.add("error-border");
-      userIdInput.scrollIntoView({ behavior: "smooth", block: "center" });
-      setTimeout(() => { userIdInput.focus(); }, 500);
-      return false;
-    }
+    const userIdInput = document.getElementById("userId");
+	const idCheckMsg = document.getElementById("idCheckMessage");
+
+	if (userIdInput && idCheckMsg && !isIdChecked) {
+	      hideAllErrors();
+	      const errMsg = document.getElementById("err-userId");
+	      if (errMsg) {
+	        errMsg.textContent = "아이디 중복 확인을 진행해주세요.";
+	        errMsg.style.display = "block";
+	      }
+	      userIdInput.classList.add("error-border");
+	      userIdInput.scrollIntoView({ behavior: "smooth", block: "center" });
+	      setTimeout(() => { userIdInput.focus(); }, 500);
+	      return false;
+	  }
   
   const pwd = document.getElementById("userPwd").value;
     const pwdCheck = document.getElementById("userPwdCheck").value;

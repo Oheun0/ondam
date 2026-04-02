@@ -127,13 +127,84 @@ public class UserDAO {
 	        pstmt.setString(12, user.getUserId());
 
 	        result = pstmt.executeUpdate();
-
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
 	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-	    }
+	    }return result;
+	}
 
+	public String findUserId(String userName, String userPhoneNumber) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = null;
+	    String foundId = null;
+
+	    try {
+	        con = pool.getConnection();
+	        sql = "SELECT userId FROM user WHERE userName = ? AND REPLACE(userPhoneNumber, '-', '') = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, userName);
+	        pstmt.setString(2, userPhoneNumber);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            foundId = rs.getString("userId");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return foundId;
+	}
+
+	//비밀번호 재설정 전 본인 확인
+	public int checkUserForPwdReset(String userId, String userName, String userPhoneNumber) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = null;
+	    int userNo = 0;
+
+	    try {
+	        con = pool.getConnection();
+	        sql = "SELECT userNo FROM user WHERE userId = ? AND userName = ? AND REPLACE(userPhoneNumber, '-', '') = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, userId);
+	        pstmt.setString(2, userName);
+	        pstmt.setString(3, userPhoneNumber);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            userNo = rs.getInt("userNo");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return userNo;
+	}
+
+	public int updatePassword(int userNo, String newPwd) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    int result = 0;
+
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE user SET userPwd = ? WHERE userNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, newPwd);
+	        pstmt.setInt(2, userNo);
+	        result = pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
 	    return result;
 	}
 }
