@@ -22,7 +22,7 @@ public class UserAddressDAO {
 		List<UserAddressDTO> list = new ArrayList<>();
 		try {
 			con = pool.getConnection();
-			sql = "select * from userAddress where userNo = ?";
+			sql = "select * from userAddress where userNo = ? order by isDefault desc";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, userNo);
 			rs = pstmt.executeQuery();
@@ -80,4 +80,167 @@ public class UserAddressDAO {
         
         return result;
     }
+	
+	//배송지 1개의 정보만 가져오기
+	public UserAddressDTO getAddressByNo(int userAddressNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		UserAddressDTO dto = null;
+		
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT * FROM userAddress WHERE userAddressNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, userAddressNo);
+			rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+				dto = new UserAddressDTO();
+				dto.setUserAddressNo(rs.getInt("userAddressNo"));
+				dto.setUserNo(rs.getInt("userNo"));
+				dto.setAddressName(rs.getString("addressName"));
+				dto.setIsDefault(rs.getInt("isDefault"));
+				dto.setReceiverName(rs.getString("receiverName"));
+				dto.setReceiverTel(rs.getString("receiverTel"));
+				dto.setUserAddress(rs.getString("userAddress"));
+				dto.setUserDetailAddress(rs.getString("userDetailAddress"));
+				dto.setUserZipcode(rs.getString("userZipcode"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return dto;
+	}
+	
+	// 배송지 정보 수정
+		public int updateUserAddress(UserAddressDTO address) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			int result = 0;
+			
+			String sql = "UPDATE userAddress SET addressName=?, isDefault=?, receiverName=?, "
+					   + "receiverTel=?, userAddress=?, userDetailAddress=?, userZipcode=? "
+					   + "WHERE userAddressNo=?";
+			try {
+				con = pool.getConnection();
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, address.getAddressName());
+				pstmt.setInt(2, address.getIsDefault());
+				pstmt.setString(3, address.getReceiverName());
+				pstmt.setString(4, address.getReceiverTel());
+				pstmt.setString(5, address.getUserAddress());
+				pstmt.setString(6, address.getUserDetailAddress());
+				pstmt.setString(7, address.getUserZipcode());
+				pstmt.setInt(8, address.getUserAddressNo());
+
+				result = pstmt.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt);
+			}
+			return result;
+		}
+		
+		//배송지 추가, 기존 insertUserAddress는 트랜잭션용이므로, 편의를 위해 하나 더 만듭니다.
+		public int insertUserAddress(UserAddressDTO address) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			int result = 0;
+			
+			String sql = "INSERT INTO userAddress (userNo, addressName, isDefault, receiverName, "
+					   + "receiverTel, userAddress, userDetailAddress, userZipcode) "
+					   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			try {
+				con = pool.getConnection();
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, address.getUserNo());
+				pstmt.setString(2, address.getAddressName());
+				pstmt.setInt(3, address.getIsDefault());
+				pstmt.setString(4, address.getReceiverName());
+				pstmt.setString(5, address.getReceiverTel());
+				pstmt.setString(6, address.getUserAddress());
+				pstmt.setString(7, address.getUserDetailAddress());
+				pstmt.setString(8, address.getUserZipcode());
+
+				result = pstmt.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt);
+			}
+			return result;
+		}
+		
+		//배송지 삭제
+		public int deleteUserAddress(int userAddressNo) {
+		    Connection con = null;
+		    PreparedStatement pstmt = null;
+		    int result = 0;
+		    
+		    String sql = "DELETE FROM userAddress WHERE userAddressNo = ?";
+		    try {
+		        con = pool.getConnection();
+		        pstmt = con.prepareStatement(sql);
+		        pstmt.setInt(1, userAddressNo);
+		        result = pstmt.executeUpdate();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        pool.freeConnection(con, pstmt);
+		    }
+		    return result;
+		}
+		
+		//'기본' 선택
+		public int updateDefaultAddress(int userNo, int addressNo) {
+		    Connection con = null;
+		    PreparedStatement pstmt = null;
+		    int result = 0;
+
+		    try {
+		        con = pool.getConnection();
+		        con.setAutoCommit(false); 
+
+		        String sql1 = "UPDATE userAddress SET isDefault = 0 WHERE userNo = ?";
+		        pstmt = con.prepareStatement(sql1);
+		        pstmt.setInt(1, userNo);
+		        pstmt.executeUpdate();
+		        pstmt.close();
+		        
+		        String sql2 = "UPDATE userAddress SET isDefault = 1 WHERE userAddressNo = ?";
+		        pstmt = con.prepareStatement(sql2);
+		        pstmt.setInt(1, addressNo);
+		        result = pstmt.executeUpdate();
+		        con.commit(); 
+
+		    } catch (Exception e) {
+		        try { if(con != null) con.rollback(); } catch(Exception ex) {}
+		        e.printStackTrace();
+		    } finally {
+		        try { if(con != null) con.setAutoCommit(true); } catch(Exception e) {}
+		        pool.freeConnection(con, pstmt);
+		    }
+		    return result;
+		}
+		
+		// 모든 기본 배송지 설정을 해제하는 메서드
+		public void resetDefaultAddress(int userNo) {
+		    Connection con = null;
+		    PreparedStatement pstmt = null;
+		    try {
+		        con = pool.getConnection();
+		        String sql = "UPDATE userAddress SET isDefault = 0 WHERE userNo = ?";
+		        pstmt = con.prepareStatement(sql);
+		        pstmt.setInt(1, userNo);
+		        pstmt.executeUpdate();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        pool.freeConnection(con, pstmt);
+		    }
+		}
 }
