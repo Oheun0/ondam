@@ -29,17 +29,17 @@
                 <p class="wallet-desc">내 사람들과 함께 사용하는 지갑이에요</p>
 
                 <div class="wallet-action-row">
-                    <a href="${pageContext.request.contextPath}/wallet/wallet-charge.jsp" class="wallet-action-btn charge">
+                    <a href="${pageContext.request.contextPath}/wallet?action=charge" class="wallet-action-btn charge">
                         충전하기
                     </a>
-                    <a href="${pageContext.request.contextPath}/wallet/wallet-withdraw.jsp" class="wallet-action-btn withdraw">
+                    <a href="${pageContext.request.contextPath}/wallet?action=withdraw" class="wallet-action-btn withdraw">
                         잔액 꺼내기
                     </a>
                 </div>
 
                 <div class="wallet-section-title history-title-row">
                     <h2>최근 사용내역</h2> <!-- 최근 사용내역 3개 카드만 보여줌 -->
-                    <a href="${pageContext.request.contextPath}/wallet/wallet-history.jsp" class="more-link">전체보기</a>
+                    <a href="${pageContext.request.contextPath}/wallet?action=history" class="more-link">전체보기</a>
                 </div>
 
                 <div class="history-list">

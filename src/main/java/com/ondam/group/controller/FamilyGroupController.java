@@ -38,8 +38,12 @@ public class FamilyGroupController implements Controller {
 			return delete(request, response);
 		case "memberDelete":
 			return memberDelete(request, response);
+		case "invite":
+			return invite(request, response);
+		case "join":
+			return join(request, response);
 		default:
-			return "redirect:/family";
+			return "redirect:/group";
 		}
 	}
 
@@ -56,7 +60,7 @@ public class FamilyGroupController implements Controller {
 			// 아직 그룹에 속하지 않은 상태
 			request.setAttribute("myGroup", null);
 			request.setAttribute("memberList", null);
-			return "group/family";
+			return "group/group-empty";
 		}
 
 		FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(myMember.getFamilyNo());
@@ -66,7 +70,7 @@ public class FamilyGroupController implements Controller {
 		request.setAttribute("myMember", myMember); // familyAuth 노출 여부 제어용
 		request.setAttribute("memberList", memberList);
 
-		return "group/family";
+		return "group/group";
 	}
 
 	// ──────────────────────────────────────────────
@@ -101,19 +105,19 @@ public class FamilyGroupController implements Controller {
 		memberDto.setFamilyAuth(1); // 1: 관리자
 		familyMemberService.createFamilyMember(memberDto);
 
-		return "redirect:/family";
+		return "redirect:/group";
 	}
 
 	// 3. 가족 그룹 삭제 (관리자 버튼에서만 호출 → 권한 분기 불필요)
 	private String delete(HttpServletRequest request, HttpServletResponse response) {
 		String familyNoParam = request.getParameter("familyNo");
 		if (familyNoParam == null)
-			return "redirect:/family";
+			return "redirect:/group";
 
 		familyGroupService.removeFamilyGroup(Integer.parseInt(familyNoParam));
 		// ON DELETE CASCADE → FamilyMember, FamilyInvite, Poke, Wallet 자동 삭제
 
-		return "redirect:/family";
+		return "redirect:/group";
 	}
 
 	// 4. 멤버 퇴장
@@ -126,12 +130,12 @@ public class FamilyGroupController implements Controller {
 
 		String familyMemberNoParam = request.getParameter("familyMemberNo");
 		if (familyMemberNoParam == null)
-			return "redirect:/family";
+			return "redirect:/group";
 		int targetMemberNo = Integer.parseInt(familyMemberNoParam);
 
 		FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(myUserNo);
 		if (myMember == null)
-			return "redirect:/family";
+			return "redirect:/group";
 
 		boolean isSelfLeave = (myMember.getFamilyMemberNo() == targetMemberNo);
 		boolean iAmAdmin = (myMember.getFamilyAuth() == 1);
@@ -147,7 +151,7 @@ public class FamilyGroupController implements Controller {
 			if (others.isEmpty()) {
 				// 혼자 남은 경우 → 그룹 자체 삭제
 				familyGroupService.removeFamilyGroup(myMember.getFamilyNo());
-				return "redirect:/family";
+				return "redirect:/group";
 			}
 
 			// 다른 멤버 있으면 → 가장 먼저 가입한 멤버에게 관리자 위임
@@ -162,6 +166,22 @@ public class FamilyGroupController implements Controller {
 		// 시나리오 A, C: 퇴장 처리
 		familyMemberService.removeFamilyMember(targetMemberNo);
 
-		return "redirect:/family";
+		return "redirect:/group";
+	}
+
+	// 초대 코드 페이지
+	private String invite(HttpServletRequest request, HttpServletResponse response) {
+		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+		FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+		if (myMember != null) {
+	        FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(myMember.getFamilyNo());
+	        request.setAttribute("myGroup", myGroup);
+	    }
+		return "group/group-invite";
+	}
+
+	// 초대 코드 입력 페이지
+	private String join(HttpServletRequest request, HttpServletResponse response) {
+		return "group/group-join";
 	}
 }

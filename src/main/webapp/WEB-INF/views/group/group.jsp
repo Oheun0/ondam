@@ -124,7 +124,7 @@
     <!-- 하단 고정 액션 버튼 -->
     <div class="group-fixed-actions">
         <a href="#" class="group-fixed-btn">멤버 관리</a>
-        <a href="${pageContext.request.contextPath}/wallet/wallet-manage.jsp" class="group-fixed-btn">지갑 관리</a>
+        <a href="${pageContext.request.contextPath}/wallet" class="group-fixed-btn">지갑 관리</a>
         <a href="#" class="group-fixed-btn group-fixed-btn--gift-history">선물 내역</a>
     </div>
 

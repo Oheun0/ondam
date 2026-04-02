@@ -27,7 +27,7 @@
         <div class="group-page">
 
             <div class="wallet-top">
-                <a href="${pageContext.request.contextPath}/group/group-empty.jsp" class="back-btn">
+                <a href="${pageContext.request.contextPath}/group?action=list" class="back-btn">
                     <span class="material-icons">arrow_back_ios</span>
                     <span>뒤로가기</span>
                 </a>

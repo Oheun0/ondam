@@ -46,7 +46,7 @@
                 <button type="button" class="charge-btn">충전하기</button>
 
                 <div class="wallet-link-box">
-                    <a href="${pageContext.request.contextPath}/wallet/wallet-history.jsp" class="wallet-link">
+                    <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-link">
                         사용내역 보기
                     </a>
                 </div>

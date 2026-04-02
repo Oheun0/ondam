@@ -27,6 +27,7 @@ import com.ondam.user.controller.SignupStep1BasicController;
 import com.ondam.user.controller.SignupStep2AddressController;
 import com.ondam.user.controller.SignupStep3PreferenceController;
 import com.ondam.user.controller.UserIdCheckController;
+import com.ondam.wallet.controller.WalletController;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,7 +50,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/category", new CategoryController());
         handlerMapping.put("/shorts", new ShortsController());
         handlerMapping.put("/shorts/api", new ShortsApiController());
-        handlerMapping.put("/family", new FamilyGroupController());
+        handlerMapping.put("/group", new FamilyGroupController());
+        handlerMapping.put("/wallet", new WalletController());
         handlerMapping.put("/mock-login", new MockLoginController());
         handlerMapping.put("/signup-start", new SignupStartController());
         handlerMapping.put("/signup-step0-basic", new SignupStep0BasicController());
