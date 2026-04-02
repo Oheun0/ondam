@@ -34,6 +34,7 @@ public class CategoryDAO {
 				dto.setUpCategoryNo(rs.getInt("upCategoryNo"));
 				dto.setCategoryLevel(rs.getInt("categoryLevel"));
 				dto.setCategoryName(rs.getString("categoryName"));
+				dto.setCategoryImg(rs.getString("categoryImg"));
 				vlist.addElement(dto);
 			}
 		} catch (Exception e) {
@@ -52,11 +53,12 @@ public class CategoryDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT Category (upCategoryNo, categoryLevel, categoryName) VALUES (?, ?, ?)";
+			sql = "INSERT Category (upCategoryNo, categoryLevel, categoryName, categoryImg) VALUES (?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getUpCategoryNo());
 			pstmt.setInt(2, dto.getCategoryLevel());
 			pstmt.setString(3, dto.getCategoryName());
+			pstmt.setString(4, dto.getCategoryImg());
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -75,12 +77,13 @@ public class CategoryDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE Category SET upCategoryNo = ?, categoryLevel = ?, categoryName = ? WHERE categoryNo = ?";
+			sql = "UPDATE Category SET upCategoryNo = ?, categoryLevel = ?, categoryName = ?, categoryImg = ? WHERE categoryNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getUpCategoryNo());
 			pstmt.setInt(2, dto.getCategoryLevel());
 			pstmt.setString(3, dto.getCategoryName());
-			pstmt.setInt(4, categoryNo);
+			pstmt.setString(4, dto.getCategoryImg());
+			pstmt.setInt(5, categoryNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {

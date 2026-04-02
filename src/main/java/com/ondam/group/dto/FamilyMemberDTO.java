@@ -6,17 +6,17 @@ public class FamilyMemberDTO {
     private int familyNo;
     private int userNo;
     private int familyAuth;
-    private String familyRelation;
+    private String userName;
 
     public FamilyMemberDTO() {}
 
     public FamilyMemberDTO(int familyMemberNo, int familyNo, int userNo,
-                           int familyAuth, String familyRelation) {
+                           int familyAuth, String userName) {
         this.familyMemberNo = familyMemberNo;
         this.familyNo = familyNo;
         this.userNo = userNo;
         this.familyAuth = familyAuth;
-        this.familyRelation = familyRelation;
+        this.userName = userName;
     }
 
     public int getFamilyMemberNo() {
@@ -51,11 +51,11 @@ public class FamilyMemberDTO {
         this.familyAuth = familyAuth;
     }
 
-    public String getFamilyRelation() {
-        return familyRelation;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setFamilyRelation(String familyRelation) {
-        this.familyRelation = familyRelation;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

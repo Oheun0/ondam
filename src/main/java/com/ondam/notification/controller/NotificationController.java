@@ -1,43 +1,99 @@
 package com.ondam.notification.controller;
 
+import java.util.Vector;
+
 import com.ondam.common.controller.Controller;
 import com.ondam.notification.dto.NotificationDTO;
 import com.ondam.notification.service.NotificationService;
-import com.ondam.user.dto.UserDTO; // 로그인 유저 DTO
+import com.ondam.user.dto.UserDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.Vector;
 
 public class NotificationController implements Controller {
 
-    private NotificationService notificationService;
+	private NotificationService notificationService = new NotificationService();
 
-    public NotificationController() {
-        this.notificationService = new NotificationService();
-    }
+	@Override
+	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession(false);
+		if (session == null || session.getAttribute("loginUser") == null) {
+			return "redirect:/login";
+		}
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. 세션에서 로그인 유저 정보 가져오기
-        HttpSession session = request.getSession();
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+		String action = request.getParameter("action");
+		if (action == null)
+			action = "list";
 
-        // 2. 로그인 여부 체크
-        if (loginUser == null) {
-            // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
-            return "redirect:/login";
-        }
+		switch (action) {
+		case "list":
+			return list(request, response);
+		case "markOneRead":
+			return markOneRead(request, response);
+		case "markAllRead":
+			return markAllRead(request, response);
+		case "deleteAll":
+			return deleteAll(request, response);
+		default:
+			return "redirect:/notification";
+		}
+	}
 
-        // 3. 서비스 호출 (유저 번호 전달)
-        int userNo = loginUser.getUserNo();
-        Vector<NotificationDTO> vlist = notificationService.getNotificationList(userNo);
+	private String list(HttpServletRequest request, HttpServletResponse response) {
+		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+		Vector<NotificationDTO> vlist = notificationService.getNotificationList(loginUser.getUserNo());
+		request.setAttribute("vlist", vlist);
+		refreshUnreadCount(request);
+		return "notification/list";
+	}
 
-        // 4. JSP에 데이터 전달을 위해 request에 저장
-        request.setAttribute("vlist", vlist);
+//    private String markOneRead(HttpServletRequest request, HttpServletResponse response) {
+//        String no = request.getParameter("notificationNo");
+//        if (no != null) notificationService.markOneRead(Integer.parseInt(no));
+//        return "redirect:/notification";
+//    }
 
-        // 5. 뷰 이름 반환
-        return "notification/list";
-    }
+	private String markOneRead(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String no = request.getParameter("notificationNo");
+		if (no == null)
+			return null;
+
+		int notificationNo = Integer.parseInt(no);
+		notificationService.markOneRead(notificationNo);
+		refreshUnreadCount(request);
+
+		// 클릭한 알림 정보 조회 (notificationType, refNo 필요)
+		NotificationDTO noti = notificationService.getNotificationByNo(notificationNo);
+
+		response.setContentType("application/json; charset=UTF-8");
+		if (noti != null) {
+			response.getWriter().write("{\"ok\":true, \"notificationType\":" + noti.getNotificationType()
+					+ ", \"refNo\":" + noti.getRefNo() + "}");
+		} else {
+			response.getWriter().write("{\"ok\":true, \"notificationType\":0, \"refNo\":0}");
+		}
+		return null;
+	}
+
+	private String markAllRead(HttpServletRequest request, HttpServletResponse response) {
+		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+		notificationService.markAllRead(loginUser.getUserNo());
+		refreshUnreadCount(request);
+		return "redirect:/notification";
+	}
+
+	private String deleteAll(HttpServletRequest request, HttpServletResponse response) {
+		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+		notificationService.removeAllNotification(loginUser.getUserNo());
+		refreshUnreadCount(request);
+		return "redirect:/notification";
+	}
+
+	// 공통 헬퍼 메서드
+	private void refreshUnreadCount(HttpServletRequest request) {
+		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+		int count = notificationService.getUnreadCount(loginUser.getUserNo());
+		request.getSession().setAttribute("unreadCount", count);
+	}
 }

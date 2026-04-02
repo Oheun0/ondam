@@ -41,4 +41,45 @@ public class UserHobbyDAO {
 		}
 		return list;
 	}
+	public int insertUserHobby(Connection con, UserHobbyDTO hobby) {
+        int result = 0;
+        PreparedStatement pstmt = null;
+        
+        String sql = "insert into userHobby (userNo, userHobby) values (?, ?)";
+                   
+        try {
+            pstmt = con.prepareStatement(sql);
+            
+            pstmt.setInt(1, hobby.getUserNo());
+            pstmt.setString(2, hobby.getUserHobby());
+            
+            result = pstmt.executeUpdate();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { 
+                if (pstmt != null) pstmt.close(); 
+            } catch (Exception e) {}
+        }
+        
+        return result;
+    }
+	
+	public int deleteUserHobby(Connection conn, int userNo) {
+	    int result = 0;
+	    PreparedStatement pstmt = null;
+	    String sql = "DELETE FROM userhobby WHERE userNo = ?";
+
+	    try {
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, userNo);
+	        result = pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+	    }
+	    return result;
+	}
 }

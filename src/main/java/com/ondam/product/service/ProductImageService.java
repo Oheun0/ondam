@@ -28,5 +28,8 @@ public class ProductImageService {
 	public boolean removeProductImage(int productImgNo) {
 		return dao.deleteProductImage(productImgNo);
 	}
+	
+	public Vector<ProductImageDTO> getImagesByProductNo(int productNo) {
+	    return dao.getByProductNo(productNo);
+	}
 }
-
