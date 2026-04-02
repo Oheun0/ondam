@@ -1,14 +1,19 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
+<% request.setAttribute("bottomNav", "home"); %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <title>온담 - 비밀번호 재설정</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
 <script>const ctxPath = "${pageContext.request.contextPath}";</script>
 <script defer src="${pageContext.request.contextPath}/js/auth.js?ver=9"></script>
 </head>
 <body>
+<div class="app-shell">
     <div class="auth-page">
         <div class="auth-wrap">
             <div class="auth-card">
@@ -34,8 +39,8 @@
                         <button type="submit" class="btn btn-primary" style="width: 100%;">비밀번호 변경하기</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
+            </div></div>
+        </div><jsp:include page="../layout/bottomNav.jsp" />
+    </div><script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>

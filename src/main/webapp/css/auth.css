@@ -199,11 +199,6 @@ a {
   background: var(--primary-dark);
 }
 
-.btn-kakao {
-  background: #fcdd11;
-  color: #503d2a;
-}
-
 .btn-outline {
   background: #fff;
   border: 1.5px solid var(--line);
@@ -394,8 +389,10 @@ a {
 
 
 .btn-check {
+  width: auto !important;
+  min-width: 96px;
   min-height: 56px;
-  padding: 0 5px;
+  padding: 0 10px;
   font-size: 16px;
   font-weight: 600;
   border: none;
@@ -443,12 +440,6 @@ a {
   font-weight: 700;
 }
 
-.btn-check {
-  width: auto !important;
-  min-width: 96px;
-  padding: 0 10px;
-}
-
 .error-msg {
   display: none;
   color: var(--danger);
@@ -475,4 +466,56 @@ a {
 .select.error-border {
   border-color: var(--danger) !important;
   background-color: #fffafb;
+}
+
+.auth-card.text-center {
+    text-align: center;
+}
+
+.result-box {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+    margin: 25px 0;
+    border: 1px dashed #ddd;
+}
+
+.result-label {
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.result-value {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.btn-row.stacked {
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn.btn-full {
+    width: 100%;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-link-wrap.spaced {
+    margin-top: 25px;
+}
+
+.link-help-text {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.auth-link.action-link {
+    margin-top: 8px;
+    display: inline-block;
 }

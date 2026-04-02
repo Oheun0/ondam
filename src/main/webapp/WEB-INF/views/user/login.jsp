@@ -1,13 +1,18 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<% request.setAttribute("bottomNav", "home"); %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>온담 로그인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
 </head>
 <body>
+<div class="app-shell">
   <div class="auth-page">
     <div class="auth-wrap">
 
@@ -57,9 +62,8 @@
       <div class="info-box">
         지인과 함께 쇼핑하는 즐거움을 느껴보세요!<br>
         카카오로 시작하면 더 빠르게 이용할 수 있어요.
-      </div>
-
-    </div>
-  </div>
+      </div></div>
+    </div><jsp:include page="../layout/bottomNav.jsp" />
+  </div> <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>
