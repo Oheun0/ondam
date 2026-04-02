@@ -8,14 +8,20 @@ import java.util.Collections;
 import java.util.Vector;
 import jakarta.servlet.http.Part;
 
+import com.ondam.product.dao.ProductDAO;
+import com.ondam.seller.dao.VendorDAO;
 import com.ondam.shorts.dao.ShortsDAO;
 import com.ondam.shorts.dto.ShortsDTO;
 
 public class ShortsService {
 
-    private final ShortsDAO dao;
+    private final ShortsDAO dao; 
     private final ShortsGenerator generator;
-
+    
+    // [추가] 조립을 위한 타 영역 DAO 선언
+    private final VendorDAO vendorDao = new VendorDAO();
+    private final ProductDAO productDao = new ProductDAO();
+    
     public ShortsService() {
         this.dao = new ShortsDAO();
         this.generator = new ShortsGenerator();
@@ -25,14 +31,27 @@ public class ShortsService {
         return dao.getShorts();
     }
 
+ // [수정] 메인 화면용 쇼츠 리스트 가져오기 (데이터 조립 포함)
     public Vector<ShortsDTO> getPublicAndShuffledShorts() {
         Vector<ShortsDTO> allShorts = dao.getShorts();
         Vector<ShortsDTO> publicShorts = new Vector<>();
+        
         for (ShortsDTO dto : allShorts) {
-            if (dto.getShortsState() == 1) publicShorts.add(dto);
+            if (dto.getShortsState() == 1) {
+                // [데이터 조립] 
+                // 각각의 외래키(vendorNo, productNo)를 이용해 이름을 조회해옵니다.
+                // 각 DAO에는 getVendorName(int), getProductName(int) 메서드가 있다고 가정합니다.
+                String vName = vendorDao.getVendorName(dto.getVendorNo());
+                String pName = productDao.getProductName(dto.getProductNo());
+                
+                dto.setVendorName(vName != null ? vName : "Unknown Vendor");
+                dto.setProductName(pName != null ? pName : "Unknown Product");
+                
+                publicShorts.add(dto);
+            }
         }
         Collections.shuffle(publicShorts);
-        return publicShorts;
+        return publicShorts;	
     }
 
     public String requestGenerateShorts(int vendorNo, int productNo, String realPath) {

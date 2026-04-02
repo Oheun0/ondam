@@ -147,4 +147,32 @@ public class ProductOptionDAO {
 	    }
 	    return vlist;
 	}
+	// [추가] 옵션 번호로 단일 옵션 정보 조회
+    public ProductOptionDTO getProductOptionByNo(int productOptionNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        ProductOptionDTO dto = null;
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT * FROM ProductOption WHERE productOptionNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productOptionNo);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                dto = new ProductOptionDTO();
+                dto.setProductOptionNo(rs.getInt("productOptionNo"));
+                dto.setProductNo(rs.getInt("productNo"));
+                dto.setOptionSize(rs.getString("optionSize"));
+                dto.setOptionColor(rs.getString("optionColor"));
+                dto.setOptionAddPrice(rs.getInt("optionAddPrice"));
+                dto.setOptionStock(rs.getInt("optionStock"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return dto;
+    }
 }

@@ -150,5 +150,29 @@ public class VendorDAO {
 		}
 		return flag;
 	}
+	
+	// 업체 번호를 통해 업체명 조회
+	public String getVendorName(int vendorNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String vendorName = null;
+	    try {
+	        con = pool.getConnection();
+	        // DB 설계서의 컬럼명 'vendorName' 사용
+	        String sql = "SELECT vendorName FROM vendor WHERE vendorNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, vendorNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            vendorName = rs.getString("vendorName");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vendorName;
+	}
 }
 

@@ -12,10 +12,20 @@ public class ShortsDTO {
     private int shortsState; // -1: 실패, 0: 생성 중, 1: 공개, 2: 비공개(나만보기)
     private String createdAt;
 
+    // [추가] 화면 표시용 필드 (DB 테이블에는 없으나 조립용으로 필요)
+    private String vendorName;
+    private String productName;
+    
+    // [추가] Getter & Setter
+    public String getVendorName() { return vendorName; }
+    public void setVendorName(String vendorName) { this.vendorName = vendorName; }
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
+    
     public ShortsDTO() {}
 
     public ShortsDTO(int shortsNo, int vendorNo, int productNo, String shortsTitle, String shortsContent, String videoFile, String thumbnailImg,
-                     int shortsState, String createdAt) {
+                     int shortsState, String createdAt, String vendorName, String productName) {
         this.shortsNo = shortsNo;
         this.vendorNo = vendorNo;
         this.productNo = productNo;
@@ -25,7 +35,10 @@ public class ShortsDTO {
         this.thumbnailImg = thumbnailImg;
         this.shortsState = shortsState;
         this.createdAt = createdAt;
+        this.vendorName = vendorName;
+        this.productName = productName;
     }
+    
 
     public int getShortsNo() {
         return shortsNo;
