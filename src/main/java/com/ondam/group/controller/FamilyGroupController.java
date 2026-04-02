@@ -8,6 +8,8 @@ import com.ondam.group.dto.FamilyMemberDTO;
 import com.ondam.group.service.FamilyGroupService;
 import com.ondam.group.service.FamilyMemberService;
 import com.ondam.user.dto.UserDTO;
+import com.ondam.wallet.dto.WalletDTO;
+import com.ondam.wallet.service.WalletService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +19,7 @@ public class FamilyGroupController implements Controller {
 
 	private FamilyGroupService familyGroupService = new FamilyGroupService();
 	private FamilyMemberService familyMemberService = new FamilyMemberService();
+	private WalletService walletService = new WalletService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -203,6 +206,13 @@ public class FamilyGroupController implements Controller {
 	        memberDto.setFamilyAuth(1);
 	        memberDto.setUserName(loginUser.getUserName());
 	        familyMemberService.createFamilyMember(memberDto);
+	        
+	        // ── 그룹 고유 지갑 자동 생성 ──────────────────
+	        WalletDTO walletDto = new WalletDTO();
+	        walletDto.setFamilyNo(newFamilyNo);
+	        walletDto.setBalance(0);
+	        walletDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+	        walletService.createWallet(walletDto);
 
 	        FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(newFamilyNo);
 	        request.setAttribute("myGroup", myGroup);

@@ -45,10 +45,11 @@
                         <span class="group-invite-code">${myGroup.familyInviteCode}</span>
                     </div>
 
-                    <button type="button" class="group-copy-btn">
-                        복사
-                    </button>
-                </div>
+						<button type="button" class="group-copy-btn"
+							onclick="navigator.clipboard.writeText(document.querySelector('.group-invite-code').textContent.trim())">
+							복사
+						</button>
+					</div>
 
                 <p class="group-invite-guide">
                     초대 코드를 보내면 내 사람으로 연결할 수 있어요
