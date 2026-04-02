@@ -42,7 +42,7 @@
 
                 <div class="group-invite-code-row">
                     <div class="group-invite-code-box">
-                        <span class="group-invite-code">ABCD-1234</span>
+                        <span class="group-invite-code">${myGroup.familyInviteCode}</span>
                     </div>
 
                     <button type="button" class="group-copy-btn">

@@ -41,7 +41,9 @@ public class FamilyGroupController implements Controller {
 		case "invite":
 			return invite(request, response);
 		case "join":
-			return join(request, response);
+			return "group/group-join";
+		case "joinSubmit":
+			return joinSubmit(request, response);
 		default:
 			return "redirect:/group";
 		}
@@ -171,17 +173,90 @@ public class FamilyGroupController implements Controller {
 
 	// 초대 코드 페이지
 	private String invite(HttpServletRequest request, HttpServletResponse response) {
-		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
-		FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
-		if (myMember != null) {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+
+	    if (myMember == null) {
+	        // 1. 초대 코드 먼저 생성
+	        String inviteCode = generateInviteCode();
+
+	        // 2. 그룹 INSERT (inviteCode 포함)
+	        FamilyGroupDTO groupDto = new FamilyGroupDTO();
+	        groupDto.setFamilyName("temp");
+	        groupDto.setFamilyInviteCode(inviteCode); // ← 여기서 같이 넣음
+	        groupDto.setFamilyDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+
+	        int newFamilyNo = familyGroupService.createFamilyGroupAndGetNo(groupDto);
+	        if (newFamilyNo == -1) return "redirect:/group";
+
+	        // 3. familyName을 PK값으로 UPDATE
+	        FamilyGroupDTO updateDto = new FamilyGroupDTO();
+	        updateDto.setFamilyName(String.valueOf(newFamilyNo));
+	        updateDto.setFamilyInviteCode(inviteCode);
+	        updateDto.setFamilyDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+	        familyGroupService.modifyFamilyGroup(updateDto, newFamilyNo);
+
+	        // 4. 관리자(auth=1)로 멤버 등록
+	        FamilyMemberDTO memberDto = new FamilyMemberDTO();
+	        memberDto.setFamilyNo(newFamilyNo);
+	        memberDto.setUserNo(loginUser.getUserNo());
+	        memberDto.setFamilyAuth(1);
+	        memberDto.setUserName(loginUser.getUserName());
+	        familyMemberService.createFamilyMember(memberDto);
+
+	        FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(newFamilyNo);
+	        request.setAttribute("myGroup", myGroup);
+
+	    } else {
 	        FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(myMember.getFamilyNo());
 	        request.setAttribute("myGroup", myGroup);
 	    }
-		return "group/group-invite";
+
+	    return "group/group-invite";
 	}
 
-	// 초대 코드 입력 페이지
-	private String join(HttpServletRequest request, HttpServletResponse response) {
-		return "group/group-join";
+	// 초대 코드 생성 (XXXX-XXXX 형식)
+	private String generateInviteCode() {
+	    String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	    java.util.Random random = new java.util.Random();
+	    StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < 4; i++) sb.append(chars.charAt(random.nextInt(chars.length())));
+	    sb.append("-");
+	    for (int i = 0; i < 4; i++) sb.append(chars.charAt(random.nextInt(chars.length())));
+	    return sb.toString();
+	}
+	
+	private String joinSubmit(HttpServletRequest request, HttpServletResponse response) {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+
+	    // 이미 그룹에 속해있으면 차단(방어 코드, 일어날 일 없을듯)
+	    FamilyMemberDTO already = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+	    if (already != null) {
+	        request.setAttribute("errorMsg", "이미 그룹에 속해있어요.");
+	        return "group/group-join";
+	    }
+
+	    String inviteCode = request.getParameter("inviteCode");
+	    if (inviteCode == null || inviteCode.trim().isEmpty()) {
+	        request.setAttribute("errorMsg", "초대 코드를 입력해주세요.");
+	        return "group/group-join";
+	    }
+
+	    // 초대 코드로 그룹 조회
+	    FamilyGroupDTO targetGroup = familyGroupService.getFamilyGroupByInviteCode(inviteCode.trim());
+	    if (targetGroup == null) {
+	        request.setAttribute("errorMsg", "유효하지 않은 초대 코드예요.");
+	        return "group/group-join";
+	    }
+
+	    // 일반 멤버(auth=0)로 등록
+	    FamilyMemberDTO memberDto = new FamilyMemberDTO();
+	    memberDto.setFamilyNo(targetGroup.getFamilyNo());
+	    memberDto.setUserNo(loginUser.getUserNo());
+	    memberDto.setFamilyAuth(0); // 0: 일반 멤버
+	    memberDto.setUserName(loginUser.getUserName());
+	    familyMemberService.createFamilyMember(memberDto);
+
+	    return "redirect:/group";
 	}
 }
