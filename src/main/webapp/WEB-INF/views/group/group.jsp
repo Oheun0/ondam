@@ -52,6 +52,7 @@
 											class="material-symbols-outlined member-btn-gift-icon"
 											aria-hidden="true">featured_seasonal_and_gifts</span> 선물하기
 										</a> <a href="#" class="member-btn">장바구니 보기</a>
+										</a> <a href="#" class="member-btn">찜 목록 보기</a>
 									</div>
 								</div>
 							</article>
@@ -74,6 +75,7 @@
                                 선물하기
                             </a>
                             <a href="#" class="member-btn">장바구니 보기</a>
+                            <a href="#" class="member-btn">찜 목록 보기</a>
                         </div>
                     </div>
                 </article> --%>
@@ -96,6 +98,7 @@
 											class="material-symbols-outlined member-btn-gift-icon"
 											aria-hidden="true">featured_seasonal_and_gifts</span> 선물하기
 										</a> <a href="#" class="member-btn">장바구니 보기</a>
+										</a> <a href="#" class="member-btn">찜 목록 보기</a>
 									</div>
 								</div>
 							</article>
@@ -118,6 +121,7 @@
                                 선물하기
                             </a>
                             <a href="#" class="member-btn">장바구니 보기</a>
+                            <a href="#" class="member-btn">찜 목록 보기</a>
                         </div>
                     </div>
                 </article>
@@ -139,6 +143,7 @@
                                 선물하기
                             </a>
                             <a href="#" class="member-btn">장바구니 보기</a>
+                            <a href="#" class="member-btn">찜 목록 보기</a>
                         </div>
                     </div>
                 </article>
@@ -160,6 +165,7 @@
                                 선물하기
                             </a>
                             <a href="#" class="member-btn">장바구니 보기</a>
+                            <a href="#" class="member-btn">찜 목록 보기</a>
                         </div>
                     </div>
                 </article> --%>
@@ -173,6 +179,12 @@
         <a href="#" class="group-fixed-btn">멤버 관리</a>
         <a href="${pageContext.request.contextPath}/wallet" class="group-fixed-btn">지갑 관리</a>
         <a href="#" class="group-fixed-btn group-fixed-btn--gift-history">선물 내역</a>
+        <!-- 그룹장일 때
+        <a href="${pageContext.request.contextPath}/group/group-manage-owner.jsp" class="group-fixed-btn">멤버 관리</a> -->
+        <!-- 일반 멤버일 때
+        <a href="${pageContext.request.contextPath}/group/group-manage-member.jsp" class="group-fixed-btn">멤버 관리</a> -->
+        <a href="${pageContext.request.contextPath}/wallet" class="group-fixed-btn">지갑 관리</a>
+        <a href="#" class="group-fixed-btn group-fixed-btn--gift-history">선물함</a>
     </div>
 
     <jsp:include page="../layout/bottomNav.jsp" />

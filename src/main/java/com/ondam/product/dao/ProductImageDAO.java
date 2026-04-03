@@ -143,4 +143,32 @@ public class ProductImageDAO {
 		}
 		return vlist;
 	}
+	
+	public ProductImageDTO getProductImageById(int productNo) {
+		Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    ProductImageDTO dto = null;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM productImage WHERE productNo = ? ORDER BY imgOrder ASC LIMIT 1";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            dto = new ProductImageDTO();
+	            dto.setProductImgNo(rs.getInt("productImgNo"));
+	            dto.setProductNo(rs.getInt("productNo"));
+	            dto.setImgFile(rs.getString("imgFile"));
+	            dto.setImgType(rs.getInt("imgType"));
+	            dto.setImgOrder(rs.getInt("imgOrder"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return dto;
+	}
 }

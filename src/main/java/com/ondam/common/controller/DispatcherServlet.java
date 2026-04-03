@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ondam.cart.controller.CartController;
 import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
@@ -14,6 +15,8 @@ import com.ondam.review.controller.ReviewController;
 import com.ondam.review.controller.ReviewImageController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
+import com.ondam.user.controller.AddressDeleteController;
+import com.ondam.user.controller.AddressFormController;
 import com.ondam.user.controller.AddressSaveController;
 import com.ondam.user.controller.FindIdController;
 import com.ondam.user.controller.FindPwdController;
@@ -87,11 +90,14 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/profile-address", new ProfileAddressController());
         handlerMapping.put("/preference", new ProfilePreferenceController());
         handlerMapping.put("/address/save", new AddressSaveController());
+        handlerMapping.put("/address/form", new AddressFormController());
+        handlerMapping.put("/address/delete", new AddressDeleteController());
         handlerMapping.put("/profile/preference", new PreferenceSaveController());
         handlerMapping.put("/product", new ProductController());
         handlerMapping.put("/poke", new PokeController());
         handlerMapping.put("/review", new ReviewController());
         handlerMapping.put("/reviewImage", new ReviewImageController());
+        handlerMapping.put("/cart", new CartController());
         
     }
 

@@ -152,7 +152,7 @@
             <button type="submit" class="save-btn">체형 정보 저장하기</button>
         </form>
 
-        <form action="${pageContext.request.contextPath}/mypage/profile/preference" method="post" class="profile-pref-form profile-pref-form--taste">
+        <form action="${pageContext.request.contextPath}/profile/preference" method="post" class="profile-pref-form profile-pref-form--taste">
             <input type="hidden" name="saveScope" value="preference">
 
             <section class="edit-card">
