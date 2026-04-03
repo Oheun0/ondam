@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     request.setAttribute("bottomNav", "group");
 %>
@@ -26,7 +27,7 @@
     <main class="main-content group-main">
       <section class="group-page group-manage-page">
         <div class="wallet-top">
-          <a href="${pageContext.request.contextPath}/group/group.jsp" class="back-btn">
+          <a href="${pageContext.request.contextPath}/group" class="back-btn">
             <span class="material-icons">arrow_back_ios</span>
             <span>뒤로가기</span>
           </a>
@@ -45,7 +46,7 @@
           <div class="group-summary-top">
             <div>
               <p class="group-summary-label">내 사람 그룹</p>
-              <h3 class="group-summary-name">우리 내 사람</h3>
+              <h3 class="group-summary-name">${myGroup.familyName}</h3>
             </div>
             <span class="group-role-badge">멤버</span>
           </div>
@@ -53,104 +54,173 @@
           <div class="group-summary-meta">
             <div class="group-summary-item">
               <span class="group-summary-key">현재 인원</span>
-              <strong class="group-summary-value">3명 / 4명</strong>
+              <strong class="group-summary-value">${memberList.size()}명 / 4명</strong>
             </div>
             <div class="group-summary-item">
               <span class="group-summary-key">그룹장</span>
-              <strong class="group-summary-value">김지현님</strong>
+              <strong class="group-summary-value">
+              <c:forEach var="m" items="${memberList}">
+                  <c:if test="${m.familyAuth == 1}">${m.userName}님</c:if>
+              </c:forEach>
+              </strong>
             </div>
           </div>
         </div>
 
         <!-- 멤버 목록 -->
-        <div class="group-manage-section">
-          <div class="group-section-head">
-            <h3 class="group-section-title">연결된 멤버</h3>
-          </div>
-
-          <div class="group-member-list">
-
-            <!-- 그룹장 -->
-            <article class="group-member-card group-member-card--manage">
-              <div class="member-thumb-wrap">
-                <img src="${pageContext.request.contextPath}/images/profile/test.jpg" alt="성연수 프로필" class="member-thumb">
-              </div>
-
-              <div class="member-content">
-                <div class="member-name-row">
-                  <span class="member-name">성연수</span>
-                  <span class="manage-badge manage-badge--owner">그룹장</span>
-                </div>
-
-
-                <div class="member-btn-row member-btn-row--manage">
-                  <a href="#" class="member-btn member-btn--help member-btn--solo-row">도움주기</a>
-                </div>
-              </div>
-            </article>
-
-            <!-- 나 -->
-            <article class="group-member-card group-member-card--manage">
-              <div class="member-thumb-wrap">
-                <img src="${pageContext.request.contextPath}/images/profile/default-profile.png" alt="김남준 프로필" class="member-thumb">
-              </div>
-
-              <div class="member-content">
-                <div class="member-name-row">
-                  <span class="member-name">김남준</span>
-                  <span class="manage-badge manage-badge--me">나</span>
-                </div>
-
-              </div>
-            </article>
-
-            <!-- 도움 대상 -->
-            <article class="group-member-card group-member-card--manage">
-              <div class="member-thumb-wrap">
-                <img src="${pageContext.request.contextPath}/images/profile/default-profile.png" alt="김가빈 프로필" class="member-thumb">
-              </div>
-
-              <div class="member-content">
-                <div class="member-name-row">
-                  <span class="member-name">김가빈</span>
-                  <span class="manage-badge manage-badge--help">도움 가능</span>
-                </div>
-
-
-                <div class="member-btn-row member-btn-row--manage">
-                  <a href="#" class="member-btn member-btn--soft member-btn--solo-row">회원 정보 수정 도와주기</a>
-                </div>
-              </div>
-            </article>
-          </div>
-        </div>
-        
-		<!-- 연결 관리 -->
 		<div class="group-manage-section">
 		  <div class="group-section-head">
-		    <h3 class="group-section-title">연결 관리</h3>
+		    <h3 class="group-section-title">연결된 멤버</h3>
 		  </div>
 		
-		  <div class="pending-member-card">
-		    <div class="pending-member-info">
-		      <strong class="pending-member-name">현재 3명 / 4명</strong>
-		      <p class="pending-member-desc">
-		        이 그룹에 연결되어 있어요
-		      </p>
-		    </div>
+		  <div class="group-member-list">
+		    <c:forEach var="m" items="${memberList}">
+		      <c:set var="isHelping" value="${helpeeSet.contains(m.userNo)}" />
 		
-		    <div class="pending-member-actions pending-member-actions--column">
-		      <a href="#"
-		         class="group-empty-btn group-empty-btn--secondary group-empty-btn--danger-outline">
-		        그룹 나가기
-		      </a>
-		    </div>
+		      <article class="group-member-card group-member-card--manage"
+		               data-helpee-userno="${m.userNo}"
+		               data-family-no="${myGroup.familyNo}">
+		        <div class="member-thumb-wrap">
+		          <img src="${pageContext.request.contextPath}/images/profile/default-profile.png"
+		               alt="${m.userName} 프로필" class="member-thumb">
+		        </div>
+		
+		        <div class="member-content">
+		          <div class="member-name-row">
+		            <span class="member-name">${m.userName}</span>
+		
+		            <c:if test="${m.familyAuth == 1}">
+		              <span class="manage-badge manage-badge--owner">그룹장</span>
+		            </c:if>
+		            <c:if test="${m.userNo == myMember.userNo}">
+		              <span class="manage-badge manage-badge--me">나</span>
+		            </c:if>
+		
+		            <%-- 도움 가능 배지: DB 상태 반영 --%>
+		            <c:if test="${m.userNo != myMember.userNo}">
+		              <span class="manage-badge manage-badge--help help-badge"
+		                    style="${isHelping ? '' : 'display:none;'}">도움 가능</span>
+		            </c:if>
+		          </div>
+		
+		          <c:if test="${m.userNo != myMember.userNo}">
+		            <div class="member-btn-row member-btn-row--manage">
+		              <c:choose>
+		                <c:when test="${isHelping}">
+		                  <a href="#"
+		                     class="member-btn member-btn--soft member-btn--solo-row help-toggle-btn"
+		                     onclick="return false;">배송지 수정 도와주기</a>
+		                  <a href="#"
+		                     class="member-btn member-btn--soft member-btn--solo-row help-cancel-btn"
+		                     onclick="cancelHelp(this.closest('.group-member-card')); return false;">도움 주기 취소</a>
+		                </c:when>
+		                <c:otherwise>
+		                  <a href="#"
+		                     class="member-btn member-btn--help member-btn--solo-row help-toggle-btn"
+		                     onclick="toggleHelp(this); return false;">도움 주기</a>
+		                </c:otherwise>
+		              </c:choose>
+		            </div>
+		          </c:if>
+		        </div>
+		      </article>
+		    </c:forEach>
 		  </div>
 		</div>
-      </section>
+        
+		<!-- 연결 관리 -->
+			<div class="group-manage-section">
+				<div class="group-section-head">
+					<h3 class="group-section-title">연결 관리</h3>
+				</div>
 
+				<div class="pending-member-card">
+					<div class="pending-member-info">
+						<%-- 현재 인원 동적 출력 --%>
+						<strong class="pending-member-name">현재
+							${memberList.size()}명 / 4명</strong>
+						<p class="pending-member-desc">이 그룹에 연결되어 있어요</p>
+					</div>
+
+					<div class="pending-member-actions pending-member-actions--column">
+						<%-- 내 familyMemberNo로 memberDelete 호출 --%>
+						<a
+							href="${pageContext.request.contextPath}/group?action=memberDelete&familyMemberNo=${myMember.familyMemberNo}"
+							class="group-empty-btn group-empty-btn--secondary group-empty-btn--danger-outline">
+							그룹 나가기 </a>
+					</div>
+				</div>
+			</div>
+		</section>
+		
     <jsp:include page="../layout/bottomNav.jsp" />
   </div>
-  <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
+	<script>
+		const contextPath = document.body.dataset.contextPath;
+		
+		function toggleHelp(btn) {
+		  const card = btn.closest('.group-member-card');
+		  const helpeeUserNo = card.dataset.helpeeUserno;
+		  const familyNo = card.dataset.familyNo;
+		
+		  fetch(contextPath + '/group?action=helpAdd', {
+		    method: 'POST',
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		    body: 'helpeeUserNo=' + helpeeUserNo + '&familyNo=' + familyNo
+		  }).then(r => {
+		    if (r.ok) applyHelpState(card);
+		  });
+		}
+		
+		function cancelHelp(card) {
+		  const helpeeUserNo = card.dataset.helpeeUserno;
+		  const familyNo = card.dataset.familyNo;
+		
+		  fetch(contextPath + '/group?action=helpCancel', {
+		    method: 'POST',
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		    body: 'helpeeUserNo=' + helpeeUserNo + '&familyNo=' + familyNo
+		  }).then(r => {
+		    if (r.ok) applyCancelState(card);
+		  });
+		}
+		
+		function applyHelpState(card) {
+		  const badge = card.querySelector('.help-badge');
+		  const btnRow = card.querySelector('.member-btn-row--manage');
+		  const helpBtn = card.querySelector('.help-toggle-btn');
+		
+		  helpBtn.textContent = '배송지 수정 도와주기';
+		  helpBtn.classList.remove('member-btn--help');
+		  helpBtn.classList.add('member-btn--soft');
+		  helpBtn.onclick = null;
+		
+		  if (badge) badge.style.display = 'inline-flex';
+		
+		  if (!card.querySelector('.help-cancel-btn')) {
+		    const cancelBtn = document.createElement('a');
+		    cancelBtn.href = '#';
+		    cancelBtn.className = 'member-btn member-btn--soft member-btn--solo-row help-cancel-btn';
+		    cancelBtn.textContent = '도움 주기 취소';
+		    cancelBtn.addEventListener('click', e => { e.preventDefault(); cancelHelp(card); });
+		    btnRow.appendChild(cancelBtn);
+		  }
+		}
+		
+		function applyCancelState(card) {
+		  const badge = card.querySelector('.help-badge');
+		  const cancelBtn = card.querySelector('.help-cancel-btn');
+		  const helpBtn = card.querySelector('.help-toggle-btn');
+		
+		  if (badge) badge.style.display = 'none';
+		  if (cancelBtn) cancelBtn.remove();
+		
+		  helpBtn.textContent = '도움 주기';
+		  helpBtn.classList.remove('member-btn--soft');
+		  helpBtn.classList.add('member-btn--help');
+		  helpBtn.onclick = function() { toggleHelp(helpBtn); return false; };
+		}
+		</script>
+	<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>

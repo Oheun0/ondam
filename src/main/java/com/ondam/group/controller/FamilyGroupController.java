@@ -4,8 +4,10 @@ import java.util.Vector;
 
 import com.ondam.common.controller.Controller;
 import com.ondam.group.dto.FamilyGroupDTO;
+import com.ondam.group.dto.FamilyHelpDTO;
 import com.ondam.group.dto.FamilyMemberDTO;
 import com.ondam.group.service.FamilyGroupService;
+import com.ondam.group.service.FamilyHelpService;
 import com.ondam.group.service.FamilyMemberService;
 import com.ondam.user.dto.UserDTO;
 import com.ondam.wallet.dto.WalletDTO;
@@ -20,6 +22,7 @@ public class FamilyGroupController implements Controller {
 	private FamilyGroupService familyGroupService = new FamilyGroupService();
 	private FamilyMemberService familyMemberService = new FamilyMemberService();
 	private WalletService walletService = new WalletService();
+	private FamilyHelpService familyHelpService = new FamilyHelpService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -47,6 +50,16 @@ public class FamilyGroupController implements Controller {
 			return "group/group-join";
 		case "joinSubmit":
 			return joinSubmit(request, response);
+		case "manage":
+			return manage(request, response);
+		case "changeOwner":
+		    return changeOwner(request, response);
+		case "helpAdd":
+		    return helpAdd(request, response);
+		case "helpCancel":
+		    return helpCancel(request, response);
+		case "updateGroupName":
+		    return updateGroupName(request, response);
 		default:
 			return "redirect:/group";
 		}
@@ -216,10 +229,13 @@ public class FamilyGroupController implements Controller {
 
 	        FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(newFamilyNo);
 	        request.setAttribute("myGroup", myGroup);
+	        request.setAttribute("isNameDefault", true);
 
 	    } else {
 	        FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(myMember.getFamilyNo());
 	        request.setAttribute("myGroup", myGroup);
+	        boolean isNameDefault = String.valueOf(myGroup.getFamilyNo()).equals(myGroup.getFamilyName());
+	        request.setAttribute("isNameDefault", isNameDefault);
 	    }
 
 	    return "group/group-invite";
@@ -268,5 +284,101 @@ public class FamilyGroupController implements Controller {
 	    familyMemberService.createFamilyMember(memberDto);
 
 	    return "redirect:/group";
+	}
+	
+	private String manage(HttpServletRequest request, HttpServletResponse response) {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+
+	    FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+	    if (myMember == null) return "redirect:/group";
+
+	    FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(myMember.getFamilyNo());
+	    Vector<FamilyMemberDTO> memberList = familyMemberService.getFamilyMembersByFamilyNo(myMember.getFamilyNo());
+	    
+	    java.util.HashSet<Integer> helpeeSet = new java.util.HashSet<>(
+	            familyHelpService.getHelpeeUserNosByHelper(loginUser.getUserNo(), myMember.getFamilyNo())
+	        );
+
+	    request.setAttribute("myGroup", myGroup);
+	    request.setAttribute("myMember", myMember);
+	    request.setAttribute("memberList", memberList);
+	    request.setAttribute("helpeeSet", helpeeSet);
+
+	    // 관리자(1) → owner 페이지, 일반(0) → member 페이지
+	    return myMember.getFamilyAuth() == 1
+	        ? "group/group-manage-owner"
+	        : "group/group-manage-member";
+	}
+	
+	private String changeOwner(HttpServletRequest request, HttpServletResponse response) {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+
+	    String targetMemberNoParam = request.getParameter("familyMemberNo");
+	    if (targetMemberNoParam == null) return "redirect:/group";
+
+	    int targetMemberNo = Integer.parseInt(targetMemberNoParam);
+
+	    // 현재 로그인 유저의 멤버 정보 조회
+	    FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+	    if (myMember == null || myMember.getFamilyAuth() != 1) return "redirect:/group"; // 관리자 아니면 차단
+
+	    // 대상 멤버를 관리자(1)로 승격
+	    familyMemberService.changeFamilyAuth(targetMemberNo, 1);
+
+	    // 나는 일반 멤버(0)로 강등
+	    familyMemberService.changeFamilyAuth(myMember.getFamilyMemberNo(), 0);
+
+	    return "redirect:/group";
+	}
+	
+	private String helpAdd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    int helpeeUserNo = Integer.parseInt(request.getParameter("helpeeUserNo"));
+	    int familyNo = Integer.parseInt(request.getParameter("familyNo"));
+
+	    FamilyHelpDTO dto = new FamilyHelpDTO();
+	    dto.setFamilyNo(familyNo);
+	    dto.setHelperUserNo(loginUser.getUserNo());
+	    dto.setHelpeeUserNo(helpeeUserNo);
+	    familyHelpService.createFamilyHelp(dto);
+
+	    response.setContentType("text/plain;charset=UTF-8");
+	    response.getWriter().write("ok");
+	    return null;
+	}
+
+	private String helpCancel(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    int helpeeUserNo = Integer.parseInt(request.getParameter("helpeeUserNo"));
+
+	    familyHelpService.removeHelpByHelperAndHelpee(loginUser.getUserNo(), helpeeUserNo);
+
+	    response.setContentType("text/plain;charset=UTF-8");
+	    response.getWriter().write("ok");
+	    return null;
+	}
+	
+	private String updateGroupName(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+
+	    String familyName = request.getParameter("familyName");
+	    if (familyName == null || familyName.trim().isEmpty()) {
+	        response.setContentType("text/plain;charset=UTF-8");
+	        response.getWriter().write("error");
+	        return null;
+	    }
+
+	    FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+	    if (myMember == null) {
+	        response.setContentType("text/plain;charset=UTF-8");
+	        response.getWriter().write("error");
+	        return null;
+	    }
+
+	    familyGroupService.modifyFamilyName(myMember.getFamilyNo(), familyName.trim());
+
+	    response.setContentType("text/plain;charset=UTF-8");
+	    response.getWriter().write("ok");
+	    return null;
 	}
 }

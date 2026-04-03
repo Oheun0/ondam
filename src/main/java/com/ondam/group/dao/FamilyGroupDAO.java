@@ -191,4 +191,24 @@ public class FamilyGroupDAO {
 	    }
 	    return dto;
 	}
+	
+	// 내 사람 그룹명만 변경
+	public boolean updateFamilyName(int familyNo, String familyName) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE familygroup SET familyName = ? WHERE familyNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, familyName);
+	        pstmt.setInt(2, familyNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return flag;
+	}
 }
