@@ -38,7 +38,7 @@
                 <p class="group-empty-desc">내 사람을 초대하거나 받은 초대 코드를 통해 <br> 연결할 수 있어요</p>
 
                 <div class="group-empty-btns">
-			    <a href="${pageContext.request.contextPath}/group?action=invite"
+			    <a href="${pageContext.request.contextPath}/group?action=groupName"
 			       class="group-empty-btn group-empty-btn--primary">
 			        내 사람 초대하기
 			    </a>

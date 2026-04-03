@@ -26,7 +26,7 @@
         <div class="group-page">
 
             <div class="wallet-top">
-                <a href="${pageContext.request.contextPath}/group/group.jsp" class="back-btn">
+                <a href="${pageContext.request.contextPath}/group" class="back-btn">
                     <span class="material-icons">arrow_back_ios</span>
                     <span>뒤로가기</span>
                 </a>
@@ -40,7 +40,7 @@
             <div class="group-invite-card">
                 <p class="group-invite-label">그룹명</p>
 
-                <form action="${pageContext.request.contextPath}/group/group-invite.jsp" method="post">
+                <form action="${pageContext.request.contextPath}/group?action=groupName" method="post">
                     <div class="group-name-form-row">
                         <div class="group-name-form-box">
                             <input type="text"
