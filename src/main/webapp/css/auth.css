@@ -254,6 +254,7 @@ a {
   padding: 16px;
   font-size: 15px;
   color: #4d5a4e;
+  margin: 0 auto 100px auto;
 }
 
 .option-grid {
