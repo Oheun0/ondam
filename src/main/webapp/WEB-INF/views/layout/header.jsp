@@ -23,7 +23,9 @@
 			</a>
             <a href="${pageContext.request.contextPath}/cart" class="icon-btn badge-wrap" aria-label="장바구니 보기">
                 <span class="material-icons-outlined">shopping_cart</span>
-                <span class="badge">1</span>
+                <c:if test="${sessionScope.cartCount > 0}">
+                    <span class="badge">${sessionScope.cartCount}</span>
+                </c:if>
             </a>
         </div>
     </div>

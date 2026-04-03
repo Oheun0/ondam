@@ -110,4 +110,11 @@ public class CartService {
             }
         }
     }
+    
+    // 세션 갱신을 위한 장바구니 전체 수량 조회
+    public int refreshCartTotalQuantity(int userNo) {
+        int cartNo = cartDao.getOrCreateCart(userNo);
+        return itemDao.getCartTotalQuantity(cartNo);
+    }
+    
 }

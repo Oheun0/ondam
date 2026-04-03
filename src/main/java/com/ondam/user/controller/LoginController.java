@@ -34,6 +34,10 @@ public class LoginController implements Controller {
 				HttpSession session = request.getSession();
 				session.setAttribute("loginUser", loginUser);
 
+				com.ondam.cart.service.CartService cartService = new com.ondam.cart.service.CartService();
+			    int totalQty = cartService.refreshCartTotalQuantity(loginUser.getUserNo());
+			    session.setAttribute("cartCount", totalQty);
+			    
 				return "redirect:/main";
 			} else {
 				request.setAttribute("오류", "아이디 또는 비밀번호가 일치하지 않습니다.");

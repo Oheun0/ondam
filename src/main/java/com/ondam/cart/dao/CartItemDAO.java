@@ -192,4 +192,30 @@ public class CartItemDAO {
         }
         return dto;
     }
+    
+    // 장바구니에 담긴 모든 상품의 수량 총합 반환
+    public int getCartTotalQuantity(int cartNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int totalQty = 0;
+        try {
+            con = pool.getConnection();
+            // 전체 수량 합산을 위해 SUM() 함수 사용
+            String sql = "SELECT SUM(cartQuantity) FROM CartItem WHERE cartNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, cartNo);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                // 결과가 NULL일 경우 rs.getInt()는 0을 반환하므로 안전합니다.
+                totalQty = rs.getInt(1); 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return totalQty;
+    }
 }
