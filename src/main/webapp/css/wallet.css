@@ -1,3 +1,17 @@
+/* 뒤로가기(wallet-top + back-btn): 스크롤해도 화면 상단에 붙어 유지 (back-btn 없는 wallet-top은 제외) */
+.wallet-top:has(.back-btn) {
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  align-self: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-light);
+  padding: 8px 0 12px;
+  margin: 0 0 12px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+}
+
 .wallet-page {
   padding: 20px 16px 120px;
 }

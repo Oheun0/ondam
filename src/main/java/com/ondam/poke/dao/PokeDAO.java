@@ -16,6 +16,26 @@ public class PokeDAO {
 		pool = DBConnectionMgr.getInstance();
 	}
 
+	private PokeDTO mapResultSetToDTO(ResultSet rs) throws Exception {
+		PokeDTO dto = new PokeDTO();
+		dto.setPokeNo(rs.getInt("pokeNo"));
+		dto.setProductNo(rs.getInt("productNo"));
+		dto.setSenderNo(rs.getInt("senderNo"));
+		dto.setReceiverNo(rs.getInt("receiverNo"));
+		dto.setFamilyNo(rs.getInt("familyNo"));
+		dto.setPokeMsg(rs.getString("pokeMsg"));
+		dto.setSendState(rs.getInt("sendState"));
+		dto.setSendDate(rs.getString("sendDate"));
+		
+		int val = rs.getInt("connectedOrderNo");
+		dto.setConnectedOrderNo(rs.wasNull() ? null : val);
+		//옵션 정보 로드
+		dto.setProductOptionNo(rs.getInt("productOptionNo"));
+		dto.setPokeQuantity(rs.getInt("pokeQuantity"));
+		
+		return dto;
+	}
+	
 	// Select
 	public Vector<PokeDTO> getPoke() {
 		Connection con = null;
@@ -29,18 +49,7 @@ public class PokeDAO {
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				PokeDTO dto = new PokeDTO();
-				dto.setPokeNo(rs.getInt("pokeNo"));
-				dto.setProductNo(rs.getInt("productNo"));
-				dto.setSenderNo(rs.getInt("senderNo"));
-				dto.setReceiverNo(rs.getInt("receiverNo"));
-				dto.setFamilyNo(rs.getInt("familyNo"));
-				dto.setPokeMsg(rs.getString("pokeMsg"));
-				dto.setSendState(rs.getInt("sendState"));
-				dto.setSendDate(rs.getString("sendDate"));
-				int val = rs.getInt("connectedOrderNo");
-				dto.setConnectedOrderNo(rs.wasNull() ? null : val);
-				vlist.addElement(dto);
+				vlist.addElement(mapResultSetToDTO(rs));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,7 +67,7 @@ public class PokeDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT Poke (productNo, senderNo, receiverNo, familyNo, pokeMsg, sendState, sendDate, connectedOrderNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			sql = "INSERT Poke (productNo, senderNo, receiverNo, familyNo, pokeMsg, sendState, sendDate, connectedOrderNo, productOptionNo, pokeQuantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getProductNo());
 			pstmt.setInt(2, dto.getSenderNo());
@@ -72,6 +81,9 @@ public class PokeDAO {
 			} else {
 			    pstmt.setInt(8, dto.getConnectedOrderNo());
 			}
+			pstmt.setInt(9, dto.getProductOptionNo());
+			pstmt.setInt(10, dto.getPokeQuantity());
+			
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -90,7 +102,7 @@ public class PokeDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE Poke SET productNo = ?, senderNo = ?, receiverNo = ?, familyNo = ?, pokeMsg = ?, sendState = ?, sendDate = ?, connectedOrderNo = ? WHERE pokeNo = ?";
+			sql = "UPDATE Poke SET productNo = ?, senderNo = ?, receiverNo = ?, familyNo = ?, pokeMsg = ?, sendState = ?, sendDate = ?, connectedOrderNo = ?, productOptionNo = ?, pokeQuantity = ? WHERE pokeNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getProductNo());
 			pstmt.setInt(2, dto.getSenderNo());
@@ -104,7 +116,9 @@ public class PokeDAO {
 			} else {
 			    pstmt.setInt(8, dto.getConnectedOrderNo());
 			}
-			pstmt.setInt(9, pokeNo);
+			pstmt.setInt(9, dto.getProductOptionNo());
+			pstmt.setInt(10, dto.getPokeQuantity());
+			pstmt.setInt(11, pokeNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -149,18 +163,7 @@ public class PokeDAO {
 			pstmt.setInt(1, receiverNo);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				PokeDTO dto = new PokeDTO();
-				dto.setPokeNo(rs.getInt("pokeNo"));
-				dto.setProductNo(rs.getInt("productNo"));
-				dto.setSenderNo(rs.getInt("senderNo"));
-				dto.setReceiverNo(rs.getInt("receiverNo"));
-				dto.setFamilyNo(rs.getInt("familyNo"));
-				dto.setPokeMsg(rs.getString("pokeMsg"));
-				dto.setSendState(rs.getInt("sendState"));
-				dto.setSendDate(rs.getString("sendDate"));
-				int val = rs.getInt("connectedOrderNo");
-				dto.setConnectedOrderNo(rs.wasNull() ? null : val);
-				vlist.add(dto);
+				vlist.add(mapResultSetToDTO(rs));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -183,18 +186,7 @@ public class PokeDAO {
 			pstmt.setInt(1, senderNo);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				PokeDTO dto = new PokeDTO();
-				dto.setPokeNo(rs.getInt("pokeNo"));
-				dto.setProductNo(rs.getInt("productNo"));
-				dto.setSenderNo(rs.getInt("senderNo"));
-				dto.setReceiverNo(rs.getInt("receiverNo"));
-				dto.setFamilyNo(rs.getInt("familyNo"));
-				dto.setPokeMsg(rs.getString("pokeMsg"));
-				dto.setSendState(rs.getInt("sendState"));
-				dto.setSendDate(rs.getString("sendDate"));
-				int val = rs.getInt("connectedOrderNo");
-				dto.setConnectedOrderNo(rs.wasNull() ? null : val);
-				vlist.add(dto);
+				vlist.add(mapResultSetToDTO(rs));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -217,17 +209,7 @@ public class PokeDAO {
 			pstmt.setInt(1, pokeNo);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				dto = new PokeDTO();
-				dto.setPokeNo(rs.getInt("pokeNo"));
-				dto.setProductNo(rs.getInt("productNo"));
-				dto.setSenderNo(rs.getInt("senderNo"));
-				dto.setReceiverNo(rs.getInt("receiverNo"));
-				dto.setFamilyNo(rs.getInt("familyNo"));
-				dto.setPokeMsg(rs.getString("pokeMsg"));
-				dto.setSendState(rs.getInt("sendState"));
-				dto.setSendDate(rs.getString("sendDate"));
-				int val = rs.getInt("connectedOrderNo");
-				dto.setConnectedOrderNo(rs.wasNull() ? null : val);
+				dto = mapResultSetToDTO(rs);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -266,7 +248,7 @@ public class PokeDAO {
 		int newPokeNo = -1;
 		try {
 			con = pool.getConnection();
-			String sql = "INSERT INTO Poke (productNo, senderNo, receiverNo, familyNo, pokeMsg, sendState, sendDate, connectedOrderNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO Poke (productNo, senderNo, receiverNo, familyNo, pokeMsg, sendState, sendDate, connectedOrderNo, productOptionNo, pokeQuantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			pstmt.setInt(1, dto.getProductNo());
 			pstmt.setInt(2, dto.getSenderNo());
@@ -280,6 +262,9 @@ public class PokeDAO {
 			} else {
 			    pstmt.setInt(8, dto.getConnectedOrderNo());
 			}
+			pstmt.setInt(9, dto.getProductOptionNo());
+			pstmt.setInt(10, dto.getPokeQuantity());
+			
 			pstmt.executeUpdate();
 			rs = pstmt.getGeneratedKeys();
 			if (rs.next())

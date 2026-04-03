@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.Vector;
 import com.ondam.cart.dto.CartItemDTO;
 import com.ondam.common.DBConnectionMgr;
+import com.ondam.product.dto.ProductOptionDTO;
 
 public class CartItemDAO {
     private DBConnectionMgr pool = DBConnectionMgr.getInstance();
@@ -217,5 +218,83 @@ public class CartItemDAO {
             pool.freeConnection(con, pstmt, rs);
         }
         return totalQty;
+    }
+    
+    // 특정 제품(productNo)의 중복되지 않는 '사이즈' 목록 조회
+    public Vector<String> getUniqueSizesByProduct(int productNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Vector<String> sizes = new Vector<>();
+        try {
+            con = pool.getConnection();
+            // DISTINCT를 사용하여 중복된 사이즈를 제거하고 가져옵니다.
+            String sql = "SELECT DISTINCT optionSize FROM ProductOption WHERE productNo = ? ORDER BY optionSize ASC";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productNo);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                sizes.add(rs.getString("optionSize"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return sizes;
+    }
+
+    // 특정 제품(productNo)과 선택된 '사이즈'에 해당하는 '색상 및 상세 옵션' 목록 조회
+    public Vector<ProductOptionDTO> getColorsByProductSize(int productNo, String optionSize) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Vector<ProductOptionDTO> vlist = new Vector<>();
+        try {
+            con = pool.getConnection();
+            // 해당 사이즈에 필터링된 색상, 재고, 추가 금액 정보를 가져옵니다.
+            String sql = "SELECT productOptionNo, optionColor, optionStock, optionAddPrice " +
+                         "FROM ProductOption WHERE productNo = ? AND optionSize = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productNo);
+            pstmt.setString(2, optionSize);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ProductOptionDTO dto = new ProductOptionDTO();
+                dto.setProductOptionNo(rs.getInt("productOptionNo"));
+                dto.setOptionColor(rs.getString("optionColor"));
+                dto.setOptionStock(rs.getInt("optionStock"));
+                dto.setOptionAddPrice(rs.getInt("optionAddPrice"));
+                vlist.add(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return vlist;
+    }
+    
+    // 특정 장바구니 아이템의 옵션을 변경하는 메서드
+    public void updateOptionNo(int cartItemNo, int productOptionNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = pool.getConnection();
+            // SQL: CartItem 테이블에서 cartItemNo가 일치하는 행의 productOptionNo를 변경함
+            String sql = "UPDATE CartItem SET productOptionNo = ? WHERE cartItemNo = ?";
+            pstmt = con.prepareStatement(sql);
+            
+            pstmt.setInt(1, productOptionNo); // 새 옵션 번호
+            pstmt.setInt(2, cartItemNo);      // 수정할 아이템 번호
+            
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt);
+        }
     }
 }

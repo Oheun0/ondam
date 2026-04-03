@@ -15,6 +15,8 @@
     receiverNo: <input type="text" name="receiverNo" value="2"><br>
     familyNo: <input type="text" name="familyNo" value="1"><br>
     pokeMsg: <input type="text" name="pokeMsg" value="사줘!"><br>
+    productOptionNo: <input type="number" name="productOptionNo" value="1"><br>
+    pokeQuantity: <input type="number" name="pokeQuantity" value="1"><br>
     <button type="submit">조르기 전송</button>
 </form>
 <hr>
