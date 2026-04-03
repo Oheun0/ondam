@@ -76,6 +76,11 @@ function openPurchaseModal(productNo, productName, productPrice, imgFile) {
     const modal = document.getElementById('purchaseModalOverlay');
     modal.classList.add('show');    
     
+	const joreugiProductNo = document.getElementById('joreugiProductNo');
+		    if(joreugiProductNo) {
+		        joreugiProductNo.value = productNo;
+		    }
+	
     // 기본 데이터 세팅
     currentUnitPrice = parseInt(productPrice) || 0;
     currentAddPrice = 0; // 모달 열 때 추가금 초기화
@@ -154,11 +159,13 @@ function updateColorOptions(selectedSize) {
         }
         refreshTotalPrice(); 
     };
+	/*
 	const joreugiProductNo = document.getElementById('joreugiProductNo');
 	    if(joreugiProductNo) {
 	        joreugiProductNo.value = productNo;
 	    }
     // (선택) 여기에 나중에 fetch/ajax로 해당 상품의 가격, 색상, 사이즈 데이터를 불러오는 로직 추가
+	*/
 }
 
 /**
