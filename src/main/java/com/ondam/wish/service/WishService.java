@@ -1,30 +1,51 @@
 package com.ondam.wish.service;
 
 import java.util.Vector;
+
+import com.ondam.product.dao.ProductDAO;
+import com.ondam.product.dao.ProductImageDAO;
+import com.ondam.product.dto.ProductDTO;
+import com.ondam.product.dto.ProductImageDTO;
 import com.ondam.wish.dao.WishDAO;
 import com.ondam.wish.dto.WishDTO;
+// import com.ondam.product.dao.ProductDAO; // 상품 정보 조립용
 
 public class WishService {
 
-    private WishDAO dao;
+    private final WishDAO dao = new WishDAO();
+    private final ProductDAO productDao = new ProductDAO();
+    private final ProductImageDAO productImageDao = new ProductImageDAO();
 
-    public WishService() {
-        this.dao = new WishDAO();
+    // 1. 내 찜목록 가져오기 (옵션 조립 제거)
+    public Vector<WishDTO> getMyWishList(int userNo) {
+        Vector<WishDTO> vlist = dao.getMyWish(userNo);
+        
+        for(WishDTO wish : vlist) {
+            ProductDTO pDto = productDao.getProductById(wish.getProductNo());
+            ProductImageDTO pIDto = productImageDao.getProductImageById(wish.getProductNo());
+            
+            if(pDto != null) {
+                wish.setProductName(pDto.getProductName());
+                wish.setProductPrice(pDto.getProductPrice());
+            }
+            if(pIDto != null) {
+                wish.setProductImg(pIDto.getImgFile());
+            }
+        }
+        return vlist;
     }
 
-    public Vector<WishDTO> getWishList() {
-        return dao.getWish();
-    }
-
-    public boolean createWish(WishDTO dto) {
-        return dao.insertWish(dto);
-    }
-
-    public boolean modifyWish(WishDTO dto, int wishNo) {
-        return dao.updateWish(dto, wishNo);
-    }
-
-    public boolean removeWish(int wishNo) {
-        return dao.deleteWish(wishNo);
+    // 2. 찜 토글 로직 (옵션 파라미터 제거)
+    public void toggleWish(int userNo, int productNo) {
+        if(dao.checkWish(userNo, productNo) != null) {
+            // 이미 찜한 상태면 삭제
+            dao.deleteWishByInfo(userNo, productNo);
+        } else {
+            // 찜한 상태가 아니면 등록
+            WishDTO dto = new WishDTO();
+            dto.setUserNo(userNo);
+            dto.setProductNo(productNo);
+            dao.insertWish(dto);
+        }
     }
 }

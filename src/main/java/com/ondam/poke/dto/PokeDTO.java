@@ -11,12 +11,15 @@ public class PokeDTO {
     private int sendState;
     private String sendDate;
     private Integer connectedOrderNo;
+    private int productOptionNo; 
+    private int pokeQuantity;
 
     public PokeDTO() {}
 
     public PokeDTO(int pokeNo, int productNo, int senderNo, int receiverNo,
                    int familyNo, String pokeMsg, int sendState,
-                   String sendDate, Integer connectedOrderNo) {
+                   String sendDate, Integer connectedOrderNo,
+                   int productOptionNo, int pokeQuantity) {
         this.pokeNo = pokeNo;
         this.productNo = productNo;
         this.senderNo = senderNo;
@@ -26,6 +29,8 @@ public class PokeDTO {
         this.sendState = sendState;
         this.sendDate = sendDate;
         this.connectedOrderNo = connectedOrderNo;
+        this.productOptionNo = productOptionNo;
+        this.pokeQuantity = pokeQuantity;
     }
 
     public int getPokeNo() {
@@ -98,5 +103,21 @@ public class PokeDTO {
 
     public void setConnectedOrderNo(Integer connectedOrderNo) {
         this.connectedOrderNo = connectedOrderNo;
+    }
+    
+    public int getProductOptionNo() {
+        return productOptionNo;
+    }
+
+    public void setProductOptionNo(int productOptionNo) {
+        this.productOptionNo = productOptionNo;
+    }
+
+    public int getPokeQuantity() {
+        return pokeQuantity;
+    }
+
+    public void setPokeQuantity(int pokeQuantity) {
+        this.pokeQuantity = pokeQuantity;
     }
 }

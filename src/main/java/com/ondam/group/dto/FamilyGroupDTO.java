@@ -4,13 +4,15 @@ public class FamilyGroupDTO {
 	
 	private int familyNo;
 	private String familyName;
+	private String familyInviteCode;
 	private String familyDate;
 	
 	public FamilyGroupDTO() {}
 
-	public FamilyGroupDTO(int familyNo, String familyName, String familyDate) {
+	public FamilyGroupDTO(int familyNo, String familyName, String familyInvitecode, String familyDate) {
 		this.familyNo = familyNo;
 		this.familyName = familyName;
+		this.familyInviteCode = familyInvitecode;
 		this.familyDate = familyDate;
 	}
 
@@ -28,6 +30,14 @@ public class FamilyGroupDTO {
 
 	public void setFamilyName(String familyName) {
 		this.familyName = familyName;
+	}
+	
+	public String getFamilyInviteCode() {
+		return familyInviteCode;
+	}
+
+	public void setFamilyInviteCode(String familyInviteCode) {
+		this.familyInviteCode = familyInviteCode;
 	}
 
 	public String getFamilyDate() {

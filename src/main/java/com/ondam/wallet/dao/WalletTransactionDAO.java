@@ -57,14 +57,18 @@ public class WalletTransactionDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT WalletTransaction (walletNo, userNo, transactionType, amount, balanceSnapshot, orderNo, transactionDate, transactionMemo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			sql = "INSERT INTO wallettransaction (walletNo, userNo, transactionType, amount, balanceSnapshot, orderNo, transactionDate, transactionMemo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getWalletNo());
 			pstmt.setInt(2, dto.getUserNo());
 			pstmt.setInt(3, dto.getTransactionType());
 			pstmt.setInt(4, dto.getAmount());
 			pstmt.setInt(5, dto.getBalanceSnapshot());
-			pstmt.setInt(6, dto.getOrderNo());
+			if (dto.getOrderNo() == 0) {
+			    pstmt.setNull(6, java.sql.Types.INTEGER);
+			} else {
+			    pstmt.setInt(6, dto.getOrderNo());
+			}
 			pstmt.setString(7, dto.getTransactionDate());
 			pstmt.setString(8, dto.getTransactionMemo());
 			if (pstmt.executeUpdate() > 0)
@@ -126,5 +130,70 @@ public class WalletTransactionDAO {
 		}
 		return flag;
 	}
+	
+	// 최근 3건 조회
+	public Vector<WalletTransactionDTO> getRecentByWalletNo(int walletNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<WalletTransactionDTO> vlist = new Vector<>();
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM wallettransaction WHERE walletNo = ? ORDER BY transactionDate DESC LIMIT 3";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, walletNo);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            WalletTransactionDTO dto = new WalletTransactionDTO();
+	            dto.setTransactionNo(rs.getInt("transactionNo"));
+	            dto.setWalletNo(rs.getInt("walletNo"));
+	            dto.setUserNo(rs.getInt("userNo"));
+	            dto.setTransactionType(rs.getInt("transactionType"));
+	            dto.setAmount(rs.getInt("amount"));
+	            dto.setBalanceSnapshot(rs.getInt("balanceSnapshot"));
+	            dto.setOrderNo(rs.getInt("orderNo"));
+	            dto.setTransactionDate(rs.getString("transactionDate"));
+	            dto.setTransactionMemo(rs.getString("transactionMemo"));
+	            vlist.addElement(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vlist;
+	}
+	
+	// 전체 내역 조회
+	public Vector<WalletTransactionDTO> getByWalletNo(int walletNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<WalletTransactionDTO> vlist = new Vector<>();
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM wallettransaction WHERE walletNo = ? ORDER BY transactionDate DESC";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, walletNo);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            WalletTransactionDTO dto = new WalletTransactionDTO();
+	            dto.setTransactionNo(rs.getInt("transactionNo"));
+	            dto.setWalletNo(rs.getInt("walletNo"));
+	            dto.setUserNo(rs.getInt("userNo"));
+	            dto.setTransactionType(rs.getInt("transactionType"));
+	            dto.setAmount(rs.getInt("amount"));
+	            dto.setBalanceSnapshot(rs.getInt("balanceSnapshot"));
+	            dto.setOrderNo(rs.getInt("orderNo"));
+	            dto.setTransactionDate(rs.getString("transactionDate"));
+	            dto.setTransactionMemo(rs.getString("transactionMemo"));
+	            vlist.addElement(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vlist;
+	}
 }
-

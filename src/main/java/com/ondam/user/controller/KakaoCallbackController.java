@@ -21,15 +21,22 @@ public class KakaoCallbackController implements Controller {
     private static final ResourceBundle rb = ResourceBundle.getBundle("config");
     private final String CLIENT_ID = rb.getString("kakao.rest.api.key"); 
     private final String CLIENT_SECRET = rb.getString("kakao.client.secret");
-    private final String REDIRECT_URI = "http://localhost/ondam/kakao-callback";
+    //private final String REDIRECT_URI = "http://localhost/ondam/kakao-callback";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    	
+    	String scheme = request.getScheme(); 
+        String serverName = request.getServerName(); 
+        int serverPort = request.getServerPort(); 
+        String contextPath = request.getContextPath();
+        String portStr = (serverPort == 80 || serverPort == 443) ? "" : ":" + serverPort;
+        String dynamicRedirectUri = scheme + "://" + serverName + portStr + contextPath + "/kakao-callback";
+    	
         String code = request.getParameter("code");
         if (code == null) return "redirect:/login";
 
-        String accessToken = getAccessToken(code);
+        String accessToken = getAccessToken(code, dynamicRedirectUri);
         
         if (accessToken != null) {
             String userInfoJson = getUserInfo(accessToken);
@@ -42,17 +49,22 @@ public class KakaoCallbackController implements Controller {
 
             if (loginUser != null) {
                 HttpSession session = request.getSession();
-                session.setAttribute("signupUser", loginUser);
-                session.setAttribute("loginUser", loginUser);
-                
-                return "redirect:/signup-step0-basic";
+                if (loginUser.getSignUpCompleted() == 1) {
+                    session.setAttribute("loginUser", loginUser);
+                    return "redirect:/main"; // (또는 홈으로 가는 URL)
+                    
+                } else {
+                    session.setAttribute("signupUser", loginUser);
+                    session.setAttribute("loginUser", loginUser); 
+                    return "redirect:/signup-step0-basic";
+                }
             }
         }
         return "redirect:/login";
     }
 
     // --- 통신 메서드 ---
-    private String getAccessToken(String code) throws Exception {
+    private String getAccessToken(String code, String dynamicRedirectUri) throws Exception {
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
         URL url = new URL(tokenUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -64,7 +76,7 @@ public class KakaoCallbackController implements Controller {
         StringBuilder sb = new StringBuilder();
         sb.append("grant_type=authorization_code");
         sb.append("&client_id=").append(CLIENT_ID);
-        sb.append("&redirect_uri=").append(REDIRECT_URI);
+        sb.append("&redirect_uri=").append(dynamicRedirectUri);
         sb.append("&code=").append(code);
         sb.append("&client_secret=").append(CLIENT_SECRET);
         bw.write(sb.toString());

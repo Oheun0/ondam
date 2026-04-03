@@ -25,17 +25,17 @@
             <div class="profile-row">
                 <div class="profile-image-box">
                     <img
-                        src="${pageContext.request.contextPath}/images/profile/default-profile.png"
-                        alt="기본 사용자 프로필 사진"
-                        class="profile-image"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    src="${pageContext.request.contextPath}/images/profile/${loginUser.userProfileImg != null ? loginUser.userProfileImg : 'default-profile.png'}"
+    alt="사용자 프로필 사진"
+    class="profile-image"
+    onerror="this.src='${pageContext.request.contextPath}/images/profile/default-profile.png'; this.onerror=null;">
                     <div class="profile-fallback" style="display:none;">
                         <span class="material-icons">person</span>
                     </div>
                 </div>
 
                 <div class="profile-copy">
-                    <h1>지현님, 안녕하세요</h1>
+                    <h1>${loginUser.userName}님, 안녕하세요</h1>
                     <p>
                         내 정보와 주문, 쿠폰, 선물함을<br>
                         한곳에서 쉽게 볼 수 있어요.
@@ -44,13 +44,8 @@
             </div>
 
             <div class="profile-button-row">
-                <!-- 로그인 기준 화면 -->
                 <a href="${pageContext.request.contextPath}/logout" class="pill-button">로그아웃</a>
-                <a href="${pageContext.request.contextPath}/mypage/profile" class="pill-button">내 정보 수정</a>
-
-                <!-- 로그인 안 된 기준 화면
-                <a href="${pageContext.request.contextPath}/login" class="pill-button">로그인/회원가입</a>
-                -->
+                <a href="${pageContext.request.contextPath}/profile" class="pill-button">내 정보 수정</a>
             </div>
         </section>
 

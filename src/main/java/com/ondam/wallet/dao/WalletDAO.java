@@ -111,5 +111,51 @@ public class WalletDAO {
 		}
 		return flag;
 	}
+	
+	// familyNo로 조회
+	public WalletDTO getWalletByFamilyNo(int familyNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    WalletDTO dto = null;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM wallet WHERE familyNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, familyNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            dto = new WalletDTO();
+	            dto.setWalletNo(rs.getInt("walletNo"));
+	            dto.setFamilyNo(rs.getInt("familyNo"));
+	            dto.setBalance(rs.getInt("balance"));
+	            dto.setCreatedAt(rs.getString("createdAt"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return dto;
+	}
+	
+	// 잔액 업데이트
+	public boolean updateBalance(int walletNo, int newBalance) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE wallet SET balance = ? WHERE walletNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, newBalance);
+	        pstmt.setInt(2, walletNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return flag;
+	}
 }
-

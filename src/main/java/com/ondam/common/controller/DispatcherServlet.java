@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ondam.cart.controller.CartController;
 import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
@@ -10,13 +11,25 @@ import com.ondam.notification.controller.NotificationController;
 import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
+import com.ondam.review.controller.ReviewController;
+import com.ondam.review.controller.ReviewImageController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
+import com.ondam.user.controller.AddressDeleteController;
+import com.ondam.user.controller.AddressFormController;
+import com.ondam.user.controller.AddressSaveController;
 import com.ondam.user.controller.FindIdController;
 import com.ondam.user.controller.FindPwdController;
 import com.ondam.user.controller.KakaoCallbackController;
 import com.ondam.user.controller.KakaoLoginController;
 import com.ondam.user.controller.LoginController;
+import com.ondam.user.controller.LogoutController;
+import com.ondam.user.controller.MyPageController;
+import com.ondam.user.controller.PreferenceSaveController;
+import com.ondam.user.controller.ProfileAddressController;
+import com.ondam.user.controller.ProfileController;
+import com.ondam.user.controller.ProfilePreferenceController;
+import com.ondam.user.controller.ProfileUpdateController;
 import com.ondam.user.controller.ResetPwdController;
 import com.ondam.user.controller.SignupCompleteController;
 import com.ondam.user.controller.SignupStartController;
@@ -25,14 +38,22 @@ import com.ondam.user.controller.SignupStep1BasicController;
 import com.ondam.user.controller.SignupStep2AddressController;
 import com.ondam.user.controller.SignupStep3PreferenceController;
 import com.ondam.user.controller.UserIdCheckController;
+import com.ondam.wallet.controller.WalletController;
+import com.ondam.wish.controller.WishController;
+
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/") // 모든 요청 받기
+@MultipartConfig(
+		maxFileSize = 1024 * 1024 * 5,    		 // 최대 파일 크기 5MB
+	    maxRequestSize = 1024 * 1024 * 10
+		) //사진 받아오기
 public class DispatcherServlet extends HttpServlet {
     
     // URL과 실행할 컨트롤러를 매핑해서 저장하는 저장소
@@ -47,7 +68,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/category", new CategoryController());
         handlerMapping.put("/shorts", new ShortsController());
         handlerMapping.put("/shorts/api", new ShortsApiController());
-        handlerMapping.put("/family", new FamilyGroupController());
+        handlerMapping.put("/group", new FamilyGroupController());
+        handlerMapping.put("/wallet", new WalletController());
         handlerMapping.put("/mock-login", new MockLoginController());
         handlerMapping.put("/signup-start", new SignupStartController());
         handlerMapping.put("/signup-step0-basic", new SignupStep0BasicController());
@@ -63,9 +85,23 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/reset-pwd", new ResetPwdController());
         handlerMapping.put("/coupon", new CouponController());
         handlerMapping.put("/gift", new GiftController());
-        
+        handlerMapping.put("/mypage", new MyPageController());
+        handlerMapping.put("/logout", new LogoutController());
+        handlerMapping.put("/profile", new ProfileController());
+        handlerMapping.put("/profile/update", new ProfileUpdateController());
+        handlerMapping.put("/profile-address", new ProfileAddressController());
+        handlerMapping.put("/preference", new ProfilePreferenceController());
+        handlerMapping.put("/address/save", new AddressSaveController());
+        handlerMapping.put("/address/form", new AddressFormController());
+        handlerMapping.put("/address/delete", new AddressDeleteController());
+        handlerMapping.put("/profile/preference", new PreferenceSaveController());
         handlerMapping.put("/product", new ProductController());
         handlerMapping.put("/poke", new PokeController());
+        handlerMapping.put("/review", new ReviewController());
+        handlerMapping.put("/reviewImage", new ReviewImageController());
+        handlerMapping.put("/cart", new CartController());
+        handlerMapping.put("/wish", new WishController());
+        
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 

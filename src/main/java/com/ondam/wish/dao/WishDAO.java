@@ -16,8 +16,30 @@ public class WishDAO {
         pool = DBConnectionMgr.getInstance();
     }
 
-    // Select
-    public Vector<WishDTO> getWish() {
+    // 1. 특정 유저가 특정 상품을 이미 찜했는지 확인 (옵션 제거)
+    public WishDTO checkWish(int userNo, int productNo) {
+        Connection con = null; 
+        PreparedStatement pstmt = null; 
+        ResultSet rs = null;
+        WishDTO dto = null;
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT * FROM wish WHERE userNo=? AND productNo=?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, userNo);
+            pstmt.setInt(2, productNo);
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                dto = new WishDTO();
+                dto.setWishNo(rs.getInt("wishNo"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally { pool.freeConnection(con, pstmt, rs); }
+        return dto;
+    }
+    
+    // 2. 내 찜 리스트 보기 (옵션 제거)
+    public Vector<WishDTO> getMyWish(int userNo) {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -25,14 +47,16 @@ public class WishDAO {
         Vector<WishDTO> vlist = new Vector<WishDTO>();
         try {
             con = pool.getConnection();
-            sql = "SELECT * FROM wish";
+            sql = "SELECT * FROM wish where userNo = ?";
             pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, userNo);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 WishDTO dto = new WishDTO();
                 dto.setWishNo(rs.getInt("wishNo"));
                 dto.setUserNo(rs.getInt("userNo"));
                 dto.setProductNo(rs.getInt("productNo"));
+                dto.setProductOptionNo(rs.getInt("productOptionNo"));
                 dto.setWishDate(rs.getString("wishDate"));
                 vlist.addElement(dto);
             }
@@ -43,8 +67,8 @@ public class WishDAO {
         }
         return vlist;
     }
-
-    // Insert
+    
+    // 3. 찜 등록 (옵션 제거)
     public boolean insertWish(WishDTO dto) {
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -52,10 +76,11 @@ public class WishDAO {
         boolean flag = false;
         try {
             con = pool.getConnection();
-            sql = "INSERT INTO wish (userNo, productNo) VALUES (?, ?)";
+            sql = "INSERT INTO wish (userNo, productNo, productOptionNo) VALUES (?, ?, ?)";
             pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, dto.getUserNo());
             pstmt.setInt(2, dto.getProductNo());
+            pstmt.setInt(3, dto.getProductOptionNo());
             if (pstmt.executeUpdate() > 0)
                 flag = true;
         } catch (Exception e) {
@@ -65,20 +90,18 @@ public class WishDAO {
         }
         return flag;
     }
-
-    // Update
-    public boolean updateWish(WishDTO dto, int wishNo) {
+    
+    // 4. 찜 삭제 (옵션 제거)
+    public boolean deleteWishByInfo(int userNo, int productNo) {
         Connection con = null;
         PreparedStatement pstmt = null;
-        String sql = null;
         boolean flag = false;
         try {
             con = pool.getConnection();
-            sql = "UPDATE wish SET userNo = ?, productNo = ? WHERE wishNo = ?";
+            String sql = "DELETE FROM wish WHERE userNo = ? AND productNo = ?";
             pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, dto.getUserNo());
-            pstmt.setInt(2, dto.getProductNo());
-            pstmt.setInt(3, wishNo);
+            pstmt.setInt(1, userNo);
+            pstmt.setInt(2, productNo);
             if (pstmt.executeUpdate() > 0)
                 flag = true;
         } catch (Exception e) {
@@ -88,25 +111,5 @@ public class WishDAO {
         }
         return flag;
     }
-
-    // Delete
-    public boolean deleteWish(int wishNo) {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        String sql = null;
-        boolean flag = false;
-        try {
-            con = pool.getConnection();
-            sql = "DELETE FROM wish WHERE wishNo = ?";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, wishNo);
-            if (pstmt.executeUpdate() > 0)
-                flag = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            pool.freeConnection(con, pstmt);
-        }
-        return flag;
-    }
+    
 }

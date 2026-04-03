@@ -202,5 +202,75 @@ public class ProductDAO {
 		}
 		return imgList;
 	}	
+	
+	// 상품 번호를 통해 상품명 조회
+	public String getProductName(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String productName = null;
+	    try {
+	        con = pool.getConnection();
+	        // DB 설계서의 컬럼명 'product_name' 및 'product_no' 사용
+	        String sql = "SELECT productName FROM product WHERE productNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            productName = rs.getString("productName");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return productName;
+	}
+	
+	public int getProductPrice(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    int productPrice = 0;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT productPrice FROM product WHERE productNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            productPrice = rs.getInt("productPrice");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return productPrice;
+	}
+	
+	// 상품 옵션명 조회 (장바구니 표시용 추가)
+	// 장바구니에는 옵션 번호만 있으므로, 이름을 보여주려면 이 메서드가 반드시 필요합니다.
+	public String getOptionName(int productOptionNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String optionName = "";
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT optionName FROM productOption WHERE productOptionNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productOptionNo);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				optionName = rs.getString("optionName");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return optionName;
+	}
 }
 
