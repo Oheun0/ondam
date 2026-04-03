@@ -36,15 +36,15 @@
 					        <span class="material-icons">shopping_bag</span>
 					        <span>구매하기</span>
 				    </button>
-                    <button class="action-btn" onclick="toggleLike(${shorts.shortsNo})">
-                        <span class="material-icons">favorite_border</span>
-                        <span>찜</span>
-                    </button>
-                    <button class="action-btn" onclick="openJoreugi(${shorts.productNo})">
+                    <button class="action-btn" onclick="toggleLike(this, ${shorts.shortsNo})">
+					    <span class="material-icons">favorite_border</span>
+					    <span>찜</span>
+					</button>
+                    <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
                         <span class="material-icons">volunteer_activism</span>
                         <span>조르기</span>
                     </button>
-                    <button class="action-btn" onclick="openGift(${shorts.productNo})">
+                    <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
                         <span class="material-icons">card_giftcard</span>
                         <span>선물하기</span>
                     </button>
@@ -103,9 +103,9 @@
         </div>
         
         <div class="modal-actions">
-            <button class="modal-icon-btn" onclick="openJoreugi()">
-                <span class="material-icons">volunteer_activism</span>
-                <span>조르기</span>
+		    <button class="modal-icon-btn" onclick="submitJoreugi()">
+		        <span class="material-icons">volunteer_activism</span>
+		        <span>조르기</span>
             </button>
             <button class="modal-icon-btn" onclick="openGift()">
                 <span class="material-icons">card_giftcard</span>
@@ -126,5 +126,15 @@
 </div>
   </div> <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
   				<script src="${pageContext.request.contextPath}/js/shorts.js"></script>
+  		<form id="joreugiForm" method="post" action="${pageContext.request.contextPath}/poke" style="display: none;">
+		    <input type="hidden" name="action" value="send">
+		    
+		    <input type="hidden" name="productNo" id="joreugiProductNo" value="">
+		    <input type="hidden" name="productOptionNo" id="joreugiOptionNo" value="1"> <input type="hidden" name="pokeQuantity" id="joreugiQuantity" value="1">
+		    
+		    <input type="hidden" name="receiverNo" value="2"> 
+		    <input type="hidden" name="familyNo" value="1">
+		    <input type="hidden" name="pokeMsg" value="쇼츠 보고 반했어! 이거 사줘❤️">
+		</form>
 </body>
 </html>

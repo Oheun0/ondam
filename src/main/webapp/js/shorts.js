@@ -84,6 +84,10 @@ function openPurchaseModal(productNo, productName) {
     // 3. 수량 초기화
     document.getElementById('buyQty').innerText = '1';
     
+	const joreugiProductNo = document.getElementById('joreugiProductNo');
+	    if(joreugiProductNo) {
+	        joreugiProductNo.value = productNo;
+	    }
     // (선택) 여기에 나중에 fetch/ajax로 해당 상품의 가격, 색상, 사이즈 데이터를 불러오는 로직 추가
 }
 
@@ -106,4 +110,48 @@ function updateQty(change) {
 function buyNow() {
     alert("결제 페이지로 이동합니다!");
     // location.href = '/ondam/order?productNo=...';
+}
+
+function submitJoreugi() {
+    // 1. 모달에서 사용자가 선택한 '수량' 가져오기
+    let qty = document.getElementById('buyQty').innerText;
+    
+    // 2. 폼 내부 요소 찾기
+    const quantityInput = document.getElementById('joreugiQuantity');
+    const form = document.getElementById('joreugiForm');
+    
+    // 3. 폼에 수량 값 넣고 전송하기
+    if(quantityInput && form) {
+        quantityInput.value = qty;
+        
+        // 옵션 선택(select box)의 value를 가져오는 로직도 나중에 이 부분에 추가하시면 됩니다.
+        // ex) document.getElementById('joreugiOptionNo').value = 선택한옵션값;
+
+        alert("선택하신 옵션으로 조르기 요청이 전송되었습니다!"); 
+        form.submit();
+    } else {
+        console.error("숨겨진 조르기 폼(joreugiForm)을 찾을 수 없습니다. JSP 파일을 확인해 주세요.");
+    }
+}
+
+// 찜
+function toggleLike(buttonElement, shortsNo) {
+    const icon = buttonElement.querySelector('.material-icons');
+    const isLiked = icon.classList.toggle('liked');
+    
+    if (isLiked) {
+        // 찜을 한 상태
+        icon.innerText = 'favorite'; // 꽉 찬 하트 아이콘으로 텍스트 변경
+        console.log("찜 추가됨! 쇼츠번호:", shortsNo);
+        // TODO: 나중에 fetch/ajax로 DB에 찜 추가 내역 전송
+    } else {
+        // 찜을 취소한 상태
+        icon.innerText = 'favorite_border'; // 빈 하트 아이콘으로 텍스트 변경
+        console.log("찜 취소됨! 쇼츠번호:", shortsNo);
+        // TODO: 나중에 fetch/ajax로 DB에서 찜 삭제 내역 전송
+    }
+
+    setTimeout(() => {
+        icon.style.transform = 'scale(1)';
+    }, 200);
 }
