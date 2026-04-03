@@ -4,6 +4,8 @@ import java.util.Vector;
 import com.ondam.cart.dto.CartItemDTO;
 import com.ondam.cart.service.CartService;
 import com.ondam.common.controller.Controller;
+import com.ondam.user.dto.UserDTO;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -20,7 +22,7 @@ public class CartController implements Controller {
         HttpSession session = request.getSession();
         
         // 수정: "loginUser" 이름으로 UserDTO 객체를 꺼냅니다.
-        com.ondam.user.dto.UserDTO loginUser = (com.ondam.user.dto.UserDTO) session.getAttribute("loginUser");
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
         // 로그인 체크
         if (loginUser == null) {
@@ -38,15 +40,11 @@ public class CartController implements Controller {
             case "delete":
                 return delete(request);
             case "clear":
-                return clear(userNo);
+                return clear(userNo, request);
             case "update": 
                 return update(request, userNo);
             case "deleteSelected":
-                String[] selectedItems = request.getParameterValues("selectedItems");
-                if (selectedItems != null && selectedItems.length > 0) {
-                    cartService.removeSelectedItems(selectedItems);
-                }
-                return "redirect:/cart?action=list";
+                return deleteSelected(request, userNo);
             default:
                 return "redirect:/main";
         }
@@ -57,6 +55,11 @@ public class CartController implements Controller {
         request.setAttribute("cartList", cartList);
         return "/cart/cart";
     }
+    
+    private void syncCartSession(HttpServletRequest request, int userNo) {
+        int totalQty = cartService.refreshCartTotalQuantity(userNo);
+        request.getSession().setAttribute("cartCount", totalQty);
+    }
 
     private String add(HttpServletRequest request, int userNo) {
         int productNo = Integer.parseInt(request.getParameter("productNo"));
@@ -64,17 +67,25 @@ public class CartController implements Controller {
         int quantity = Integer.parseInt(request.getParameter("quantity"));
 
         cartService.addItemToCart(userNo, productNo, productOptionNo, quantity);
+        syncCartSession(request, userNo); // [추가] 세션 갱신
         return "redirect:/cart?action=list";
     }
 
     private String delete(HttpServletRequest request) {
         int cartItemNo = Integer.parseInt(request.getParameter("cartItemNo"));
         cartService.removeItem(cartItemNo);
+
+        com.ondam.user.dto.UserDTO loginUser = (com.ondam.user.dto.UserDTO) request.getSession().getAttribute("loginUser");
+        if(loginUser != null) syncCartSession(request, loginUser.getUserNo());
+        
         return "redirect:/cart?action=list";
     }
 
-    private String clear(int userNo) {
+    private String clear(int userNo, HttpServletRequest request) {
         cartService.clearCart(userNo);
+        
+        syncCartSession(request, userNo);
+        
         return "redirect:/cart?action=list";
     }
     // 수량 갱신 컨트롤러 메서드
@@ -82,7 +93,25 @@ public class CartController implements Controller {
         int cartItemNo = Integer.parseInt(request.getParameter("cartItemNo"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
         
+        // 1. 수량 업데이트 (기존 로직)
         cartService.updateItemQuantity(userNo, cartItemNo, quantity);
+        
+        // 2. [추가] 변경된 총 수량을 다시 계산하여 세션에 덮어쓰기
+        syncCartSession(request, userNo);
+        
         return "redirect:/cart?action=list";
     }
+    
+    private String deleteSelected(HttpServletRequest request, int userNo) {
+        String[] selectedItems = request.getParameterValues("selectedItems");
+        if (selectedItems != null && selectedItems.length > 0) {
+            cartService.removeSelectedItems(selectedItems);
+        }
+        
+        // 일괄 삭제 후 헤더 장바구니 숫자 동기화
+        syncCartSession(request, userNo);
+        
+        return "redirect:/cart?action=list";
+    }
+    
 }
