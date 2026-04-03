@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import com.ondam.common.DBConnectionMgr;
 import com.ondam.product.dto.ProductDTO;
+import com.ondam.product.dto.ProductOptionDTO;
 
 public class ProductDAO {
 
@@ -202,6 +203,28 @@ public class ProductDAO {
 		}
 		return imgList;
 	}	
+	// 특정 상품의 이미지 파일 경로 조회
+	public String getProductImage(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String img = null;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT imgFile FROM productimage WHERE productNo = ? and imgOrder = 1";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				img = rs.getString("imgFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return img;
+	}	
 	
 	// 상품 번호를 통해 상품명 조회
 	public String getProductName(int productNo) {
@@ -249,6 +272,28 @@ public class ProductDAO {
 	    return productPrice;
 	}
 	
+	public int getProductOriginPrice(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    int productOriginPrice = 0;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT productOriginPrice FROM product WHERE productNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            productOriginPrice = rs.getInt("productOriginPrice");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return productOriginPrice;
+	}
+	
 	// 상품 옵션명 조회 (장바구니 표시용 추가)
 	// 장바구니에는 옵션 번호만 있으므로, 이름을 보여주려면 이 메서드가 반드시 필요합니다.
 	public String getOptionName(int productOptionNo) {
@@ -271,6 +316,39 @@ public class ProductDAO {
 			pool.freeConnection(con, pstmt, rs);
 		}
 		return optionName;
+	}
+	
+	// 특정 상품의 모든 옵션 리스트 조회 (색상, 사이즈 등)
+	public Vector<ProductOptionDTO> getProductOptions(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<ProductOptionDTO> vlist = new Vector<>();
+	    
+	    try {
+	        con = pool.getConnection();
+	        // ProductOptionDTO 필드에 맞춘 SELECT 문
+	        String sql = "SELECT * FROM productOption WHERE productNo = ? AND optionStock > 0 ORDER BY productOptionNo ASC";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+	        
+	        while (rs.next()) {
+	            ProductOptionDTO dto = new ProductOptionDTO();
+	            dto.setProductOptionNo(rs.getInt("productOptionNo"));
+	            dto.setProductNo(rs.getInt("productNo"));
+	            dto.setOptionSize(rs.getString("optionSize"));
+	            dto.setOptionColor(rs.getString("optionColor"));
+	            dto.setOptionAddPrice(rs.getInt("optionAddPrice"));
+	            dto.setOptionStock(rs.getInt("optionStock"));
+	            vlist.addElement(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vlist;
 	}
 }
 
