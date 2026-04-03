@@ -24,11 +24,11 @@ public class WishController implements Controller {
 
         if ("list".equals(action)) {
             request.setAttribute("wishList", wishService.getMyWishList(userNo));
-            return "/wish/wishList"; // 찜목록 페이지로 이동
+            return "/wish/wishList"; 
         } else if ("toggle".equals(action)) {
             int pNo = Integer.parseInt(request.getParameter("productNo"));
-            int optNo = Integer.parseInt(request.getParameter("productOptionNo"));
-            wishService.toggleWish(userNo, pNo, optNo);
+            // 전달받은 상품번호(pNo)만 넘겨서 토글 실행
+            wishService.toggleWish(userNo, pNo);
             return "redirect:/wish?action=list";
         }
         return "redirect:/main";

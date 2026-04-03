@@ -5,34 +5,28 @@ public class WishDTO {
 	private int wishNo;
 	private int userNo;
 	private int productNo;
-	private int productOptionNo;
 	private String wishDate;
 
 	private String productName;
     private int productPrice;
     private String productImg;
-    private String optionSize;
-    private String optionColor;
     
+  
 	public String getProductName() {return productName;}
 	public void setProductName(String productName) {this.productName = productName;}
 	public int getProductPrice() {return productPrice;}
 	public void setProductPrice(int productPrice) {this.productPrice = productPrice;}
 	public String getProductImg() {return productImg;}
 	public void setProductImg(String productImg) {this.productImg = productImg;}
-	public String getOptionSize() {return optionSize;}
-	public void setOptionSize(String optionSize) {this.optionSize = optionSize;}
-	public String getOptionColor() {return optionColor;}
-	public void setOptionColor(String optionColor) {this.optionColor = optionColor;}
+	
 
 	public WishDTO() {}
 
-	public WishDTO(int wishNo, int userNo, int productNo, int productOptionNo, String wishDate) {
+	public WishDTO(int wishNo, int userNo, int productNo, String wishDate) {
 		this.wishNo = wishNo;
 		this.userNo = userNo;
 		this.productNo = productNo;
 		this.wishDate = wishDate;
-		this.productOptionNo = productOptionNo;
 	}
 
 	public int getWishNo() {
@@ -65,14 +59,6 @@ public class WishDTO {
 
 	public void setWishDate(String wishDate) {
 		this.wishDate = wishDate;
-	}
-
-	public int getProductOptionNo() {
-		return productOptionNo;
-	}
-
-	public void setProductOptionNo(int productOptionNo) {
-		this.productOptionNo = productOptionNo;
 	}
 	
 }
