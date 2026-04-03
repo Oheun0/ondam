@@ -39,6 +39,8 @@ import com.ondam.user.controller.SignupStep2AddressController;
 import com.ondam.user.controller.SignupStep3PreferenceController;
 import com.ondam.user.controller.UserIdCheckController;
 import com.ondam.wallet.controller.WalletController;
+import com.ondam.wish.controller.WishController;
+
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -98,6 +100,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/review", new ReviewController());
         handlerMapping.put("/reviewImage", new ReviewImageController());
         handlerMapping.put("/cart", new CartController());
+        handlerMapping.put("/wish", new WishController());
         
     }
 

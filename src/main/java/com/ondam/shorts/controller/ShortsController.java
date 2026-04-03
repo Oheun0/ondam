@@ -23,10 +23,9 @@ public class ShortsController implements Controller {
         if (loginUser == null) {
             return "redirect:/login";
         }
-    	
         // 비즈니스 로직(필터링, 셔플)은 Service가 처리하고 결과만 받아옴
         Vector<ShortsDTO> publicShorts = shortsService.getPublicAndShuffledShorts();
-
+        
         request.setAttribute("shortsList", publicShorts);
             
         return "shorts/shorts";

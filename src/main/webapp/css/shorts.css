@@ -1,0 +1,95 @@
+.shorts-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.shorts-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.side-actions {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 40px;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 10;
+}
+
+.product-info-overlay {
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: #fff;
+    z-index: 5;
+}
+
+.shorts-wrapper {
+    width: 100%;
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+}
+
+.shorts-container {
+    width: 100%;
+    height: 100vh;
+    scroll-snap-align: start;
+    position: relative;
+    background: #000;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px 0;
+}
+
+.action-btn .material-icons {
+    font-size: 32px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.action-btn span:last-child {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.product-info-overlay h2 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+.product-info-overlay p {
+    font-size: 1rem;
+    line-height: 1.5;
+    word-break: keep-all;
+}
+
+.shorts-wrapper::-webkit-scrollbar {
+    display: none;
+}
+.shorts-wrapper {
+    -ms-overflow-style: none; /* IE */
+    scrollbar-width: none;
+}
