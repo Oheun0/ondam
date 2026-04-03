@@ -44,6 +44,8 @@ public class FamilyGroupController implements Controller {
 			return delete(request, response);
 		case "memberDelete":
 			return memberDelete(request, response);
+		case "groupName":
+		    return groupName(request, response);
 		case "invite":
 			return invite(request, response);
 		case "join":
@@ -186,6 +188,19 @@ public class FamilyGroupController implements Controller {
 
 		return "redirect:/group";
 	}
+	
+	private String groupName(HttpServletRequest request, HttpServletResponse response) {
+	    String name = request.getParameter("groupName");
+
+	    // POST: 이름만 세션에 저장 후 invite로 이동
+	    if (name != null && !name.trim().isEmpty()) {
+	        request.getSession().setAttribute("pendingGroupName", name.trim());
+	        return "redirect:/group?action=invite";
+	    }
+
+	    // GET: 그룹명 입력 폼 표시
+	    return "group/group-name";
+	}
 
 	// 초대 코드 페이지
 	private String invite(HttpServletRequest request, HttpServletResponse response) {
@@ -193,49 +208,49 @@ public class FamilyGroupController implements Controller {
 	    FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
 
 	    if (myMember == null) {
-	        // 1. 초대 코드 먼저 생성
+	        // 세션에서 이름 꺼내기
+	        String pendingName = (String) request.getSession().getAttribute("pendingGroupName");
+	        if (pendingName == null || pendingName.isEmpty()) {
+	            // 이름 없이 들어오면 groupName으로
+	            return "redirect:/group?action=groupName";
+	        }
+
+	        // 초대 코드 생성
 	        String inviteCode = generateInviteCode();
 
-	        // 2. 그룹 INSERT (inviteCode 포함)
+	        // 그룹 생성
 	        FamilyGroupDTO groupDto = new FamilyGroupDTO();
-	        groupDto.setFamilyName("temp");
-	        groupDto.setFamilyInviteCode(inviteCode); // ← 여기서 같이 넣음
+	        groupDto.setFamilyName(pendingName);
+	        groupDto.setFamilyInviteCode(inviteCode);
 	        groupDto.setFamilyDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 
 	        int newFamilyNo = familyGroupService.createFamilyGroupAndGetNo(groupDto);
 	        if (newFamilyNo == -1) return "redirect:/group";
 
-	        // 3. familyName을 PK값으로 UPDATE
-	        FamilyGroupDTO updateDto = new FamilyGroupDTO();
-	        updateDto.setFamilyName(String.valueOf(newFamilyNo));
-	        updateDto.setFamilyInviteCode(inviteCode);
-	        updateDto.setFamilyDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
-	        familyGroupService.modifyFamilyGroup(updateDto, newFamilyNo);
-
-	        // 4. 관리자(auth=1)로 멤버 등록
+	        // 그룹장 멤버 등록
 	        FamilyMemberDTO memberDto = new FamilyMemberDTO();
 	        memberDto.setFamilyNo(newFamilyNo);
 	        memberDto.setUserNo(loginUser.getUserNo());
 	        memberDto.setFamilyAuth(1);
 	        memberDto.setUserName(loginUser.getUserName());
 	        familyMemberService.createFamilyMember(memberDto);
-	        
-	        // ── 그룹 고유 지갑 자동 생성 ──────────────────
+
+	        // 지갑 생성
 	        WalletDTO walletDto = new WalletDTO();
 	        walletDto.setFamilyNo(newFamilyNo);
 	        walletDto.setBalance(0);
 	        walletDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 	        walletService.createWallet(walletDto);
 
+	        // 세션에서 임시 이름 제거
+	        request.getSession().removeAttribute("pendingGroupName");
+
 	        FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(newFamilyNo);
 	        request.setAttribute("myGroup", myGroup);
-	        request.setAttribute("isNameDefault", true);
 
 	    } else {
 	        FamilyGroupDTO myGroup = familyGroupService.getFamilyGroupByNo(myMember.getFamilyNo());
 	        request.setAttribute("myGroup", myGroup);
-	        boolean isNameDefault = String.valueOf(myGroup.getFamilyNo()).equals(myGroup.getFamilyName());
-	        request.setAttribute("isNameDefault", isNameDefault);
 	    }
 
 	    return "group/group-invite";

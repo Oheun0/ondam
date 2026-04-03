@@ -160,10 +160,20 @@
 		    </div>
 		
 		    <div class="pending-member-actions pending-member-actions--column">
-		      <a href="${pageContext.request.contextPath}/group?action=invite"
-		         class="group-empty-btn group-empty-btn--primary">
-		        내 사람 초대하기
-		      </a>
+			  <c:choose>
+			    <c:when test="${memberList.size() >= 4}">
+			        <a class="group-empty-btn group-empty-btn--primary"
+			           style="opacity:0.5; cursor:not-allowed; pointer-events:none;">
+			            내 사람 초대하기
+			        </a>
+			    </c:when>
+			    <c:otherwise>
+			        <a href="${pageContext.request.contextPath}/group?action=invite"
+			           class="group-empty-btn group-empty-btn--primary">
+			            내 사람 초대하기
+			        </a>
+			    </c:otherwise>
+			</c:choose>
 		      <a href="${pageContext.request.contextPath}/group?action=delete&familyNo=${myGroup.familyNo}"
 		         class="group-empty-btn group-empty-btn--secondary group-empty-btn--danger-outline">
 		        그룹 해산하기
