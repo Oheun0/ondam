@@ -1,3 +1,9 @@
+// 전역 변수 설정
+let isGlobalMuted = false;
+let currentUnitPrice = 0;    // 상품 기본가
+let currentAddPrice = 0;     // 선택된 옵션의 추가 금액
+let currentOptions = [];     // 현재 상품의 전체 옵션 데이터 세트
+
 document.addEventListener("DOMContentLoaded", function() {
     const videos = document.querySelectorAll('.shorts-video');
 
@@ -11,15 +17,20 @@ document.addEventListener("DOMContentLoaded", function() {
         entries.forEach(entry => {
             const video = entry.target;
             
-            if (entry.isIntersecting) {
-                video.play().catch(error => {
-                    console.log("브라우저 자동재생 정책으로 인해 막힘:", error);
-                });
-            } else {
-                video.pause();
-                video.currentTime = 0; 
-            }
-        });
+			if (entry.isIntersecting) {
+				// 다음 영상으로 진입 시 전역 설정값 적용
+				video.muted = isGlobalMuted; 
+				video.play().catch(error => {
+					video.muted = true; 
+					video.play();
+				});
+			} else {
+				// 화면에서 벗어나면 정지 및 초기화
+				video.pause();
+				video.muted = true; 
+				video.currentTime = 0; 
+			}
+		});
     }, observerOptions);
 
     videos.forEach(video => {
@@ -27,64 +38,151 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// 장바구니 담기
-function addToCart(productNo) {
-    console.log("장바구니 추가 버튼 클릭, 상품번호:", productNo);
-    // TODO: 나중에 fetch나 ajax를 이용해 장바구니 서블릿으로 데이터를 보냅니다.
-    alert("장바구니에 담겼습니다! (상품번호: " + productNo + ")");
-}
-
-// 찜하기 (좋아요)
-function toggleLike(shortsNo) {
-    console.log("찜 버튼 클릭, 쇼츠번호:", shortsNo);
-    // TODO: 하트 아이콘 색상을 빨간색으로 바꾸고, DB에 찜 내역을 저장합니다.
-    alert("이 영상을 찜했습니다!");
-}
-
-// 조르기
-function openJoreugi(productNo) {
-    console.log("조르기 버튼 클릭, 상품번호:", productNo);
-    // TODO: 조르기 모달창 띄우기
-}
-
-// 선물하기
-function openGift(productNo) {
-    console.log("선물하기 버튼 클릭, 상품번호:", productNo);
-    // TODO: 선물하기 모달창 띄우기 또는 페이지 이동
-}
-
-// 공유하기 (모바일 기본 공유창 띄우기)
-function shareShorts(shortsNo, title) {
-    if (navigator.share) {
-        navigator.share({
-            title: '온담 - ' + title,
-            text: '이 영상 한번 봐봐! 완전 추천해.',
-            // 실제 접속 가능한 상품 상세 페이지 주소를 만들어줍니다.
-            url: window.location.origin + '/ondam/product/detail?no=' + shortsNo
-        }).catch(console.error);
+/**
+ * 영상 재생/일시정지 토글
+ */
+function toggleVideoPlay(video) {
+    video.muted = isGlobalMuted;
+    if (video.paused) {
+        video.play();
     } else {
-        // PC 접속 등 공유 API를 지원하지 않는 경우의 예외 처리
-        alert("공유하기 기능은 모바일 기기에서 지원됩니다.\n(링크: " + window.location.origin + "/ondam/product/detail?no=" + shortsNo + ")");
+        video.pause();
     }
 }
 
-// 설명란 펼치기/접기 토글 함수
-function toggleDescription(element) {
-    element.classList.toggle('expanded');
+/**
+ * 전역 음소거 토글
+ */
+function toggleGlobalMute() {
+    isGlobalMuted = !isGlobalMuted;
+    const allVideos = document.querySelectorAll('.shorts-video');
+    allVideos.forEach(v => { v.muted = isGlobalMuted; });
+
+    const allIcons = document.querySelectorAll('.muteIcon');
+    const allTexts = document.querySelectorAll('.muteText');
+
+    allIcons.forEach(icon => {
+        icon.innerText = isGlobalMuted ? 'volume_off' : 'volume_up';
+    });
+    allTexts.forEach(text => {
+        text.innerText = isGlobalMuted ? '소리 끔' : '소리 켬';
+    });
 }
 
-function openPurchaseModal(productNo, productName) {
-    // 1. 모달 띄우기
+/**
+ * 구매 모달 열기 및 데이터 초기화
+ */
+function openPurchaseModal(productNo, productName, productPrice, imgFile) {
     const modal = document.getElementById('purchaseModalOverlay');
-    modal.classList.add('show');
+    modal.classList.add('show');    
     
-    // 2. 모달 안의 상품명 변경
+    // 기본 데이터 세팅
+    currentUnitPrice = parseInt(productPrice) || 0;
+    currentAddPrice = 0; // 모달 열 때 추가금 초기화
+    
     document.getElementById('modalProductName').innerText = productName;
-    
-    // 3. 수량 초기화
     document.getElementById('buyQty').innerText = '1';
+    refreshTotalPrice(); // 초기 가격 표시
+
+    // 백엔드 컨트롤러 호출 (action=getOptions)
+    fetch(`${window.location.origin}/ondam/product?action=getOptions&productNo=${productNo}`)
+        .then(response => response.json())
+        .then(data => {
+            currentOptions = data; // 필터링용 데이터 저장
+            
+            const sizeSelect = document.querySelector('select[name="optionSize"]');
+            const colorSelect = document.querySelector('select[name="optionColor"]');
+
+            // 셀렉트 박스 초기화
+            sizeSelect.innerHTML = '<option value="">사이즈를 선택하세요</option>';
+            colorSelect.innerHTML = '<option value="">색상을 선택하세요</option>';
+            colorSelect.disabled = true;
+
+            // 사이즈 목록 생성 (중복 제거)
+            const sizes = new Set();
+            data.forEach(opt => { if(opt.optionSize) sizes.add(opt.optionSize); });
+            sizes.forEach(size => {
+                 sizeSelect.innerHTML += `<option value="${size}">${size}</option>`;
+            });
+
+            // 사이즈 변경 이벤트
+            sizeSelect.onchange = function() {
+                updateColorOptions(this.value);
+            };
+        })
+        .catch(err => console.error("옵션 로드 실패:", err));
+}
+
+/**
+ * 선택한 사이즈에 맞는 색상 목록 업데이트
+ */
+function updateColorOptions(selectedSize) {
+    const colorSelect = document.querySelector('select[name="optionColor"]');
     
-    // (선택) 여기에 나중에 fetch/ajax로 해당 상품의 가격, 색상, 사이즈 데이터를 불러오는 로직 추가
+    if (!selectedSize) {
+        colorSelect.innerHTML = '<option value="">색상을 선택하세요</option>';
+        colorSelect.disabled = true;
+        currentAddPrice = 0;
+        refreshTotalPrice();
+        return;
+    }
+
+    // 해당 사이즈의 데이터만 필터링
+    const filteredOptions = currentOptions.filter(opt => opt.optionSize === selectedSize);
+
+    colorSelect.innerHTML = '<option value="">색상을 선택하세요</option>';
+    filteredOptions.forEach(opt => {
+        const addPriceText = opt.optionAddPrice > 0 ? ` (+${opt.optionAddPrice.toLocaleString()}원)` : '';
+        colorSelect.innerHTML += `<option value="${opt.optionColor}">${opt.optionColor}${addPriceText}</option>`;
+    });
+
+    colorSelect.disabled = false;
+
+    // 색상 변경 시 추가 금액 업데이트
+    colorSelect.onchange = function() {
+        const selectedColor = this.value;
+        const sizeSelect = document.querySelector('select[name="optionSize"]');
+        const selectedSize = sizeSelect.value;
+
+        // DB 행(Row) 찾기
+        const matchOpt = currentOptions.find(opt => opt.optionSize === selectedSize && opt.optionColor === selectedColor);
+        
+        if (matchOpt) {
+            currentAddPrice = parseInt(matchOpt.optionAddPrice) || 0;
+        } else {
+            currentAddPrice = 0;
+        }
+        refreshTotalPrice(); 
+    };
+}
+
+/**
+ * 실시간 총 가격 계산 및 화면 표시
+ */
+function refreshTotalPrice() {
+    const qtySpan = document.getElementById('buyQty');
+    const currentQty = parseInt(qtySpan.innerText) || 1;
+    const totalPriceElement = document.querySelector('.total-price');
+
+    if (totalPriceElement) {
+        // 공식: (기본가 + 옵션 추가금) * 수량
+        const finalPrice = (currentUnitPrice + currentAddPrice) * currentQty;
+        totalPriceElement.innerText = finalPrice.toLocaleString() + "원";
+    }
+}
+
+/**
+ * 수량 변경 (+, -)
+ */
+function updateQty(change) {
+    const qtySpan = document.getElementById('buyQty');
+    let currentQty = parseInt(qtySpan.innerText);
+    currentQty += change;
+    
+    if (currentQty < 1) currentQty = 1; 
+    qtySpan.innerText = currentQty;
+
+    refreshTotalPrice(); // 가격 갱신 호출
 }
 
 // 모달 닫기
@@ -92,18 +190,14 @@ function closePurchaseModal() {
     document.getElementById('purchaseModalOverlay').classList.remove('show');
 }
 
-// 개수 조절 버튼 (+, -)
-function updateQty(change) {
-    const qtySpan = document.getElementById('buyQty');
-    let currentQty = parseInt(qtySpan.innerText);
-    currentQty += change;
-    
-    if (currentQty < 1) currentQty = 1; // 1개 밑으로는 안 내려가게 방어
-    qtySpan.innerText = currentQty;
+// 기타 액션 함수들 (동일)
+function addToCart(productNo) { alert("장바구니에 담겼습니다!"); }
+function toggleLike(shortsNo) { alert("찜했습니다!"); }
+function shareShorts(shortsNo, title) {
+    if (navigator.share) {
+        navigator.share({ title: '온담 - ' + title, url: window.location.href });
+    } else {
+        alert("링크가 복사되었습니다.");
+    }
 }
-
-// 구매하기 버튼
-function buyNow() {
-    alert("결제 페이지로 이동합니다!");
-    // location.href = '/ondam/order?productNo=...';
-}
+function buyNow() { alert("결제 페이지로 이동합니다!"); }

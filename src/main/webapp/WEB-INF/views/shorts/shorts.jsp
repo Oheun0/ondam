@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     request.setAttribute("bottomNav", "shorts");
 %>
@@ -21,18 +22,19 @@
     <div class="shorts-wrapper">
         <c:forEach var="shorts" items="${shortsList}" varStatus="status">
             <section class="shorts-container" data-index="${status.index}">
-                <video class="shorts-video" loop muted playsinline ${status.first ? 'autoplay' : ''}>
-                    <source src="${pageContext.request.contextPath}/upload/shorts/${shorts.videoFile}" type="video/mp4">
+                <video class="shorts-video" loop playsinline onclick="toggleVideoPlay(this)" ${status.first ? 'autoplay' : ''}>
+                    <source src="${pageContext.request.contextPath}/uploads/shorts/${shorts.videoFile}" type="video/mp4">
                 </video>
                 
+                
                 	<h2 class="shorts-top-title" 
-				        onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
+				        onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.productName}', '${shorts.productPrice}', '${shorts.imgFile}');">
 				        ${shorts.shortsTitle}
 				    </h2>
 
                 <aside class="side-actions">
                     <button class="action-btn" 
-					            onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
+					            onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.productName}', '${shorts.productPrice}', '${shorts.imgFile}');">
 					        <span class="material-icons">shopping_bag</span>
 					        <span>구매하기</span>
 				    </button>
@@ -48,18 +50,29 @@
                         <span class="material-icons">card_giftcard</span>
                         <span>선물하기</span>
                     </button>
+                    
+	                <button class="action-btn mute-btn" onclick="event.stopPropagation(); toggleGlobalMute();">
+					    <span class="material-icons muteIcon">volume_up</span>
+					    <span class="muteText">소리 켬</span>
+					</button>
+
                 </aside>
                 
                 <div class="bottom-info-wrapper">
                <section class="shorts-product-card" onclick="location.href='${pageContext.request.contextPath}/product/detail?no=${shorts.productNo}'">
                     <div class="card-image">
-                        <img src="https://via.placeholder.com/60?text=IMG" alt="상품 이미지">
+                            <img src="${pageContext.request.contextPath}/uploads/products/${shorts.imgFile}" 
+                                 onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'" alt="상품 이미지">
                     </div>
                     <div class="card-info">
                         <span class="product-name">${shorts.shortsTitle}</span>
                         <span class="product-price">
-                            <span class="discount">43%</span> 
-                            <span class="price">39,000원</span> 
+                            <c:if test="${shorts.discountRate > 0}">
+            					<span class="discount">${shorts.discountRate}%</span> 
+        					</c:if> 
+                            <span class="price">
+                                    <fmt:formatNumber value="${shorts.productPrice}" type="number"/>원
+                            </span> 
                         </span>
                     </div>
                     <div class="card-action">
@@ -80,14 +93,19 @@
         </div>
         
         <div class="modal-options">
-            <div class="option-row">
-                <label>색상</label>
-                <select><option>색상을 선택하세요</option></select>
-            </div>
-            <div class="option-row">
-                <label>사이즈</label>
-                <select><option>사이즈를 선택하세요</option></select>
-            </div>
+			<div class="option-row">
+			    <label>사이즈</label>
+			    <select name="optionSize"> <!-- name 속성 확인 -->
+			        <option value="">사이즈를 선택하세요</option>
+			    </select>
+			</div>
+			<div class="option-row">
+			    <label>색상</label>
+			    <select name="optionColor"> <!-- name 속성 확인 -->
+			        <option value="">색상을 선택하세요</option>
+			    </select>
+			</div>
+		</div>
             <div class="option-row">
                 <label>개수</label>
                 <div class="qty-control">
@@ -100,7 +118,7 @@
                 <label>가격</label>
                 <span class="total-price">0원</span>
             </div>
-        </div>
+        
         
         <div class="modal-actions">
             <button class="modal-icon-btn" onclick="openJoreugi()">
@@ -124,7 +142,7 @@
         <button class="buy-now-btn" onclick="buyNow()">바로 구매하기</button>
     </div>
 </div>
-  </div> <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
-  				<script src="${pageContext.request.contextPath}/js/shorts.js"></script>
+<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
+<script src="${pageContext.request.contextPath}/js/shorts.js"></script>
 </body>
 </html>

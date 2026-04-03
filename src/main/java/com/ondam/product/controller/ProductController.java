@@ -22,6 +22,12 @@ public class ProductController implements Controller {
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String action = request.getParameter("action");
+		
+		if ("getOptions".equals(action)) {
+	        getOptionsJson(request, response);
+	        return null; // 페이지 이동을 하지 않음 (중요)
+	    }
+		
 		if (action == null)
 			action = "list";
 
@@ -72,5 +78,32 @@ public class ProductController implements Controller {
 		request.setAttribute("imageList", imageList);
 		request.setAttribute("optionList", optionList);
 		return "product/detail";
+	}
+	private void getOptionsJson(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    int productNo = Integer.parseInt(request.getParameter("productNo"));
+	    
+	    // DAO를 통해 실제 DB 옵션 리스트 가져오기
+	    Vector<ProductOptionDTO> options = productOptionService.getOptionsByProductNo(productNo);
+	    
+	    // JSON 응답 설정
+	    response.setContentType("application/json;charset=UTF-8");
+	    java.io.PrintWriter out = response.getWriter();
+	    
+	    // JSON 문자열 생성 (Jackson이나 Gson 라이브러리가 있다면 더 편리함)
+	    StringBuilder json = new StringBuilder("[");
+	    for (int i = 0; i < options.size(); i++) {
+	        ProductOptionDTO opt = options.get(i);
+	        json.append("{");
+	        json.append("\"optionColor\":\"").append(opt.getOptionColor()).append("\",");
+	        json.append("\"optionSize\":\"").append(opt.getOptionSize()).append("\",");
+	        json.append("\"optionAddPrice\":").append(opt.getOptionAddPrice());
+	        json.append("}");
+	        if (i < options.size() - 1) json.append(",");
+	    }
+	    json.append("]");
+	    
+	    out.print(json.toString());
+	    out.flush();
+	    out.close();
 	}
 }

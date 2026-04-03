@@ -17,7 +17,8 @@ public class ShortsDTO {
     private String productName;
     // 가격
     private int productPrice;
-    
+    private int productOriginPrice;
+    private String imgFile;
     
     // [추가] Getter & Setter
     public String getVendorName() { return vendorName; }
@@ -27,6 +28,26 @@ public class ShortsDTO {
     
     public int getProductPrice() {return productPrice;}
 	public void setProductPrice(int productPrice) {this.productPrice = productPrice;}
+	
+	
+	public int getProductOriginPrice() {
+		return productOriginPrice;
+	}
+	public void setProductOriginPrice(int productOriginPrice) {
+		this.productOriginPrice = productOriginPrice;
+	}
+	public String getImgFile() {
+		return imgFile;
+	}
+	public void setImgFile(String imgFile) {
+		this.imgFile = imgFile;
+	}
+	
+	// ShortsDTO.java 에 추가
+	private int discountRate; // 할인율 (%)
+
+	public int getDiscountRate() { return discountRate; }
+	public void setDiscountRate(int discountRate) { this.discountRate = discountRate; }
 	
 	public ShortsDTO() {}
 

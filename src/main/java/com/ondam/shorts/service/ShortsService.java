@@ -44,10 +44,24 @@ public class ShortsService {
                 String vName = vendorDao.getVendorName(dto.getVendorNo());
                 String pName = productDao.getProductName(dto.getProductNo());
                 int pPrice = productDao.getProductPrice(dto.getProductNo());
+                int pOriginPrice = productDao.getProductOriginPrice(dto.getProductNo()); 
+                String pImage = productDao.getProductImage(dto.getProductNo()); 
+                
                 
                 dto.setVendorName(vName != null ? vName : "Unknown Vendor");
                 dto.setProductName(pName != null ? pName : "Unknown Product");
-                dto.setProductPrice(pPrice != 0 ? pPrice : null);
+                dto.setProductPrice(pPrice);
+                dto.setProductOriginPrice(pOriginPrice);
+                dto.setImgFile(pImage);
+                
+                // [추가] 할인율 계산 로직
+                if (pOriginPrice > 0 && pOriginPrice > pPrice) {
+                    // (원가 - 판매가) / 원가 * 100
+                    int rate = (int)(((double)(pOriginPrice - pPrice) / pOriginPrice) * 100);
+                    dto.setDiscountRate(rate);
+                } else {
+                    dto.setDiscountRate(0);
+                }
                 
                 publicShorts.add(dto);
             }

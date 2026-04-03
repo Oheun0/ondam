@@ -71,7 +71,7 @@ def create_shorts(image_paths, product_name, output_path, font_path, audio_path=
         print(f"[Error] TextClip creation failed: {e}")
         return False
 
-    txt_clip = (txt_clip.set_position(('center', 0.8), relative=True)
+    txt_clip = (txt_clip.set_position(('center', 0.6), relative=True)
                         .set_duration(base_video.duration)
                         .crossfadein(0.5)
                         .crossfadeout(0.5))
