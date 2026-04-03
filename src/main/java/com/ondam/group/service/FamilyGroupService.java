@@ -35,4 +35,12 @@ public class FamilyGroupService {
     public boolean removeFamilyGroup(int familyNo) {
         return dao.deleteFamilyGroup(familyNo);
     }
+    
+    public FamilyGroupDTO getFamilyGroupByInviteCode(String inviteCode) {
+        return dao.getFamilyGroupByInviteCode(inviteCode);
+    }
+    
+    public boolean modifyFamilyName(int familyNo, String familyName) {
+        return dao.updateFamilyName(familyNo, familyName);
+    }
 }

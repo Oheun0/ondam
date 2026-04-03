@@ -70,6 +70,8 @@ public class PokeController implements Controller {
 		String receiverNoParam = request.getParameter("receiverNo");
 		String familyNoParam = request.getParameter("familyNo");
 		String pokeMsg = request.getParameter("pokeMsg");
+		String productOptionNoParam = request.getParameter("productOptionNo");
+		String pokeQuantityParam = request.getParameter("pokeQuantity");
 
 		// 필수값 검증
 		if (productNoParam == null || receiverNoParam == null || familyNoParam == null) {
@@ -92,6 +94,12 @@ public class PokeController implements Controller {
 		dto.setSendDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 		dto.setConnectedOrderNo(null); // 아직 주문 없음
 
+		int productOptionNo = (productOptionNoParam != null && !productOptionNoParam.isEmpty()) ? Integer.parseInt(productOptionNoParam) : 0;
+		int pokeQuantity = (pokeQuantityParam != null && !pokeQuantityParam.isEmpty()) ? Integer.parseInt(pokeQuantityParam) : 1; // 수량 기본값 1
+		
+		dto.setProductOptionNo(productOptionNo);
+		dto.setPokeQuantity(pokeQuantity);
+		
 		// pokeNo 받아오기
 		int newPokeNo = pokeService.createPokeAndGetNo(dto);
 

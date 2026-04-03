@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     request.setAttribute("bottomNav", "group");
 %>
@@ -27,7 +28,7 @@
         <div class="group-page">
 
             <div class="wallet-top">
-                <a href="${pageContext.request.contextPath}/group/group-empty.jsp" class="back-btn">
+                <a href="${pageContext.request.contextPath}/group?action=list" class="back-btn">
                     <span class="material-icons">arrow_back_ios</span>
                     <span>뒤로가기</span>
                 </a>
@@ -39,7 +40,7 @@
             </section>
 
             <section class="edit-card">
-                <form class="edit-form" action="#" method="post">
+                <form class="edit-form" action="${pageContext.request.contextPath}/group?action=joinSubmit" method="post">
                     <div class="form-block">
                         <label for="inviteCode" class="block-label">초대 코드</label>
                         <input
@@ -51,8 +52,11 @@
                             maxlength="64"
                             autocomplete="off">
                     </div>
-
-                    <button type="submit" class="save-btn">연결하기</button>
+						<%-- 에러 메시지 --%>
+						<c:if test="${not empty errorMsg}">
+							<p style="color: red; font-size: 14px;">${errorMsg}</p>
+						</c:if>
+						<button type="submit" class="save-btn">연결하기</button>
 
                     <p class="group-invite-guide">
                         초대 코드를 입력하면 같은 그룹으로 연결돼요

@@ -6,8 +6,7 @@ public class FamilyInviteDTO {
     private int familyNo;
     private int inviterNo;
     private int inviteeNo;
-    private String inviteeKakaoUuid;
-    private String invitationToken;
+    private String inviteCode;
     private int invitationStatus;
     private String invitedAt;
     private String respondedAt;
@@ -16,14 +15,13 @@ public class FamilyInviteDTO {
     public FamilyInviteDTO() {}
 
     public FamilyInviteDTO(int invitationNo, int familyNo, int inviterNo, int inviteeNo,
-                           String inviteeKakaoUuid, String invitationToken, int invitationStatus,
+                           String inviteCode, int invitationStatus,
                            String invitedAt, String respondedAt, String expiresAt) {
         this.invitationNo = invitationNo;
         this.familyNo = familyNo;
         this.inviterNo = inviterNo;
         this.inviteeNo = inviteeNo;
-        this.inviteeKakaoUuid = inviteeKakaoUuid;
-        this.invitationToken = invitationToken;
+        this.inviteCode = inviteCode;
         this.invitationStatus = invitationStatus;
         this.invitedAt = invitedAt;
         this.respondedAt = respondedAt;
@@ -62,23 +60,15 @@ public class FamilyInviteDTO {
         this.inviteeNo = inviteeNo;
     }
 
-    public String getInviteeKakaoUuid() {
-        return inviteeKakaoUuid;
-    }
+    public String getInviteCode() {
+		return inviteCode;
+	}
 
-    public void setInviteeKakaoUuid(String inviteeKakaoUuid) {
-        this.inviteeKakaoUuid = inviteeKakaoUuid;
-    }
+	public void setInviteCode(String inviteCode) {
+		this.inviteCode = inviteCode;
+	}
 
-    public String getInvitationToken() {
-        return invitationToken;
-    }
-
-    public void setInvitationToken(String invitationToken) {
-        this.invitationToken = invitationToken;
-    }
-
-    public int getInvitationStatus() {
+	public int getInvitationStatus() {
         return invitationStatus;
     }
 

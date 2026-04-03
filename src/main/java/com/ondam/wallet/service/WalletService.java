@@ -28,5 +28,12 @@ public class WalletService {
 	public boolean removeWallet(int walletNo) {
 		return dao.deleteWallet(walletNo);
 	}
+	
+	public WalletDTO getWalletByFamilyNo(int familyNo) {
+	    return dao.getWalletByFamilyNo(familyNo);
+	}
+	
+	public boolean updateBalance(int walletNo, int newBalance) {
+	    return dao.updateBalance(walletNo, newBalance);
+	}
 }
-

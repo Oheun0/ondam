@@ -52,7 +52,7 @@ public class FamilyMemberDAO {
 	    Vector<FamilyMemberDTO> vlist = new Vector<>();
 	    try {
 	        con = pool.getConnection();
-	        String sql = "SELECT * FROM FamilyMember WHERE familyNo = ?";
+	        String sql = "SELECT * FROM FamilyMember WHERE familyNo = ? ORDER BY familyAuth DESC";
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setInt(1, familyNo);
 	        rs = pstmt.executeQuery();

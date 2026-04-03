@@ -164,3 +164,15 @@ html, body {
     width: 100%; padding: 18px; background: #000; color: #fff;
     font-size: 1.2rem; font-weight: bold; border: none; border-radius: 12px;
 }
+
+/* 찜 버튼 애니메이션 */
+.action-btn .material-icons {
+    transition: color 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 꽉 찬 하트 */
+.action-btn .material-icons.liked {
+    color: #ff4757;
+    text-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+    transform: scale(1.2);
+}

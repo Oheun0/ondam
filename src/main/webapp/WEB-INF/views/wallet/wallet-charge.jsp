@@ -31,22 +31,28 @@
                     <p>내 사람들과 함께 쓸 금액을 충전할 수 있어요</p>
                 </div>
 
-                <div class="charge-input-box">
-                    <span class="won">₩</span>
-                    <input type="text" placeholder="충전할 금액을 입력하세요"><!-- 숫자만 입력 가능하게 -->
-                </div>
+                <form id="chargeForm"
+                      action="${pageContext.request.contextPath}/wallet?action=chargeSubmit"
+                      method="post">
+                    <div class="charge-input-box">
+                        <span class="won">₩</span>
+                        <input type="text" id="amountInput" name="amount"
+                               placeholder="충전할 금액을 입력하세요"
+                               autocomplete="off">
+                    </div>
 
-                <div class="quick-amount">
-                    <button type="button">+ 1만원</button>
-                    <button type="button">+ 3만원</button>
-                    <button type="button">+ 5만원</button>
-                    <button type="button">+ 10만원</button>
-                </div>
+                    <div class="quick-amount">
+                        <button type="button" onclick="addAmount(10000)">+ 1만원</button>
+                        <button type="button" onclick="addAmount(30000)">+ 3만원</button>
+                        <button type="button" onclick="addAmount(50000)">+ 5만원</button>
+                        <button type="button" onclick="addAmount(100000)">+ 10만원</button>
+                    </div>
 
-                <button type="button" class="charge-btn">충전하기</button>
-
+                    <button type="submit" class="charge-btn">충전하기</button>
+                </form>
+                
                 <div class="wallet-link-box">
-                    <a href="${pageContext.request.contextPath}/wallet/wallet-history.jsp" class="wallet-link">
+                    <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-link">
                         사용내역 보기
                     </a>
                 </div>
@@ -57,5 +63,25 @@
     <jsp:include page="../layout/bottomNav.jsp" />
 
 </div>
+<script>
+	const input = document.getElementById('amountInput');
+	
+	// 숫자만 입력, 천 단위 콤마 표시
+	input.addEventListener('input', function () {
+	    let raw = this.value.replace(/[^0-9]/g, '');
+	    this.value = raw ? Number(raw).toLocaleString() : '';
+	});
+	
+	// 빠른 금액 버튼 — 기존 금액에 더하기
+	function addAmount(amount) {
+	    let current = parseInt(input.value.replace(/,/g, '')) || 0;
+	    input.value = (current + amount).toLocaleString();
+	}
+	
+	// 폼 제출 시 콤마 제거하고 숫자만 전송
+	document.getElementById('chargeForm').addEventListener('submit', function () {
+	    input.value = input.value.replace(/,/g, '');
+	});
+</script>
 </body>
 </html>

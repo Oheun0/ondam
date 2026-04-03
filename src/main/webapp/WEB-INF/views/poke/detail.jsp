@@ -8,6 +8,14 @@
 		<%-- sendState == 0 : 수락/거절 UI --%>
 		<c:when test="${poke.sendState == 0}">
 			<h2>${poke.pokeMsg}(상품 No. ${poke.productNo})</h2>
+			<div style="background: #f8f9fa; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+				<p><strong>[요청 옵션 정보]</strong></p>
+				<ul>
+					<li>옵션 번호: ${poke.productOptionNo}</li>
+					<li>요청 수량: ${poke.pokeQuantity}개</li>
+				</ul>
+				<small style="color: gray;">* 실제 서비스에서는 옵션 번호 대신 색상/사이즈 글자가 조인되어 출력됩니다.</small>
+			</div>
 			<form method="post" action="${pageContext.request.contextPath}/poke">
 				<input type="hidden" name="action" value="respond"> <input
 					type="hidden" name="pokeNo" value="${poke.pokeNo}">

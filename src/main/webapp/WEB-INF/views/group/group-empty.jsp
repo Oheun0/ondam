@@ -38,12 +38,12 @@
                 <p class="group-empty-desc">내 사람을 초대하거나 받은 초대 코드를 통해 <br> 연결할 수 있어요</p>
 
                 <div class="group-empty-btns">
-			    <a href="${pageContext.request.contextPath}/group/group-invite.jsp"
+			    <a href="${pageContext.request.contextPath}/group?action=invite"
 			       class="group-empty-btn group-empty-btn--primary">
 			        내 사람 초대하기
 			    </a>
 			
-			    <a href="${pageContext.request.contextPath}/group/group-join.jsp"
+			    <a href="${pageContext.request.contextPath}/group?action=join"
 			       class="group-empty-btn group-empty-btn--secondary">
 			        초대 코드 입력하기
 			    </a>
