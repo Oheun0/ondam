@@ -1,0 +1,979 @@
+/* =========================
+   Gift 공통 레이아웃
+========================= */
+
+.app-shell--gift {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg-light);
+}
+
+.app-shell--gift .gift-main {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  background-color: var(--bg-light);
+}
+
+.gift-main {
+  background: var(--bg-light);
+}
+
+.gift-page {
+  padding: 16px 14px 170px;
+}
+
+/* 뒤로가기 고정바: gift-page 좌우 패딩(14px) 때문에 full-width가 깨짐 */
+.gift-page .wallet-top-sticky--unused {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 960;
+  margin: 0 -14px 12px;
+  padding: 0;
+  background: var(--bg-light);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.gift-page .wallet-top-sticky--unused .wallet-top:has(.back-btn) {
+  position: static; /* wrapper가 sticky를 담당 */
+  background: transparent;
+  box-shadow: none;
+  margin: 0;
+  padding: 8px 0 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =========================
+   선물함 상단
+========================= */
+
+.gift-box-head {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.gift-box-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.3;
+  margin: 0 0 6px;
+}
+
+.gift-box-desc {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* =========================
+   선물함 빈 상태
+========================= */
+
+.gift-empty-card {
+  background: #f8f8f8;
+  border-radius: 28px;
+  padding: 34px 22px 28px;
+  text-align: center;
+  box-shadow: var(--main-card-shadow);
+}
+
+.gift-empty-icon {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #f8d755;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gift-empty-icon .material-icons {
+  font-size: 46px;
+  color: #fff;
+}
+
+.gift-empty-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.gift-empty-desc {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 480px) {
+  .gift-page {
+    padding: 14px 12px 170px;
+  }
+
+  .gift-page .wallet-top-sticky--unused {
+    margin-left: -12px;
+    margin-right: -12px;
+  }
+
+  .gift-box-title {
+    font-size: 22px;
+  }
+
+  .gift-box-desc {
+    font-size: 14px;
+  }
+
+  .gift-empty-card {
+    border-radius: 24px;
+    padding: 28px 18px 24px;
+  }
+
+  .gift-empty-icon {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 16px;
+  }
+
+  .gift-empty-icon .material-icons {
+    font-size: 40px;
+  }
+
+  .gift-empty-title {
+    font-size: 20px;
+  }
+
+  .gift-empty-desc {
+    font-size: 14px;
+  }
+
+  .gift-room-card {
+    gap: 12px;
+    padding: 16px 14px;
+    border-radius: 22px;
+  }
+
+  .gift-room-thumb {
+    width: 60px;
+    height: 60px;
+  }
+
+  .gift-room-name {
+    font-size: 17px;
+  }
+
+  .gift-room-message {
+    font-size: 13px;
+  }
+}
+
+/* =========================
+   Gift 공통 레이아웃
+========================= */
+
+.app-shell--gift {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg-light);
+}
+
+.app-shell--gift .gift-main {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  background-color: var(--bg-light);
+}
+
+.gift-main {
+  background: var(--bg-light);
+}
+
+.gift-page {
+  padding: 16px 14px 170px;
+}
+
+/* =========================
+   선물함 상단
+========================= */
+
+.gift-box-head {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.gift-box-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.3;
+  margin: 0 0 6px;
+}
+
+.gift-box-desc {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* =========================
+   섹션 공통
+========================= */
+
+.gift-box-section {
+  margin-bottom: 18px;
+}
+
+.gift-box-section-head {
+  margin-bottom: 10px;
+  padding: 0 2px;
+}
+
+.gift-box-section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+  padding-left: 10px;
+}
+
+
+/* =========================
+   선물함 빈 상태
+========================= */
+
+.gift-empty-card {
+  background: #f8f8f8;
+  border-radius: 28px;
+  padding: 34px 22px 28px;
+  text-align: center;
+  box-shadow: var(--main-card-shadow);
+}
+
+.gift-empty-icon {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #f8d755;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gift-empty-icon .material-icons {
+  font-size: 46px;
+  color: #fff;
+}
+
+.gift-empty-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.gift-empty-desc {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =========================
+   주고받은 선물 목록
+========================= */
+
+.gift-room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gift-room-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  border-radius: 24px;
+  background: #f8f8f8;
+  box-shadow: var(--main-card-shadow);
+  text-decoration: none;
+}
+
+.gift-room-card:active {
+  transform: scale(0.98);
+}
+
+.gift-room-thumb-wrap {
+  flex-shrink: 0;
+}
+
+.gift-room-thumb {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.gift-room-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.gift-room-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.gift-room-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.gift-room-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.3;
+}
+
+.gift-room-badge {
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #fff2bf;
+  color: #614900;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gift-room-badge--sent {
+  background: #dff2df;
+  color: #256128;
+}
+
+.gift-room-time {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #999;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+.gift-room-message {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+  word-break: keep-all;
+}
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 480px) {
+  .gift-page {
+    padding: 14px 12px 170px;
+  }
+
+  .gift-box-title {
+    font-size: 22px;
+  }
+
+  .gift-box-desc {
+    font-size: 14px;
+  }
+
+  .gift-pending-card {
+    border-radius: 24px;
+    padding: 16px 14px;
+  }
+
+  .gift-pending-profile {
+    width: 48px;
+    height: 48px;
+  }
+
+  .gift-pending-name {
+    font-size: 16px;
+  }
+
+  .gift-pending-product {
+    gap: 10px;
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .gift-pending-product-thumb-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+  }
+
+  .gift-pending-product-name {
+    font-size: 14px;
+  }
+
+  .gift-pending-notice {
+    padding: 11px 12px;
+    border-radius: 16px;
+  }
+
+  .gift-pending-notice-text {
+    font-size: 13px;
+  }
+
+  .gift-pending-btn {
+    min-height: 42px;
+    font-size: 15px;
+  }
+
+  .gift-empty-card {
+    border-radius: 24px;
+    padding: 28px 18px 24px;
+  }
+
+  .gift-empty-icon {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 16px;
+  }
+
+  .gift-empty-icon .material-icons {
+    font-size: 40px;
+  }
+
+  .gift-empty-title {
+    font-size: 20px;
+  }
+
+  .gift-empty-desc {
+    font-size: 14px;
+  }
+
+  .gift-room-card {
+    gap: 12px;
+    padding: 16px 14px;
+    border-radius: 22px;
+  }
+
+  .gift-room-thumb {
+    width: 60px;
+    height: 60px;
+  }
+
+  .gift-room-name {
+    font-size: 17px;
+  }
+
+  .gift-room-message {
+    font-size: 13px;
+  }
+}
+
+/* =========================
+   Gift 공통 레이아웃
+========================= */
+
+.app-shell--gift {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg-light);
+}
+
+.app-shell--gift .gift-main {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  background-color: var(--bg-light);
+}
+
+.gift-main {
+  background: var(--bg-light);
+}
+
+.gift-page {
+  padding: 16px 14px 170px;
+}
+
+/* =========================
+   선물함 상단
+========================= */
+
+.gift-box-head {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.gift-box-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.3;
+  margin: 0 0 6px;
+}
+
+.gift-box-desc {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* =========================
+   섹션 공통
+========================= */
+
+.gift-box-section {
+  margin-bottom: 18px;
+}
+
+.gift-box-section-head {
+  margin-bottom: 10px;
+  padding: 0 2px;
+}
+
+.gift-box-section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+  padding-left: 10px;
+}
+
+/* =========================
+   채팅형 카드 구조
+========================= */
+
+.gift-chat-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gift-chat-wrap--box {
+  gap: 12px;
+}
+
+.gift-bubble {
+  max-width: 80%;
+}
+
+.gift-bubble--left {
+  align-self: flex-start;
+}
+
+.gift-bubble--right {
+  align-self: flex-end;
+}
+
+.gift-bubble--center {
+  align-self: center;
+}
+
+.gift-card,
+.thanks-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: var(--main-card-shadow);
+}
+
+.gift-card-img {
+  width: 100%;
+  aspect-ratio: 870 / 500;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.gift-meta {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+/* =========================
+   상품/배송지/안내
+========================= */
+
+.gift-product-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 18px;
+  background: #f7f7f7;
+}
+
+.gift-product-thumb-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f1f1f1;
+}
+
+.gift-product-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gift-product-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.gift-product-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.gift-address-box {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: #f7f7f7;
+}
+
+.gift-address-label {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #666;
+}
+
+.gift-address-text {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.gift-notice-box {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: #fff8dc;
+}
+
+.gift-notice-text {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #383023;
+  line-height: 1.6;
+}
+
+/* =========================
+   버튼
+========================= */
+
+.gift-go-btn {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: #f8d755;
+  color: #383023;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.gift-go-btn--secondary {
+  background: #ececec;
+  color: #111;
+}
+
+.gift-action-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.gift-action-btn {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.gift-action-btn--accept {
+  background: #F8D755;
+  color: #383023;
+}
+
+.gift-action-btn--reject {
+  background: #9E9E9E;
+  color: #fff;
+}
+
+/* =========================
+   날짜/시간
+========================= */
+
+.gift-date-divider {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0;
+}
+
+.gift-date-divider span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #ececec;
+  color: #666;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.gift-time {
+  font-size: 12px;
+  color: #999;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.gift-bubble--left .gift-time {
+  text-align: left;
+  padding-left: 4px;
+}
+
+.gift-bubble--right .gift-time {
+  text-align: right;
+  padding-right: 4px;
+}
+
+/* =========================
+   빈 상태
+========================= */
+
+.gift-empty-card {
+  background: #f8f8f8;
+  border-radius: 28px;
+  padding: 34px 22px 28px;
+  text-align: center;
+  box-shadow: var(--main-card-shadow);
+}
+
+.gift-empty-icon {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #f8d755;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gift-empty-icon .material-icons {
+  font-size: 46px;
+  color: #fff;
+}
+
+.gift-empty-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.gift-empty-desc {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7b7b7b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 480px) {
+  .gift-page {
+    padding: 14px 12px 170px;
+  }
+
+  .gift-box-title {
+    font-size: 22px;
+  }
+
+  .gift-box-desc {
+    font-size: 14px;
+  }
+
+  .gift-bubble {
+    max-width: 92%;
+  }
+
+  .gift-card,
+  .thanks-card {
+    border-radius: 18px;
+    padding: 10px;
+  }
+
+  .gift-card-img {
+    border-radius: 14px;
+  }
+
+  .gift-product-summary {
+    gap: 10px;
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .gift-product-thumb-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+  }
+
+  .gift-product-name {
+    font-size: 14px;
+  }
+
+  .gift-address-box,
+  .gift-notice-box {
+    padding: 11px 12px;
+    border-radius: 16px;
+  }
+
+  .gift-address-text,
+  .gift-notice-text {
+    font-size: 13px;
+  }
+
+  .gift-go-btn,
+  .gift-action-btn {
+    min-height: 42px;
+    font-size: 15px;
+  }
+
+  .gift-empty-card {
+    border-radius: 24px;
+    padding: 28px 18px 24px;
+  }
+
+  .gift-empty-icon {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 16px;
+  }
+
+  .gift-empty-icon .material-icons {
+    font-size: 40px;
+  }
+
+  .gift-empty-title {
+    font-size: 20px;
+  }
+
+  .gift-empty-desc {
+    font-size: 14px;
+  }
+}
+
+/* 선물함 탭: category.css .category-top-tabs 재사용, gift-page 패딩 보정 */
+.gift-page .gift-box-tab-bar.category-top-tabs {
+  margin-left: -14px;
+  margin-right: -14px;
+  width: calc(100% + 28px);
+  max-width: none;
+  box-sizing: border-box;
+  /* category.css 기본값(흰색) 덮어쓰기: gift-page 배경과 동일하게 */
+  background: transparent;
+}
+
+@media (max-width: 480px) {
+  .gift-page .gift-box-tab-bar.category-top-tabs {
+    margin-left: -12px;
+    margin-right: -12px;
+    width: calc(100% + 24px);
+  }
+}
+
+/* 상태 표시 */
+.gift-state-box {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.gift-state-box--success {
+  background: #e6f6e6;
+  color: #256128;
+}
+
+.gift-state-box--reject {
+  background: #f3dede;
+  color: #7a2f2f;
+}

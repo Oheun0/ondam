@@ -170,9 +170,13 @@
 
     <!-- 하단 고정 액션 버튼 -->
     <div class="group-fixed-actions">
-        <a href="${pageContext.request.contextPath}/group?action=manage" class="group-fixed-btn">멤버 관리</a>
-        <a href="${pageContext.request.contextPath}/wallet" class="group-fixed-btn">지갑 관리</a>
-        <a href="#" class="group-fixed-btn group-fixed-btn--gift-history">선물함</a>
+        <a href="#" class="group-fixed-btn">멤버 관리</a>
+        <!-- 그룹장일 때
+        <a href="${pageContext.request.contextPath}/group/group-manage-owner.jsp" class="group-fixed-btn">멤버 관리</a> -->
+        <!-- 일반 멤버일 때
+        <a href="${pageContext.request.contextPath}/group/group-manage-member.jsp" class="group-fixed-btn">멤버 관리</a> -->
+        <a href="${pageContext.request.contextPath}/wallet/wallet-manage.jsp" class="group-fixed-btn">지갑 관리</a>
+        <a href="${pageContext.request.contextPath}/gift/gift-box.jsp" class="group-fixed-btn group-fixed-btn--gift-history">선물함</a>
     </div>
 
     <jsp:include page="../layout/bottomNav.jsp" />
