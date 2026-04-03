@@ -56,7 +56,6 @@ public class WishDAO {
                 dto.setWishNo(rs.getInt("wishNo"));
                 dto.setUserNo(rs.getInt("userNo"));
                 dto.setProductNo(rs.getInt("productNo"));
-                dto.setProductOptionNo(rs.getInt("productOptionNo"));
                 dto.setWishDate(rs.getString("wishDate"));
                 vlist.addElement(dto);
             }
@@ -76,11 +75,10 @@ public class WishDAO {
         boolean flag = false;
         try {
             con = pool.getConnection();
-            sql = "INSERT INTO wish (userNo, productNo, productOptionNo) VALUES (?, ?, ?)";
+            sql = "INSERT INTO wish (userNo, productNo) VALUES (?, ?)";
             pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, dto.getUserNo());
             pstmt.setInt(2, dto.getProductNo());
-            pstmt.setInt(3, dto.getProductOptionNo());
             if (pstmt.executeUpdate() > 0)
                 flag = true;
         } catch (Exception e) {
