@@ -69,7 +69,7 @@ public class DBConnectionMgr {
                 this._user = props.getProperty("db.user");
                 this._password = props.getProperty("db.password");
                 is.close();
-                //System.out.println("성공: config.properties 로드 완료 (" + _url + ")");
+//                System.out.println("성공: config.properties 로드 완료 (" + _url + ")");
             } else {
                 System.err.println("실패: 모든 경로에서 config.properties를 찾을 수 없습니다.");
             }

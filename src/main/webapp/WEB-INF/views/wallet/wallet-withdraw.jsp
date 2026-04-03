@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     request.setAttribute("bottomNav", "mypage");
 %>
@@ -26,7 +27,7 @@
 
             <!-- 뒤로가기 -->
             <div class="wallet-top">
-                <a href="${pageContext.request.contextPath}/wallet/wallet-manage.jsp" class="back-btn">
+                <a href="${pageContext.request.contextPath}/wallet" class="back-btn">
                     <span class="material-icons">arrow_back_ios</span>
                     <span>뒤로가기</span>
                 </a>
@@ -38,33 +39,59 @@
                 <p>지갑에 있는 금액을 내 계좌로 보낼 수 있어요</p>
             </div>
 
-            <!-- 계좌번호 -->
-            <div class="input-box">
-                <input type="text" placeholder="계좌번호를 입력하세요">
-            </div>
+            <form id="withdrawForm"
+                  action="${pageContext.request.contextPath}/wallet?action=withdrawSubmit"
+                  method="post">
 
-            <!-- 은행 선택 -->
-            <div class="input-box">
-                <input type="text" placeholder="은행명을 입력하세요">
-            </div>
-
-            <!-- 금액 입력 + 전액 -->
-            <div class="amount-row">
-                <div class="amount-input">
-                    <span class="won">₩</span>
-                    <input type="text" placeholder="금액 입력">
+                <!-- 계좌번호 -->
+                <div class="input-box">
+                    <input type="text" placeholder="계좌번호를 입력하세요">
                 </div>
-                <button class="all-btn">전액</button>
-            </div>
 
-            <!-- 버튼 -->
-            <button class="charge-btn">잔액 꺼내기</button>
+                <!-- 은행 선택 -->
+                <div class="input-box">
+                    <input type="text" placeholder="은행명을 입력하세요">
+                </div>
 
+                <!-- 금액 입력 + 전액 -->
+                <div class="amount-row">
+                    <div class="amount-input">
+                        <span class="won">₩</span>
+                        <input type="text" id="amountInput" name="amount"
+                               placeholder="금액 입력" autocomplete="off">
+                    </div>
+                    <button type="button" class="all-btn" onclick="setAllAmount()">전액</button>
+                </div>
+
+                <!-- 버튼 -->
+                <button type="submit" class="charge-btn">잔액 꺼내기</button>
+
+            </form>
         </div>
     </main>
 
     <jsp:include page="../layout/bottomNav.jsp" />
 
 </div>
+<script>
+const input = document.getElementById('amountInput');
+const currentBalance = ${not empty wallet ? wallet.balance : 0};
+
+// 숫자만 입력, 천 단위 콤마
+input.addEventListener('input', function () {
+    let raw = this.value.replace(/[^0-9]/g, '');
+    this.value = raw ? Number(raw).toLocaleString() : '';
+});
+
+// 전액 버튼
+function setAllAmount() {
+    input.value = currentBalance.toLocaleString();
+}
+
+// 폼 제출 시 콤마 제거
+document.getElementById('withdrawForm').addEventListener('submit', function () {
+    input.value = input.value.replace(/,/g, '');
+});
+</script>
 </body>
 </html>

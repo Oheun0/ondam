@@ -1,4 +1,4 @@
-package com.ondam.wallet.dao;
+package com.ondam.group.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,34 +6,34 @@ import java.sql.ResultSet;
 import java.util.Vector;
 
 import com.ondam.common.DBConnectionMgr;
-import com.ondam.wallet.dto.WalletDTO;
+import com.ondam.group.dto.FamilyHelpDTO;
 
-public class WalletDAO {
+public class FamilyHelpDAO {
 
 	private DBConnectionMgr pool;
 
-	public WalletDAO() {
+	public FamilyHelpDAO() {
 		pool = DBConnectionMgr.getInstance();
 	}
 
-	// Select
-	public Vector<WalletDTO> getWallet() {
+	// Select All
+	public Vector<FamilyHelpDTO> getFamilyHelpList() {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
-		Vector<WalletDTO> vlist = new Vector<WalletDTO>();
+		Vector<FamilyHelpDTO> vlist = new Vector<FamilyHelpDTO>();
 		try {
 			con = pool.getConnection();
-			sql = "SELECT * FROM wallet";
+			sql = "SELECT * FROM familyhelp";
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				WalletDTO dto = new WalletDTO();
-				dto.setWalletNo(rs.getInt("walletNo"));
+				FamilyHelpDTO dto = new FamilyHelpDTO();
+				dto.setFamilyHelpNo(rs.getInt("familyHelpNo"));
 				dto.setFamilyNo(rs.getInt("familyNo"));
-				dto.setBalance(rs.getInt("balance"));
-				dto.setCreatedAt(rs.getString("createdAt"));
+				dto.setHelperUserNo(rs.getInt("helperUserNo"));
+				dto.setHelpeeUserNo(rs.getInt("helpeeUserNo"));
 				vlist.addElement(dto);
 			}
 		} catch (Exception e) {
@@ -45,18 +45,18 @@ public class WalletDAO {
 	}
 
 	// Insert
-	public boolean insertWallet(WalletDTO dto) {
+	public boolean insertFamilyHelp(FamilyHelpDTO dto) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT Wallet (familyNo, balance, createdAt) VALUES (?, ?, ?)";
+			sql = "INSERT INTO familyhelp (familyNo, helperUserNo, helpeeUserNo) VALUES (?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getFamilyNo());
-			pstmt.setInt(2, dto.getBalance());
-			pstmt.setString(3, dto.getCreatedAt());
+			pstmt.setInt(2, dto.getHelperUserNo());
+			pstmt.setInt(3, dto.getHelpeeUserNo());
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -68,19 +68,19 @@ public class WalletDAO {
 	}
 
 	// Update
-	public boolean updateWallet(WalletDTO dto, int walletNo) {
+	public boolean updateFamilyHelp(FamilyHelpDTO dto, int familyHelpNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE Wallet SET familyNo = ?, balance = ?, createdAt = ? WHERE walletNo = ?";
+			sql = "UPDATE familyhelp SET familyNo = ?, helperUserNo = ?, helpeeUserNo = ? WHERE familyHelpNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getFamilyNo());
-			pstmt.setInt(2, dto.getBalance());
-			pstmt.setString(3, dto.getCreatedAt());
-			pstmt.setInt(4, walletNo);
+			pstmt.setInt(2, dto.getHelperUserNo());
+			pstmt.setInt(3, dto.getHelpeeUserNo());
+			pstmt.setInt(4, familyHelpNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -92,16 +92,16 @@ public class WalletDAO {
 	}
 
 	// Delete
-	public boolean deleteWallet(int walletNo) {
+	public boolean deleteFamilyHelp(int familyHelpNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "DELETE FROM Wallet WHERE walletNo = ?";
+			sql = "DELETE FROM familyhelp WHERE familyHelpNo = ?";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, walletNo);
+			pstmt.setInt(1, familyHelpNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -112,44 +112,41 @@ public class WalletDAO {
 		return flag;
 	}
 	
-	// familyNo로 조회
-	public WalletDTO getWalletByFamilyNo(int familyNo) {
+	// 내가 돕는 helpeeUserNo 목록 조회
+	public Vector<Integer> getHelpeeUserNosByHelper(int helperUserNo, int familyNo) {
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
-	    WalletDTO dto = null;
+	    Vector<Integer> list = new Vector<>();
 	    try {
 	        con = pool.getConnection();
-	        String sql = "SELECT * FROM wallet WHERE familyNo = ?";
+	        String sql = "SELECT helpeeUserNo FROM familyhelp WHERE helperUserNo = ? AND familyNo = ?";
 	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, familyNo);
+	        pstmt.setInt(1, helperUserNo);
+	        pstmt.setInt(2, familyNo);
 	        rs = pstmt.executeQuery();
-	        if (rs.next()) {
-	            dto = new WalletDTO();
-	            dto.setWalletNo(rs.getInt("walletNo"));
-	            dto.setFamilyNo(rs.getInt("familyNo"));
-	            dto.setBalance(rs.getInt("balance"));
-	            dto.setCreatedAt(rs.getString("createdAt"));
+	        while (rs.next()) {
+	            list.add(rs.getInt("helpeeUserNo"));
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
 	        pool.freeConnection(con, pstmt, rs);
 	    }
-	    return dto;
+	    return list;
 	}
-	
-	// 잔액 업데이트
-	public boolean updateBalance(int walletNo, int newBalance) {
+
+	// helperUserNo + helpeeUserNo로 단건 삭제
+	public boolean deleteByHelperAndHelpee(int helperUserNo, int helpeeUserNo) {
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    boolean flag = false;
 	    try {
 	        con = pool.getConnection();
-	        String sql = "UPDATE wallet SET balance = ? WHERE walletNo = ?";
+	        String sql = "DELETE FROM familyhelp WHERE helperUserNo = ? AND helpeeUserNo = ?";
 	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, newBalance);
-	        pstmt.setInt(2, walletNo);
+	        pstmt.setInt(1, helperUserNo);
+	        pstmt.setInt(2, helpeeUserNo);
 	        if (pstmt.executeUpdate() > 0) flag = true;
 	    } catch (Exception e) {
 	        e.printStackTrace();

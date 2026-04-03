@@ -32,6 +32,7 @@ public class FamilyGroupDAO {
 				FamilyGroupDTO dto = new FamilyGroupDTO();
 				dto.setFamilyNo(rs.getInt("familyNo"));
 				dto.setFamilyName(rs.getString("familyName"));
+				dto.setFamilyInviteCode(rs.getString("familyInviteCode"));
 				dto.setFamilyDate(rs.getString("familyDate"));
 				vlist.addElement(dto);
 			}
@@ -59,6 +60,7 @@ public class FamilyGroupDAO {
 	            dto = new FamilyGroupDTO();
 	            dto.setFamilyNo(rs.getInt("familyNo"));
 	            dto.setFamilyName(rs.getString("familyName"));
+	            dto.setFamilyInviteCode(rs.getString("familyInviteCode"));
 	            dto.setFamilyDate(rs.getString("familyDate"));
 	        }
 	    } catch (Exception e) {
@@ -77,10 +79,11 @@ public class FamilyGroupDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT FamilyGroup (familyName, familyDate) VALUES (?, ?)";
+			sql = "INSERT FamilyGroup (familyName, familyInviteCode, familyDate) VALUES (?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, dto.getFamilyName());
-			pstmt.setString(2, dto.getFamilyDate());
+			pstmt.setString(2, dto.getFamilyInviteCode());
+			pstmt.setString(3, dto.getFamilyDate());
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -99,10 +102,11 @@ public class FamilyGroupDAO {
 	    int generatedNo = -1;
 	    try {
 	        con = pool.getConnection();
-	        String sql = "INSERT INTO FamilyGroup (familyName, familyDate) VALUES (?, ?)";
+	        String sql = "INSERT INTO FamilyGroup (familyName, familyInviteCode, familyDate) VALUES (?, ?, ?)";
 	        pstmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 	        pstmt.setString(1, dto.getFamilyName());
-	        pstmt.setString(2, dto.getFamilyDate());
+	        pstmt.setString(2, dto.getFamilyInviteCode());
+	        pstmt.setString(3, dto.getFamilyDate());
 	        pstmt.executeUpdate();
 	        rs = pstmt.getGeneratedKeys();
 	        if (rs.next()) {
@@ -124,11 +128,12 @@ public class FamilyGroupDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE FamilyGroup SET familyName = ?, familyDate = ? WHERE familyNo = ?";
+			sql = "UPDATE FamilyGroup SET familyName = ?, familyInviteCode = ?, familyDate = ? WHERE familyNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, dto.getFamilyName());
-			pstmt.setString(2, dto.getFamilyDate());
-			pstmt.setInt(3, familyNo);
+			pstmt.setString(2, dto.getFamilyInviteCode());
+			pstmt.setString(3, dto.getFamilyDate());
+			pstmt.setInt(4, familyNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -158,5 +163,52 @@ public class FamilyGroupDAO {
 			pool.freeConnection(con, pstmt);
 		}
 		return flag;
+	}
+	
+	// 초대코드로 그룹 조회
+	public FamilyGroupDTO getFamilyGroupByInviteCode(String inviteCode) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    FamilyGroupDTO dto = null;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM FamilyGroup WHERE familyInviteCode = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, inviteCode);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            dto = new FamilyGroupDTO();
+	            dto.setFamilyNo(rs.getInt("familyNo"));
+	            dto.setFamilyName(rs.getString("familyName"));
+	            dto.setFamilyInviteCode(rs.getString("familyInviteCode"));
+	            dto.setFamilyDate(rs.getString("familyDate"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return dto;
+	}
+	
+	// 내 사람 그룹명만 변경
+	public boolean updateFamilyName(int familyNo, String familyName) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE familygroup SET familyName = ? WHERE familyNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, familyName);
+	        pstmt.setInt(2, familyNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return flag;
 	}
 }

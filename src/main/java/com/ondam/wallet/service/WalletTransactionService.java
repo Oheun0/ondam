@@ -28,5 +28,12 @@ public class WalletTransactionService {
 	public boolean removeWalletTransaction(int transactionNo) {
 		return dao.deleteWalletTransaction(transactionNo);
 	}
+	
+	public Vector<WalletTransactionDTO> getRecentTransactions(int walletNo ) {
+	    return dao.getRecentByWalletNo(walletNo);
+	}
+	
+	public Vector<WalletTransactionDTO> getTransactionsByWalletNo(int walletNo) {
+	    return dao.getByWalletNo(walletNo);
+	}
 }
-

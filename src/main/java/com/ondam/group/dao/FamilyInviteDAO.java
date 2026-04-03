@@ -34,8 +34,7 @@ public class FamilyInviteDAO {
 				dto.setFamilyNo(rs.getInt("familyNo"));
 				dto.setInviterNo(rs.getInt("inviterNo"));
 				dto.setInviteeNo(rs.getInt("inviteeNo"));
-				dto.setInviteeKakaoUuid(rs.getString("inviteeKakaoUuid"));
-				dto.setInvitationToken(rs.getString("invitationToken"));
+				dto.setInviteCode(rs.getString("inviteCode"));
 				dto.setInvitationStatus(rs.getInt("invitationStatus"));
 				dto.setInvitedAt(rs.getString("invitedAt"));
 				dto.setRespondedAt(rs.getString("respondedAt"));
@@ -58,17 +57,16 @@ public class FamilyInviteDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT FamilyInvite (familyNo, inviterNo, inviteeNo, inviteeKakaoUuid, invitationToken, invitationStatus, invitedAt, respondedAt, expiresAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			sql = "INSERT FamilyInvite (familyNo, inviterNo, inviteeNo, inviteCode, invitationStatus, invitedAt, respondedAt, expiresAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getFamilyNo());
 			pstmt.setInt(2, dto.getInviterNo());
 			pstmt.setInt(3, dto.getInviteeNo());
-			pstmt.setString(4, dto.getInviteeKakaoUuid());
-			pstmt.setString(5, dto.getInvitationToken());
-			pstmt.setInt(6, dto.getInvitationStatus());
-			pstmt.setString(7, dto.getInvitedAt());
-			pstmt.setString(8, dto.getRespondedAt());
-			pstmt.setString(9, dto.getExpiresAt());
+			pstmt.setString(4, dto.getInviteCode());
+			pstmt.setInt(5, dto.getInvitationStatus());
+			pstmt.setString(6, dto.getInvitedAt());
+			pstmt.setString(7, dto.getRespondedAt());
+			pstmt.setString(8, dto.getExpiresAt());
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -87,17 +85,16 @@ public class FamilyInviteDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE FamilyInvite SET familyNo = ?, inviterNo = ?, inviteeNo = ?, inviteeKakaoUuid = ?, invitationToken = ?, invitationStatus = ?, invitedAt = ?, respondedAt = ?, expiresAt = ? WHERE invitationNo = ?";
+			sql = "UPDATE FamilyInvite SET familyNo = ?, inviterNo = ?, inviteeNo = ?, inviteCode = ?, invitationStatus = ?, invitedAt = ?, respondedAt = ?, expiresAt = ? WHERE invitationNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getFamilyNo());
 			pstmt.setInt(2, dto.getInviterNo());
 			pstmt.setInt(3, dto.getInviteeNo());
-			pstmt.setString(4, dto.getInviteeKakaoUuid());
-			pstmt.setString(5, dto.getInvitationToken());
-			pstmt.setInt(6, dto.getInvitationStatus());
-			pstmt.setString(7, dto.getInvitedAt());
-			pstmt.setString(8, dto.getRespondedAt());
-			pstmt.setString(9, dto.getExpiresAt());
+			pstmt.setString(4, dto.getInviteCode());
+			pstmt.setInt(5, dto.getInvitationStatus());
+			pstmt.setString(6, dto.getInvitedAt());
+			pstmt.setString(7, dto.getRespondedAt());
+			pstmt.setString(8, dto.getExpiresAt());
 			pstmt.setInt(10, invitationNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
@@ -130,4 +127,3 @@ public class FamilyInviteDAO {
 		return flag;
 	}
 }
-
