@@ -43,9 +43,11 @@ public class ShortsService {
                 // 각 DAO에는 getVendorName(int), getProductName(int) 메서드가 있다고 가정합니다.
                 String vName = vendorDao.getVendorName(dto.getVendorNo());
                 String pName = productDao.getProductName(dto.getProductNo());
+                int pPrice = productDao.getProductPrice(dto.getProductNo());
                 
                 dto.setVendorName(vName != null ? vName : "Unknown Vendor");
                 dto.setProductName(pName != null ? pName : "Unknown Product");
+                dto.setProductPrice(pPrice != 0 ? pPrice : null);
                 
                 publicShorts.add(dto);
             }

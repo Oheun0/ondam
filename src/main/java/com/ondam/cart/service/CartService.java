@@ -117,4 +117,21 @@ public class CartService {
         return itemDao.getCartTotalQuantity(cartNo);
     }
     
+    public void updateItemOption(int userNo, int cartItemNo, int productOptionNo) {
+        // 1. 현재 수정하려는 아이템 정보를 가져옴
+        CartItemDTO currentItem = itemDao.getCartItemByNo(cartItemNo);
+        int cartNo = cartDao.getOrCreateCart(userNo);
+
+        // 2. 변경하려는 옵션이 이미 장바구니에 있는지 확인
+        CartItemDTO existing = itemDao.checkExistingItem(cartNo, currentItem.getProductNo(), productOptionNo);
+
+        if (existing != null && existing.getCartItemNo() != cartItemNo) {
+            // 중복된 경우: 기존 아이템에 수량을 합치고 현재 아이템 삭제
+            itemDao.updateQuantity(existing.getCartItemNo(), existing.getCartQuantity() + currentItem.getCartQuantity());
+            itemDao.deleteItem(cartItemNo);
+        } else {
+            // 중복이 없는 경우: 옵션만 변경
+            itemDao.updateOptionNo(cartItemNo, productOptionNo);
+        }
+    }
 }

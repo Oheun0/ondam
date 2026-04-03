@@ -45,6 +45,8 @@ public class CartController implements Controller {
                 return update(request, userNo);
             case "deleteSelected":
                 return deleteSelected(request, userNo);
+            case "updateOption":
+                return updateOption(request, userNo);
             default:
                 return "redirect:/main";
         }
@@ -110,6 +112,17 @@ public class CartController implements Controller {
         
         // 일괄 삭제 후 헤더 장바구니 숫자 동기화
         syncCartSession(request, userNo);
+        
+        return "redirect:/cart?action=list";
+    }
+    
+    private String updateOption(HttpServletRequest request, int userNo) {
+        // 파라미터 추출
+        int cartItemNo = Integer.parseInt(request.getParameter("cartItemNo"));
+        int productOptionNo = Integer.parseInt(request.getParameter("productOptionNo"));
+        
+        // 서비스 호출 (userNo를 추가하여 인자 3개를 맞춤)
+        cartService.updateItemOption(userNo, cartItemNo, productOptionNo);
         
         return "redirect:/cart?action=list";
     }

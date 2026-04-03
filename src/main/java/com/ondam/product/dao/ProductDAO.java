@@ -227,6 +227,28 @@ public class ProductDAO {
 	    return productName;
 	}
 	
+	public int getProductPrice(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    int productPrice = 0;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT productPrice FROM product WHERE productNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            productPrice = rs.getInt("productPrice");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return productPrice;
+	}
+	
 	// 상품 옵션명 조회 (장바구니 표시용 추가)
 	// 장바구니에는 옵션 번호만 있으므로, 이름을 보여주려면 이 메서드가 반드시 필요합니다.
 	public String getOptionName(int productOptionNo) {
