@@ -8,6 +8,7 @@ import com.ondam.product.dto.ProductDTO;
 import com.ondam.product.dto.ProductImageDTO;
 import com.ondam.wish.dao.WishDAO;
 import com.ondam.wish.dto.WishDTO;
+// import com.ondam.product.dao.ProductDAO; // 상품 정보 조립용
 
 public class WishService {
 

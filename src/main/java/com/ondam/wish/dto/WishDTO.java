@@ -5,6 +5,7 @@ public class WishDTO {
 	private int wishNo;
 	private int userNo;
 	private int productNo;
+	private int productOptionNo;
 	private String wishDate;
 
 	private String productName;
@@ -22,11 +23,12 @@ public class WishDTO {
 
 	public WishDTO() {}
 
-	public WishDTO(int wishNo, int userNo, int productNo, String wishDate) {
+	public WishDTO(int wishNo, int userNo, int productNo, int productOptionNo, String wishDate) {
 		this.wishNo = wishNo;
 		this.userNo = userNo;
 		this.productNo = productNo;
 		this.wishDate = wishDate;
+		this.productOptionNo = productOptionNo;
 	}
 
 	public int getWishNo() {

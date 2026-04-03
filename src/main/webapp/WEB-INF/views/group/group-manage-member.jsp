@@ -6,22 +6,21 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>멤버 보기</title>
 
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/profile.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/group.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wallet.css">
-   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
 </head>
 <body data-context-path="${pageContext.request.contextPath}">
   <div class="app-shell app-shell--group app-shell--group-manage">
-    
-    <div class="top-header-cluster">
-      <jsp:include page="../layout/header.jsp" />
-    </div>
+
+    <jsp:include page="../layout/header.jsp" />
 
     <main class="main-content group-main">
       <section class="group-page group-manage-page">
@@ -119,6 +118,7 @@
 
                 <div class="member-btn-row member-btn-row--manage">
                   <a href="#" class="member-btn member-btn--soft member-btn--solo-row">회원 정보 수정 도와주기</a>
+                  <a href="#" class="member-btn member-btn--soft member-btn--solo-row">도움주기 취소하기</a>
                 </div>
               </div>
             </article>
