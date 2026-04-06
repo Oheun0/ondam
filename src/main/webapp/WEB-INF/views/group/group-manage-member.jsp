@@ -107,8 +107,8 @@
 		              <c:choose>
 		                <c:when test="${isHelping}">
 		                  <a href="${pageContext.request.contextPath}/profile-address?targetUserNo=${m.userNo}"
-		                     class="member-btn member-btn--soft member-btn--solo-row help-toggle-btn"
-		                     onclick="return false;">배송지 수정 도와주기</a>
+		                     class="member-btn member-btn--soft member-btn--solo-row help-toggle-btn">
+		                     배송지 수정 도와주기</a>
 		                  <a href="#"
 		                     class="member-btn member-btn--soft member-btn--solo-row help-cancel-btn"
 		                     onclick="cancelHelp(this.closest('.group-member-card')); return false;">도움 주기 취소</a>
