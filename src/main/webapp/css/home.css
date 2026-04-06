@@ -54,14 +54,21 @@
     gap: 4px;
 }
 
+/* product-detail-header .detail-icon-btn 과 동일 터치·아이콘 크기 */
 .icon-btn {
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
     border-radius: 14px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     color: var(--text-main);
+}
+
+.icon-btn .material-icons,
+.icon-btn .material-icons-outlined {
+    font-size: 28px;
+    line-height: 1;
 }
 
 .icon-btn:active,
