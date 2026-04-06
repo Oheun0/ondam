@@ -72,28 +72,28 @@
                 <h2>자주 쓰는 메뉴</h2>
             </div>
             <div class="shortcut-grid">
-                <a href="#" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/ai" class="shortcut-card">
                     <span class="shortcut-icon"><span class="material-icons">auto_awesome</span></span>
                     <div class="shortcut-text">
                         <strong>옷 추천</strong>
                         <p>잘 맞는 옷 추천받기</p>
                     </div>
                 </a>
-                <a href="#" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/shorts" class="shortcut-card">
                     <span class="shortcut-icon"><span class="material-icons">smart_display</span></span>
                     <div class="shortcut-text">
                         <strong>영상보기</strong>
                         <p>넘기면서 옷 보기</p>
                     </div>
                 </a>
-                <a href="#" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/wishlist" class="shortcut-card">
                     <span class="shortcut-icon"><span class="material-icons">favorite_border</span></span>
                     <div class="shortcut-text">
                         <strong>찜한 상품</strong>
                         <p>옷 찜하고 다시 보기</p>
                     </div>
                 </a>
-                <a href="#" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/group" class="shortcut-card">
                     <span class="shortcut-icon"><span class="material-icons">diversity_1</span></span>
                     <div class="shortcut-text">
                         <strong>내 사람</strong>
