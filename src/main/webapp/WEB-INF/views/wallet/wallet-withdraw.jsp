@@ -27,7 +27,7 @@
 
             <!-- 뒤로가기 -->
             <div class="wallet-top">
-                <a href="${pageContext.request.contextPath}/wallet" class="back-btn">
+                <a href="javascript:history.back();" class="back-btn">
                     <span class="material-icons">arrow_back_ios</span>
                     <span>뒤로가기</span>
                 </a>
