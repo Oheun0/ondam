@@ -5,6 +5,8 @@ import java.util.Vector;
 import com.ondam.common.controller.Controller;
 import com.ondam.group.dto.FamilyMemberDTO;
 import com.ondam.group.service.FamilyMemberService;
+import com.ondam.notification.dto.NotificationDTO;
+import com.ondam.notification.service.NotificationService;
 import com.ondam.user.dto.UserDTO;
 import com.ondam.wallet.dto.WalletDTO;
 import com.ondam.wallet.dto.WalletTransactionDTO;
@@ -20,6 +22,7 @@ public class WalletController implements Controller {
 	private FamilyMemberService familyMemberService = new FamilyMemberService();
 	private WalletTransactionService walletTransactionService = new WalletTransactionService();
 	private WalletService walletService = new WalletService();
+	private NotificationService notificationService = new NotificationService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -33,21 +36,21 @@ public class WalletController implements Controller {
 			action = "manage";
 
 		switch (action) {
-		case "manage":
-			return manage(request, response);
-		case "history":
-			return history(request, response);
-		case "charge":
-			return charge(request, response);
-		case "withdraw":
-			return withdraw(request, response);
-		case "chargeSubmit":
-		    return chargeSubmit(request, response);
-		case "withdrawSubmit":
-		    return withdrawSubmit(request, response);
-		default:
-			return "redirect:/wallet";
-		}
+	    case "manage":       // 지갑 메인 (잔액 + 최근 거래 내역)
+	        return manage(request, response);
+	    case "history":      // 전체 거래 내역 조회
+	        return history(request, response);
+	    case "charge":       // 충전 폼
+	        return charge(request, response);
+	    case "withdraw":     // 출금 폼
+	        return withdraw(request, response);
+	    case "chargeSubmit": // 충전 처리
+	        return chargeSubmit(request, response);
+	    case "withdrawSubmit": // 출금 처리
+	        return withdrawSubmit(request, response);
+	    default:
+	        return "redirect:/wallet";
+	}
 	}
 	
 	private String manage(HttpServletRequest request, HttpServletResponse response) {
@@ -157,12 +160,25 @@ public class WalletController implements Controller {
 	    WalletTransactionDTO tx = new WalletTransactionDTO();
 	    tx.setWalletNo(wallet.getWalletNo());
 	    tx.setUserNo(loginUser.getUserNo());
+	    tx.setUserName(loginUser.getUserName());
 	    tx.setTransactionType(0); // 0: 충전
 	    tx.setAmount(amount);
 	    tx.setBalanceSnapshot(newBalance);
 	    tx.setTransactionDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 	    walletTransactionService.createWalletTransaction(tx);
 
+	    // 3. 그룹 전원에게 충전 알림
+	    Vector<FamilyMemberDTO> memberList = familyMemberService.getFamilyMembersByFamilyNo(myMember.getFamilyNo());
+	    String content = "\"" + loginUser.getUserName() + "\"님이 함께 지갑에 " + amount + "원을 충전하셨어요!";
+	    for (FamilyMemberDTO m : memberList) {
+	        NotificationDTO notiDto = new NotificationDTO();
+	        notiDto.setUserNo(m.getUserNo());
+	        notiDto.setNotificationType(5);
+	        notiDto.setNotificationContent(content);
+	        notiDto.setRefNo(0);
+	        notiDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+	        notificationService.createNotification(notiDto);
+	    }
 	    return "redirect:/wallet?action=manage";
 	}
 	
@@ -201,12 +217,26 @@ public class WalletController implements Controller {
 	    WalletTransactionDTO tx = new WalletTransactionDTO();
 	    tx.setWalletNo(wallet.getWalletNo());
 	    tx.setUserNo(loginUser.getUserNo());
+	    tx.setUserName(loginUser.getUserName());
 	    tx.setTransactionType(2); // 2: 잔액 꺼내기
 	    tx.setAmount(amount);
 	    tx.setBalanceSnapshot(newBalance);
 	    tx.setTransactionDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 	    walletTransactionService.createWalletTransaction(tx);
 
+	    // 3. 그룹 전원에게 사용 알림
+	    Vector<FamilyMemberDTO> memberList = familyMemberService.getFamilyMembersByFamilyNo(myMember.getFamilyNo());
+	    String content = "\"" + loginUser.getUserName() + "\"님이 함께 지갑에서 " + amount + "원을 사용하셨어요!";
+	    for (FamilyMemberDTO m : memberList) {
+	        NotificationDTO notiDto = new NotificationDTO();
+	        notiDto.setUserNo(m.getUserNo());
+	        notiDto.setNotificationType(5);
+	        notiDto.setNotificationContent(content);
+	        notiDto.setRefNo(0);
+	        notiDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+	        notificationService.createNotification(notiDto);
+	    }
+	    
 	    return "redirect:/wallet?action=manage";
 	}
 }

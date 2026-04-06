@@ -88,22 +88,30 @@ public class GiftDAO {
 	}
 
 	// 5. 내가 받은 선물 보기
-	public Vector<GiftDTO> getReceivedGifts(int receiverNo) {
-		Connection con = null; PreparedStatement pstmt = null; ResultSet rs = null;
-		Vector<GiftDTO> vlist = new Vector<GiftDTO>();
-		try {
-			con = pool.getConnection();
-			String sql = "SELECT * FROM gift WHERE receiverNo = ? ORDER BY sentAt DESC";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, receiverNo);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				vlist.addElement(extractDTO(rs));
-			}
-		} catch (Exception e) { e.printStackTrace(); } 
-		finally { pool.freeConnection(con, pstmt, rs); }
-		return vlist;
-	}
+	// 
+		public Vector<GiftDTO> getReceivedGifts(int receiverNo) {
+			Connection con = null; PreparedStatement pstmt = null; ResultSet rs = null;
+			Vector<GiftDTO> vlist = new Vector<GiftDTO>();
+			try {
+				con = pool.getConnection();
+				
+				// ORDER BY 조건에 CASE 문을 추가.
+				// 1. giftState가 0(대기)이면 우선순위 0을 주고, 아니면 1을 줍니다. (대기 중인 선물이 위로 옴)
+				// 2. 그 그룹 안에서 sentAt(보낸 시간)을 역순으로 최신순 정렬합니다.
+				String sql = "SELECT * FROM gift WHERE receiverNo = ? "
+						   + "ORDER BY CASE WHEN giftState = 0 THEN 0 ELSE 1 END ASC, sentAt DESC";
+				
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, receiverNo);
+				rs = pstmt.executeQuery();
+				
+				while (rs.next()) {
+					vlist.addElement(extractDTO(rs));
+				}
+			} catch (Exception e) { e.printStackTrace(); } 
+			finally { pool.freeConnection(con, pstmt, rs); }
+			return vlist;
+		}
 
 	// 6. 선물 생성 (DB의 Default 값 활용, INSERT INTO 구문 사용)
 	public boolean insertGift(GiftDTO dto) {

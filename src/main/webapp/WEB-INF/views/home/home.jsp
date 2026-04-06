@@ -72,7 +72,8 @@
                 <h2>자주 쓰는 메뉴</h2>
             </div>
             <div class="shortcut-grid">
-                <a href="#" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/ai" class="shortcut-card">
+
                     <div class="shortcut-text">
                         <div class="shortcut-title-row">
                             <span class="shortcut-icon" aria-hidden="true"><span class="material-icons">auto_awesome</span></span>
@@ -81,7 +82,8 @@
                         <p>잘 맞는 옷 추천받기</p>
                     </div>
                 </a>
-                <a href="#" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/shorts" class="shortcut-card">
+
                     <div class="shortcut-text">
                         <div class="shortcut-title-row">
                             <span class="shortcut-icon" aria-hidden="true"><span class="material-icons">smart_display</span></span>
@@ -90,7 +92,9 @@
                         <p>넘기며 옷 구경하기</p>
                     </div>
                 </a>
-                <a href="#" class="shortcut-card">
+
+                <a href="${pageContext.request.contextPath}/wishlist" class="shortcut-card">
+
                     <div class="shortcut-text">
                         <div class="shortcut-title-row">
                             <span class="shortcut-icon" aria-hidden="true"><span class="material-icons">favorite</span></span>
@@ -99,7 +103,9 @@
                         <p>찜한 옷 다시보기</p>
                     </div>
                 </a>
-                <a href="#" class="shortcut-card">
+
+                <a href="${pageContext.request.contextPath}/group" class="shortcut-card">
+
                     <div class="shortcut-text">
                         <div class="shortcut-title-row">
                             <span class="shortcut-icon" aria-hidden="true"><span class="material-icons">diversity_1</span></span>

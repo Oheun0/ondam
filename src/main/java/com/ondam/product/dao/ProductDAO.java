@@ -203,7 +203,7 @@ public class ProductDAO {
 		}
 		return imgList;
 	}	
-	// 특정 상품의 이미지 파일 경로 조회
+	// 특정 상품의 대표 이미지 파일 경로 조회
 	public String getProductImage(int productNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -211,7 +211,7 @@ public class ProductDAO {
 		String img = null;
 		try {
 			con = pool.getConnection();
-			String sql = "SELECT imgFile FROM productimage WHERE productNo = ? and imgOrder = 1";
+			String sql = "SELECT imgFile FROM productimage WHERE productNo = ? and imgType = 0";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, productNo);
 			rs = pstmt.executeQuery();

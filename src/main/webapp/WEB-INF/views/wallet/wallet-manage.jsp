@@ -71,6 +71,7 @@ request.setAttribute("bottomNav", "mypage");
 													<c:otherwise>기타</c:otherwise>
 												</c:choose>
 											</strong>
+										    <p class="tx-username">${tx.userName}</p>
 											<p>${tx.transactionDate}</p>
 										</div>
 

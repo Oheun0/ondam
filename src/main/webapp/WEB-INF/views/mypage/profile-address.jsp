@@ -23,7 +23,14 @@
     <main class="profile-page">
         <section class="profile-intro-card">
             <div class="profile-intro-top">
-                <a href="${pageContext.request.contextPath}/mypage" class="back-btn">
+                <c:choose>
+				  <c:when test="${isHelperMode}">
+				    <a href="${pageContext.request.contextPath}/group?action=manage" class="back-btn">
+				  </c:when>
+				  <c:otherwise>
+				    <a href="${pageContext.request.contextPath}/mypage" class="back-btn">
+				  </c:otherwise>
+				</c:choose>
                     <span class="material-icons">chevron_left</span>
                 </a>
                 <div class="intro-text">
@@ -32,10 +39,33 @@
                 </div>
             </div>
             <div class="step-tab-wrap">
-                <a href="${pageContext.request.contextPath}/profile" class="step-tab">기본 정보</a>
-				<a href="${pageContext.request.contextPath}/profile-address" class="step-tab active">배송지 관리</a>
-				<a href="${pageContext.request.contextPath}/preference" class="step-tab">취향 정보</a>
-            </div>
+			  <c:choose>
+			    <c:when test="${isHelperMode}">
+			      <span class="step-tab"
+			            style="color:#ccc; pointer-events:none; cursor:not-allowed;">기본 정보</span>
+			      <a href="${pageContext.request.contextPath}/profile-address?targetUserNo=${targetUserNo}"
+			         class="step-tab active">배송지 관리</a>
+			      <span class="step-tab"
+			            style="color:#ccc; pointer-events:none; cursor:not-allowed;">취향 정보</span>
+			    </c:when>
+			    <c:otherwise>
+			      <a href="${pageContext.request.contextPath}/profile" class="step-tab">기본 정보</a>
+			      <a href="${pageContext.request.contextPath}/profile-address" class="step-tab active">배송지 관리</a>
+			      <a href="${pageContext.request.contextPath}/preference" class="step-tab">취향 정보</a>
+			    </c:otherwise>
+			  </c:choose>
+			</div>
+			
+			<%-- 도움 모드 안내 배너 --%>
+			<c:if test="${isHelperMode}">
+			  <div style="display:flex; align-items:center; gap:8px;
+			              background:#fff8e1; border-left:4px solid #f9a825;
+			              padding:10px 14px; border-radius:8px;
+			              margin: 12px 0; font-size:13px; color:#5d4037;">
+			    <span class="material-icons" style="font-size:18px;">volunteer_activism</span>
+			    <p style="margin:0;">그룹원의 배송지를 대신 수정 중이에요</p>
+			  </div>
+			</c:if>
         </section>
 	
         <c:forEach var="addr" items="${addressList}">
@@ -69,14 +99,39 @@
 
             <div class="address-button-row">
 
-                    <button type="button" class="sub-action-btn upload-btn" 
-                            onclick="location.href='${pageContext.request.contextPath}/address/form?mode=edit&addressId=${addr.userAddressNo}'">
-                        변경하기</button>
+                    <c:choose>
+					  <c:when test="${isHelperMode}">
+					    <button type="button" class="sub-action-btn upload-btn"
+					        onclick="location.href='${pageContext.request.contextPath}/address/form?mode=edit&addressId=${addr.userAddressNo}&targetUserNo=${targetUserNo}'">
+					        변경하기
+					    </button>
+					  </c:when>
+					  <c:otherwise>
+					    <button type="button" class="sub-action-btn upload-btn"
+					        onclick="location.href='${pageContext.request.contextPath}/address/form?mode=edit&addressId=${addr.userAddressNo}'">
+					        변경하기
+					    </button>
+					  </c:otherwise>
+					</c:choose>
                     <c:if test="${addr.isDefault == 0}">
-				        <button type="button" class="sub-action-btn reset-btn" 
-				                onclick="if(confirm('정말 삭제하시겠습니까?')) { location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}'; }">
-				            삭제하기
-				        </button>
+				        <c:choose>
+						    <c:when test="${isHelperMode}">
+						        <button type="button" class="sub-action-btn reset-btn"
+						            onclick="if(confirm('정말 삭제하시겠습니까?')) { 
+						                location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}&targetUserNo=${targetUserNo}'; 
+						            }">
+						            삭제하기
+						        </button>
+						    </c:when>
+						    <c:otherwise>
+						        <button type="button" class="sub-action-btn reset-btn"
+						            onclick="if(confirm('정말 삭제하시겠습니까?')) { 
+						                location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}'; 
+						            }">
+						            삭제하기
+						        </button>
+						    </c:otherwise>
+						</c:choose>
 				    </c:if>
                 </div>
             </section>
@@ -89,10 +144,20 @@
                         <span class="material-icons">add_location_alt</span>
                         <h2>새 배송지 추가</h2>
                         <p>배송지는 최대 3개까지 저장할 수 있어요</p>
-                        <button type="button" class="save-btn" 
-                                onclick="location.href='${pageContext.request.contextPath}/address/form?mode=add'">
-                            배송지 추가하기
-                        </button>
+                        <c:choose>
+						  <c:when test="${isHelperMode}">
+						    <button type="button" class="save-btn"
+						        onclick="location.href='${pageContext.request.contextPath}/address/form?mode=add&targetUserNo=${targetUserNo}'">
+						        배송지 추가하기
+						    </button>
+						  </c:when>
+						  <c:otherwise>
+						    <button type="button" class="save-btn"
+						        onclick="location.href='${pageContext.request.contextPath}/address/form?mode=add'">
+						        배송지 추가하기
+						    </button>
+						  </c:otherwise>
+						</c:choose>
                     </div>
                 </section>
             </c:when>
