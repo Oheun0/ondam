@@ -98,7 +98,7 @@
                 <a href="${pageContext.request.contextPath}/review/write" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons-outlined menu-row-icon" aria-hidden="true">rate_review</span>
-                        <strong class="menu-label">후기 작성</strong>
+                        <strong class="menu-label">나의 후기</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>

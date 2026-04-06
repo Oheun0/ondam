@@ -272,11 +272,8 @@
         -->
 
         <c:if test="${param.showMoreButton == 'true'}">
-          <c:url var="reviewsAllUrl" value="/product">
-            <c:param name="action" value="reviews"/>
-            <c:if test="${not empty product}">
-              <c:param name="productNo" value="${product.productNo}"/>
-            </c:if>
+          <c:url var="reviewsAllUrl" value="/preview">
+            <c:param name="page" value="product/review/all"/>
           </c:url>
           <a href="${reviewsAllUrl}" class="detail-review-more-btn">후기 전체보기</a>
         </c:if>

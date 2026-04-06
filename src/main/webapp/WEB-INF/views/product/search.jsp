@@ -12,30 +12,10 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product-search.css">
 </head>
-<body data-context-path="${pageContext.request.contextPath}">
+<body class="product-search-page" data-context-path="${pageContext.request.contextPath}">
   <div class="search-shell">
     <div class="search-page-inner">
-      <header class="search-page-header" role="banner">
-        <button type="button" class="search-back-btn search-header-icon-btn" id="searchBackBtn" aria-label="뒤로가기">
-          <span class="material-icons" aria-hidden="true">arrow_back_ios_new</span>
-        </button>
-
-        <form class="search-form" id="productSearchForm" action="#" method="get" autocomplete="off">
-          <div class="search-input-wrap">
-            <label class="sr-only" for="searchQueryInput">상품명 검색</label>
-            <input type="search"
-                   class="search-input"
-                   id="searchQueryInput"
-                   name="q"
-                   placeholder="찾고 싶은 상품을 검색해보세요"
-                   enterkeyhint="search"
-                   maxlength="80" />
-            <button type="submit" class="search-submit-btn search-header-icon-btn" aria-label="검색 실행">
-              <span class="material-icons" aria-hidden="true">search</span>
-            </button>
-          </div>
-        </form>
-      </header>
+      <jsp:include page="/WEB-INF/views/layout/back-searchBar.jsp"/>
 
       <main class="search-page-main" id="searchPageMain">
         <section class="recent-search-section" id="recentSearchSection" aria-labelledby="recentSearchTitle">
