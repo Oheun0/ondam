@@ -4,13 +4,29 @@ import java.util.Vector;
 
 import com.ondam.gift.dao.GiftDAO;
 import com.ondam.gift.dto.GiftDTO;
+import com.ondam.orders.dao.OrdersDAO;
+import com.ondam.orders.dao.OrdersProductDAO;
+import com.ondam.product.dao.ProductDAO;
+import com.ondam.product.dao.ProductImageDAO;
+import com.ondam.product.dto.ProductDTO;
+import com.ondam.user.dao.UserAddressDAO;
+import com.ondam.user.dao.UserDAO;
+import com.ondam.user.dto.UserAddressDTO;
 
 public class GiftService {
 
 	private final GiftDAO dao;
-
+	private final UserDAO userDao;
+    private final OrdersProductDAO ordersProductDao;
+    private final ProductDAO productDao;
+    private final UserAddressDAO userAddressDao;
+    
 	public GiftService() {
 		this.dao = new GiftDAO();
+		this.userDao = new UserDAO();
+        this.ordersProductDao = new OrdersProductDAO();
+        this.productDao = new ProductDAO();
+        this.userAddressDao = new UserAddressDAO();
 	}
 
 	// [조회] 관리자용 전체 선물 목록
@@ -30,13 +46,48 @@ public class GiftService {
 
 	// [조회] 내가 받은 선물 목록
 	public Vector<GiftDTO> getMyReceivedGifts(int userNo) {
-		return dao.getReceivedGifts(userNo);
+		Vector<GiftDTO> list = dao.getReceivedGifts(userNo);
+		UserAddressDTO defaultAddress = userAddressDao.getDefaultAddress(userNo);
+		
+        for (GiftDTO gift : list) {
+            gift.setSenderName(userDao.getUserName(gift.getSenderNo()));
+            gift.setReceiverName(userDao.getUserName(userNo));
+            int productNo = ordersProductDao.getOrderProductNo(gift.getOrderNo());
+            gift.setProductName(productDao.getProductName(productNo));
+            gift.setProductImg(productDao.getProductImage(productNo));
+            
+            if(defaultAddress == null) {
+            	gift.setReceiverAddressName("기본 배송지가 설정되어 있지 않습니다.");
+                gift.setReceiverAddress("");
+                gift.setReceiverDetailAddress("");
+                gift.setReceiverZipcode("");
+            }else {
+            	gift.setReceiverAddressName(defaultAddress.getAddressName());
+                gift.setReceiverAddress(defaultAddress.getUserAddress());
+                gift.setReceiverDetailAddress(defaultAddress.getUserDetailAddress());
+                gift.setReceiverZipcode(defaultAddress.getUserZipcode());
+            }
+            
+            gift.setReceiverPhoneNumber(userDao.getUserPhoneNumber(userNo));
+            
+        }
+		return list;
 	}
 
 	// [조회] 내가 보낸 선물 목록
 	public Vector<GiftDTO> getMySentGifts(int userNo) {
-		return dao.getSentGifts(userNo);
+		Vector<GiftDTO> list = dao.getSentGifts(userNo);
+        
+        for (GiftDTO gift : list) {
+            gift.setSenderName(userDao.getUserName(userNo));
+            gift.setReceiverName(userDao.getUserName(gift.getReceiverNo()));
+            int productNo = ordersProductDao.getOrderProductNo(gift.getOrderNo());
+            gift.setProductName(productDao.getProductName(productNo));
+            gift.setProductImg(productDao.getProductImage(productNo));
+        }
+		return list;
 	}
+	
 
 	// [생성] 선물 보내기 로직 (유효성 검증 포함)
 	public boolean createGift(GiftDTO dto) {
@@ -79,4 +130,6 @@ public class GiftService {
 	public boolean removeGift(int giftNo) {
 		return dao.deleteGift(giftNo);
 	}
+	
+	
 }
