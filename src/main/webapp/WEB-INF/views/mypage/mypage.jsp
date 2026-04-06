@@ -52,7 +52,7 @@
         <section class="mypage-card wallet-card" aria-label="함께 지갑">
 		    <div class="wallet-top">
 		        <div class="wallet-title-wrap">
-		            <span class="material-icons wallet-icon">account_balance_wallet</span>
+		            <span class="material-icons-outlined wallet-icon" aria-hidden="true">wallet</span>
 		            <strong>함께지갑</strong>
 		        </div>
 		
@@ -81,7 +81,7 @@
             <div class="menu-card">
                 <a href="${pageContext.request.contextPath}/order/list" class="menu-item">
                     <div class="menu-left">
-                        <span class="material-icons menu-row-icon" aria-hidden="true">local_shipping</span>
+                        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">local_shipping</span>
                         <strong class="menu-label">주문 / 배송</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
@@ -97,8 +97,8 @@
 
                 <a href="${pageContext.request.contextPath}/review/write" class="menu-item">
                     <div class="menu-left">
-                        <span class="material-icons menu-row-icon" aria-hidden="true">rate_review</span>
-                        <strong class="menu-label">리뷰 작성</strong>
+                        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">rate_review</span>
+                        <strong class="menu-label">후기 작성</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
@@ -113,7 +113,7 @@
 
                 <a href="${pageContext.request.contextPath}/coupon/list" class="menu-item">
                     <div class="menu-left">
-                        <span class="material-icons menu-row-icon" aria-hidden="true">confirmation_number</span>
+                        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">local_activity</span>
                         <strong class="menu-label">보유 쿠폰</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
