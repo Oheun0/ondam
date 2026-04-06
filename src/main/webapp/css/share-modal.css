@@ -1,0 +1,68 @@
+@charset "UTF-8";
+
+.share-modal-card {
+  padding-bottom: 22px;
+}
+
+.share-modal-title {
+  margin-bottom: 14px;
+}
+
+.share-modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-option-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid #e2e2e2;
+  border-radius: 16px;
+  background: #fff;
+  color: #111;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.share-option-btn:active {
+  transform: scale(0.98);
+  background: #f7f7f7;
+}
+
+.share-option-icon-wrap {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.share-option-icon {
+  font-size: 24px;
+  color: #333;
+  line-height: 1;
+}
+
+.share-option-icon--kakao {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.share-option-label {
+  flex: 1;
+  min-width: 0;
+  word-break: keep-all;
+}

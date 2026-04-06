@@ -28,9 +28,15 @@ public class AddressSaveController implements Controller {
         String userDetailAddress = request.getParameter("userDetailAddress");
         
         int isDefault = request.getParameter("isDefault") != null ? 1 : 0;
+        
+        // 배송지 수정 도와주기에서 추가된 코드
+        String targetUserNoParam = request.getParameter("targetUserNo");
+        int targetUserNo = (targetUserNoParam != null && !targetUserNoParam.isEmpty())
+            ? Integer.parseInt(targetUserNoParam)
+            : loginUser.getUserNo();
 
         UserAddressDTO dto = new UserAddressDTO();
-        dto.setUserNo(loginUser.getUserNo());
+        dto.setUserNo(targetUserNo);
         dto.setAddressName(addressName);
         dto.setReceiverName(receiverName);
         dto.setReceiverTel(receiverTel);
@@ -47,16 +53,20 @@ public class AddressSaveController implements Controller {
                 int addressNo = Integer.parseInt(addressNoStr);
                 dto.setUserAddressNo(addressNo);
                 if (isDefault == 1) {
-                    dao.updateDefaultAddress(loginUser.getUserNo(), addressNo);
+                    dao.updateDefaultAddress(targetUserNo, addressNo);
                 }
                 
                 dao.updateUserAddress(dto); 
             }
         } else {
             if (isDefault == 1) {
-                dao.resetDefaultAddress(loginUser.getUserNo());
+                dao.resetDefaultAddress(targetUserNo);
             }
             dao.insertUserAddress(dto); 
+        }
+        
+        if (targetUserNoParam != null && !targetUserNoParam.isEmpty()) {
+            return "redirect:/profile-address?targetUserNo=" + targetUserNoParam;
         }
         return "redirect:/profile-address";
     }

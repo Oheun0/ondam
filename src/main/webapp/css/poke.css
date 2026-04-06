@@ -1,0 +1,125 @@
+@charset "UTF-8";
+
+/* ===== Dim (상품 상세 등 모바일 열과 동일 가로 — 전체 뷰포트 X) ===== */
+.poke-modal-dim {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--content-width, 430px);
+  background: rgba(0, 0, 0, 0.28);
+  z-index: 500;
+}
+
+/* ===== Modal Wrap ===== */
+.poke-modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--content-width, 430px);
+  z-index: 510;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* ===== Modal Card ===== */
+.poke-modal-card {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px 18px 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.16);
+}
+
+/* ===== Title ===== */
+.poke-modal-title {
+  margin: 0 0 18px;
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 800;
+  color: #111;
+  text-align: center;
+  word-break: keep-all;
+}
+
+/* ===== Person List ===== */
+.poke-person-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===== Person Button (조르기 / 선물 모달 공통) ===== */
+.poke-person-btn,
+.gift-person-btn {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid #e2e2e2;
+  border-radius: 16px;
+  background: #fff;
+  color: #333;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  word-break: keep-all;
+  transition: all 0.2s ease;
+}
+
+/* 선택 상태 — product-header category-chip.active 와 동일 */
+.poke-person-btn.active,
+.gift-person-btn.active {
+  background: #f1f1f1;
+  color: #444;
+  border: none;
+  box-shadow: none;
+}
+
+/* 눌렀을 때 */
+.poke-person-btn:active,
+.gift-person-btn:active {
+  transform: scale(0.98);
+}
+
+/* ===== Bottom Buttons ===== */
+.poke-modal-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* ===== Bottom Button ===== */
+.poke-bottom-btn {
+  min-height: 50px;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* 취소 — detail-bottom-btn.secondary / 장바구니 담기와 동일 */
+.poke-bottom-btn.cancel {
+  background: #eaeaea;
+  color: #111;
+}
+
+/* 조르기 — detail-bottom-btn.primary / 구매하기와 동일 */
+.poke-bottom-btn.confirm {
+  background: #4caf50;
+  color: #fff;
+}
+
+/* ===== Utility ===== */
+.hidden {
+  display: none !important;
+}
