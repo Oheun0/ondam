@@ -1,4 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:url var="productSearchUrl" value="/product">
+  <c:param name="action" value="search"/>
+</c:url>
 
 <header class="detail-header">
   <button type="button" class="detail-icon-btn" aria-label="뒤로가기">
@@ -9,7 +13,7 @@
     <button type="button" class="detail-icon-btn" aria-label="홈">
       <span class="material-icons-outlined">home</span>
     </button>
-    <a href="${pageContext.request.contextPath}/product?action=search" class="detail-icon-btn detail-icon-btn--link" aria-label="검색">
+    <a href="${productSearchUrl}" class="detail-icon-btn detail-icon-btn--link" aria-label="검색">
       <span class="material-icons-outlined">search</span>
     </a>
     <button type="button" class="detail-icon-btn cart-icon-wrap" aria-label="장바구니">

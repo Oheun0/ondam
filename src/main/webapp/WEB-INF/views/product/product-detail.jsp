@@ -24,7 +24,7 @@
   </div>
 
   <div class="detail-shell">
-    <div class="detail-page-inner">
+    <div class="detail-page-inner detail-page-inner--sticky-header">
       <jsp:include page="/WEB-INF/views/product/product-detail-header.jsp" />
       <jsp:include page="/WEB-INF/views/product/product-detail-info.jsp" />
     </div>

@@ -1,12 +1,11 @@
 /**
- * 상품 검색 페이지 — 순수 DOM API (jQuery 미사용)
- * - 최근 검색어 편집/삭제, 인기 검색어 클릭, 폼 검색(더미)
+ * 상품 검색 상단바 + 검색 홈(최근/인기) — 순수 DOM API
+ * 검색 실행 시 /preview?page=product/search-result&q= 로 이동 (ProductController 없이 화면 미리보기)
  */
 (function () {
   "use strict";
 
   var MAX_RECENT = 10;
-  /* 최신 검색어가 배열 앞쪽(왼쪽 칩) */
   var recentKeywords = [
     "니트",
     "청바지",
@@ -20,6 +19,10 @@
     "자켓",
   ];
 
+  var body = document.body;
+  var isSearchHome = body.classList.contains("product-search-page");
+  var isSearchResult = body.classList.contains("search-result-page");
+
   var sectionEl = document.getElementById("recentSearchSection");
   var listEl = document.getElementById("recentSearchList");
   var editBtn = document.getElementById("searchEditBtn");
@@ -29,10 +32,24 @@
 
   var editing = false;
 
+  function getCtx() {
+    return body.getAttribute("data-context-path") || "";
+  }
+
   function normalizeQuery(s) {
     return String(s || "")
       .replace(/\s+/g, " ")
       .trim();
+  }
+
+  function goToSearchResult(raw) {
+    if (!inputEl && raw === undefined) return;
+    var q = normalizeQuery(raw !== undefined ? raw : inputEl.value);
+    if (!q) return;
+    window.location.href =
+      getCtx() +
+      "/preview?page=product/search-result&q=" +
+      encodeURIComponent(q);
   }
 
   function renderRecent() {
@@ -83,32 +100,6 @@
     renderRecent();
   }
 
-  function addRecent(keyword) {
-    var k = normalizeQuery(keyword);
-    if (!k) return;
-    var idx = recentKeywords.indexOf(k);
-    if (idx !== -1) {
-      recentKeywords.splice(idx, 1);
-    }
-    recentKeywords.unshift(k);
-    if (recentKeywords.length > MAX_RECENT) {
-      recentKeywords.length = MAX_RECENT;
-    }
-    renderRecent();
-  }
-
-  /** 결과 페이지 없음: 콘솔 로그 + 최근 검색어 반영 */
-  function runSearch(raw) {
-    if (!inputEl) return;
-    var q = normalizeQuery(raw !== undefined ? raw : inputEl.value);
-    if (!q) return;
-    inputEl.value = q;
-    addRecent(q);
-    if (typeof console !== "undefined" && console.log) {
-      console.log("[상품 검색 더미]", q);
-    }
-  }
-
   if (editBtn && sectionEl) {
     editBtn.addEventListener("click", function () {
       setEditing(!editing);
@@ -128,14 +119,19 @@
         renderRecent();
         return;
       }
-      runSearch(key);
+      if (isSearchHome) {
+        goToSearchResult(key);
+      }
     });
   }
 
   if (formEl) {
     formEl.addEventListener("submit", function (e) {
       e.preventDefault();
-      runSearch(inputEl ? inputEl.value : "");
+      if (isSearchHome || isSearchResult) {
+        goToSearchResult();
+        return;
+      }
     });
   }
 
@@ -144,23 +140,23 @@
       if (window.history.length > 1) {
         window.history.back();
       } else {
-        var ctx = document.body.getAttribute("data-context-path") || "";
-        window.location.href = ctx + "/main";
+        window.location.href = getCtx() + "/main";
       }
     });
   }
 
   var popularList = document.getElementById("popularSearchList");
-  if (popularList) {
+  if (popularList && isSearchHome) {
     popularList.addEventListener("click", function (e) {
       var item = e.target.closest(".popular-search-item");
       if (!item) return;
       var kw = item.dataset.keyword;
-      if (kw) runSearch(kw);
+      if (kw) goToSearchResult(kw);
     });
   }
 
-  /* 엔터 검색은 form submit 으로 처리 (중복 실행 방지) */
-
-  renderRecent();
+  if (listEl) {
+    renderRecent();
+  }
 })();
+
