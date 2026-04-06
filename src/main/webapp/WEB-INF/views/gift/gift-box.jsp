@@ -128,7 +128,7 @@
                                                 <p class="gift-address-text">${gift.receiverName} · ${gift.receiverPhoneNumber}<br>
                                                 (${gift.receiverZipcode}) ${gift.receiverAddress} ${gift.receiverDetailAddress}</p>
                                             </div>
-                                            <a href="${pageContext.request.contextPath}/mypage/profile-address.jsp" class="gift-go-btn gift-go-btn--secondary">배송지 관리 페이지로 이동하기</a>
+                                            <a href="${pageContext.request.contextPath}/mypage/profile-address" class="gift-go-btn gift-go-btn--secondary">배송지 관리 페이지로 이동하기</a>
                                             <div class="gift-action-row">
                                                 <a href="${pageContext.request.contextPath}/gift?action=accept&giftNo=${gift.giftNo}" class="gift-action-btn gift-action-btn--accept">수락하기</a>
                                                 <a href="${pageContext.request.contextPath}/gift?action=reject&giftNo=${gift.giftNo}" class="gift-action-btn gift-action-btn--reject">거절하기</a>
