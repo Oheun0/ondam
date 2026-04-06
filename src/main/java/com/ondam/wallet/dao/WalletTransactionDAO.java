@@ -33,6 +33,7 @@ public class WalletTransactionDAO {
 				dto.setTransactionNo(rs.getInt("transactionNo"));
 				dto.setWalletNo(rs.getInt("walletNo"));
 				dto.setUserNo(rs.getInt("userNo"));
+				dto.setUserName(rs.getString("userName"));
 				dto.setTransactionType(rs.getInt("transactionType"));
 				dto.setAmount(rs.getInt("amount"));
 				dto.setBalanceSnapshot(rs.getInt("balanceSnapshot"));
@@ -57,20 +58,21 @@ public class WalletTransactionDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT INTO wallettransaction (walletNo, userNo, transactionType, amount, balanceSnapshot, orderNo, transactionDate, transactionMemo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			sql = "INSERT INTO wallettransaction (walletNo, userNo, userName, transactionType, amount, balanceSnapshot, orderNo, transactionDate, transactionMemo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getWalletNo());
 			pstmt.setInt(2, dto.getUserNo());
-			pstmt.setInt(3, dto.getTransactionType());
-			pstmt.setInt(4, dto.getAmount());
-			pstmt.setInt(5, dto.getBalanceSnapshot());
+			pstmt.setString(3, dto.getUserName());
+			pstmt.setInt(4, dto.getTransactionType());
+			pstmt.setInt(5, dto.getAmount());
+			pstmt.setInt(6, dto.getBalanceSnapshot());
 			if (dto.getOrderNo() == 0) {
-			    pstmt.setNull(6, java.sql.Types.INTEGER);
+			    pstmt.setNull(7, java.sql.Types.INTEGER);
 			} else {
-			    pstmt.setInt(6, dto.getOrderNo());
+			    pstmt.setInt(7, dto.getOrderNo());
 			}
-			pstmt.setString(7, dto.getTransactionDate());
-			pstmt.setString(8, dto.getTransactionMemo());
+			pstmt.setString(8, dto.getTransactionDate());
+			pstmt.setString(9, dto.getTransactionMemo());
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -89,17 +91,18 @@ public class WalletTransactionDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE WalletTransaction SET walletNo = ?, userNo = ?, transactionType = ?, amount = ?, balanceSnapshot = ?, orderNo = ?, transactionDate = ?, transactionMemo = ? WHERE transactionNo = ?";
+			sql = "UPDATE WalletTransaction SET walletNo = ?, userNo = ?, userName = ?, transactionType = ?, amount = ?, balanceSnapshot = ?, orderNo = ?, transactionDate = ?, transactionMemo = ? WHERE transactionNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getWalletNo());
 			pstmt.setInt(2, dto.getUserNo());
-			pstmt.setInt(3, dto.getTransactionType());
-			pstmt.setInt(4, dto.getAmount());
-			pstmt.setInt(5, dto.getBalanceSnapshot());
-			pstmt.setInt(6, dto.getOrderNo());
-			pstmt.setString(7, dto.getTransactionDate());
-			pstmt.setString(8, dto.getTransactionMemo());
-			pstmt.setInt(9, transactionNo);
+			pstmt.setString(3, dto.getUserName());
+			pstmt.setInt(4, dto.getTransactionType());
+			pstmt.setInt(5, dto.getAmount());
+			pstmt.setInt(6, dto.getBalanceSnapshot());
+			pstmt.setInt(7, dto.getOrderNo());
+			pstmt.setString(8, dto.getTransactionDate());
+			pstmt.setString(9, dto.getTransactionMemo());
+			pstmt.setInt(10, transactionNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -148,6 +151,7 @@ public class WalletTransactionDAO {
 	            dto.setTransactionNo(rs.getInt("transactionNo"));
 	            dto.setWalletNo(rs.getInt("walletNo"));
 	            dto.setUserNo(rs.getInt("userNo"));
+	            dto.setUserName(rs.getString("userName"));
 	            dto.setTransactionType(rs.getInt("transactionType"));
 	            dto.setAmount(rs.getInt("amount"));
 	            dto.setBalanceSnapshot(rs.getInt("balanceSnapshot"));
@@ -181,6 +185,7 @@ public class WalletTransactionDAO {
 	            dto.setTransactionNo(rs.getInt("transactionNo"));
 	            dto.setWalletNo(rs.getInt("walletNo"));
 	            dto.setUserNo(rs.getInt("userNo"));
+	            dto.setUserName(rs.getString("userName"));
 	            dto.setTransactionType(rs.getInt("transactionType"));
 	            dto.setAmount(rs.getInt("amount"));
 	            dto.setBalanceSnapshot(rs.getInt("balanceSnapshot"));

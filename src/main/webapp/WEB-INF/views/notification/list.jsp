@@ -44,44 +44,6 @@
 					</div>
 			</div>
 
-			<!-- <div class="notification-list">
-
-				<a href="#" class="notification-item unread">
-					<div class="notification-content">
-						<p class="notification-text">지현님께 어울리는 봄 옷 추천이 도착했어요.</p>
-						<span class="notification-time">10분 전</span>
-					</div>
-					<span class="notification-dot"></span>
-				</a>
-
-				<a href="#" class="notification-item unread">
-					<div class="notification-content">
-						<p class="notification-text">내 사람이 조르기 요청을 보냈어요.</p>
-						<span class="notification-time">30분 전</span>
-					</div>
-					<span class="notification-dot"></span>
-				</a>
-
-				<a href="#" class="notification-item">
-					<div class="notification-content">
-						<p class="notification-text">주문한 상품이 배송 중이에요.</p>
-						<span class="notification-time">오늘</span>
-					</div>
-				</a>
-
-				<a href="#" class="notification-item">
-					<div class="notification-content">
-						<p class="notification-text">신규 가입 쿠폰이 발급되었어요.</p>
-						<span class="notification-time">어제</span>
-					</div>
-				</a>
-
-			</div>
-
-			<div class="notification-empty" style="display:none;">
-				<p>새로운 알림이 없어요.</p>
-			</div> -->
-
 				<div class="notification-list">
 					<c:forEach var="dto" items="${vlist}">
 						<a href="#"

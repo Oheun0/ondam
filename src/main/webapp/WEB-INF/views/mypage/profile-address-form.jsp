@@ -120,7 +120,20 @@
                 <button type="submit" class="save-btn">${mode == 'edit' ? '변경사항 저장하기' : '배송지 추가하기'}</button>
 
                 <c:if test="${mode == 'edit'}">
-                    <button type="button" class="secondary-full-btn" onclick="location.href='${pageContext.request.contextPath}/address/delete?addressId=${addrInfo.userAddressNo}'">삭제하기</button>
+                    <c:choose>
+					    <c:when test="${isHelperMode}">
+					        <button type="button" class="secondary-full-btn"
+					            onclick="location.href='${pageContext.request.contextPath}/address/delete?addressId=${addrInfo.userAddressNo}&targetUserNo=${targetUserNo}'">
+					            삭제하기
+					        </button>
+					    </c:when>
+					    <c:otherwise>
+					        <button type="button" class="secondary-full-btn"
+					            onclick="location.href='${pageContext.request.contextPath}/address/delete?addressId=${addrInfo.userAddressNo}'">
+					            삭제하기
+					        </button>
+					    </c:otherwise>
+					</c:choose>
                 </c:if>
             </form>
         </section>
