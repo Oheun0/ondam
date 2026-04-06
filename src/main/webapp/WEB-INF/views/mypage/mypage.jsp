@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     request.setAttribute("bottomNav", "mypage");
 %>
@@ -64,7 +66,14 @@
 		
 		    <div class="wallet-balance-row">
 		        <span class="wallet-balance-label">현재 잔액</span>
-		        <span class="wallet-balance">100,000원</span>
+		        <span class="wallet-balance">
+					<c:choose>
+			            <c:when test="${not empty wallet}">
+			                <fmt:formatNumber value="${wallet.balance}" pattern="#,###"/>원
+			            </c:when>
+			            <c:otherwise>0원</c:otherwise>
+					</c:choose>
+		        </span>
 		    </div>
 		
 		    <div class="wallet-button-row">
