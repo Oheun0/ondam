@@ -46,7 +46,7 @@ button {
     cursor: pointer;
 }
 
-button:not(.banner-dot):not(.sidebar-item):not(.top-tab),
+button:not(.banner-dot):not(.sidebar-item):not(.top-tab):not(.filter-dropdown-btn):not(.selected-chip):not(.detail-hero-dot):not(.detail-qty-stepper__btn):not(.search-header-icon-btn):not(.app-back-header__btn),
 .icon-btn,
 .nav-item,
 .category-chip,
@@ -121,4 +121,58 @@ img {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+/*
+ * layout/back-header.jsp — 뒤로가기만 있는 상단바
+ * 세로 높이는 home.css .top-bar 와 동일(70px)하게 맞춤.
+ */
+.app-back-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 70px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border-bottom: 1px solid #eceff2;
+}
+
+.app-back-header__btn {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 14px;
+    background: transparent;
+    color: #111111;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.app-back-header__btn .material-icons {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.app-back-header__btn:active {
+    transform: scale(0.98);
+}
+
+.app-back-header__btn:focus {
+    outline: none;
+}
+
+.app-back-header__btn:focus-visible {
+    outline: 2px solid var(--brand-color);
+    outline-offset: 2px;
 }
