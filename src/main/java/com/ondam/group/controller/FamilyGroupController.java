@@ -9,6 +9,8 @@ import com.ondam.group.dto.FamilyMemberDTO;
 import com.ondam.group.service.FamilyGroupService;
 import com.ondam.group.service.FamilyHelpService;
 import com.ondam.group.service.FamilyMemberService;
+import com.ondam.notification.dto.NotificationDTO;
+import com.ondam.notification.service.NotificationService;
 import com.ondam.user.dto.UserDTO;
 import com.ondam.wallet.dto.WalletDTO;
 import com.ondam.wallet.service.WalletService;
@@ -23,6 +25,7 @@ public class FamilyGroupController implements Controller {
 	private FamilyMemberService familyMemberService = new FamilyMemberService();
 	private WalletService walletService = new WalletService();
 	private FamilyHelpService familyHelpService = new FamilyHelpService();
+	private NotificationService notificationService = new NotificationService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -36,35 +39,33 @@ public class FamilyGroupController implements Controller {
 			action = "list";
 
 		switch (action) {
-		case "list":
-			return list(request, response);
-		case "create":
-			return create(request, response);
-		case "delete":
-			return delete(request, response);
-		case "memberDelete":
-			return memberDelete(request, response);
-		case "groupName":
-		    return groupName(request, response);
-		case "invite":
-			return invite(request, response);
-		case "join":
-			return "group/group-join";
-		case "joinSubmit":
-			return joinSubmit(request, response);
-		case "manage":
-			return manage(request, response);
-		case "changeOwner":
-		    return changeOwner(request, response);
-		case "helpAdd":
-		    return helpAdd(request, response);
-		case "helpCancel":
-		    return helpCancel(request, response);
-		case "updateGroupName":
-		    return updateGroupName(request, response);
-		default:
-			return "redirect:/group";
-		}
+	    case "list":         // 내 사람 그룹 조회
+	        return list(request, response);
+	    case "delete":       // 그룹 해산
+	        return delete(request, response);
+	    case "memberDelete": // 멤버 연결 끊기 (강제 퇴장 / 본인 탈퇴)
+	        return memberDelete(request, response);
+	    case "groupName":    // 그룹명 입력 폼
+	        return groupName(request, response);
+	    case "invite":       // 초대 코드 발급 및 그룹 생성
+	        return invite(request, response);
+	    case "join":         // 초대 코드 입력 폼
+	        return "group/group-join";
+	    case "joinSubmit":   // 초대 코드로 그룹 참여
+	        return joinSubmit(request, response);
+	    case "manage":       // 멤버 관리 페이지 (권한에 따라 owner/member 분기)
+	        return manage(request, response);
+	    case "changeOwner":  // 그룹장 위임
+	        return changeOwner(request, response);
+	    case "helpAdd":      // 도움 주기 등록
+	        return helpAdd(request, response);
+	    case "helpCancel":   // 도움 주기 취소
+	        return helpCancel(request, response);
+	    case "updateGroupName": // 그룹명 수정
+	        return updateGroupName(request, response);
+	    default:
+	        return "redirect:/group";
+	}
 	}
 
 	// ──────────────────────────────────────────────
@@ -93,57 +94,42 @@ public class FamilyGroupController implements Controller {
 		return "group/group";
 	}
 
-	// ──────────────────────────────────────────────
-	// 2. 가족 그룹 생성 → 생성자를 관리자(auth=1)로 자동 등록
-	// ──────────────────────────────────────────────
-	private String create(HttpServletRequest request, HttpServletResponse response) {
-		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
-		int userNo = loginUser.getUserNo();
-
-		String familyName = request.getParameter("familyName");
-		if (familyName == null || familyName.trim().isEmpty()) {
-			request.setAttribute("errorMsg", "가족 그룹 이름을 입력해주세요.");
-			return list(request, response);
-		}
-
-		// 그룹 생성 + 생성된 familyNo 반환
-		FamilyGroupDTO groupDto = new FamilyGroupDTO();
-		groupDto.setFamilyName(familyName);
-		groupDto.setFamilyDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
-
-		int newFamilyNo = familyGroupService.createFamilyGroupAndGetNo(groupDto);
-
-		if (newFamilyNo == -1) {
-			request.setAttribute("errorMsg", "가족 그룹 생성에 실패했습니다.");
-			return list(request, response);
-		}
-
-		// 생성자를 관리자(familyAuth=1)로 FamilyMember에 등록
-		FamilyMemberDTO memberDto = new FamilyMemberDTO();
-		memberDto.setFamilyNo(newFamilyNo);
-		memberDto.setUserNo(userNo);
-		memberDto.setFamilyAuth(1); // 1: 관리자
-		familyMemberService.createFamilyMember(memberDto);
-
-		return "redirect:/group";
-	}
-
-	// 3. 가족 그룹 삭제 (관리자 버튼에서만 호출 → 권한 분기 불필요)
+	// 2. 가족 그룹 삭제 (관리자 버튼에서만 호출 → 권한 분기 불필요)
 	private String delete(HttpServletRequest request, HttpServletResponse response) {
 		String familyNoParam = request.getParameter("familyNo");
 		if (familyNoParam == null)
 			return "redirect:/group";
+		
+		int familyNo = Integer.parseInt(familyNoParam);
+
+	    // 삭제 전에 먼저 조회 (CASCADE 전에 데이터 확보)
+	    FamilyGroupDTO group = familyGroupService.getFamilyGroupByNo(familyNo);
+	    Vector<FamilyMemberDTO> memberList = familyMemberService.getFamilyMembersByFamilyNo(familyNo);
 
 		familyGroupService.removeFamilyGroup(Integer.parseInt(familyNoParam));
 		// ON DELETE CASCADE → FamilyMember, FamilyInvite, Poke, Wallet 자동 삭제
+		
+		// 전체 멤버에게 알림 발송
+	    if (group != null && memberList != null) {
+	        String content = "\"" + group.getFamilyName() + "\" 그룹이 해산되었어요.";
+	        for (FamilyMemberDTO m : memberList) {
+	            NotificationDTO notiDto = new NotificationDTO();
+	            notiDto.setUserNo(m.getUserNo());
+	            notiDto.setNotificationType(0);
+	            notiDto.setNotificationContent(content);
+	            notiDto.setRefNo(0);
+	            notiDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+	            notificationService.createNotification(notiDto);
+	        }
+	    }
 
 		return "redirect:/group";
 	}
 
-	// 4. 멤버 퇴장
-//        시나리오 A - 관리자가 타인 강제 퇴장 (관리자 버튼에서만 호출)
-//        시나리오 B - 관리자 본인 탈퇴 시 관리자 위임 or 그룹 삭제
-//        시나리오 C - 일반 멤버 본인 탈퇴 (그냥 삭제)
+	// 3. 멤버 퇴장
+	//        시나리오 A - 관리자가 타인 강제 퇴장 (관리자 버튼에서만 호출)
+	//        시나리오 B - 관리자 본인 탈퇴 시 관리자 위임 or 그룹 삭제
+	//        시나리오 C - 일반 멤버 본인 탈퇴 (그냥 삭제)
 	private String memberDelete(HttpServletRequest request, HttpServletResponse response) {
 		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
 		int myUserNo = loginUser.getUserNo();
@@ -241,7 +227,7 @@ public class FamilyGroupController implements Controller {
 	        walletDto.setBalance(0);
 	        walletDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 	        walletService.createWallet(walletDto);
-
+	        
 	        // 세션에서 임시 이름 제거
 	        request.getSession().removeAttribute("pendingGroupName");
 
@@ -297,6 +283,22 @@ public class FamilyGroupController implements Controller {
 	    memberDto.setFamilyAuth(0); // 0: 일반 멤버
 	    memberDto.setUserName(loginUser.getUserName());
 	    familyMemberService.createFamilyMember(memberDto);
+	    
+	    // 알림 발송
+	    Vector<FamilyMemberDTO> memberList = familyMemberService.getFamilyMembersByFamilyNo(targetGroup.getFamilyNo());
+	    String content = "\"" + loginUser.getUserName() + "\"님이 \"" + targetGroup.getFamilyName() + "\"에서 함께하게 되었어요!";
+
+	    for (FamilyMemberDTO m : memberList) {
+	        if (m.getUserNo() == loginUser.getUserNo()) continue; // 본인 제외
+
+	        NotificationDTO notiDto = new NotificationDTO();
+	        notiDto.setUserNo(m.getUserNo());
+	        notiDto.setNotificationType(0);
+	        notiDto.setNotificationContent(content);
+	        notiDto.setRefNo(0);
+	        notiDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+	        notificationService.createNotification(notiDto);
+	    }
 
 	    return "redirect:/group";
 	}

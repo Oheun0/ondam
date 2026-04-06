@@ -114,10 +114,24 @@
 					  </c:otherwise>
 					</c:choose>
                     <c:if test="${addr.isDefault == 0}">
-				        <button type="button" class="sub-action-btn reset-btn" 
-				                onclick="if(confirm('정말 삭제하시겠습니까?')) { location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}'; }">
-				            삭제하기
-				        </button>
+				        <c:choose>
+						    <c:when test="${isHelperMode}">
+						        <button type="button" class="sub-action-btn reset-btn"
+						            onclick="if(confirm('정말 삭제하시겠습니까?')) { 
+						                location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}&targetUserNo=${targetUserNo}'; 
+						            }">
+						            삭제하기
+						        </button>
+						    </c:when>
+						    <c:otherwise>
+						        <button type="button" class="sub-action-btn reset-btn"
+						            onclick="if(confirm('정말 삭제하시겠습니까?')) { 
+						                location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}'; 
+						            }">
+						            삭제하기
+						        </button>
+						    </c:otherwise>
+						</c:choose>
 				    </c:if>
                 </div>
             </section>

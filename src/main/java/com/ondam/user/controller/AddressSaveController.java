@@ -1,6 +1,8 @@
 package com.ondam.user.controller;
 
 import com.ondam.common.controller.Controller;
+import com.ondam.notification.dto.NotificationDTO;
+import com.ondam.notification.service.NotificationService;
 import com.ondam.user.dao.UserAddressDAO;
 import com.ondam.user.dto.UserAddressDTO;
 import com.ondam.user.dto.UserDTO;
@@ -10,6 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class AddressSaveController implements Controller {
+	
+	private NotificationService notificationService = new NotificationService();
+	
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
     	HttpSession session = request.getSession();
@@ -66,6 +71,13 @@ public class AddressSaveController implements Controller {
         }
         
         if (targetUserNoParam != null && !targetUserNoParam.isEmpty()) {
+        	NotificationDTO notiDto = new NotificationDTO();
+            notiDto.setUserNo(targetUserNo);  // 도움받는 사람에게 알림
+            notiDto.setNotificationType(4);
+            notiDto.setNotificationContent("\"" + loginUser.getUserName() + "\"님이 배송지를 추가해주셨어요!");
+            notiDto.setRefNo(0);
+            notiDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+            notificationService.createNotification(notiDto);
             return "redirect:/profile-address?targetUserNo=" + targetUserNoParam;
         }
         return "redirect:/profile-address";

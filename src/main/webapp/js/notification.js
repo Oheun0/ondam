@@ -54,15 +54,27 @@ document.addEventListener("DOMContentLoaded", function () {
 	            method: "POST"
 	        })
 	        .then(res => res.json())
-	        .then(data => {
-	            if (data.notificationType === 1) {
-	                // 조르기 알림 → detail 페이지 이동
-	                location.href = contextPath + "/poke?action=detail&pokeNo=" + data.refNo;
-	            } else {
-	                // 다른 알림 → 새로고침
-	                location.reload();
-	            }
-	        });
+			.then(data => {
+			    switch (data.notificationType) {
+			        case 0: // 가족 관련
+			            location.href = contextPath + "/group";
+			            break;
+			        case 1: // 조르기
+			            location.href = contextPath + "/poke?action=detail&pokeNo=" + data.refNo;
+			            break;
+			        case 2: // 주문/배송
+			        case 3: // 쿠폰
+					case 4: // 배송지 수정
+				        location.href = contextPath + "/profile-address";
+					        break;
+					case 5: // 함께 지갑
+						location.href = contextPath + "/wallet";
+					case 6: // 기타
+			        default:
+			            location.reload();
+			            break;
+			    }
+			});
 	    });
 	});
 	/*items.forEach(function (item) {
