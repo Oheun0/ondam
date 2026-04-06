@@ -43,7 +43,7 @@
 
         <section class="section-box" id="homeClothesSection">
             <div class="section-title">
-                <h2>옷 종류</h2>
+                <h2>어떤 옷을 찾으세요?</h2>
                 <a href="${pageContext.request.contextPath}/category" id="homeCategoryAllView" class="section-title-link">전체 보기</a>
             </div>
             <div class="category-list">
@@ -73,30 +73,38 @@
             </div>
             <div class="shortcut-grid">
                 <a href="#" class="shortcut-card">
-                    <span class="shortcut-icon"><span class="material-icons">auto_awesome</span></span>
                     <div class="shortcut-text">
-                        <strong>옷 추천</strong>
+                        <div class="shortcut-title-row">
+                            <span class="shortcut-icon" aria-hidden="true"><span class="material-icons">auto_awesome</span></span>
+                            <strong>옷 추천</strong>
+                        </div>
                         <p>잘 맞는 옷 추천받기</p>
                     </div>
                 </a>
                 <a href="#" class="shortcut-card">
-                    <span class="shortcut-icon"><span class="material-icons">smart_display</span></span>
                     <div class="shortcut-text">
-                        <strong>영상보기</strong>
-                        <p>넘기면서 옷 보기</p>
+                        <div class="shortcut-title-row">
+                            <span class="shortcut-icon" aria-hidden="true"><span class="material-icons">smart_display</span></span>
+                            <strong>영상보기</strong>
+                        </div>
+                        <p>넘기며 옷 구경하기</p>
                     </div>
                 </a>
                 <a href="#" class="shortcut-card">
-                    <span class="shortcut-icon"><span class="material-icons">favorite_border</span></span>
                     <div class="shortcut-text">
-                        <strong>찜한 상품</strong>
-                        <p>옷 찜하고 다시 보기</p>
+                        <div class="shortcut-title-row">
+                            <span class="shortcut-icon" aria-hidden="true"><span class="material-icons">favorite</span></span>
+                            <strong>찜한 상품</strong>
+                        </div>
+                        <p>찜한 옷 다시보기</p>
                     </div>
                 </a>
                 <a href="#" class="shortcut-card">
-                    <span class="shortcut-icon"><span class="material-icons">diversity_1</span></span>
                     <div class="shortcut-text">
-                        <strong>내 사람</strong>
+                        <div class="shortcut-title-row">
+                            <span class="shortcut-icon" aria-hidden="true"><span class="material-icons">diversity_1</span></span>
+                            <strong>내 사람</strong>
+                        </div>
                         <p>함께 보고 선물하기</p>
                     </div>
                 </a>
@@ -104,7 +112,7 @@
         </section>
 
         <section class="section-box banner-card">
-            <strong>지금 인기 있는 여름 옷을 모아봤어요</strong>
+            <strong>지금 인기 있는 봄 옷을 모아봤어요</strong>
             <p>가볍게 입기 좋은 옷을 한눈에 볼 수 있어요.</p>
             <a href="#" class="banner-link">
                 기획전 보기
@@ -117,40 +125,107 @@
                 <h2>추천 상품</h2>
                 <a href="#">더 보기</a>
             </div>
-            <div class="product-scroll">
-                <a href="#" class="product-card">
-                    <div class="product-thumb">
-                        <span class="material-icons" style="font-size:42px;">image</span>
-                    </div>
-                    <div class="product-body">
-                        <span class="product-tag">편안한 옷</span>
-                        <p class="product-name">부드러운 카디건</p>
-                        <p class="product-price">39,000원</p>
-                        <p class="product-sub">입기 편한 기본 스타일</p>
-                    </div>
-                </a>
-                <a href="#" class="product-card">
-                    <div class="product-thumb">
-                        <span class="material-icons" style="font-size:42px;">image</span>
-                    </div>
-                    <div class="product-body">
-                        <span class="product-tag">가벼운 옷</span>
-                        <p class="product-name">허리 편한 밴딩 바지</p>
-                        <p class="product-price">29,000원</p>
-                        <p class="product-sub">하루 종일 편안해요</p>
-                    </div>
-                </a>
-                <a href="#" class="product-card">
-                    <div class="product-thumb">
-                        <span class="material-icons" style="font-size:42px;">image</span>
-                    </div>
-                    <div class="product-body">
-                        <span class="product-tag">밝은 색</span>
-                        <p class="product-name">화사한 셔츠</p>
-                        <p class="product-price">34,000원</p>
-                        <p class="product-sub">얼굴이 환해 보여요</p>
-                    </div>
-                </a>
+            <!-- 상품 카드: product-detail '연관 추천 상품' 톤으로 통일 -->
+            <div class="home-reco-scroll" role="list" aria-label="추천 상품 목록">
+                <article class="related-product-item" role="listitem">
+                    <a href="#" class="related-product-item__anchor">
+                        <div class="related-thumb-wrap">
+                            <img src="${pageContext.request.contextPath}/images/category/comfort-soft.jpg" alt="" class="related-thumb-img" loading="lazy" />
+                        </div>
+                        <div class="related-product-info">
+                            <span class="related-brand">ANDAR</span>
+                            <span class="related-name">부드러운 라운드 니트 가디건</span>
+                            <span class="related-price">39,000원</span>
+                            <div class="home-reco-discount-row">
+                                <span class="home-reco-original">48,750원</span>
+                                <span class="related-discount">20% 할인</span>
+                            </div>
+                        </div>
+                    </a>
+                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
+                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+                    </button>
+                </article>
+
+                <article class="related-product-item" role="listitem">
+                    <a href="#" class="related-product-item__anchor">
+                        <div class="related-thumb-wrap">
+                            <img src="${pageContext.request.contextPath}/images/category/out-walking.jpg" alt="" class="related-thumb-img" loading="lazy" />
+                        </div>
+                        <div class="related-product-info">
+                            <span class="related-brand">온담</span>
+                            <span class="related-name">편하게 입는 면 혼방 긴팔 티셔츠</span>
+                            <span class="related-price">28,500원</span>
+                            <div class="home-reco-discount-row">
+                                <span class="home-reco-original">33,500원</span>
+                                <span class="related-discount">15% 할인</span>
+                            </div>
+                        </div>
+                    </a>
+                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
+                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+                    </button>
+                </article>
+
+                <article class="related-product-item" role="listitem">
+                    <a href="#" class="related-product-item__anchor">
+                        <div class="related-thumb-wrap">
+                            <img src="${pageContext.request.contextPath}/images/category/home-light.jpg" alt="" class="related-thumb-img" loading="lazy" />
+                        </div>
+                        <div class="related-product-info">
+                            <span class="related-brand">B라벨</span>
+                            <span class="related-name">가볍게 걸치기 좋은 바람막이 점퍼</span>
+                            <span class="related-price">52,000원</span>
+                            <div class="home-reco-discount-row">
+                                <span class="home-reco-original">57,800원</span>
+                                <span class="related-discount">10% 할인</span>
+                            </div>
+                        </div>
+                    </a>
+                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
+                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+                    </button>
+                </article>
+
+                <article class="related-product-item" role="listitem">
+                    <a href="#" class="related-product-item__anchor">
+                        <div class="related-thumb-wrap">
+                            <img src="${pageContext.request.contextPath}/images/category/comfort-stretch.jpg" alt="" class="related-thumb-img" loading="lazy" />
+                        </div>
+                        <div class="related-product-info">
+                            <span class="related-brand">시니어웨어</span>
+                            <span class="related-name">허리 밴딩 편한 바지</span>
+                            <span class="related-price">31,900원</span>
+                            <div class="home-reco-discount-row">
+                                <span class="home-reco-original">42,500원</span>
+                                <span class="related-discount">25% 할인</span>
+                            </div>
+                        </div>
+                    </a>
+                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
+                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+                    </button>
+                </article>
+
+                <article class="related-product-item" role="listitem">
+                    <a href="#" class="related-product-item__anchor">
+                        <div class="related-thumb-wrap">
+                            <img src="${pageContext.request.contextPath}/images/category/out-meeting.jpg" alt="" class="related-thumb-img" loading="lazy" />
+                        </div>
+                        <div class="related-product-info">
+                            <span class="related-brand">C마켓</span>
+                            <span class="related-name">집에서 입기 좋은 조거 팬츠</span>
+                            <span class="related-price">24,000원</span>
+                            <div class="home-reco-discount-row">
+                                <span class="home-reco-original">25,300원</span>
+                                <span class="related-discount">5% 할인</span>
+                            </div>
+                        </div>
+                    </a>
+                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
+                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+                    </button>
+                </article>
             </div>
         </section>
 
@@ -159,7 +234,8 @@
                 <h2>영상으로 보기</h2>
             </div>
             <div class="shorts-preview">
-                <div class="shorts-thumb">
+                <div class="shorts-thumb" aria-label="영상 썸네일">
+                    <img src="${pageContext.request.contextPath}/images/home-shorts.jpg" alt="" class="shorts-thumb-img" loading="lazy"/>
                     <div class="play-badge">
                         <span class="material-icons">play_arrow</span>
                     </div>
@@ -184,7 +260,7 @@
                 </div>
                 <div class="notice-item">
                     <span class="notice-dot"></span>
-                    <p>함께 지갑을 통해 쉽게 옷을 구매할 수 있어요</p>
+                    <p>함께 지갑에 내 사람이 넣어준 돈으로 쉽게 구매할 수 있어요</p>
                     <span class="notice-date">안내</span>
                 </div>
             </div>
@@ -195,5 +271,6 @@
 </div>
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 <script src="${pageContext.request.contextPath}/js/home.js"></script>
+<script src="${pageContext.request.contextPath}/js/home-reco-wish.js"></script>
 </body>
 </html>

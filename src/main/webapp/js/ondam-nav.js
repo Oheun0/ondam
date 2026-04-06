@@ -17,11 +17,26 @@
 		return getContextPath() + "/category";
 	}
 
+	function isOnCategoryPage() {
+		var ctx = getContextPath();
+		var path = window.location.pathname || "";
+		return path === (ctx + "/category");
+	}
+
 	document.addEventListener("DOMContentLoaded", function () {
 		var btn = document.getElementById("headerCategoryMenu");
 		if (!btn) return;
 		btn.addEventListener("click", function (e) {
 			e.preventDefault();
+			// 카테고리 화면에서 다시 누르면 닫히듯이 이전 화면으로
+			if (isOnCategoryPage()) {
+				if (window.history.length > 1) {
+					window.history.back();
+				} else {
+					window.location.href = getContextPath() + "/main";
+				}
+				return;
+			}
 			window.location.href = categoryUrl();
 		});
 	});

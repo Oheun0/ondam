@@ -110,7 +110,10 @@
             <span class="related-brand">A브랜드</span>
             <span class="related-name">부드러운 라운드 니트 가디건</span>
             <span class="related-price">39,000원</span>
-            <span class="related-discount">20% 할인</span>
+            <div class="related-discount-row">
+              <span class="related-original">48,750원</span>
+              <span class="related-discount">20% 할인</span>
+            </div>
           </div>
         </a>
         <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
@@ -126,7 +129,10 @@
             <span class="related-brand">온담</span>
             <span class="related-name">편하게 입는 면 혼방 긴팔 티셔츠 일이삼사오육칠팔</span>
             <span class="related-price">28,500원</span>
-            <span class="related-discount">15% 할인</span>
+            <div class="related-discount-row">
+              <span class="related-original">33,500원</span>
+              <span class="related-discount">15% 할인</span>
+            </div>
           </div>
         </a>
         <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
@@ -142,7 +148,10 @@
             <span class="related-brand">B라벨</span>
             <span class="related-name">가벼운 바람막이 점퍼</span>
             <span class="related-price">52,000원</span>
-            <span class="related-discount">10% 할인</span>
+            <div class="related-discount-row">
+              <span class="related-original">57,800원</span>
+              <span class="related-discount">10% 할인</span>
+            </div>
           </div>
         </a>
         <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
@@ -158,7 +167,10 @@
             <span class="related-brand">시니어웨어</span>
             <span class="related-name">허리 밴딩 편한 바지</span>
             <span class="related-price">31,900원</span>
-            <span class="related-discount">25% 할인</span>
+            <div class="related-discount-row">
+              <span class="related-original">42,500원</span>
+              <span class="related-discount">25% 할인</span>
+            </div>
           </div>
         </a>
         <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
@@ -174,7 +186,41 @@
             <span class="related-brand">C마켓</span>
             <span class="related-name">집에서 입기 좋은 조거 팬츠</span>
             <span class="related-price">24,000원</span>
-            <span class="related-discount">5% 할인</span>
+            <div class="related-discount-row">
+              <span class="related-original">25,300원</span>
+              <span class="related-discount">5% 할인</span>
+            </div>
+          </div>
+        </a>
+        <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
+          <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+        </button>
+      </article>
+      <!-- 할인 없는 상품(비교용): 원가/할인율 표시 없음 -->
+      <article class="related-product-item" role="listitem">
+        <a href="#" class="related-product-item__anchor">
+          <div class="related-thumb-wrap">
+            <img src="${pageContext.request.contextPath}/images/category/out-walking.jpg" alt="" class="related-thumb-img" loading="lazy" />
+          </div>
+          <div class="related-product-info">
+            <span class="related-brand">온담</span>
+            <span class="related-name">가볍게 입기 좋은 기본 티셔츠</span>
+            <span class="related-price">19,900원</span>
+          </div>
+        </a>
+        <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
+          <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+        </button>
+      </article>
+      <article class="related-product-item" role="listitem">
+        <a href="#" class="related-product-item__anchor">
+          <div class="related-thumb-wrap">
+            <img src="${pageContext.request.contextPath}/images/category/comfort-loose.jpg" alt="" class="related-thumb-img" loading="lazy" />
+          </div>
+          <div class="related-product-info">
+            <span class="related-brand">A브랜드</span>
+            <span class="related-name">편하게 입는 면 혼방 긴팔 티셔츠</span>
+            <span class="related-price">29,000원</span>
           </div>
         </a>
         <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
@@ -193,7 +239,15 @@
               <span class="related-brand"><c:out value="${p.brandName}" /></span>
               <span class="related-name"><c:out value="${p.productName}" /></span>
               <span class="related-price"><fmt:formatNumber value="${p.salePrice}" type="number" groupingUsed="true" />원</span>
-              <span class="related-discount"><c:out value="${p.discountRate}" />% 할인</span>
+              할인하는 경우에만 표시 (원가/할인율)
+              <c:if test="${p.discountRate gt 0}">
+                <div class="related-discount-row">
+                  <span class="related-original">
+                    <fmt:formatNumber value="${p.originalPrice}" type="number" groupingUsed="true" />원
+                  </span>
+                  <span class="related-discount"><c:out value="${p.discountRate}" />% 할인</span>
+                </div>
+              </c:if>
             </div>
           </a>
           <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
@@ -254,10 +308,11 @@
           <button type="button" class="detail-inquiry-primary-btn">상품 문의하기</button>
         </div>
 
+		<!-- 아래 문의 내역은 모든 사용자에게 똑같이 표시(본인거라고 다르게 표시x, 내 문의내역은 내 정보에서 확인가능 -->
         <div class="detail-inquiry-list">
           <div class="detail-inquiry-card">
             <p class="detail-inquiry-q">해당 상품 재입고 언제 되나요?</p>
-            <p class="detail-inquiry-meta">김온담 | 2025.06.01 | 공개</p>
+            <p class="detail-inquiry-meta">김온담 | 2025.06.01</p>
             <div class="detail-inquiry-a">
               판매자 답변 : 안녕하십니까, 고객님 6월 20일 입고 예정입니다!
             </div>
@@ -265,7 +320,7 @@
 
           <div class="detail-inquiry-card">
             <p class="detail-inquiry-q">세탁기에 돌려도 괜찮을까요?</p>
-            <p class="detail-inquiry-meta">익명 | 2025.06.03 | 공개</p>
+            <p class="detail-inquiry-meta">익명 | 2025.06.03</p>
             <div class="detail-inquiry-a">
               판매자 답변 : 안녕하십니까, 고객님 찬물 세탁 코스로 단독 세탁을 권장드립니다.
             </div>

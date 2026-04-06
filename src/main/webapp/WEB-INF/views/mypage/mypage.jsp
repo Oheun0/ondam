@@ -122,7 +122,7 @@
                 <a href="${pageContext.request.contextPath}/support/inquiry" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">support_agent</span>
-                        <strong class="menu-label">문의하기</strong>
+                        <strong class="menu-label">문의내역</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
