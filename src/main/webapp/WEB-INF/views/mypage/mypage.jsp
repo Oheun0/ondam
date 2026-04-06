@@ -50,7 +50,7 @@
                 <a href="${pageContext.request.contextPath}/profile" class="pill-button">내 정보 수정</a>
             </div>
         </section>
-
+		<!-- 
         <section class="mypage-card wallet-card" aria-label="함께 지갑">
 		    <div class="wallet-top">
 		        <div class="wallet-title-wrap">
@@ -81,7 +81,60 @@
 		        <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-button">사용 내역</a>
 		    </div>
 		</section>
-
+ 		-->
+ 		<!-- 2. 함께 지갑 영역 (수정됨: 가족 유무에 따른 분기 처리) -->
+        <section class="mypage-card wallet-card" aria-label="함께 지갑">
+            <c:choose>
+                <%-- A. 가족에 가입되어 있는 경우 (지갑 정보 표시) --%>
+                <c:when test="${hasFamily}">
+                    <div class="wallet-top">
+                        <div class="wallet-title-wrap">
+                            <span class="material-icons wallet-icon">account_balance_wallet</span>
+                            <strong>함께지갑</strong>
+                        </div>
+                
+                        <a href="${pageContext.request.contextPath}/wallet" class="wallet-link">
+                            자세히보기
+                            <span class="material-icons">chevron_right</span>
+                        </a>
+                    </div>
+                
+                    <div class="wallet-balance-row">
+                        <span class="wallet-balance-label">현재 잔액</span>
+                        <span class="wallet-balance">
+                            <fmt:formatNumber value="${wallet.balance}" pattern="#,###"/>원
+                        </span>
+                    </div>
+                
+                    <div class="wallet-button-row">
+                        <a href="${pageContext.request.contextPath}/wallet/charge" class="wallet-button fill">충전하기</a>
+                        <a href="${pageContext.request.contextPath}/wallet/history" class="wallet-button">사용 내역</a>
+                    </div>
+                </c:when>
+                
+                <%-- B. 가족에 가입되어 있지 않은 경우 (가입 유도 화면 표시) --%>
+                <c:otherwise>
+                    <div class="wallet-top" style="justify-content: center; padding-bottom: 0;">
+                        <div class="wallet-title-wrap" style="flex-direction: column; align-items: center; gap: 8px;">
+                            <span class="material-icons wallet-icon" style="font-size: 36px; color: #ccc;">group_add</span>
+                            <strong style="color: #333; font-size: 16px;">아직 소속된 내 사람이 없어요</strong>
+                        </div>
+                    </div>
+                
+                    <div class="wallet-balance-row" style="justify-content: center; text-align: center; padding: 15px 0;">
+                        <span class="wallet-balance-label" style="font-size: 14px; color: #666; line-height: 1.5;">
+                            내 사람을 등록하고 온담의<br>함께 지갑 서비스를 이용해 보세요.
+                        </span>
+                    </div>
+                
+                    <div class="wallet-button-row">
+                        <!-- /group 페이지로 이동하여 가족을 생성하거나 참여하도록 유도합니다. -->
+                        <a href="${pageContext.request.contextPath}/group" class="wallet-button fill" style="width: 100%; text-align: center;">내 사람 만들기 / 참여하기</a>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </section>
+ 		
         <section class="mypage-section" aria-label="메뉴">
             <div class="section-head">
                 <h2>메뉴</h2>

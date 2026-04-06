@@ -3,7 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="wallet-top">
-    <a href="#" class="back-btn" onclick="history.back(); return false;">
+
+    <a href="#" class="back-btn" onclick="history.back(); return false;"> 
         <span class="material-icons">arrow_back_ios</span>
         <span>뒤로가기</span>
     </a>

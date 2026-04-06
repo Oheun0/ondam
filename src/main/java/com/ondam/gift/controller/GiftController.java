@@ -15,14 +15,14 @@ public class GiftController implements Controller {
     
     private final GiftService giftService = new GiftService();
     
-    // 뷰(JSP) 경로의 앞부분과 기본 리다이렉트 주소를 상수로 지정
+    // [수정됨] DispatcherServlet에서 "/WEB-INF/views/"와 ".jsp"를 자동으로 붙여주므로 "gift/"만 명시합니다.
     private static final String VIEW_PREFIX = "gift/"; 
-    private static final String REDIRECT_RECEIVED = "redirect:/gift?action=received";
+    private static final String REDIRECT_MAIN = "redirect:/gift";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. 로그인 확인 (네가 작성한 완벽한 뼈대!)
+        // 1. 로그인 확인
         HttpSession session = request.getSession();
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
@@ -30,21 +30,20 @@ public class GiftController implements Controller {
             return "redirect:/login";
         }
     	
-        // 2. 현재 로그인한 사용자의 고유 번호(userNo) 추출
         int userNo = loginUser.getUserNo(); 
         
-        // 3. action 파라미터 확인 (어떤 페이지를 띄워야 할지, 어떤 작업을 할지 결정)
+        // 2. action 파라미터 확인 (없으면 main으로 간주)
         String action = request.getParameter("action");
         if (action == null || action.trim().isEmpty()) {
-            action = "received"; // 파라미터가 없으면 '받은 선물함'을 기본값
+            action = "main";
         }
 
-        // 4. 라우팅 (action 값에 따라 각자 담당하는 도우미 메서드로 토스)
+        // 3. 라우팅
         switch (action.trim()) {
-            case "received":
-                return handleReceivedList(request, userNo);
+            case "main":
+            case "received": // 기존 탭 링크와의 호환성을 위해 received, sent도 main으로 보냅니다.
             case "sent":
-                return handleSentList(request, userNo);
+                return handleGiftMain(request, userNo);
             case "detail":
                 return handleDetail(request, userNo);
             case "sendProc":
@@ -54,92 +53,83 @@ public class GiftController implements Controller {
             case "reject":
                 return handleReject(request, userNo);
             default:
-                return REDIRECT_RECEIVED;
+                return REDIRECT_MAIN;
         }
     }
 
     // ==========================================
-    // [Handler Methods] 기능별 세부 처리 로직
+    // [Handler Methods]
     // ==========================================
 
-    // 1. 내가 받은 선물함 보기
-    private String handleReceivedList(HttpServletRequest request, int userNo) {
+    // [핵심 변경] 하나의 페이지에 두 개의 탭이 있으므로, 두 데이터를 한 번에 담아서 보냅니다.
+    private String handleGiftMain(HttpServletRequest request, int userNo) {
         Vector<GiftDTO> receivedList = giftService.getMyReceivedGifts(userNo);
-        request.setAttribute("giftList", receivedList);
-        request.setAttribute("listType", "received"); // 화면(JSP)에서 받은/보낸 탭 구분용 데이터
-        return VIEW_PREFIX + "giftList"; // => /WEB-INF/views/gift/giftList.jsp
-    }
-
-    // 2. 내가 보낸 선물함 보기
-    private String handleSentList(HttpServletRequest request, int userNo) {
         Vector<GiftDTO> sentList = giftService.getMySentGifts(userNo);
-        request.setAttribute("giftList", sentList);
-        request.setAttribute("listType", "sent");
-        return VIEW_PREFIX + "giftList"; 
+        
+        request.setAttribute("receivedList", receivedList);
+        request.setAttribute("sentList", sentList);
+        
+        // 최종 경로: /WEB-INF/views/gift/gift-box.jsp
+        return VIEW_PREFIX + "gift-box"; 
     }
 
-    // 3. 선물 상세 보기
+    // 선물 상세 보기
     private String handleDetail(HttpServletRequest request, int userNo) {
         int giftNo = parseParam(request.getParameter("giftNo"), -1);
-        if (giftNo == -1) return REDIRECT_RECEIVED;
+        if (giftNo == -1) return REDIRECT_MAIN;
 
         GiftDTO gift = giftService.getGiftById(giftNo);
         
-        // 임의접근 방지
         if (gift == null || (gift.getSenderNo() != userNo && gift.getReceiverNo() != userNo)) {
-            return REDIRECT_RECEIVED;
+            return REDIRECT_MAIN;
         }
 
         request.setAttribute("gift", gift);
         return VIEW_PREFIX + "giftDetail";
     }
 
-    // 4. 선물 보내기 처리 (주문 및 결제 완료 직후에 호출된다고 가정)
+    // 선물 보내기 처리
     private String handleSendGift(HttpServletRequest request, int senderNo) {
         GiftDTO dto = new GiftDTO();
         dto.setOrderNo(parseParam(request.getParameter("orderNo"), -1));
-        dto.setSenderNo(senderNo); // 보내는 사람은 무조건 현재 세션의 로그인한 사용자
+        dto.setSenderNo(senderNo); 
         dto.setReceiverNo(parseParam(request.getParameter("receiverNo"), -1));
         dto.setGiftMsg(request.getParameter("giftMsg"));
 
         boolean isSuccess = giftService.createGift(dto);
         
         if (isSuccess) {
-            return "redirect:/gift?action=sent"; // 성공하면 '보낸 선물함'으로 이동
+            return REDIRECT_MAIN; 
         } else {
-            return "redirect:/error?msg=gift_failed"; // 실패 시 에러 페이지 (프로젝트 상황에 맞게 변경 가능)
+            return "redirect:/error?msg=gift_failed"; 
         }
     }
 
-    // 5. 선물 수락 처리
+    // 선물 수락 처리
     private String handleAccept(HttpServletRequest request, int userNo) {
         int giftNo = parseParam(request.getParameter("giftNo"), -1);
-        
         GiftDTO gift = giftService.getGiftById(giftNo);
-        // 내가 '받은' 선물이고, 아직 수락/거절을 안 한 '대기 상태(0)'일 때만 수락 가능
+        
         if (gift != null && gift.getReceiverNo() == userNo && gift.getGiftState() == 0) {
             giftService.acceptGift(giftNo);
         }
-        return "redirect:/gift?action=detail&giftNo=" + giftNo; // 수락 후 다시 상세 페이지로 돌아감
+        return "redirect:/gift"; 
     }
 
-    // 6. 선물 거절 처리
+    // 선물 거절 처리
     private String handleReject(HttpServletRequest request, int userNo) {
         int giftNo = parseParam(request.getParameter("giftNo"), -1);
-        
         GiftDTO gift = giftService.getGiftById(giftNo);
-        // 내가 '받은' 선물이고, '대기 상태(0)'일 때만 거절 가능
+        
         if (gift != null && gift.getReceiverNo() == userNo && gift.getGiftState() == 0) {
             giftService.rejectGift(giftNo);
         }
-        return "redirect:/gift?action=detail&giftNo=" + giftNo;
+        return "redirect:/gift";
     }
 
     // ==========================================
     // [Utility Methods]
     // ==========================================
-
-    // 파라미터를 받을 때 null이나 빈 문자열 에러를 방지해 주는 안전한 변환 도우미 메서드
     private int parseParam(String param, int defaultValue) {
         if (param == null || param.trim().isEmpty()) {
             return defaultValue;

@@ -243,4 +243,40 @@ public class UserAddressDAO {
 		        pool.freeConnection(con, pstmt);
 		    }
 		}
+		
+		// [추가] 유저의 '기본 배송지(isDefault=1)' 정보만 콕 집어서 가져오는 메서드
+		public UserAddressDTO getDefaultAddress(int userNo) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			UserAddressDTO dto = null;
+			
+			// 요청하신 4개의 컬럼만 정확하게 지정하여 성능을 최적화한 SQL 쿼리입니다.
+			String sql = "SELECT addressName, userAddress, userDetailAddress, userZipcode "
+					   + "FROM userAddress "
+					   + "WHERE userNo = ? AND isDefault = 1";
+			
+			try {
+				con = pool.getConnection();
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, userNo);
+				rs = pstmt.executeQuery();
+
+				// 기본 배송지가 존재한다면 객체에 값을 담아줍니다.
+				if (rs.next()) {
+					dto = new UserAddressDTO();
+					dto.setAddressName(rs.getString("addressName"));
+					dto.setUserAddress(rs.getString("userAddress"));
+					dto.setUserDetailAddress(rs.getString("userDetailAddress"));
+					dto.setUserZipcode(rs.getString("userZipcode"));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt, rs);
+			}
+			
+			// 기본 배송지가 없으면 null을 반환합니다.
+			return dto;
+		}
 }
