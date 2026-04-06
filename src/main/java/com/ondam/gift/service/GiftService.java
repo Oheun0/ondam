@@ -4,11 +4,8 @@ import java.util.Vector;
 
 import com.ondam.gift.dao.GiftDAO;
 import com.ondam.gift.dto.GiftDTO;
-import com.ondam.orders.dao.OrdersDAO;
 import com.ondam.orders.dao.OrdersProductDAO;
 import com.ondam.product.dao.ProductDAO;
-import com.ondam.product.dao.ProductImageDAO;
-import com.ondam.product.dto.ProductDTO;
 import com.ondam.user.dao.UserAddressDAO;
 import com.ondam.user.dao.UserDAO;
 import com.ondam.user.dto.UserAddressDTO;
@@ -51,7 +48,6 @@ public class GiftService {
 		
         for (GiftDTO gift : list) {
             gift.setSenderName(userDao.getUserName(gift.getSenderNo()));
-            gift.setReceiverName(userDao.getUserName(userNo));
             int productNo = ordersProductDao.getOrderProductNo(gift.getOrderNo());
             gift.setProductName(productDao.getProductName(productNo));
             gift.setProductImg(productDao.getProductImage(productNo));
@@ -61,15 +57,16 @@ public class GiftService {
                 gift.setReceiverAddress("");
                 gift.setReceiverDetailAddress("");
                 gift.setReceiverZipcode("");
+                gift.setReceiverPhoneNumber("");
+                gift.setReceiverName("");
             }else {
             	gift.setReceiverAddressName(defaultAddress.getAddressName());
                 gift.setReceiverAddress(defaultAddress.getUserAddress());
                 gift.setReceiverDetailAddress(defaultAddress.getUserDetailAddress());
                 gift.setReceiverZipcode(defaultAddress.getUserZipcode());
-            }
-            
-            gift.setReceiverPhoneNumber(userDao.getUserPhoneNumber(userNo));
-            
+                gift.setReceiverName(defaultAddress.getReceiverName());
+                gift.setReceiverPhoneNumber(defaultAddress.getReceiverTel());
+            }            
         }
 		return list;
 	}
