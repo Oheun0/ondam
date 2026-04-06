@@ -1,0 +1,387 @@
+@charset "UTF-8";
+
+/* 상품 문의 작성 — 접두사 inquiry-write- (review-write 톤) */
+
+.inquiry-write-inner.detail-page-inner {
+  padding-bottom: 110px;
+  background: #f7f7f7;
+  border: 1px solid #e7cfc8;
+  border-radius: 18px;
+  overflow: visible;
+  min-height: 100vh;
+}
+
+.inquiry-write-sticky-head {
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+}
+
+.inquiry-write-header-wrap {
+  position: relative;
+  z-index: 0;
+}
+
+.inquiry-write-header-wrap .app-back-header {
+  position: relative;
+  z-index: 0;
+}
+
+.inquiry-write-header-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #222;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.inquiry-write-header-wrap .app-back-header__btn {
+  position: relative;
+  z-index: 2;
+}
+
+.inquiry-write-main {
+  padding: 18px 16px 28px;
+  box-sizing: border-box;
+}
+
+.inquiry-write-card {
+  background: #fff;
+  border: 1px solid #eceff2;
+  border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  padding: 18px 16px 20px;
+  margin-bottom: 14px;
+}
+
+/* ----- 상품 정보 ----- */
+.inquiry-write-product-card__inner {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.inquiry-write-product-thumb-wrap {
+  flex-shrink: 0;
+  width: 65px;
+  height: 65px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.inquiry-write-product-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.inquiry-write-product-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.inquiry-write-brand {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #6c6c6c; /* review-write option 톤 */
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.inquiry-write-name {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #222;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+/* ----- 안내/타이틀 ----- */
+.inquiry-write-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #222;
+  line-height: 1.4;
+}
+
+.inquiry-write-desc {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #666;
+  line-height: 1.55;
+}
+
+/* ----- textarea ----- */
+.inquiry-write-textarea {
+  width: 100%;
+  min-height: 120px;
+  margin-top: 4px;
+  padding: 14px 14px;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 1.55;
+  color: #222;
+  resize: vertical;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.inquiry-write-textarea::placeholder {
+  color: #aaa;
+  font-weight: 500;
+}
+
+.inquiry-write-textarea:focus {
+  outline: none;
+  border-color: var(--brand-color);
+}
+
+/* ----- 설정 ----- */
+.inquiry-write-setting-desc {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #666;
+  line-height: 1.45;
+}
+
+.inquiry-write-setting-desc--sub {
+  margin-bottom: 14px;
+  color: #777;
+}
+
+.inquiry-write-setting-desc__label {
+  color: #222;
+  font-weight: 800;
+}
+
+.inquiry-write-setting-desc__sep {
+  margin: 0 6px;
+  color: #c4c4c4;
+  font-weight: 800;
+}
+
+.inquiry-write-setting-desc__text {
+  color: #666;
+  font-weight: 700;
+}
+
+.inquiry-write-setting-block--spaced {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.inquiry-write-toggle-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+.inquiry-write-toggle-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 52px;
+  padding: 11px 6px;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: inherit;
+  line-height: 1.35;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.inquiry-write-toggle-btn + .inquiry-write-toggle-btn {
+  border-left: 1px solid #ddd;
+}
+
+.inquiry-write-toggle-btn:active {
+  transform: scale(0.99);
+}
+
+.inquiry-write-toggle-btn:focus {
+  outline: none;
+}
+
+.inquiry-write-toggle-btn:focus-visible {
+  outline: 2px solid #c4c4c4;
+  outline-offset: 2px;
+}
+
+.inquiry-write-toggle-btn--active {
+  background: #4caf50;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  box-shadow: inset 0 0 0 1px #4caf50;
+}
+
+/* ----- 하단 버튼 ----- */
+.inquiry-write-submit-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--content-width, 430px);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #eceff2;
+  z-index: 150;
+}
+
+.inquiry-write-submit-btn {
+  width: 100%;
+  min-height: 54px;
+  border: none;
+  border-radius: 16px;
+  background: var(--brand-color);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.inquiry-write-submit-btn:active {
+  transform: scale(0.99);
+  opacity: 0.95;
+}
+
+/* ----- 모달 (review-write와 통일) ----- */
+.inquiry-write-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  box-sizing: border-box;
+}
+
+.inquiry-write-modal.hidden {
+  display: none !important;
+}
+
+.inquiry-write-dim {
+  /* 모바일 웹(콘텐츠 max-width) 영역만 딤 처리 */
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--content-width, 430px);
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.inquiry-write-modal-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 340px;
+  padding: 26px 22px 22px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.18);
+  box-sizing: border-box;
+}
+
+.inquiry-write-modal-message {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #222;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.inquiry-write-modal-sub {
+  margin: 0 0 22px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #666;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.inquiry-write-modal-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.inquiry-write-modal-actions--single .inquiry-write-modal-btn {
+  width: 100%;
+}
+
+.inquiry-write-modal-actions--double {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.inquiry-write-modal-btn {
+  min-height: 50px;
+  padding: 0 14px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.inquiry-write-modal-btn--primary {
+  background: var(--brand-color);
+  color: #fff;
+}
+
+.inquiry-write-modal-btn--ghost {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.inquiry-write-modal-btn:active {
+  opacity: 0.92;
+}
+

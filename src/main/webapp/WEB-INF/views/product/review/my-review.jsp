@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>나의 리뷰</title>
+  <title>나의 후기</title>
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
@@ -21,7 +21,7 @@
         <div class="review-my-sticky-head">
           <div class="review-my-header-wrap">
             <jsp:include page="/WEB-INF/views/layout/back-header.jsp"/>
-            <h1 class="review-my-header-title">나의 리뷰</h1>
+            <h1 class="review-my-header-title">나의 후기</h1>
           </div>
 
           <div class="review-my-tab-card">
