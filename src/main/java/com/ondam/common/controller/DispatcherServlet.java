@@ -70,7 +70,6 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/shorts/api", new ShortsApiController());
         handlerMapping.put("/group", new FamilyGroupController());
         handlerMapping.put("/wallet", new WalletController());
-        handlerMapping.put("/mock-login", new MockLoginController());
         handlerMapping.put("/signup-start", new SignupStartController());
         handlerMapping.put("/signup-step0-basic", new SignupStep0BasicController());
         handlerMapping.put("/signup-step1-basic", new SignupStep1BasicController());

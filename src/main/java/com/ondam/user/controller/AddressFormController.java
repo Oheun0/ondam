@@ -36,6 +36,22 @@ public class AddressFormController implements Controller {
         }
         request.setAttribute("mode", mode);
         
+        // 배송지 수정 도와주기에서 추가하는 코드 시작
+        String targetUserNoParam = request.getParameter("targetUserNo");
+        boolean isHelperMode = false;
+        int targetUserNo;
+
+        if (targetUserNoParam != null && !targetUserNoParam.isEmpty()) {
+            targetUserNo = Integer.parseInt(targetUserNoParam);
+            isHelperMode = true;
+        } else {
+            targetUserNo = loginUser.getUserNo();
+        }
+
+        request.setAttribute("isHelperMode", isHelperMode);
+        request.setAttribute("targetUserNo", targetUserNo);
+        // 배송지 수정에서 도와주는 부분 코드 끝
+        
         return "mypage/profile-address-form"; 
     }
 }
