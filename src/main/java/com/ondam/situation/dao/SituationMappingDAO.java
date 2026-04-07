@@ -109,4 +109,3 @@ public class SituationMappingDAO {
 		return flag;
 	}
 }
-

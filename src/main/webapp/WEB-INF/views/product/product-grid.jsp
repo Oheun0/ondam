@@ -1,95 +1,97 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <main class="product-content">
   <section class="product-list-section">
-    <div class="product-grid">
-      <article class="product-card">
-        <div class="product-thumb-wrap">
-          <div class="product-thumb placeholder">상품 이미지</div>
-          <div class="product-badge-row">
-            <span class="product-badge product-badge--recommend">추천</span>
-            <span class="product-badge product-badge--popular">인기</span>
-          </div>
-        </div>
-        <div class="product-body">
-          <div class="brand-meta-row">
-            <p class="product-brand">A브랜드</p>
-          </div>
-          <h3 class="product-name">부드러운 라운드 니트 가디건</h3>
-          <div class="product-price-row">
-            <span class="product-price">39,000원</span>
-            <span class="product-discount">15% 할인</span>
-          </div>
-        </div>
-      </article>
+    <div class="product-grid" id="productGrid">
 
-      <article class="product-card">
-        <div class="product-thumb-wrap">
-          <div class="product-thumb placeholder">상품 이미지</div>
-        </div>
-        <div class="product-body">
-          <div class="brand-meta-row">
-            <p class="product-brand">B브랜드</p>
+      <c:choose>
+        <c:when test="${empty productList}">
+          <div class="product-empty">
+            <p>해당 조건의 상품이 없습니다.</p>
           </div>
-          <h3 class="product-name">잔꽃 패턴 블라우스</h3>
-          <div class="product-price-row">
-            <span class="product-price">42,000원</span>
-          </div>
-        </div>
-      </article>
+        </c:when>
 
-      <article class="product-card">
-        <div class="product-thumb-wrap">
-          <div class="product-thumb placeholder">상품 이미지</div>
-          <div class="product-badge-row">
-            <span class="product-badge product-badge--popular">인기</span>
-          </div>
-        </div>
-        <div class="product-body">
-          <div class="brand-meta-row">
-            <p class="product-brand">C브랜드</p>
-          </div>
-          <h3 class="product-name">데일리 스트라이프 티셔츠</h3>
-          <div class="product-price-row">
-            <span class="product-price">23,200원</span>
-            <span class="product-discount">20% 할인</span>
-          </div>
-        </div>
-      </article>
+        <c:otherwise>
+          <c:forEach var="p" items="${productList}">
+            <article class="product-card"
+                data-product-no="${p.productNo}"
+                data-favorite-popular="${p.saleCount}"
+                data-favorite-price="${p.productPrice}"
+                onclick="location.href='${pageContext.request.contextPath}/product?action=detail&productNo=${p.productNo}'"
+    			style="cursor:pointer;">
 
-      <article class="product-card">
-        <div class="product-thumb-wrap">
-          <div class="product-thumb placeholder">상품 이미지</div>
-        </div>
-        <div class="product-body">
-          <div class="brand-meta-row">
-            <p class="product-brand">D브랜드</p>
-          </div>
-          <h3 class="product-name">면 소재 와이드 팬츠</h3>
-          <div class="product-price-row">
-            <span class="product-price">48,500원</span>
-          </div>
-        </div>
-      </article>
+              <div class="product-thumb-wrap">
+                <c:choose>
+                  <c:when test="${not empty thumbnailMap[p.productNo]}">
+                    <img class="product-thumb"
+                         src="${pageContext.request.contextPath}/uploads/products/${thumbnailMap[p.productNo]}"
+                         alt="${p.productName}"
+                         loading="lazy" width="300" height="300">
+                  </c:when>
+                  <c:otherwise>
+                    <div class="product-thumb placeholder">이미지 없음</div>
+                  </c:otherwise>
+                </c:choose>
 
-      <article class="product-card">
-        <div class="product-thumb-wrap">
-          <div class="product-thumb placeholder">상품 이미지</div>
-          <div class="product-badge-row">
-            <span class="product-badge product-badge--recommend">추천</span>
-          </div>
-        </div>
-        <div class="product-body">
-          <div class="brand-meta-row">
-            <p class="product-brand">E브랜드</p>
-        </div>
-          <h3 class="product-name">가벼운 방풍 재킷 아우터</h3>
-          <div class="product-price-row">
-            <span class="product-price">67,500원</span>
-            <span class="product-discount">10% 할인</span>
-          </div>
-        </div>
-      </article>
+                <%-- 찜 버튼 --%>
+                <c:choose>
+                  <c:when test="${wishSet != null && wishSet.contains(p.productNo)}">
+                    <button type="button"
+                            class="related-wish-btn product-grid-wish-btn is-active"
+                            data-product-no="${p.productNo}"
+                            aria-pressed="true" aria-label="찜 해제">
+                      <span class="material-icons" aria-hidden="true">favorite</span>
+                    </button>
+                  </c:when>
+                  <c:otherwise>
+                    <button type="button"
+                            class="related-wish-btn product-grid-wish-btn"
+                            data-product-no="${p.productNo}"
+                            aria-pressed="false" aria-label="찜하기">
+                      <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+                    </button>
+                  </c:otherwise>
+                </c:choose>
+
+                <%-- 뱃지 --%>
+                <c:if test="${p.saleCount >= 50 || p.wishCount >= 30}">
+                  <div class="product-badge-row">
+                    <c:if test="${p.wishCount >= 30}">
+                      <span class="product-badge product-badge--recommend">추천</span>
+                    </c:if>
+                    <c:if test="${p.saleCount >= 50}">
+                      <span class="product-badge product-badge--popular">인기</span>
+                    </c:if>
+                  </div>
+                </c:if>
+              </div>
+
+              <div class="product-body">
+                <div class="brand-meta-row">
+                  <p class="product-brand">${p.productBrand}</p>
+                </div>
+                <h3 class="product-name">${p.productName}</h3>
+                <div class="product-price-row">
+                  <span class="product-price">
+                    <fmt:formatNumber value="${p.productPrice}" pattern="#,###"/>원
+                  </span>
+                  <c:if test="${p.productOriginPrice > p.productPrice}">
+                    <span class="product-discount">
+                      <fmt:formatNumber
+                        value="${(1 - p.productPrice / p.productOriginPrice) * 100}"
+                        pattern="#"/>% 할인
+                    </span>
+                  </c:if>
+                </div>
+              </div>
+
+            </article>
+          </c:forEach>
+        </c:otherwise>
+      </c:choose>
+
     </div>
   </section>
 </main>
