@@ -128,23 +128,29 @@ public class ProductController implements Controller {
 
 	// 2. 상품 상세 — 이미지 전체 + 옵션 목록
 	private String detail(HttpServletRequest request, HttpServletResponse response) {
-		String productNoParam = request.getParameter("productNo");
-		if (productNoParam == null)
-			return "redirect:/product";
+	    int productNo = Integer.parseInt(request.getParameter("productNo"));
 
-		int productNo = Integer.parseInt(productNoParam);
+	    ProductDTO product        = productService.getProductById(productNo);
+	    Vector<String> images     = productService.getProductImages(productNo);
+	    Vector<ProductOptionDTO> options = productService.getProductOptions(productNo);
 
-		ProductDTO product = productService.getProductById(productNo);
-		Vector<ProductImageDTO> imageList = productImageService.getImagesByProductNo(productNo);
-		Vector<ProductOptionDTO> optionList = productOptionService.getOptionsByProductNo(productNo);
+	    // 색상 중복 제거
+	    java.util.LinkedHashSet<String> colorSet = new java.util.LinkedHashSet<>();
+	    java.util.LinkedHashMap<String, java.util.List<String>> colorSizeMap = new java.util.LinkedHashMap<>();
+	    for (ProductOptionDTO opt : options) {
+	        colorSet.add(opt.getOptionColor());
+	        colorSizeMap
+	            .computeIfAbsent(opt.getOptionColor(), k -> new java.util.ArrayList<>())
+	            .add(opt.getOptionSize());
+	    }
 
-		if (product == null)
-			return "redirect:/product";
+	    request.setAttribute("product",      product);
+	    request.setAttribute("images",       images);
+	    request.setAttribute("options",      options);
+	    request.setAttribute("colorSet",     colorSet);
+	    request.setAttribute("colorSizeMap", colorSizeMap);
 
-		request.setAttribute("product", product);
-		request.setAttribute("imageList", imageList);
-		request.setAttribute("optionList", optionList);
-		return "product/detail";
+	    return "product/product-detail";
 	}
 	private void getOptionsJson(HttpServletRequest request, HttpServletResponse response) throws Exception {
 	    int productNo = Integer.parseInt(request.getParameter("productNo"));

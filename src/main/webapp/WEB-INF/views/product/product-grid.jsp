@@ -18,7 +18,9 @@
             <article class="product-card"
                 data-product-no="${p.productNo}"
                 data-favorite-popular="${p.saleCount}"
-                data-favorite-price="${p.productPrice}">
+                data-favorite-price="${p.productPrice}"
+                onclick="location.href='${pageContext.request.contextPath}/product?action=detail&productNo=${p.productNo}'"
+    			style="cursor:pointer;">
 
               <div class="product-thumb-wrap">
                 <c:choose>

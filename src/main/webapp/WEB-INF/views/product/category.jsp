@@ -130,7 +130,6 @@
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=48" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-freesize.jpg" alt=""></span><span class="situation-label">사이즈 넉넉한 옷</span></a></li>
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=49" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-anyone.jpg" alt=""></span><span class="situation-label">누구나 입기 좋은 옷</span></a></li>
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=50" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-popular.jpg" alt=""></span><span class="situation-label">인기 많은 옷</span></a></li>
-								<li><a href="#" class="situation-row"><span class="situation-thumb" aria-hidden="true"></span><span class="situation-label">인기 많은 옷</span></a></li>
 							</ul>
 						</div>
 					</div>

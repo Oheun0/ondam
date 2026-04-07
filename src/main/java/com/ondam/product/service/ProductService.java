@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.ondam.product.dao.ProductDAO;
 import com.ondam.product.dto.ProductDTO;
+import com.ondam.product.dto.ProductOptionDTO;
 
 public class ProductService {
 
@@ -31,6 +32,14 @@ public class ProductService {
 
 	public ProductDTO getProductById(int productNo) {
 		return dao.getProductById(productNo);
+	}
+	
+	public Vector<String> getProductImages(int productNo) {
+		return dao.getProductImages(productNo);
+	}
+	
+	public Vector<ProductOptionDTO> getProductOptions(int productNo) {
+		return dao.getProductOptions(productNo);
 	}
 
 	public Vector<ProductDTO> getProductsBySituation(int situationNo) {
