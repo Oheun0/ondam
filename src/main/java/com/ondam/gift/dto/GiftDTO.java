@@ -11,7 +11,39 @@ public class GiftDTO {
     private String sentAt;
     private String respondedAt;
 
-    public GiftDTO() {}
+    
+    private String senderName;    // 보낸 사람 이름
+    private String receiverName;  // 받는 사람 이름
+    private String productName;   // 상품명
+    private String productImg;    // 상품 이미지 파일명 
+    
+    private String receiverAddressName;
+    private String receiverAddress;
+    private String receiverDetailAddress;
+    private String receiverZipcode;
+    private String receiverPhoneNumber;
+    
+    public String getSenderName() {return senderName;}
+	public void setSenderName(String senderName) {this.senderName = senderName;}
+	public String getReceiverName() {return receiverName;}
+	public void setReceiverName(String receiverName) {this.receiverName = receiverName;}
+	public String getProductName() {return productName;}
+	public void setProductName(String productName) {this.productName = productName;}
+	public String getProductImg() {return productImg;}
+	public void setProductImg(String productImg) {this.productImg = productImg;}
+
+	public String getReceiverAddressName() {return receiverAddressName;}
+	public void setReceiverAddressName(String receiverAddressName) {this.receiverAddressName = receiverAddressName;}
+	public String getReceiverAddress() {return receiverAddress;}
+	public void setReceiverAddress(String receiverAddress) {this.receiverAddress = receiverAddress;}
+	public String getReceiverDetailAddress() {return receiverDetailAddress;}
+	public void setReceiverDetailAddress(String receiverDetailAddress) {this.receiverDetailAddress = receiverDetailAddress;}
+	public String getReceiverZipcode() {return receiverZipcode;}
+	public void setReceiverZipcode(String receiverZipcode) {this.receiverZipcode = receiverZipcode;}
+	public String getReceiverPhoneNumber() {return receiverPhoneNumber;}
+	public void setReceiverPhoneNumber(String receiverPhoneNumber) {this.receiverPhoneNumber = receiverPhoneNumber;}
+
+	public GiftDTO() {}
 
     public GiftDTO(int giftNo, int orderNo, int senderNo, int receiverNo, String giftMsg,
                    int giftState, String sentAt, String respondedAt) {

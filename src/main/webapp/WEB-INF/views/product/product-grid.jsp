@@ -15,7 +15,10 @@
 
         <c:otherwise>
           <c:forEach var="p" items="${productList}">
-            <article class="product-card" data-product-no="${p.productNo}">
+            <article class="product-card"
+                data-product-no="${p.productNo}"
+                data-favorite-popular="${p.saleCount}"
+                data-favorite-price="${p.productPrice}">
 
               <div class="product-thumb-wrap">
                 <c:choose>
@@ -29,10 +32,44 @@
                     <div class="product-thumb placeholder">이미지 없음</div>
                   </c:otherwise>
                 </c:choose>
+
+                <%-- 찜 버튼 --%>
+                <c:choose>
+                  <c:when test="${wishSet != null && wishSet.contains(p.productNo)}">
+                    <button type="button"
+                            class="related-wish-btn product-grid-wish-btn is-active"
+                            data-product-no="${p.productNo}"
+                            aria-pressed="true" aria-label="찜 해제">
+                      <span class="material-icons" aria-hidden="true">favorite</span>
+                    </button>
+                  </c:when>
+                  <c:otherwise>
+                    <button type="button"
+                            class="related-wish-btn product-grid-wish-btn"
+                            data-product-no="${p.productNo}"
+                            aria-pressed="false" aria-label="찜하기">
+                      <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
+                    </button>
+                  </c:otherwise>
+                </c:choose>
+
+                <%-- 뱃지 --%>
+                <c:if test="${p.saleCount >= 50 || p.wishCount >= 30}">
+                  <div class="product-badge-row">
+                    <c:if test="${p.wishCount >= 30}">
+                      <span class="product-badge product-badge--recommend">추천</span>
+                    </c:if>
+                    <c:if test="${p.saleCount >= 50}">
+                      <span class="product-badge product-badge--popular">인기</span>
+                    </c:if>
+                  </div>
+                </c:if>
               </div>
 
               <div class="product-body">
-                <p class="product-brand">${p.productBrand}</p>
+                <div class="brand-meta-row">
+                  <p class="product-brand">${p.productBrand}</p>
+                </div>
                 <h3 class="product-name">${p.productName}</h3>
                 <div class="product-price-row">
                   <span class="product-price">

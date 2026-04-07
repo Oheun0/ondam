@@ -83,18 +83,18 @@
 						<div class="detail-section">
 							<h2 class="detail-heading">🎉 행사 갈 때 입어요</h2>
 							<ul class="situation-rows">
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=30" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">결혼식 갈 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=31" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">장례식 갈 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=32" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">동창회 갈 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=33" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">모임/행사 갈 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=30" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/event-wedding.jpg" alt=""></span><span class="situation-label">결혼식 갈 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=31" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/event-funeral.jpg" alt=""></span><span class="situation-label">장례식 갈 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=32" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/event-reunion.jpg" alt=""></span><span class="situation-label">동창회 갈 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=33" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/event-meeting.jpg" alt=""></span><span class="situation-label">모임/행사 갈 때</span></a></li>
 							</ul>
 						</div>
 						<div class="detail-section">
 							<h2 class="detail-heading">🎓 중요한 날 입어요</h2>
 							<ul class="situation-rows">
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=34" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">입학식 / 졸업식</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=35" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">가족 행사</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=36" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">기념일</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=34" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/import-graduate.jpg" alt=""></span><span class="situation-label">입학식 / 졸업식</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=35" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/import-family.jpg" alt=""></span><span class="situation-label">가족 행사</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=36" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/import-anniversary.jpg" alt=""></span><span class="situation-label">기념일</span></a></li>
 							</ul>
 						</div>
 					</div>
@@ -103,19 +103,19 @@
 						<div class="detail-section">
 							<h2 class="detail-heading">⛰️ 운동·야외 활동</h2>
 							<ul class="situation-rows">
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=37" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">등산할 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=38" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">골프 칠 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=39" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">수영할 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=40" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">자전거 탈 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=37" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/active-hike.jpg" alt=""></span><span class="situation-label">등산할 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=38" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/active-golf.jpg" alt=""></span><span class="situation-label">골프 칠 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=39" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/active-swim.jpg" alt=""></span><span class="situation-label">수영할 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=40" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/active-bike.jpg" alt=""></span><span class="situation-label">자전거 탈 때</span></a></li>
 							</ul>
 						</div>
 						<div class="detail-section">
 							<h2 class="detail-heading">🌿 여가 활동</h2>
 							<ul class="situation-rows">
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=41" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">여행 갈 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=42" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">낚시할 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=43" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">텃밭/원예 할 때</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=44" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">편하게 놀러 갈 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=41" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hobby-travel.jpg" alt=""></span><span class="situation-label">여행 갈 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=42" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hobby-fishing.jpg" alt=""></span><span class="situation-label">낚시할 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=43" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hobby-farm.jpg" alt=""></span><span class="situation-label">텃밭/원예 할 때</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=44" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hobby-goout.jpg" alt=""></span><span class="situation-label">편하게 놀러 갈 때</span></a></li>
 							</ul>
 						</div>
 					</div>
@@ -124,12 +124,13 @@
 						<div class="detail-section">
 							<h2 class="detail-heading">🎁 선물하기 좋아요</h2>
 							<ul class="situation-rows">
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=45" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">부모님께 드리기 좋은 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=46" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">할머니·할아버지 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=47" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">손주 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=48" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">사이즈 넉넉한 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=49" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">누구나 입기 좋은 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=50" class="situation-row"><span class="situation-thumb" aria-hidden="true">사진</span><span class="situation-label">인기 많은 옷</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=45" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-parents.jpg" alt=""></span><span class="situation-label">부모님께 드리기 좋은 옷</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=46" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-gdparents.jpg" alt=""></span><span class="situation-label">할머니·할아버지 옷</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=47" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-gdchildren.jpg" alt=""></span><span class="situation-label">손주 옷</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=48" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-freesize.jpg" alt=""></span><span class="situation-label">사이즈 넉넉한 옷</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=49" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-anyone.jpg" alt=""></span><span class="situation-label">누구나 입기 좋은 옷</span></a></li>
+								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=50" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/gift-popular.jpg" alt=""></span><span class="situation-label">인기 많은 옷</span></a></li>
+								<li><a href="#" class="situation-row"><span class="situation-thumb" aria-hidden="true"></span><span class="situation-label">인기 많은 옷</span></a></li>
 							</ul>
 						</div>
 					</div>
@@ -265,7 +266,7 @@
         </div>
     </div>
 </div>
-	</main>
+</main>
 
 	<jsp:include page="../layout/bottomNav.jsp" />
 </div>

@@ -57,7 +57,7 @@ button {
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
-  border: 1px solid #e7cfc8;
+  border: 1px solid #EAEAEA;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
@@ -763,6 +763,64 @@ body.product-list-page .product-page-inner--sticky-header .product-header-sectio
   aspect-ratio: 0.8 / 1;
   background: #f0f0f0;
   flex-shrink: 0;
+}
+
+/* 그리드 찜: 기본 숨김 → 찜 목록·상품 목록·검색 결과(product-list-page)에서만 표시 */
+.product-grid .related-wish-btn.product-grid-wish-btn {
+  display: none;
+}
+
+.favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn,
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn {
+  display: flex;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  min-width: 40px;
+  min-height: 40px;
+  margin: 0;
+  padding: 8px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons-outlined,
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons-outlined {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.35));
+}
+
+.favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons,
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn.is-active .material-icons,
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn.is-active .material-icons {
+  color: #e33a67;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
+}
+
+.favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus,
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus {
+  outline: none;
+}
+
+.favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus-visible,
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus-visible {
+  outline: 2px solid #4caf50;
+  outline-offset: 2px;
 }
 
 .product-thumb.placeholder {

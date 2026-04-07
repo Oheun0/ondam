@@ -126,5 +126,30 @@ public class OrdersProductDAO {
 		}
 		return flag;
 	}
+	
+	public int getOrderProductNo(int orderNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = null;
+	    int productNo = 0;
+
+	    try {
+	        con = pool.getConnection();
+	        sql = "SELECT productNo FROM ordersProduct WHERE orderNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, orderNo);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	        	productNo = rs.getInt("productNo");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return productNo;
+	}
 }
 
