@@ -12,7 +12,15 @@
 
 /* ── 헤더: 가운데 제목 + 우측 홈만 ── */
 .cart-header {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  background: #fff;
+}
+
+/* review-write 상단바와 동일한 그림자 (product-detail.css 규칙 override) */
+.cart-page .detail-page-inner--sticky-header .detail-header.cart-header {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
 }
 
 .cart-header__title {

@@ -120,7 +120,7 @@ html, body {
 /* 4. 구매 바텀 시트 모달 */
 .purchase-modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6); z-index: 9999;
+    background: rgba(0, 0, 0, 0.28); z-index: 9999;
     display: none; opacity: 0; transition: opacity 0.3s ease;
 }
 .purchase-modal-overlay.show { display: block; opacity: 1; }
