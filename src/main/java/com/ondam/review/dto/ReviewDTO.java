@@ -10,6 +10,11 @@ public class ReviewDTO {
     private int isBodyPublic;
     private String createdAt;
     private String updatedAt;
+    
+    private String snapProductName;
+    private String snapOptionSize;
+    private String snapOptionColor;
+    private String productImg;
 
     public ReviewDTO() {}
 
@@ -88,4 +93,37 @@ public class ReviewDTO {
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
+    
+    public String getSnapProductName() { 
+    	return snapProductName; 
+    	}
+    
+    public void setSnapProductName(String snapProductName) { 
+    	this.snapProductName = snapProductName; 
+    	}
+    
+    public String getSnapOptionSize() { 
+    	return snapOptionSize; 
+    	}
+    
+    public void setSnapOptionSize(String snapOptionSize) { 
+    	this.snapOptionSize = snapOptionSize;
+    	}
+    
+    public String getSnapOptionColor() {
+    	return snapOptionColor;
+    	}
+    
+    public void setSnapOptionColor(String snapOptionColor) { 
+    	this.snapOptionColor = snapOptionColor; 
+    	}
+   
+
+    public String getProductImg() { 
+    	return productImg; 
+    	}
+    
+    public void setProductImg(String productImg) { 
+    	this.productImg = productImg; 
+    	}
 }
