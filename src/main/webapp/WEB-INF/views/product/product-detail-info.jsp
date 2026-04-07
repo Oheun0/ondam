@@ -24,14 +24,14 @@
         <button type="button" class="detail-hero-dot active" data-slide-index="0" aria-label="이미지 1" aria-current="true"></button>
         <button type="button" class="detail-hero-dot" data-slide-index="1" aria-label="이미지 2"></button>
         <button type="button" class="detail-hero-dot" data-slide-index="2" aria-label="이미지 3"></button>
-      </div>
+    </div>
     </div>
   </section>
 
   <!-- 핵심 상품 정보 -->
   <section class="detail-info-card">
     <div class="brand-meta-row">
-      <a href="#" class="detail-brand-link">A브랜드 <span class="material-icons">chevron_right</span></a>
+    <a href="#" class="detail-brand-link">A브랜드 <span class="material-icons">chevron_right</span></a>
       <div class="brand-wish-stat" aria-label="찜 1.7만">
         <span class="brand-wish-stat__icon" aria-hidden="true"><span class="material-symbols-outlined">favorite</span></span>
         <span class="brand-wish-stat__num">1.7만</span>
@@ -271,28 +271,28 @@
         </button>
         <button type="button" class="detail-tab-btn" role="tab" id="detailTabBtnInquiry" aria-selected="false" aria-controls="detailTabPanelInquiry" data-detail-tab="inquiry" tabindex="-1">
           문의하기
-        </button>
+    </button>
       </div>
     </section>
 
     <section class="detail-tab-panels-section">
       <!-- 상세 정보 및 상세 사진 -->
       <div class="detail-tab-panel detail-tab-panel-card" id="detailTabPanelInfo" role="tabpanel" aria-labelledby="detailTabBtnInfo" data-detail-tab-panel="info" aria-hidden="false">
-        <div class="detail-info-block">
-          <h3>상품 설명</h3>
-          <p>가볍고 부드러운 소재로 편하게 입기 좋은 니트 가디건입니다.</p>
-        </div>
-
-        <div class="detail-info-block">
-          <h3>소재 / 세탁</h3>
-          <p>폴리에스터 혼방 / 찬물 손세탁 권장</p>
-        </div>
-
-        <div class="detail-info-block">
-          <h3>배송 안내</h3>
-          <p>주문 후 2~3일 내 출고 예정입니다.</p>
-        </div>
+      <div class="detail-info-block">
+        <h3>상품 설명</h3>
+        <p>가볍고 부드러운 소재로 편하게 입기 좋은 니트 가디건입니다.</p>
       </div>
+
+      <div class="detail-info-block">
+        <h3>소재 / 세탁</h3>
+        <p>폴리에스터 혼방 / 찬물 손세탁 권장</p>
+      </div>
+
+      <div class="detail-info-block">
+        <h3>배송 안내</h3>
+        <p>주문 후 2~3일 내 출고 예정입니다.</p>
+      </div>
+    </div>
 
       <!-- 후기 (본문은 product/review/review-list-panel.jsp 공유) -->
       <div class="detail-tab-panel hidden detail-tab-panel-card" id="detailTabPanelReview" role="tabpanel" aria-labelledby="detailTabBtnReview" data-detail-tab-panel="review" aria-hidden="true">
@@ -327,6 +327,6 @@
           </div>
         </div>
       </div>
-    </section>
+  </section>
   </div>
 </main>
