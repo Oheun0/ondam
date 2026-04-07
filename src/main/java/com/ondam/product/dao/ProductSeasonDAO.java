@@ -108,4 +108,28 @@ public class ProductSeasonDAO {
 		}
 		return flag;
 	}
+	
+	public Vector<String> getSeasonsByProductNo(int productNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Vector<String> seasons = new Vector<>(); // [변경] Vector 사용
+        
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT season FROM productseason WHERE productNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productNo);
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                seasons.add(rs.getString("season"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return seasons;
+    }
 }
