@@ -1,0 +1,46 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>상품 상세</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product-detail.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/poke.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/share-modal.css">
+</head>
+<body data-context-path="${pageContext.request.contextPath}">
+  <div id="option-toast" class="option-toast hidden" role="alert" aria-live="assertive" aria-hidden="true">
+    <span class="material-icons option-toast__icon" aria-hidden="true">error</span>
+    <span class="option-toast__text">먼저 색상과 사이즈를 골라주세요</span>
+  </div>
+
+  <div class="detail-shell">
+    <div class="detail-page-inner detail-page-inner--sticky-header">
+      <jsp:include page="/WEB-INF/views/product/product-detail-header.jsp" />
+      <jsp:include page="/WEB-INF/views/product/product-detail-info.jsp" />
+    </div>
+
+    <!-- 하단 고정 구매바 -->
+    <div class="detail-bottom-bar">
+      <button type="button" class="detail-bottom-btn secondary" id="openCartSheetBtn">장바구니 담기</button>
+      <button type="button" class="detail-bottom-btn primary" id="openBuySheetBtn">구매하기</button>
+    </div>
+
+    <jsp:include page="/WEB-INF/views/product/product-detail-sheet.jsp" />
+    <jsp:include page="/WEB-INF/views/poke/poke-modal.jsp" />
+    <jsp:include page="/WEB-INF/views/gift/gift-modal.jsp" />
+    <jsp:include page="/WEB-INF/views/product/share-modal.jsp" />
+  </div>
+
+  <script src="${pageContext.request.contextPath}/js/product-detail.js"></script>
+</body>
+</html>

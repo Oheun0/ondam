@@ -19,11 +19,25 @@ public class ProfileAddressController implements Controller {
         if (loginUser == null) {
             return "redirect:/login";
         }
+        
+        String targetUserNoParam = request.getParameter("targetUserNo");
+
+        int targetUserNo;
+        boolean isHelperMode = false;
+
+        if (targetUserNoParam != null && !targetUserNoParam.isEmpty()) {
+            targetUserNo = Integer.parseInt(targetUserNoParam);
+            isHelperMode = true;
+        } else {
+            targetUserNo = loginUser.getUserNo();
+        }
 
         UserAddressDAO addrDao = new UserAddressDAO();
-        List<UserAddressDTO> addressList = addrDao.getAddressListByUser(loginUser.getUserNo());
+        List<UserAddressDTO> addressList = addrDao.getAddressListByUser(targetUserNo);
 
         request.setAttribute("addressList", addressList);
+        request.setAttribute("isHelperMode", isHelperMode);
+        request.setAttribute("targetUserNo", targetUserNo);
 
         return "mypage/profile-address";
     }

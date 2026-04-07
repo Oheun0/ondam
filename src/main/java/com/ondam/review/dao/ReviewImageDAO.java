@@ -155,4 +155,25 @@ public class ReviewImageDAO {
         }
         return flag;
     }
+
+    // 이미지 순서 정하기
+    public int getMaxImgOrder(int reviewNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int max = 0;
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT MAX(imgOrder) FROM reviewImage WHERE reviewNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, reviewNo);
+            rs = pstmt.executeQuery();
+            if (rs.next()) max = rs.getInt(1);
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+        } finally { 
+            pool.freeConnection(con, pstmt, rs); 
+        }
+        return max;
+    }
 }

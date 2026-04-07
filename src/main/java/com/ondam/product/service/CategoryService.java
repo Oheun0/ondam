@@ -29,4 +29,3 @@ public class CategoryService {
 		return dao.deleteCategory(categoryNo);
 	}
 }
-

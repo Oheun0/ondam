@@ -313,4 +313,54 @@ public class UserDAO {
 			
 			return isMatch;
 		}
+	public String getUserName(int userNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = null;
+	    String userName = null;
+
+	    try {
+	        con = pool.getConnection();
+	        sql = "SELECT userName FROM user WHERE userNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, userNo);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	        	userName = rs.getString("userName");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return userName;
+	}
+	
+	public String getUserPhoneNumber(int userNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = null;
+	    String userPhoneNumber = null;
+
+	    try {
+	        con = pool.getConnection();
+	        sql = "SELECT userPhoneNumber FROM user WHERE userNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, userNo);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	        	userPhoneNumber = rs.getString("userPhoneNumber");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return userPhoneNumber;
+	}
+
 }

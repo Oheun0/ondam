@@ -115,4 +115,3 @@ public class SituationDAO {
 		return flag;
 	}
 }
-

@@ -1,0 +1,338 @@
+@charset "UTF-8";
+
+:root {
+  --search-content-max: 430px;
+  --search-main-bg: #f7f7f7;
+  --search-header-bg: #ffffff;
+  --search-card-bg: #ffffff;
+  --search-line: #eceff2;
+  --search-text: #222222;
+  --search-sub: #666666;
+  --search-chip-bg: #f3f3f3;
+  --search-chip-border: #e0e0e0;
+}
+
+.search-shell {
+  width: 100%;
+  min-height: 100vh;
+  background: #e9edf2;
+}
+
+.search-page-inner {
+  width: 100%;
+  max-width: var(--search-content-max);
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--search-main-bg);
+  border: 1px solid #eaeaea;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ----- 상단 검색 헤더 (흰 배경, 높이 = home.css .top-bar 와 동일 70px) ----- */
+.search-page-header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  height: 70px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  background: var(--search-header-bg);
+  border-bottom: 1px solid var(--search-line);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* 뒤로가기 + 입력창 내 검색 아이콘: home.css .icon-btn (= detail-icon-btn) 과 동일 */
+.search-header-icon-btn {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--search-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.search-header-icon-btn .material-icons {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.search-back-btn:active,
+.search-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.search-form {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  min-height: 48px;
+  padding: 0 6px 0 16px;
+  background: #f3f3f3;
+  border-radius: 999px;
+  border: 1px solid #e5e5e5;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 6px 0 0;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--search-text);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-input::placeholder {
+  color: #8a8a8a;
+  font-weight: 400;
+}
+
+.search-submit-btn {
+  flex-shrink: 0;
+}
+
+/* ----- 본문: 상단바 아래 배경 (#f7f7f7) ----- */
+.search-page-main {
+  flex: 1;
+  padding: 20px 16px 32px;
+  background: var(--search-main-bg);
+}
+
+.search-section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--search-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.search-section-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.search-edit-btn {
+  min-height: 44px;
+  padding: 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--search-sub);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.search-edit-btn:active {
+  opacity: 0.85;
+}
+
+/* ----- 최근 검색어 ----- */
+.recent-search-section {
+  background: var(--search-card-bg);
+  border-radius: 18px;
+  padding: 18px 16px 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.recent-search-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px 10px;
+  align-content: flex-start;
+}
+
+.recent-search-chip {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 100%;
+}
+
+/* 한 칩 = 버튼 하나 (일반: 텍스트만 / 편집: 텍스트 + × 동일 pill 안) */
+.recent-search-chip-btn {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--search-text);
+  background: var(--search-chip-bg);
+  border: 1px solid var(--search-chip-border);
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.recent-search-chip-btn:active {
+  transform: scale(0.98);
+}
+
+.recent-search-chip-btn.is-editing {
+  padding: 0 12px 0 16px;
+  gap: 8px;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.recent-search-chip-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-search-chip-x {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  color: #555;
+  opacity: 0.85;
+}
+
+.search-empty-msg {
+  margin: 8px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--search-sub);
+  text-align: center;
+  padding: 12px 0;
+}
+
+/* ----- 인기 검색어 ----- */
+.popular-search-section {
+  background: var(--search-card-bg);
+  border-radius: 18px;
+  padding: 18px 16px 10px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.popular-search-heading {
+  margin-bottom: 12px;
+}
+
+.popular-search-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.popular-search-list > li {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.popular-search-list > li:last-child {
+  border-bottom: none;
+}
+
+.popular-search-item {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  min-height: 52px;
+  padding: 10px 4px 10px 2px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--search-text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.popular-search-item:active {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.popular-rank {
+  flex-shrink: 0;
+  width: 28px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--search-sub);
+  text-align: center;
+}
+
+.popular-keyword {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* common.css 의 광범위 button min-height(var(--touch-size)) 보다 우선 — 칩·리스트 행 의도 높이 유지 */
+#searchPageMain button.recent-search-chip-btn {
+  min-height: 44px;
+}
+
+#searchPageMain button.popular-search-item {
+  min-height: 52px;
+}
+
+#searchPageMain button.search-edit-btn {
+  min-height: 44px;
+}
+
+/* ----- 검색 결과: 상단 검색바 고정 (목록 셸 + overflow visible) ----- */
+.search-result-page .search-result-inner .search-page-header {
+  position: sticky;
+  top: 0;
+  z-index: 600;
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.08);
+}

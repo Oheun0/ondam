@@ -5,6 +5,7 @@ public class WalletTransactionDTO {
     private int transactionNo;
     private int walletNo;
     private int userNo;
+    private String userName;
     private int transactionType;
     private int amount;
     private int balanceSnapshot;
@@ -14,12 +15,13 @@ public class WalletTransactionDTO {
 
     public WalletTransactionDTO() {}
 
-    public WalletTransactionDTO(int transactionNo, int walletNo, int userNo, int transactionType,
+    public WalletTransactionDTO(int transactionNo, int walletNo, int userNo, String userName, int transactionType,
                                 int amount, int balanceSnapshot, int orderNo, String transactionDate,
                                 String transactionMemo) {
         this.transactionNo = transactionNo;
         this.walletNo = walletNo;
         this.userNo = userNo;
+        this.userName = userName;
         this.transactionType = transactionType;
         this.amount = amount;
         this.balanceSnapshot = balanceSnapshot;
@@ -51,8 +53,16 @@ public class WalletTransactionDTO {
     public void setUserNo(int userNo) {
         this.userNo = userNo;
     }
+    
+    public String getUserName() {
+		return userName;
+	}
 
-    public int getTransactionType() {
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public int getTransactionType() {
         return transactionType;
     }
 

@@ -25,7 +25,7 @@ public class NotificationDAO {
 		Vector<NotificationDTO> vlist = new Vector<NotificationDTO>();
 		try {
 			con = pool.getConnection();
-			sql = "SELECT * FROM notification WHERE userNo = ?";
+			sql = "SELECT * FROM notification WHERE userNo = ? ORDER BY createdAt DESC";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, userNo);
 			rs = pstmt.executeQuery();

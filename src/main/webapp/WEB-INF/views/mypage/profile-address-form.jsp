@@ -25,9 +25,16 @@
     <main class="profile-page">
         <section class="profile-intro-card">
             <div class="profile-intro-top">
-                <a href="${pageContext.request.contextPath}/profile-address" class="back-btn">
+                <c:choose>
+				  <c:when test="${isHelperMode}">
+				    <a href="${pageContext.request.contextPath}/profile-address?targetUserNo=${targetUserNo}" class="back-btn">
+				  </c:when>
+				  <c:otherwise>
+				    <a href="${pageContext.request.contextPath}/profile-address" class="back-btn">
+				  </c:otherwise>
+				</c:choose>
                     <span class="material-icons">chevron_left</span>
-                </a>
+                	</a>
 
                 <div class="intro-text">
                     <h1>내 정보 수정하기</h1>
@@ -36,10 +43,22 @@
             </div>
 
             <div class="step-tab-wrap">
-                <a href="${pageContext.request.contextPath}/profile" class="step-tab">기본 정보</a>
-				<a href="${pageContext.request.contextPath}/profile-address" class="step-tab active">배송지 관리</a>
-				<a href="${pageContext.request.contextPath}/preference" class="step-tab">취향 정보</a>
-            </div>
+			  <c:choose>
+			    <c:when test="${isHelperMode}">
+			      <span class="step-tab"
+      				style="color:#ccc; pointer-events:none; cursor:not-allowed;">기본 정보</span>
+			      <a href="${pageContext.request.contextPath}/profile-address?targetUserNo=${targetUserNo}"
+			         class="step-tab active">배송지 관리</a>
+			      <span class="step-tab"
+      				style="color:#ccc; pointer-events:none; cursor:not-allowed;">취향 정보</span>
+			    </c:when>
+			    <c:otherwise>
+			      <a href="${pageContext.request.contextPath}/profile" class="step-tab">기본 정보</a>
+			      <a href="${pageContext.request.contextPath}/profile-address" class="step-tab active">배송지 관리</a>
+			      <a href="${pageContext.request.contextPath}/preference" class="step-tab">취향 정보</a>
+			    </c:otherwise>
+			  </c:choose>
+			</div>
         </section>
 
         <section class="edit-card">
@@ -50,6 +69,9 @@
 
             <form action="${pageContext.request.contextPath}/address/save" method="post" class="edit-form">
                 <input type="hidden" name="mode" value="${mode}">
+                <c:if test="${isHelperMode}">
+			        <input type="hidden" name="targetUserNo" value="${targetUserNo}">
+			    </c:if>
                 <c:if test="${mode == 'edit'}">
                     <input type="hidden" name="userAddressNo" value="${addrInfo.userAddressNo}">
                 </c:if>
@@ -98,7 +120,20 @@
                 <button type="submit" class="save-btn">${mode == 'edit' ? '변경사항 저장하기' : '배송지 추가하기'}</button>
 
                 <c:if test="${mode == 'edit'}">
-                    <button type="button" class="secondary-full-btn" onclick="location.href='${pageContext.request.contextPath}/address/delete?addressId=${addrInfo.userAddressNo}'">삭제하기</button>
+                    <c:choose>
+					    <c:when test="${isHelperMode}">
+					        <button type="button" class="secondary-full-btn"
+					            onclick="location.href='${pageContext.request.contextPath}/address/delete?addressId=${addrInfo.userAddressNo}&targetUserNo=${targetUserNo}'">
+					            삭제하기
+					        </button>
+					    </c:when>
+					    <c:otherwise>
+					        <button type="button" class="secondary-full-btn"
+					            onclick="location.href='${pageContext.request.contextPath}/address/delete?addressId=${addrInfo.userAddressNo}'">
+					            삭제하기
+					        </button>
+					    </c:otherwise>
+					</c:choose>
                 </c:if>
             </form>
         </section>
