@@ -28,8 +28,52 @@ public class ProductService {
 	public boolean removeProduct(int productNo) {
 		return dao.deleteProduct(productNo);
 	}
-	
+
 	public ProductDTO getProductById(int productNo) {
-	    return dao.getProductById(productNo);
+		return dao.getProductById(productNo);
+	}
+
+	public Vector<ProductDTO> getProductsBySituation(int situationNo) {
+		return dao.getProductBySituationNo(situationNo);
+	}
+
+	public Vector<ProductDTO> getProductsByCategory(int categoryNo) {
+		return dao.getProductByCategoryNo(categoryNo);
+	}
+	
+	public Vector<ProductDTO> getProductListByFilter(
+	        String viewMode, String category,
+	        String sort, String[] colors,
+	        String seasonUi, String[] features) {
+
+	    String[] seasons = null;
+	    boolean seasonAllMatch = false;  // 추가
+
+	    if (seasonUi != null && !seasonUi.isEmpty()) {
+	        switch (seasonUi) {
+	            case "따뜻해요":
+	                seasons = new String[]{"봄", "가을"};
+	                seasonAllMatch = false;  // OR — 봄 or 가을
+	                break;
+	            case "시원해요":
+	                seasons = new String[]{"여름"};
+	                seasonAllMatch = false;
+	                break;
+	            case "사계절 입어요":
+	                seasons = new String[]{"봄", "여름", "가을", "겨울"};
+	                seasonAllMatch = true;   // AND — 4개 모두 보유
+	                break;
+	        }
+	    }
+
+	    return dao.getProductsByFilter(viewMode, category, sort, colors, seasons, seasonAllMatch, features);
+	}
+	
+	public Vector<ProductDTO> getProductsByCategoryName(String categoryName) {
+	    return dao.getProductsByCategoryName(categoryName);
+	}
+
+	public Vector<ProductDTO> getProductsBySituationName(String situationName) {
+	    return dao.getProductsBySituationName(situationName);
 	}
 }

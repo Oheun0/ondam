@@ -33,8 +33,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const featureInputs = document.querySelectorAll('#featureDropdown input[name="clothesFeature"]');
   const categoryDim = document.getElementById("categoryDim");
 
-  let currentViewMode = "type";
-  let currentCategory = "상의";
+  const situationTab = document.getElementById('productTabSituation');
+  let currentViewMode = (situationTab && situationTab.classList.contains('active')) ? 'situation' : 'type';
+
+  const titleEl = document.getElementById('currentCategoryTitle');
+  let currentCategory = (titleEl && titleEl.textContent.trim()) ? titleEl.textContent.trim() : '';
   let currentSort = "전체";
 
   function clearFilterDropdownStyles(menu) {
@@ -170,7 +173,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let html = `
       <button type="button" class="selected-chip selected-category-chip" data-type="category">
         ${currentCategory}
-        <span class="material-icons">close</span>
       </button>
     `;
 
@@ -209,6 +211,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
     selectedFilterArea.innerHTML = html;
     updateSeasonButtonLabel();
+  }
+  
+  function applyFilters() {
+      const params = new URLSearchParams();
+      params.set('action', 'list');
+
+      // 카테고리 or 상황
+      if (currentViewMode === 'situation') {
+          params.set('situationName', currentCategory);
+      } else {
+          params.set('categoryName', currentCategory);
+      }
+
+      // 정렬
+      if (currentSort && currentSort !== '전체') {
+          params.set('sort', currentSort);
+      }
+
+      // 색상 (복수)
+      colorInputs.forEach(input => {
+          if (input.checked) params.append('color', input.value);
+      });
+
+      // 계절 (단수 라디오)
+      const seasonChecked = document.querySelector('#seasonDropdown input[name="productSeason"]:checked');
+      if (seasonChecked) params.set('season', seasonChecked.value);
+
+      // 옷 특징 (복수)
+      featureInputs.forEach(input => {
+          if (input.checked) params.append('feature', input.value);
+      });
+
+      window.location.href = CONTEXT_PATH + '/product?' + params.toString();
   }
 
   function activateSituationSubTab(tabKey) {
@@ -330,16 +365,10 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll(".category-panel .category-chip").forEach((chip) => chip.classList.remove("active"));
 
       if (currentViewMode === "type") {
-        currentCategory = "상의";
-        const defaultChip = document.querySelector('#typeCategoryView .category-chip[data-category="상의"]');
-        if (defaultChip) defaultChip.classList.add("active");
+        currentCategory = "";
       } else {
         activateSituationSubTab("daily");
-        currentCategory = "집에서 편하게 입는 옷";
-        const defaultChip = document.querySelector(
-          '#situationCategoryView .category-chip[data-category="집에서 편하게 입는 옷"]'
-        );
-        if (defaultChip) defaultChip.classList.add("active");
+        currentCategory = "";
       }
 
       if (currentCategoryTitle) currentCategoryTitle.textContent = currentCategory;
@@ -352,51 +381,62 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   categoryChips.forEach((chip) => {
-    chip.addEventListener("click", function () {
-      const parentView = this.closest(".category-view");
-      if (!parentView) return;
+      chip.addEventListener("click", function () {
+        const parentView = this.closest(".category-view");
+        if (!parentView) return;
 
-      parentView.querySelectorAll(".category-chip").forEach((item) => item.classList.remove("active"));
-      this.classList.add("active");
+        parentView.querySelectorAll(".category-chip").forEach((item) => item.classList.remove("active"));
+        this.classList.add("active");
 
-      currentCategory = this.dataset.category;
-      if (currentCategoryTitle) {
-        currentCategoryTitle.textContent = currentCategory;
-      }
+        currentCategory = this.dataset.category;
+        if (currentCategoryTitle) currentCategoryTitle.textContent = currentCategory;
 
-      renderSelectedChips();
-      closeAllPanels();
-    });
+        renderSelectedChips();
+        closeAllPanels();
+
+		// 추가
+        const isInSituation = this.closest("#situationCategoryView") !== null;
+        const url = isInSituation
+          ? CONTEXT_PATH + "/product?action=list&situationName=" + encodeURIComponent(this.dataset.category)
+          : CONTEXT_PATH + "/product?action=list&categoryName=" + encodeURIComponent(this.dataset.category);
+        window.location.href = url;
+      });
   });
 
   sortOptions.forEach((option) => {
-    option.addEventListener("click", function () {
-      sortOptions.forEach((item) => item.classList.remove("active"));
-      this.classList.add("active");
-
-      currentSort = this.dataset.sort;
-      if (sortSelectedText) sortSelectedText.textContent = currentSort;
-
-      if (sortDropdown) sortDropdown.classList.add("hidden");
-    });
+      option.addEventListener("click", function () {
+          sortOptions.forEach((item) => item.classList.remove("active"));
+          this.classList.add("active");
+          currentSort = this.dataset.sort;
+          if (sortSelectedText) sortSelectedText.textContent = currentSort;
+          if (sortDropdown) sortDropdown.classList.add("hidden");
+          applyFilters(); // ← 추가
+      });
   });
 
   colorInputs.forEach((input) => {
-    input.addEventListener("change", renderSelectedChips);
+      input.addEventListener("change", function() {
+          renderSelectedChips();
+          applyFilters(); // ← 추가
+      });
   });
 
   seasonInputs.forEach((input) => {
-    input.addEventListener("change", function () {
-      renderSelectedChips();
-      if (seasonDropdown) {
-        seasonDropdown.classList.add("hidden");
-        clearFilterDropdownStyles(seasonDropdown);
-      }
-    });
+      input.addEventListener("change", function () {
+          renderSelectedChips();
+          if (seasonDropdown) {
+              seasonDropdown.classList.add("hidden");
+              clearFilterDropdownStyles(seasonDropdown);
+          }
+          applyFilters(); // ← 추가
+      });
   });
 
   featureInputs.forEach((input) => {
-    input.addEventListener("change", renderSelectedChips);
+      input.addEventListener("change", function() {
+          renderSelectedChips();
+          applyFilters(); // ← 추가
+      });
   });
 
   if (selectedFilterArea) selectedFilterArea.addEventListener("click", function (e) {
@@ -425,60 +465,27 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     renderSelectedChips();
+	applyFilters();
   });
 
   if (resetBtn) resetBtn.addEventListener("click", function () {
-    currentViewMode = "type";
-    currentCategory = "상의";
-    currentSort = "전체";
-
-    modeTabs.forEach((tab) => {
-      const on = tab.dataset.viewMode === "type";
-      tab.classList.toggle("active", on);
-      tab.setAttribute("aria-selected", on ? "true" : "false");
-    });
-
-    document.querySelectorAll(".category-panel .category-chip").forEach((chip) => chip.classList.remove("active"));
-    const defaultTypeChip = document.querySelector('#typeCategoryView .category-chip[data-category="상의"]');
-    if (defaultTypeChip) defaultTypeChip.classList.add("active");
-
-    activateSituationSubTab("daily");
-    document.querySelectorAll("#situationCategoryView .category-chip").forEach(function (c) {
-      c.classList.remove("active");
-    });
-    const defaultSituationChip = document.querySelector(
-      '#situationCategoryView .category-chip[data-category="집에서 편하게 입는 옷"]'
-    );
-    if (defaultSituationChip) defaultSituationChip.classList.add("active");
-
-    sortOptions.forEach((item) => {
-      item.classList.toggle("active", item.dataset.sort === "전체");
-    });
-
-    colorInputs.forEach((input) => {
-      input.checked = false;
-    });
-
-    seasonInputs.forEach((input) => {
-      input.checked = false;
-    });
-
-    featureInputs.forEach((input) => {
-      input.checked = false;
-    });
-
-    if (currentCategoryTitle) currentCategoryTitle.textContent = "상의";
-    if (sortSelectedText) sortSelectedText.textContent = "전체";
-    if (seasonSelectedText) seasonSelectedText.textContent = "계절";
-
-    updateCategoryView();
-    renderSelectedChips();
-    closeAllPanels();
+      window.location.href = CONTEXT_PATH + '/product?action=list';
   });
 
   if (typeCategoryView && situationCategoryView) updateCategoryView();
   activateSituationSubTab("daily");
-  renderSelectedChips();
+  
+  if (currentViewMode === 'situation') {
+        const activeChip = document.querySelector('#situationCategoryView .category-chip.active');
+        if (activeChip) {
+            const panel = activeChip.closest('.situation-sub-panel');
+            if (panel) {
+                activateSituationSubTab(panel.dataset.situationPanel);
+            }
+        }
+    }
+
+    renderSelectedChips();
 
   /* 하단 네비: 스크롤 내림(아래 방향) → 숨김, 스크롤 올림(위 방향) → 표시 */
   if (document.body.classList.contains("product-list-page")) {
