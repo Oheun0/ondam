@@ -51,8 +51,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/") // 모든 요청 받기
 @MultipartConfig(
-		maxFileSize = 1024 * 1024 * 5,    		 // 최대 파일 크기 5MB
-	    maxRequestSize = 1024 * 1024 * 10
+		fileSizeThreshold = 1024 * 1024 * 1,  // 1MB (이 이상이면 임시 디렉토리에 저장)
+	    maxFileSize = 1024 * 1024 * 20,       //파일 한 장당 최대 20MB
+	    maxRequestSize = 1024 * 1024 * 100    //전체 요청 최대 100MB
 		) //사진 받아오기
 public class DispatcherServlet extends HttpServlet {
     
