@@ -252,7 +252,7 @@ public class UserAddressDAO {
 			UserAddressDTO dto = null;
 			
 			// 요청하신 4개의 컬럼만 정확하게 지정하여 성능을 최적화한 SQL 쿼리입니다.
-			String sql = "SELECT addressName, userAddress, userDetailAddress, userZipcode "
+			String sql = "SELECT addressName, userAddress, userDetailAddress, userZipcode, receiverName, receiverTel "
 					   + "FROM userAddress "
 					   + "WHERE userNo = ? AND isDefault = 1";
 			
@@ -269,6 +269,8 @@ public class UserAddressDAO {
 					dto.setUserAddress(rs.getString("userAddress"));
 					dto.setUserDetailAddress(rs.getString("userDetailAddress"));
 					dto.setUserZipcode(rs.getString("userZipcode"));
+					dto.setReceiverName(rs.getString("receiverName"));
+					dto.setReceiverTel(rs.getString("receiverTel"));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

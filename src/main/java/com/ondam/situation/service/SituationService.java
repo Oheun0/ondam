@@ -29,4 +29,3 @@ public class SituationService {
 		return dao.deleteSituation(situationNo);
 	}
 }
-

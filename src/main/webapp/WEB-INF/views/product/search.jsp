@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product-search.css">
 </head>
 <body class="product-search-page" data-context-path="${pageContext.request.contextPath}">
+  <%-- 상품 그리드·찜 하트는 검색 실행 뒤 search-result.jsp(본문 class: product-list-page)에서 표시 --%>
   <div class="search-shell">
     <div class="search-page-inner">
       <jsp:include page="/WEB-INF/views/layout/back-searchBar.jsp"/>

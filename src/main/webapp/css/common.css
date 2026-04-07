@@ -4,6 +4,7 @@
     --text-main: #222222;
     --text-sub: #666666;
     --text-muted: #8a8a8a;
+    --app-header-title-size: 20px;
     --bg-light: #f3f3f3;
     --bg-white: #ffffff;
     --border-color: #e5e7eb;
@@ -46,7 +47,7 @@ button {
     cursor: pointer;
 }
 
-button:not(.banner-dot):not(.sidebar-item):not(.top-tab):not(.filter-dropdown-btn):not(.selected-chip):not(.detail-hero-dot):not(.detail-qty-stepper__btn):not(.search-header-icon-btn):not(.app-back-header__btn),
+button:not(.banner-dot):not(.sidebar-item):not(.top-tab):not(.filter-dropdown-btn):not(.selected-chip):not(.detail-hero-dot):not(.detail-qty-stepper__btn):not(.search-header-icon-btn):not(.app-back-header__btn):not(.favorite-part-chip):not(.product-grid-wish-btn):not(.coupon-list-register-btn),
 .icon-btn,
 .nav-item,
 .category-chip,
