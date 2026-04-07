@@ -320,8 +320,11 @@
 	  if (submitModalBtn) {
 	    submitModalBtn.addEventListener("click", function () {
 	      var formData = new FormData();
-	      var orderItemNo = document.getElementsByName("orderItemNo")[0]?.value;
-	      var reviewNo = document.getElementsByName("reviewNo")[0]?.value;
+		  var orderItemEl = document.getElementsByName("orderItemNo")[0];
+		  var orderItemNo = orderItemEl ? orderItemEl.value : "";
+
+		  var reviewEl = document.getElementsByName("reviewNo")[0];
+		  var reviewNo = reviewEl ? reviewEl.value : "";
 	      
 	      if (reviewNo) formData.append("reviewNo", reviewNo);
 	      if (orderItemNo) formData.append("orderItemNo", orderItemNo);
