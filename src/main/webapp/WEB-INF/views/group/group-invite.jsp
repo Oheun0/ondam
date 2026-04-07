@@ -62,5 +62,6 @@
     <jsp:include page="../layout/bottomNav.jsp" />
 
 </div>
+<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>
