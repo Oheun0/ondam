@@ -47,7 +47,7 @@ a {
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
-  border: 1px solid #e7cfc8;
+  border: 1px solid #EAEAEA;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
