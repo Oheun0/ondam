@@ -1,0 +1,175 @@
+@charset "UTF-8";
+
+/* 찜한 상품 — 상단바 고정, 필터 행은 스크롤 */
+
+.favorite-list-inner.detail-page-inner {
+  padding-bottom: 32px;
+  background: #f7f7f7;
+  border: 1px solid #EAEAEA;
+  border-radius: 18px;
+  overflow: visible;
+  min-height: 100vh;
+}
+
+.favorite-list-sticky-head {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--content-width, 430px);
+  z-index: 200;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+}
+
+.favorite-list-header-wrap {
+  position: relative;
+}
+
+.favorite-list-header-wrap .app-back-header {
+  position: relative;
+  z-index: 0;
+}
+
+.favorite-list-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #222;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.favorite-list-header-wrap .app-back-header__btn {
+  position: relative;
+  z-index: 2;
+}
+
+.favorite-list-header-actions {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+
+.favorite-list-scroll {
+  /* 고정 상단바(70px) 바로 아래에 필터가 붙도록 추가 여백 없음 */
+  padding-top: 70px;
+  box-sizing: border-box;
+}
+
+/* 필터 한 줄 — 흰 배경 블록 안에서 토글·칩 세로 중앙 */
+.favorite-filter-section {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px 0;
+  border-bottom: 1px solid #efefef;
+  position: relative;
+  z-index: 30;
+  background: #fff;
+}
+
+.favorite-filter-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.favorite-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* 정렬 토글 래퍼·버튼을 행의 세로 중앙에 맞춤 */
+.favorite-filter-row .filter-dropdown-wrap {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.favorite-filter-row .filter-dropdown-btn {
+  height: 36px;
+  min-height: 36px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-filter-row .filter-dropdown-btn .material-icons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-part-chips {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  align-self: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* product-header category-chip 과 동일 톤, 높이는 정렬 드롭다운 버튼(36px)에 맞춤 */
+.favorite-part-chip {
+  flex: 0 0 auto;
+  min-height: 36px;
+  height: 36px;
+  padding: 0 14px;
+  line-height: 1;
+  border: 1px solid #e2e2e2;
+  border-radius: 999px;
+  background: #fff;
+  color: #444;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.favorite-part-chip.active {
+  background: #f1f1f1;
+  color: #444;
+  border-color: #f1f1f1;
+}
+
+.favorite-part-chip:focus {
+  outline: none;
+}
+
+.favorite-part-chip:focus-visible {
+  outline: 2px solid #c4c4c4;
+  outline-offset: 2px;
+}
+
+/* 그리드 영역 배경 */
+.favorite-list-scroll .product-content {
+  background: transparent;
+}
+
+.favorite-list-scroll .product-list-section {
+  padding-bottom: 24px;
+}
