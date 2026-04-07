@@ -258,4 +258,59 @@ public class UserDAO {
 	    }
 	    return result;
 	}
+	
+	// 회원 탈퇴 처리
+		public int withdrawUser(int userNo) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			int result = 0;
+			
+			String query = "UPDATE user SET isActive = 0, deleteAt = NOW() WHERE userNo = ?";
+			
+			try {
+				con = pool.getConnection();
+				pstmt = con.prepareStatement(query);
+				
+				pstmt.setInt(1, userNo);
+				result = pstmt.executeUpdate();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt);
+			}
+			
+			return result;
+		}
+		
+		public boolean checkPassword(int userNo, String inputPwd) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			boolean isMatch = false;
+
+			String sql = "SELECT userPwd FROM user WHERE userNo = ?";
+			
+			try {
+				con = pool.getConnection();
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, userNo);
+				rs = pstmt.executeQuery();
+				
+				if (rs.next()) {
+					String dbPwd = rs.getString("userPwd");
+
+					if (dbPwd != null && dbPwd.equals(inputPwd)) {
+						isMatch = true;
+					}
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt, rs);
+			}
+			
+			return isMatch;
+		}
 }

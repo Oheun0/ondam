@@ -91,9 +91,8 @@
         <a href="${pageContext.request.contextPath}/wallet" class="group-fixed-btn">지갑 관리</a>
         <a href="${pageContext.request.contextPath}/gift/gift-box.jsp" class="group-fixed-btn group-fixed-btn--gift-history">선물함</a>
     </div>
-
     <jsp:include page="../layout/bottomNav.jsp" />
-
 </div>
+<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>
