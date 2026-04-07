@@ -154,18 +154,17 @@ public class DBConnectionMgr {
             // If connection is not in use, test to ensure it's still valid!
             if (!co.inUse) {
                 try {
-                    badConnection = co.connection.isClosed();
-                    if (!badConnection)
-                        badConnection = (co.connection.getWarnings() != null);
+                	badConnection = !co.connection.isValid(1);
                 } catch (Exception e) {
                     badConnection = true;
-                    e.printStackTrace();
                 }
 
                 // Connection is bad, remove from pool
                 if (badConnection) {
                     connections.removeElementAt(i);
-                    trace("ConnectionPoolManager: Remove disconnected DB connection #" + i);
+                    // 죽은 연결은 닫아주는 것이 안전함
+                    try { co.connection.close(); } catch(Exception e) {} 
+                    trace("ConnectionPoolManager: Remove invalid DB connection #" + i);
                     continue;
                 }
 
