@@ -87,7 +87,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/product/wishlist" class="menu-item">
+                <a href="${pageContext.request.contextPath}/product?action=favorite" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">favorite_border</span>
                         <strong class="menu-label">찜한 상품</strong>
@@ -118,8 +118,8 @@
 
                 <a href="${pageContext.request.contextPath}/coupon/list" class="menu-item">
                     <div class="menu-left">
-                        <span class="material-icons menu-row-icon" aria-hidden="true">confirmation_number</span>
-                        <strong class="menu-label">보유 쿠폰</strong>
+                        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">local_activity</span>
+                        <strong class="menu-label">내 쿠폰</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>

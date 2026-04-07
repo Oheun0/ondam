@@ -176,3 +176,107 @@ html, body {
     text-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
     transform: scale(1.2);
 }
+
+/* 컨테이너: 전체 배경을 검은색으로 설정 */
+.no-shorts-container {
+    width: 100%;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--shorts-bg);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 안내 박스: 화이트 카드 스타일 유지 */
+.no-shorts-card {
+    background: var(--empty-card);
+    border: 1px solid var(--empty-line);
+    border-radius: 28px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); /* 어두운 배경에서 도드라지도록 그림자 강화 */
+    width: 100%;
+    max-width: 360px;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* 아이콘 영역 */
+.no-shorts-icon-box {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--empty-green-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.no-shorts-icon-box .material-icons {
+    font-size: 40px;
+    color: var(--empty-green);
+}
+
+/* 텍스트 스타일 */
+.no-shorts-card h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--empty-text);
+    letter-spacing: -0.03em;
+}
+
+.no-shorts-card p {
+    margin: 12px 0 30px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--empty-sub);
+    word-break: keep-all;
+}
+
+/* 홈으로 버튼: 블랙 배경으로 대비 강조 */
+.go-home-btn {
+    width: 100%;
+    min-height: 52px;
+    border-radius: 999px;
+    background: var(--btn-black);
+    color: var(--text-primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.go-home-btn:active {
+    transform: scale(0.96);
+    background-color: #333333;
+}
+
+/* 등장 애니메이션 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 모바일 소형 기기 대응 */
+@media (max-width: 360px) {
+    .no-shorts-card {
+        padding: 32px 20px;
+        border-radius: 24px;
+    }
+    .no-shorts-card h2 { font-size: 20px; }
+    .go-home-btn { min-height: 48px; }
+}

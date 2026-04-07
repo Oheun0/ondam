@@ -19,70 +19,89 @@
 <body>
 <div class="app-shell">
 
-    <div class="shorts-wrapper">
-        <c:forEach var="shorts" items="${shortsList}" varStatus="status">
-            <section class="shorts-container" data-index="${status.index}">
-                <video class="shorts-video" loop playsinline onclick="toggleVideoPlay(this)" ${status.first ? 'autoplay' : ''}>
-                    <source src="${pageContext.request.contextPath}/uploads/shorts/${shorts.videoFile}" type="video/mp4">
-                </video>
-                
-                
-                	<h2 class="shorts-top-title" 
-				        onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.productName}', '${shorts.productPrice}', '${shorts.imgFile}');">
-				        ${shorts.shortsTitle}
-				    </h2>
+<div class="shorts-wrapper">
+        <c:choose>
+            <%-- 1. 리스트가 비어있지 않은 경우: 영상 반복 출력 --%>
+            <c:when test="${not empty shortsList}">
+                <c:forEach var="shorts" items="${shortsList}" varStatus="status">
+                    <section class="shorts-container" data-index="${status.index}">
+                        <video class="shorts-video" loop playsinline onclick="toggleVideoPlay(this)" ${status.first ? 'autoplay' : ''}>
+                            <source src="${pageContext.request.contextPath}/uploads/shorts/${shorts.videoFile}" type="video/mp4">
+                        </video>
+                        
+                        <h2 class="shorts-top-title" 
+                            onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.productName}', '${shorts.productPrice}', '${shorts.imgFile}');">
+                            ${shorts.shortsTitle}
+                        </h2>
 
-                <aside class="side-actions">
-                    <button class="action-btn" 
-					            onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.productName}', '${shorts.productPrice}', '${shorts.imgFile}');">
-					        <span class="material-icons">shopping_bag</span>
-					        <span>구매하기</span>
-				    </button>
-                    <button class="action-btn" onclick="toggleLike(this, ${shorts.shortsNo})">
-					    <span class="material-icons">favorite_border</span>
-					    <span>찜</span>
-					</button>
-                    <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
-                        <span class="material-icons">volunteer_activism</span>
-                        <span>조르기</span>
-                    </button>
-                    <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
-                        <span class="material-icons">card_giftcard</span>
-                        <span>선물하기</span>
-                    </button>
-                    
-	                <button class="action-btn mute-btn" onclick="event.stopPropagation(); toggleGlobalMute();">
-					    <span class="material-icons muteIcon">volume_up</span>
-					    <span class="muteText">소리 켬</span>
-					</button>
+                        <aside class="side-actions">
+                            <button class="action-btn" 
+                                        onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.productName}', '${shorts.productPrice}', '${shorts.imgFile}');">
+                                    <span class="material-icons">shopping_bag</span>
+                                    <span>구매하기</span>
+                            </button>
+                            <button class="action-btn" onclick="toggleLike(this, ${shorts.shortsNo})">
+                                <span class="material-icons">favorite_border</span>
+                                <span>찜</span>
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
+                                <span class="material-icons">volunteer_activism</span>
+                                <span>조르기</span>
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
+                                <span class="material-icons">card_giftcard</span>
+                                <span>선물하기</span>
+                            </button>
+                            
+                            <button class="action-btn mute-btn" onclick="event.stopPropagation(); toggleGlobalMute();">
+                                <span class="material-icons muteIcon">volume_up</span>
+                                <span class="muteText">소리 켬</span>
+                            </button>
+                        </aside>
+                        
+                        <div class="bottom-info-wrapper">
+                            <section class="shorts-product-card" onclick="location.href='${pageContext.request.contextPath}/product/detail?no=${shorts.productNo}'">
+                                <div class="card-image">
+                                        <img src="${pageContext.request.contextPath}/uploads/products/${shorts.imgFile}" 
+                                             onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'" alt="상품 이미지">
+                                </div>
+                                <div class="card-info">
+                                    <span class="product-name">${shorts.shortsTitle}</span>
+                                    <span class="product-price">
+                                        <c:if test="${shorts.discountRate > 0}">
+                                            <span class="discount">${shorts.discountRate}%</span> 
+                                        </c:if> 
+                                        <span class="price">
+                                                <fmt:formatNumber value="${shorts.productPrice}" type="number"/>원
+                                        </span> 
+                                    </span>
+                                </div>
+                                <div class="card-action">
+                                    <button class="more-btn">상세보기</button>
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                </c:forEach>
+            </c:when>
 
-                </aside>
-                
-                <div class="bottom-info-wrapper">
-               <section class="shorts-product-card" onclick="location.href='${pageContext.request.contextPath}/product/detail?no=${shorts.productNo}'">
-                    <div class="card-image">
-                            <img src="${pageContext.request.contextPath}/uploads/products/${shorts.imgFile}" 
-                                 onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'" alt="상품 이미지">
-                    </div>
-                    <div class="card-info">
-                        <span class="product-name">${shorts.shortsTitle}</span>
-                        <span class="product-price">
-                            <c:if test="${shorts.discountRate > 0}">
-            					<span class="discount">${shorts.discountRate}%</span> 
-        					</c:if> 
-                            <span class="price">
-                                    <fmt:formatNumber value="${shorts.productPrice}" type="number"/>원
-                            </span> 
-                        </span>
-                    </div>
-                    <div class="card-action">
-                        <button class="more-btn">상세보기</button>
-                    </div>
-                </section>
-              </div>
-            </section>
-        </c:forEach>
-    </div><jsp:include page="../layout/bottomNav.jsp" />  				
+            <%-- 2. 리스트가 비어있는 경우: 안내 문구 노출 --%>
+            <c:otherwise>
+                <div class="no-shorts-container">
+                    <article class="no-shorts-card">
+                        <div class="no-shorts-icon-box">
+                            <span class="material-icons" aria-hidden="true">videocam_off</span>
+                        </div>
+                        <h2>영상이 없어요</h2>
+                        <p>현재 등록된 추천 영상이 없습니다.</p>
+                        <a href="${pageContext.request.contextPath}/main" class="go-home-btn">쇼핑하러 가기</a>
+                    </article>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+    
+    <jsp:include page="../layout/bottomNav.jsp" />  				
   	<div id="purchaseModalOverlay" class="purchase-modal-overlay" onclick="closePurchaseModal()">
     <div class="purchase-modal" onclick="event.stopPropagation();">
         <div class="modal-header">

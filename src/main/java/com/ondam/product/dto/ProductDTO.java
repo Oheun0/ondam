@@ -14,15 +14,17 @@ public class ProductDTO {
     private String productPattern;
     private String productFit;
     private String productThickness;
-    private String productSeason;
+    private String productDate; 
+    private int wishCount;
+    private int saleCount;
     private int productState;
 
     public ProductDTO() {}
 
     public ProductDTO(int productNo, int vendorNo, int categoryNo, String productName, String productBrand,
                       String productEx, int productPrice, int productOriginPrice, String productMaterial,
-                      String productPattern, String productFit, String productThickness,
-                      String productSeason, int productState) {
+                      String productPattern, String productFit, String productThickness, 
+                      String productDate, int wishCount, int saleCount, int productState) {
         this.productNo = productNo;
         this.vendorNo = vendorNo;
         this.categoryNo = categoryNo;
@@ -35,119 +37,57 @@ public class ProductDTO {
         this.productPattern = productPattern;
         this.productFit = productFit;
         this.productThickness = productThickness;
-        this.productSeason = productSeason;
+        this.productDate = productDate;
+        this.wishCount = wishCount;
+        this.saleCount = saleCount;
         this.productState = productState;
     }
 
-    public int getProductNo() {
-        return productNo;
-    }
+    public int getProductNo() { return productNo; }
+    public void setProductNo(int productNo) { this.productNo = productNo; }
 
-    public void setProductNo(int productNo) {
-        this.productNo = productNo;
-    }
+    public int getVendorNo() { return vendorNo; }
+    public void setVendorNo(int vendorNo) { this.vendorNo = vendorNo; }
 
-    public int getVendorNo() {
-        return vendorNo;
-    }
+    public int getCategoryNo() { return categoryNo; }
+    public void setCategoryNo(int categoryNo) { this.categoryNo = categoryNo; }
 
-    public void setVendorNo(int vendorNo) {
-        this.vendorNo = vendorNo;
-    }
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
 
-    public int getCategoryNo() {
-        return categoryNo;
-    }
+    public String getProductBrand() { return productBrand; }
+    public void setProductBrand(String productBrand) { this.productBrand = productBrand; }
 
-    public void setCategoryNo(int categoryNo) {
-        this.categoryNo = categoryNo;
-    }
+    public String getProductEx() { return productEx; }
+    public void setProductEx(String productEx) { this.productEx = productEx; }
 
-    public String getProductName() {
-        return productName;
-    }
+    public int getProductPrice() { return productPrice; }
+    public void setProductPrice(int productPrice) { this.productPrice = productPrice; }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
+    public int getProductOriginPrice() { return productOriginPrice; }
+    public void setProductOriginPrice(int productOriginPrice) { this.productOriginPrice = productOriginPrice; }
 
-    public String getProductBrand() {
-        return productBrand;
-    }
+    public String getProductMaterial() { return productMaterial; }
+    public void setProductMaterial(String productMaterial) { this.productMaterial = productMaterial; }
 
-    public void setProductBrand(String productBrand) {
-        this.productBrand = productBrand;
-    }
+    public String getProductPattern() { return productPattern; }
+    public void setProductPattern(String productPattern) { this.productPattern = productPattern; }
 
-    public String getProductEx() {
-        return productEx;
-    }
+    public String getProductFit() { return productFit; }
+    public void setProductFit(String productFit) { this.productFit = productFit; }
 
-    public void setProductEx(String productEx) {
-        this.productEx = productEx;
-    }
+    public String getProductThickness() { return productThickness; }
+    public void setProductThickness(String productThickness) { this.productThickness = productThickness; }
 
-    public int getProductPrice() {
-        return productPrice;
-    }
+    public String getProductDate() { return productDate; }
+    public void setProductDate(String productDate) { this.productDate = productDate; }
 
-    public void setProductPrice(int productPrice) {
-        this.productPrice = productPrice;
-    }
+    public int getWishCount() { return wishCount; }
+    public void setWishCount(int wishCount) { this.wishCount = wishCount; }
 
-    public int getProductOriginPrice() {
-        return productOriginPrice;
-    }
+    public int getSaleCount() { return saleCount; }
+    public void setSaleCount(int saleCount) { this.saleCount = saleCount; }
 
-    public void setProductOriginPrice(int productOriginPrice) {
-        this.productOriginPrice = productOriginPrice;
-    }
-
-    public String getProductMaterial() {
-        return productMaterial;
-    }
-
-    public void setProductMaterial(String productMaterial) {
-        this.productMaterial = productMaterial;
-    }
-
-    public String getProductPattern() {
-        return productPattern;
-    }
-
-    public void setProductPattern(String productPattern) {
-        this.productPattern = productPattern;
-    }
-
-    public String getProductFit() {
-        return productFit;
-    }
-
-    public void setProductFit(String productFit) {
-        this.productFit = productFit;
-    }
-
-    public String getProductThickness() {
-        return productThickness;
-    }
-
-    public void setProductThickness(String productThickness) {
-        this.productThickness = productThickness;
-    }
-
-    public String getProductSeason() {
-        return productSeason;
-    }
-
-    public void setProductSeason(String productSeason) {
-        this.productSeason = productSeason;
-    }
-
-    public int getProductState() {
-        return productState;
-    }
-
-    public void setProductState(int productState) {
-        this.productState = productState;
-    }
+    public int getProductState() { return productState; }
+    public void setProductState(int productState) { this.productState = productState; }
 }
