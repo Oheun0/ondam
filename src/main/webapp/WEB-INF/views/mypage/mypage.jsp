@@ -103,7 +103,7 @@
             </c:choose>
 		</section>
 
-        <section class="mypage-section" aria-label="메뉴">
+<section class="mypage-section" aria-label="메뉴">
             <div class="section-head">
                 <h2>메뉴</h2>
             </div>
@@ -111,7 +111,7 @@
             <div class="menu-card">
                 <a href="${pageContext.request.contextPath}/order/list" class="menu-item">
                     <div class="menu-left">
-                        <span class="material-icons menu-row-icon" aria-hidden="true">local_shipping</span>
+                        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">local_shipping</span>
                         <strong class="menu-label">주문 / 배송</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
@@ -124,20 +124,15 @@
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
-                <a href="${pageContext.request.contextPath}/review/write" class="menu-item">
+
+                <a href="${pageContext.request.contextPath}/review?action=myList" class="menu-item">
                     <div class="menu-left">
-                        <span class="material-icons menu-row-icon" aria-hidden="true">rate_review</span>
-                        <strong class="menu-label">리뷰 작성</strong>
+                        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">rate_review</span>
+                        <strong class="menu-label">나의 후기</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
-                <a href="${pageContext.request.contextPath}/review?action=myList" class="menu-item">
-				    <div class="menu-left">
-				        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">rate_review</span>
-				        <strong class="menu-label">나의 후기</strong>
-				    </div>
-				    <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
-				</a>
+
                 <a href="${pageContext.request.contextPath}/gift/box" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">redeem</span>
@@ -157,7 +152,7 @@
                 <a href="${pageContext.request.contextPath}/support/inquiry" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">support_agent</span>
-                        <strong class="menu-label">문의하기</strong>
+                        <strong class="menu-label">문의내역</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
