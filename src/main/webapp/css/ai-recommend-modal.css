@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+/* 하단 네비(z-index:1000) 위에 표시 */
+.inquiry-write-modal.ai-rec-intro-modal,
+.inquiry-write-modal.ai-rec-loading-modal {
+  z-index: 1100;
+}
+
+/* inquiry-write-modal 구조 위에 콘텐츠만 보강 */
+
+.ai-rec-modal-card--intro .ai-rec-modal-hero-img {
+  display: block;
+  width: min(200px, 52vw);
+  height: auto;
+  margin: 0 auto 18px;
+}
+
+.ai-rec-modal-intro-text {
+  margin-bottom: 20px !important;
+}
+
+.ai-rec-modal-intro-cta {
+  width: 100%;
+}
+
+.ai-rec-modal-card--loading {
+  text-align: center;
+}
+
+.ai-rec-modal-magic-img {
+  display: block;
+  width: min(180px, 48vw);
+  height: auto;
+  margin: 0 auto 16px;
+  transform-origin: center center;
+  animation: aiRecModalMagicBounce 1s ease-in-out infinite;
+}
+
+@keyframes aiRecModalMagicBounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.ai-rec-modal-loading-text {
+  margin-bottom: 0 !important;
+}
+
+/* 본문: 인트로 끝나기 전까지 숨김 (상단·하단 바만 보임) */
+.ai-rec-content--hidden {
+  display: none !important;
+}
+
+/* 인트로 중 메인 영역은 비어 보이도록 */
+.ai-rec-main--intro-pending {
+  min-height: 40vh;
+}
