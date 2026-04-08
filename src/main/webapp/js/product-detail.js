@@ -240,6 +240,13 @@ document.addEventListener("DOMContentLoaded", function () {
     openBuySheetBtn.addEventListener("click", openSheet);
   }
 
+  document.querySelectorAll("[data-open-detail-option-sheet]").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      openSheet();
+    });
+  });
+
   if (detailSheetDim) {
     detailSheetDim.addEventListener("click", closeSheet);
   }

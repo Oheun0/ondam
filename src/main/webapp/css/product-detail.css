@@ -290,6 +290,7 @@ a.detail-icon-btn.detail-icon-btn--link {
 .detail-origin-price {
   margin: 0 0 6px;
   font-size: 16px;
+  font-weight: 700;
   color: #999;
   text-decoration: line-through;
 }
@@ -1291,7 +1292,7 @@ a.detail-review-more-btn {
   border-radius: 0;
   background: #fff;
   color: #6c6c6c;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.35;
   cursor: pointer;
