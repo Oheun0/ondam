@@ -5,17 +5,13 @@
     var root = document.getElementById("favoriteListPageRoot");
     if (!root) return;
 
-    var backBtn = document.getElementById("appBackHeaderBtn");
-    if (backBtn) {
-      backBtn.addEventListener("click", function () {
-        if (window.history.length > 1) {
-          window.history.back();
-        } else {
-          var ctx = document.body.getAttribute("data-context-path") || "";
-          window.location.href = ctx + "/main";
-        }
-      });
-    }
+	var backBtn = document.getElementById("appBackHeaderBtn");
+	if (backBtn) {
+	  backBtn.addEventListener("click", function () {
+	    var ctx = document.body.getAttribute("data-context-path") || "";
+	    window.location.href = ctx + "/mypage";
+	  });
+	}
 
     var sortToggleBtn = document.getElementById("favoriteSortToggleBtn");
     var sortDropdown = document.getElementById("favoriteSortDropdown");
@@ -156,44 +152,14 @@
       };
     }
 
-    function sortCardElements(list) {
-      var mode = currentSort;
-      list.sort(function (a, b) {
-        var ma = parseCardMeta(a);
-        var mb = parseCardMeta(b);
-        if (mode === "담은순") {
-          return mb.wish - ma.wish;
-        }
-        if (mode === "인기순") {
-          return mb.popular - ma.popular;
-        }
-        if (mode === "최신순") {
-          return mb.dateMs - ma.dateMs;
-        }
-        if (mode === "가격 낮은순") {
-          return ma.price - mb.price;
-        }
-        if (mode === "가격 높은순") {
-          return mb.price - ma.price;
-        }
-        return 0;
-      });
-      list.forEach(function (el) {
-        grid.appendChild(el);
-      });
-    }
-
-    function applyFilters() {
-      var list = cards();
-      sortCardElements(list);
-
-      list.forEach(function (card) {
-        var part = card.getAttribute("data-favorite-part") || "";
-        var showByPart =
-          selectedParts.size === 0 || (part && selectedParts.has(part));
-        card.style.display = showByPart ? "" : "none";
-      });
-    }
+	function applyFilters() {
+	  /*var list = cards();
+	  list.forEach(function (card) {
+	    var part = card.getAttribute("data-favorite-part") || "";
+	    var showByPart = selectedParts.size === 0 || (part && selectedParts.has(part));
+	    card.style.display = showByPart ? "" : "none";
+	  });*/
+	}
 
     if (sortToggleBtn && sortDropdown) {
       sortToggleBtn.addEventListener("click", function (e) {
@@ -202,35 +168,31 @@
       });
     }
 
-    sortOptions.forEach(function (opt) {
-      opt.addEventListener("click", function (e) {
-        e.stopPropagation();
-        var sort = opt.getAttribute("data-sort");
-        if (!sort) return;
-        currentSort = sort;
-        sortOptions.forEach(function (o) {
-          o.classList.toggle("active", o.getAttribute("data-sort") === sort);
-        });
-        if (sortSelectedText) sortSelectedText.textContent = sort;
-        closeSortDropdown();
-        applyFilters();
-      });
-    });
+	sortOptions.forEach(function (opt) {
+	  opt.addEventListener("click", function (e) {
+	    e.stopPropagation();
+	    var sort = opt.getAttribute("data-sort");
+	    if (!sort) return;
+	    closeSortDropdown();
+	    var ctx = document.body.getAttribute("data-context-path") || "";
+	    window.location.href = ctx + "/wish?action=list&sort=" + encodeURIComponent(sort);
+	  });
+	});
 
-    partChips.forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        var part = chip.getAttribute("data-part");
-        if (!part) return;
-        if (chip.classList.contains("active")) {
-          chip.classList.remove("active");
-          selectedParts.delete(part);
-        } else {
-          chip.classList.add("active");
-          selectedParts.add(part);
-        }
-        applyFilters();
-      });
-    });
+	partChips.forEach(function (chip) {
+	  chip.addEventListener("click", function () {
+	    var part = chip.getAttribute("data-part");
+	    if (!part) return;
+	    var ctx = document.body.getAttribute("data-context-path") || "";
+	    var sort = document.getElementById("favoriteSortSelectedText").textContent.trim();
+	    // 이미 선택된 칩이면 해제 (part 파라미터 없이)
+	    if (chip.classList.contains("active")) {
+	      window.location.href = ctx + "/wish?action=list&sort=" + encodeURIComponent(sort);
+	    } else {
+	      window.location.href = ctx + "/wish?action=list&sort=" + encodeURIComponent(sort) + "&part=" + encodeURIComponent(part);
+	    }
+	  });
+	});
 
     document.addEventListener("click", function (e) {
       if (e.target.closest(".filter-dropdown-wrap")) return;

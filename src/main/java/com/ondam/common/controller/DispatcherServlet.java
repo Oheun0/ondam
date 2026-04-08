@@ -129,6 +129,8 @@ public class DispatcherServlet extends HttpServlet {
             // 논리 컨트롤러 실행 (비즈니스 로직 처리)
             String viewName = controller.execute(request, response);
             
+            if (response.isCommitted()) return;
+            
             // 뷰 리졸버 역할 (경로 조립 및 포워딩)
             if (viewName != null) {
                 if (viewName.startsWith("redirect:")) {

@@ -149,7 +149,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/product?action=favorite" class="menu-item">
+                <a href="${pageContext.request.contextPath}/wish" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">favorite_border</span>
                         <strong class="menu-label">찜한 상품</strong>
