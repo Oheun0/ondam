@@ -75,9 +75,9 @@
                     </div>
                 
                     <div class="wallet-button-row">
-                        <a href="${pageContext.request.contextPath}/wallet/charge" class="wallet-button fill">충전하기</a>
-                        <a href="${pageContext.request.contextPath}/wallet/history" class="wallet-button">사용 내역</a>
-                    </div>
+					    <a href="${pageContext.request.contextPath}/wallet?action=charge" class="wallet-button fill">충전하기</a>
+					    <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-button">사용 내역</a>
+					</div>
                 </c:when>
                 
                 <%-- B. 가족에 가입되어 있지 않은 경우 (가입 유도 화면 표시) --%>
