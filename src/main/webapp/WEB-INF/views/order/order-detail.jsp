@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -27,134 +28,137 @@
         </div>
       </div>
 
-      <main class="order-detail-main" aria-label="주문상세">
-        <!-- 상단 주문 정보 요약 -->
+     <main class="order-detail-main" aria-label="주문상세">
         <section class="od-card od-summary-card" aria-label="주문 정보">
           <dl class="od-kv">
             <div class="od-kv-row">
               <dt class="od-kv-key">주문번호</dt>
-              <dd class="od-kv-val">20260407-0001</dd>
+              <dd class="od-kv-val">${orderInfo.orderCode}</dd>
             </div>
             <div class="od-kv-row">
               <dt class="od-kv-key">결제날짜</dt>
-              <dd class="od-kv-val">2026.04.07 14:30</dd>
+              <dd class="od-kv-val">${orderInfo.orderDate}</dd>
             </div>
           </dl>
         </section>
 
-        <!-- 상품 리스트 (브랜드별) -->
         <section class="od-card" aria-label="주문 상품">
-          <section class="cart-brand-group od-brand-group" aria-label="온담 배송상품">
-            <h2 class="cart-brand-group__title">온담 <span class="od-brand-count">1개</span></h2>
-            <ul class="cart-brand-group__list">
-              <li>
-                <article class="cart-item od-item" aria-label="부드러운 라운드 니트 가디건">
-                  <div class="cart-item__left">
-                    <div class="cart-item__thumb-wrap">
-                      <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" class="cart-item__thumb" loading="lazy"/>
-                    </div>
-                  </div>
-
-                  <div class="cart-item__body">
-                    <p class="od-ship-status">배송중</p>
-                    <p class="cart-item__name">부드러운 라운드 니트 가디건</p>
-                    <p class="cart-item__option">노란색 / 90</p>
-                    <div class="cart-item__bottom">
-                      <div class="cart-item__price-block">
-                        <span class="cart-item__price-original">50,000원</span>
-                        <span class="cart-item__price-sale">40,000원</span>
+			  <c:set var="lastBrand" value="" />
+			
+			  <c:forEach var="product" items="${productList}">
+			    <%-- 1. 새로운 브랜드가 나타나면 브랜드 헤더를 출력 --%>
+			    <c:if test="${product.productBrand != lastBrand}">
+			      <c:if test="${not empty lastBrand}">
+			        </ul></section> </c:if>
+			      
+			      <section class="cart-brand-group od-brand-group">
+			        <h2 class="cart-brand-group__title">${product.productBrand}</h2>
+			        <ul class="cart-brand-group__list">
+			      
+			      <c:set var="lastBrand" value="${product.productBrand}" />
+			    </c:if>
+                <li>
+                  <article class="cart-item od-item" aria-label="${product.snapProductName}">
+                    <div class="cart-item__left">
+                      <div class="cart-item__thumb-wrap">
+                        <%-- DB에서 가져온 썸네일 이미지 적용 --%>
+                        <img src="${pageContext.request.contextPath}/uploads/products/${product.productImage}" alt="${product.snapProductName}" class="cart-item__thumb" loading="lazy"/>
                       </div>
                     </div>
-                  </div>
 
-                  <div class="od-actions" aria-label="상품 액션">
-                    <button type="button" class="od-action-btn">상품 문의하기</button>
-                  </div>
-                </article>
-              </li>
-            </ul>
-          </section>
-
-          <section class="cart-brand-group od-brand-group" aria-label="봄니트샵 배송상품">
-            <h2 class="cart-brand-group__title">봄니트샵 <span class="od-brand-count">1개</span></h2>
-            <ul class="cart-brand-group__list">
-              <li>
-                <article class="cart-item od-item" aria-label="편안한 봄 니트 조끼">
-                  <div class="cart-item__left">
-                    <div class="cart-item__thumb-wrap">
-                      <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" class="cart-item__thumb" loading="lazy"/>
-                    </div>
-                  </div>
-
-                  <div class="cart-item__body">
-                    <p class="od-ship-status">구매확정</p>
-                    <p class="cart-item__name">편안한 봄 니트 조끼</p>
-                    <p class="cart-item__option">베이지 / 95</p>
-                    <div class="cart-item__bottom">
-                      <div class="cart-item__price-block cart-item__price-block--plain">
-                        <span class="cart-item__price-sale">40,000원</span>
+                    <div class="cart-item__body">
+                      <p class="od-ship-status">
+                        <c:choose>
+                          <c:when test="${orderInfo.deliveryState == 0}">결제완료</c:when>
+                          <c:when test="${orderInfo.deliveryState == 1}">배송준비중</c:when>
+                          <c:when test="${orderInfo.deliveryState == 2}">배송중</c:when>
+                          <c:when test="${orderInfo.deliveryState == 3}">배송완료</c:when>
+                          <c:otherwise>주문접수</c:otherwise>
+                        </c:choose>
+                      </p>
+                      <p class="cart-item__name">${product.snapProductName}</p>
+                      <p class="cart-item__option">${product.snapOptionColor} / ${product.snapOptionSize}</p>
+                      <div class="cart-item__bottom">
+                        <div class="cart-item__price-block cart-item__price-block--plain">
+                          <span class="cart-item__price-sale">
+                            <fmt:formatNumber value="${product.snapProductPrice}" pattern="#,###"/>원
+                          </span>
+                          <span class="od-item-qty" style="font-size: 13px; color: #888; margin-left: 4px;">/ ${product.orderQuantity}개</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div class="od-actions" aria-label="상품 액션">
-                    <%-- 구매확정 상태가 아닐 경우 이 버튼 미노출(더미: 이 상품은 구매확정이라 노출)
-                    배송완료 상태면 버튼명 "구매 확정하기" --%>
-                    <button type="button" class="od-action-btn od-action-btn--primary">리뷰 작성하고 쿠폰받기</button>
-                    <button type="button" class="od-action-btn">상품 문의하기</button>
-                  </div>
-                </article>
-              </li>
+                    <div class="od-actions" aria-label="상품 액션">
+                      <%-- 변경 후: 배송완료(3) 상태이면서, 작성된 리뷰가 없을 때(reviewNo == 0)만 노출 --%>
+					<c:if test="${orderInfo.deliveryState == 3 and product.reviewNo == 0}">
+					  <button type="button" class="od-action-btn od-action-btn--primary review-write-btn" data-order-item-no="${product.orderItemNo}">
+					    리뷰 작성하고 쿠폰받기
+					  </button>
+					</c:if>
+                      <button type="button" class="od-action-btn">상품 문의하기</button>
+                    </div>
+                  </article>
+                </li>
+              </c:forEach>
+
             </ul>
           </section>
         </section>
 
-        <!-- 배송 정보 -->
         <section class="od-card" aria-label="배송 정보">
           <h2 class="od-card-title">배송 정보</h2>
           <dl class="od-kv">
             <div class="od-kv-row od-kv-row--loose">
               <dt class="od-kv-key">받는 분</dt>
-              <dd class="od-kv-val">김지현 | 010-1234-5678</dd>
+              <dd class="od-kv-val">${orderInfo.receiverName} | ${orderInfo.receiverTel}</dd>
             </div>
             <div class="od-kv-row od-kv-row--loose">
               <dt class="od-kv-key">주소</dt>
-              <dd class="od-kv-val od-kv-val--wrap">(47323) 부산광역시 부산진구 가야대로 123, 101호</dd>
+              <dd class="od-kv-val od-kv-val--wrap">${orderInfo.deliveryAddr}</dd>
             </div>
             <div class="od-kv-row od-kv-row--loose">
               <dt class="od-kv-key">요청사항</dt>
-              <dd class="od-kv-val od-kv-val--wrap">부재 시 경비실에 맡겨주세요</dd>
+              <dd class="od-kv-val od-kv-val--wrap">
+                <c:out value="${empty orderInfo.deliveryContent ? '없음' : orderInfo.deliveryContent}"/>
+              </dd>
             </div>
           </dl>
         </section>
 
-        <!-- 결제 정보 -->
         <section class="od-card" aria-label="결제 정보">
           <h2 class="od-card-title">결제 정보</h2>
           <dl class="od-pay">
             <div class="od-pay-row">
               <dt class="od-pay-key">결제 방법</dt>
-              <dd class="od-pay-val">함께지갑</dd>
+              <dd class="od-pay-val">
+                <c:choose>
+                  <c:when test="${orderInfo.paymentMethod == 0}">함께지갑</c:when>
+                  <c:when test="${orderInfo.paymentMethod == 1}">카드결제</c:when>
+                  <c:otherwise>기타결제</c:otherwise>
+                </c:choose>
+              </dd>
             </div>
             <div class="od-pay-row">
               <dt class="od-pay-key">총 상품 금액</dt>
-              <dd class="od-pay-val">80,000원</dd>
-            </div>
-            <div class="od-pay-row">
-              <dt class="od-pay-key">상품 할인</dt>
-              <dd class="od-pay-val od-pay-val--minus">-5,000원</dd>
+              <dd class="od-pay-val"><fmt:formatNumber value="${orderInfo.orderPrice}" pattern="#,###"/>원</dd>
             </div>
             <div class="od-pay-row">
               <dt class="od-pay-key">쿠폰 할인</dt>
-              <dd class="od-pay-val od-pay-val--minus">-3,000원</dd>
+              <dd class="od-pay-val od-pay-val--minus">
+                -<fmt:formatNumber value="${orderInfo.couponDiscount}" pattern="#,###"/>원
+              </dd>
             </div>
             <div class="od-pay-row">
-              <dt class="od-pay-key">배송비</dt>
-              <dd class="od-pay-val">0원</dd>
+              <dt class="od-pay-key">지갑 사용액</dt>
+              <dd class="od-pay-val od-pay-val--minus">
+                -<fmt:formatNumber value="${orderInfo.walletUsedAmount}" pattern="#,###"/>원
+              </dd>
             </div>
             <div class="od-pay-row od-pay-row--total">
-              <dt class="od-pay-key">결제금액</dt>
-              <dd class="od-pay-val od-pay-val--total">72,000원</dd>
+              <dt class="od-pay-key">최종 결제금액</dt>
+              <dd class="od-pay-val od-pay-val--total">
+                <fmt:formatNumber value="${orderInfo.paymentAmount}" pattern="#,###"/>원
+              </dd>
             </div>
           </dl>
         </section>
@@ -163,6 +167,6 @@
       </main>
     </div>
   </div>
+    <script src="${pageContext.request.contextPath}/js/order-detail.js"></script>
 </body>
 </html>
-

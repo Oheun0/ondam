@@ -59,21 +59,26 @@
 	    }
 		
 		var backBtn = document.getElementById("appBackHeaderBtn");
-			    if (backBtn) {
-			      backBtn.addEventListener("click", function (e) {
-			        e.preventDefault();
-			        e.stopImmediatePropagation();
+		    if (backBtn) {
+		      backBtn.addEventListener("click", function (e) {
+		        e.preventDefault();
+		        e.stopImmediatePropagation();
 
-			        var ctx = document.body.getAttribute("data-context-path") || "";
-			        var isWritePage = document.getElementById("reviewWritePageRoot");
+		        var isWritePage = document.getElementById("reviewWritePageRoot");
 
-			        if (isWritePage) {
-			          window.location.href = ctx + "/review?action=myList";
-			        } else {
-			          window.location.href = ctx + "/mypage";
-			        }
-			      }, true); 
-			    }
+		        if (isWritePage) {
+		          if (window.history.length > 1) {
+		            window.history.back(); 
+		          } else {
+		            var returnUrlEl = document.getElementById("returnUrl");
+		            window.location.replace(returnUrlEl ? returnUrlEl.value : (ctx + "/review?action=myList"));
+		          }
+		        } else {
+		          var ctx = document.body.getAttribute("data-context-path") || "";
+		          window.location.href = ctx + "/mypage";
+		        }
+		      }, true); 
+		    }
 		
     var root = document.getElementById("reviewWritePageRoot");
     if (!root) return;
@@ -343,18 +348,28 @@
 	      });
 	      var actionUrl = document.getElementById('realSubmitForm').action;
 
-	      fetch(actionUrl, {
-	        method: 'POST',
-	        body: formData
-	      })
-	      .then(function(response) {
-	        if (response.ok) {
-	          var ctx = document.body.getAttribute("data-context-path") || "";
-	          window.location.replace(ctx + "/review?action=myList&tab=written");
-	        } else {
-	          alert("후기 등록에 실패했습니다.");
-	        }
-	      })
+		  fetch(actionUrl, {
+		          method: 'POST',
+		          body: formData
+		        })
+		        .then(function(response) {
+		          if (response.ok) {
+		            var ctx = document.body.getAttribute("data-context-path") || "";
+		            var returnUrlEl = document.getElementById("returnUrl");
+		            
+		            if (returnUrlEl && returnUrlEl.value) {
+		              if (window.history.length > 1) {
+		                window.history.back();
+		              } else {
+		                window.location.replace(returnUrlEl.value);
+		              }
+		            } else {
+		              window.location.replace(ctx + "/review?action=myList&tab=written");
+		            }
+		          } else {
+		            alert("후기 등록에 실패했습니다.");
+		          }
+		        })
 	      .catch(function(error) {
 	        console.error("Error:", error);
 	        alert("네트워크 오류가 발생했습니다.");

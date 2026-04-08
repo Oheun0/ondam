@@ -44,6 +44,7 @@ body {
 
 .profile-card {
   padding: 22px 20px 18px;
+  margin-top: 10px;
 }
 
 .profile-row {
@@ -97,8 +98,9 @@ body {
 
 .profile-copy p {
   margin: 8px 0 0;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 700;
   color: var(--mypage-sub);
   word-break: keep-all;
 }
@@ -355,116 +357,36 @@ body {
   }
 }
 
-/* 1. 배경을 어둡게 하고 화면 전체 정중앙 배치 */
-#withdrawOverlay {
-    position: fixed !important; /* 어떤 상황에서도 화면에 고정 */
-    top: 0;
-    left: 0;
-    width: 100vw;    /* 브라우저 가로 꽉 차게 */
-    height: 100vh;   /* 브라우저 세로 꽉 차게 */
-    background-color: rgba(0, 0, 0, 0.7); /* 어두운 반투명 배경 */
-    
-    /* 여기서부터가 정중앙 정렬의 핵심! */
-    display: none;       /* 기본은 숨김 (JS에서 flex로 바뀜) */
-    align-items: center;    /* 세로 정중앙 */
-    justify-content: center; /* 가로 정중앙 */
-    
-    z-index: 99999; /* 바텀바, 헤더 다 이기고 맨 앞으로! */
+/* 탈퇴 모달 입력창 — 기존 withdrawOverlay 시절과 동일 톤 */
+#withdrawModal #withdrawPwd {
+  width: 100%;
+  margin: 20px 0 6px;
+  padding: 15px;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
-/* 2. 하얀색 모달 박스 (그림 속 둥근 네모) */
-#withdrawOverlay .purchase-modal {
-    position: relative; /* [수정 1] 내부 X 버튼 배치를 위해 */
-    background-color: #ffffff;
-    width: 85%;         /* 모바일 기준 적당한 너비 */
-    max-width: 360px;   /* 너무 커지지 않게 제한 */
-    padding: 30px 20px;
-    border-radius: 24px; /* 그림처럼 둥글둥글하게 */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    text-align: center; /* 내부 글자 중앙 정렬 */
-    
-    /* 팝업 등장 애니메이션 */
-    animation: popupShow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+#withdrawModal #withdrawErrorMsg {
+  text-align: center;
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 10px;
 }
 
-/* 팝업 등장 애니메이션 */
-@keyframes popupShow {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+#withdrawModal .withdraw-inner-ment {
+  margin-top: 10px;
 }
 
-/* 3. 모달 내부 요소 스타일 */
-
-/* [수정 1] X 표시를 우측 상단에 배치 */
-#withdrawOverlay .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
+/* 탈퇴 모달 버튼 색상 지정 */
+#withdrawModal #withdrawCancelBtn {
+  background: #4CAF50;
+  color: #fff;
 }
 
-#withdrawOverlay .close-btn .material-icons {
-    color: #999; /* X 아이콘 색상 */
-    font-size: 24px;
-}
-
-#withdrawOverlay .modal-header h3 {
-    margin-top: 0;
-    font-size: 20px;
-    color: #333;
-    /* h3 내부의 X 버튼 배치를 위해 display: flex 제거 */
-}
-
-/* 탈퇴 문구 텍스트 */
-#withdrawOverlay .modal-options p {
-    margin-bottom: 20px;
-    color: #666;
-    word-break: keep-all; /* [수정 2] 줄바꿈이 자연스럽게 되도록 */
-    font-size: 16px;
-    line-height: 1.5; /* 줄 간격 설정 */
-}
-
-#withdrawPwd {
-    width: 100%;
-    margin: 20px 0;
-    padding: 15px;
-    border: 2px solid #eee; /* 좀 더 두껍고 부드럽게 */
-    border-radius: 12px;
-    font-size: 16px;
-    box-sizing: border-box; /* 패딩 때문에 박스 크기가 바뀌지 않게 */
-}
-
-/* [수정 3] "안 할래요"와 "탈퇴하기" 버튼 스타일 */
-#withdrawOverlay .modal-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 25px;
-}
-
-/* 공통 버튼 스타일 */
-#withdrawOverlay .modal-actions .buy-now-btn {
-    flex: 1; /* 가로 너비 반반 */
-    min-height: 54px;
-    border-radius: 12px;
-    border: none;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    text-align: center;
-    line-height: 1.3;
-}
-
-/* 안 할래요 버튼 (초록색 강조) */
-#withdrawOverlay .modal-actions .btn-cancel {
-    background-color: var(--mypage-green); /* 마이페이지 주색 */
-    color: #fff;
-}
-
-/* 탈퇴하기 버튼 (연한 회색으로 숨기기) */
-#withdrawOverlay .modal-actions .btn-withdraw {
-    background-color: #eeeeee;
-    color: #999999;
+#withdrawModal #withdrawSubmitBtn {
+  background: #D84C33;
+  color: #fff;
 }

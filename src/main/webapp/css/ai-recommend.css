@@ -1,0 +1,296 @@
+@charset "UTF-8";
+
+/* product-detail.css 가 html/body 배경·글자색을 덮어쓰므로 AI 추천만 common 톤 유지 */
+html.ai-rec-page,
+body.ai-rec-page {
+  background: var(--bg-light);
+  color: var(--text-main);
+}
+
+/* ----- AI 추천 — 오늘의 추천 상품 리스트만 ----- */
+.ai-rec-page {
+  --ai-rec-green: #4caf50;
+}
+
+.ai-rec-main.page-wrap {
+  padding-top: 12px;
+}
+
+/* 상단 안내 (중앙 정렬) */
+.ai-rec-page-head {
+  text-align: center;
+  margin: 0 0 22px;
+  padding: 0 4px;
+}
+
+.ai-rec-page-head__title {
+  margin: 0 0 12px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.ai-rec-page-head__line {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-sub);
+  word-break: keep-all;
+}
+
+.ai-rec-page-head__line + .ai-rec-page-head__line {
+  margin-top: 8px;
+}
+
+.ai-rec-page-head__line--sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* 세로 리스트 */
+.ai-rec-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* 카드: product-card 확장 — 클릭 시 상세 이동(스크립트), 찜·버튼·브랜드 링크 제외 */
+.ai-rec-page .ai-rec-card.product-card {
+  border-radius: 20px;
+  box-shadow: var(--main-card-shadow);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.ai-rec-page .ai-rec-card.product-card button,
+.ai-rec-page .ai-rec-card.product-card a.ai-rec-brand-link {
+  cursor: pointer;
+}
+
+/* 클릭 시 스케일(움직임)만 제거 — home.css .product-card:active 등 */
+.ai-rec-page .ai-rec-card.product-card:active {
+  transform: none;
+}
+
+.ai-rec-card__phrase {
+  margin: 0;
+  padding: 16px 16px 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text-main);
+  text-align: left;
+  word-break: keep-all;
+}
+
+/* 썸네일 1:1 정사각형 (product.css .product-thumb-wrap 기본 0.8/1 덮어씀) */
+.ai-rec-page .ai-rec-thumb-wrap.product-thumb-wrap {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.ai-rec-thumb-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+.ai-rec-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  vertical-align: middle;
+  display: block;
+}
+
+/* 썸네일 우측 상단 찜 (product-list와 동일 톤) */
+.ai-rec-page .ai-rec-thumb-wrap .related-wish-btn.product-grid-wish-btn:active {
+  transform: none;
+}
+
+.ai-rec-page .ai-rec-thumb-wrap .related-wish-btn.product-grid-wish-btn {
+  display: flex;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  min-width: 40px;
+  min-height: 40px;
+  margin: 0;
+  padding: 8px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ai-rec-page .ai-rec-thumb-wrap .related-wish-btn.product-grid-wish-btn .material-icons-outlined {
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.25));
+}
+
+.ai-rec-page .ai-rec-thumb-wrap .related-wish-btn.product-grid-wish-btn .material-icons {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.ai-rec-page .ai-rec-thumb-wrap .related-wish-btn.product-grid-wish-btn.is-active .material-icons {
+  color: #e33a67;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
+}
+
+.ai-rec-page .ai-rec-thumb-wrap .related-wish-btn.product-grid-wish-btn:focus {
+  outline: none;
+}
+
+.ai-rec-page .ai-rec-thumb-wrap .related-wish-btn.product-grid-wish-btn:focus-visible {
+  outline: 2px solid #4caf50;
+  outline-offset: 2px;
+}
+
+/* 본문: 브랜드+찜 수 / 상품명 / 가격 (상세와 유사) */
+.ai-rec-page .ai-rec-product-body.product-body {
+  min-height: 0;
+  padding-bottom: 12px;
+}
+
+.ai-rec-page .ai-rec-product-body .brand-meta-row {
+  margin-bottom: 10px;
+}
+
+/* product.css — 상품명이 한 줄이어도 2줄 높이(min-height)를 잡아 가격과 간격이 벌어짐 → AI 카드만 타이트하게 */
+.ai-rec-page .ai-rec-product-body .product-name {
+  margin-bottom: 4px;
+  min-height: 0;
+  font-size: 1.3125rem;
+  line-height: 1.4;
+  font-weight: 800;
+}
+
+@media (max-width: 420px) {
+  .ai-rec-page .ai-rec-product-body .product-name {
+    font-size: 1.25rem;
+  }
+}
+
+.ai-rec-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #666;
+  text-decoration: none;
+  min-width: 0;
+  flex: 1;
+}
+
+.ai-rec-brand-link .material-icons {
+  font-size: 18px;
+  color: #666;
+}
+
+/* product.css 는 Material Symbols 기준 — 여기선 material-icons 하트 */
+.ai-rec-page .brand-wish-stat__icon .material-icons {
+  font-size: 18px;
+  line-height: 1;
+  color: #e33a67;
+}
+
+.ai-rec-origin-price {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.ai-rec-price-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+}
+
+.ai-rec-sale-price {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #111;
+}
+
+.ai-rec-discount-rate {
+  font-size: 16px;
+  font-weight: 800;
+  color: #d73333;
+}
+
+/* 할인 없음: 상품명 바로 아래 단일 가격 */
+.ai-rec-page .ai-rec-product-body .product-price-row.ai-rec-price-row--single {
+  margin-top: 2px;
+}
+
+/* 장바구니 / 구매하기 — product-detail .detail-bottom-btn 과 동일 톤 */
+.ai-rec-card__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 14px 16px;
+  box-sizing: border-box;
+}
+
+.ai-rec-card__actions .detail-bottom-btn {
+  min-height: 52px;
+  padding: 0 12px;
+  border-radius: 16px;
+  font-size: 17px;
+  font-weight: 800;
+  font-family: inherit;
+  letter-spacing: -0.02em;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ai-rec-card__actions .detail-bottom-btn.secondary {
+  background: #eaeaea;
+  color: #111;
+}
+
+.ai-rec-card__actions .detail-bottom-btn.primary {
+  background: #4caf50;
+  color: #fff;
+}
+
+.ai-rec-card__actions .detail-bottom-btn:active {
+  transform: none;
+  opacity: 0.92;
+}
+
+.ai-rec-card__actions .detail-bottom-btn:focus {
+  outline: none;
+}
+
+.ai-rec-card__actions .detail-bottom-btn:focus-visible {
+  outline: 2px solid #4caf50;
+  outline-offset: 2px;
+}

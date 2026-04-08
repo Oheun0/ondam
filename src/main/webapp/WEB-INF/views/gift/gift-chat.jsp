@@ -69,7 +69,7 @@
 	            <!-- 받은 선물 -->
 				<div class="gift-bubble gift-bubble--left">
 				    <div class="gift-card">
-				        <img src="${pageContext.request.contextPath}/images/gift/gift_card_01.png"
+				        <img src="${pageContext.request.contextPath}/images/gift/gift_card_01.jpg"
 				             class="gift-card-img"
 				             alt="선물 카드">
 				

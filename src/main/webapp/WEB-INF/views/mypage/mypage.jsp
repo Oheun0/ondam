@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/inquiry-write.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
 </head>
 <body data-context-path="${pageContext.request.contextPath}">
@@ -40,7 +41,7 @@
                     <h1>${loginUser.userName}님, 안녕하세요</h1>
                     <p>
                         내 정보와 주문, 쿠폰, 선물함을<br>
-                        한곳에서 쉽게 볼 수 있어요.
+                        한곳에서 쉽게 확인할 수 있어요
                     </p>
                 </div>
             </div>
