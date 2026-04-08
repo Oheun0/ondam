@@ -9,6 +9,9 @@ import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
+import com.ondam.notification.controller.NotificationSettingController;
+import com.ondam.orders.controller.OrderDetailController;
+import com.ondam.orders.controller.OrderListController;
 import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
@@ -103,6 +106,9 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/cart", new CartController());
         handlerMapping.put("/wish", new WishController());
         handlerMapping.put("/aiSearch", new aiSearchController());
+        handlerMapping.put("/notification/notification-setting", new NotificationSettingController());
+        handlerMapping.put("/order/order-list", new OrderListController());
+        handlerMapping.put("/order/order-detail", new OrderDetailController());
         
     }
 
@@ -131,6 +137,8 @@ public class DispatcherServlet extends HttpServlet {
         try {
             // 논리 컨트롤러 실행 (비즈니스 로직 처리)
             String viewName = controller.execute(request, response);
+            
+            if (response.isCommitted()) return;
             
             // 뷰 리졸버 역할 (경로 조립 및 포워딩)
             if (viewName != null) {

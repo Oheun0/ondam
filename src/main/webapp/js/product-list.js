@@ -489,30 +489,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* 상품 그리드 찜 토글 (카테고리 목록·검색 결과 — 찜 전용 페이지는 favorite-list.js) */
   if (document.body.classList.contains("product-list-page") && !document.body.classList.contains("favorite-list-page")) {
-    var wishGrid = document.querySelector(".product-grid");
-    if (wishGrid) {
-      wishGrid.addEventListener("click", function (e) {
-        var wishBtn = e.target.closest(".product-grid-wish-btn");
-        if (!wishBtn || !wishGrid.contains(wishBtn)) return;
+    document.querySelectorAll(".product-grid-wish-btn").forEach(function (wishBtn) {
+      wishBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        e.stopPropagation();
-        wishBtn.classList.toggle("is-active");
-        var on = wishBtn.classList.contains("is-active");
+        e.stopPropagation(); // article onclick 막기
+		
+		// 로그인 체크 추가
+		var ctx = document.body.dataset.contextPath;
+		      if (!document.body.dataset.loginUser) {
+		        window.location.href = ctx + "/login";
+		        return;
+		      }
+
+        var productNo = wishBtn.dataset.productNo;
+
+        var on = !wishBtn.classList.contains("is-active");
+        wishBtn.classList.toggle("is-active", on);
         wishBtn.setAttribute("aria-pressed", on ? "true" : "false");
         wishBtn.setAttribute("aria-label", on ? "찜 해제" : "찜하기");
-        var icon = wishBtn.querySelector("span.material-icons-outlined, span.material-icons");
-        if (!icon) return;
-        if (on) {
-          icon.classList.remove("material-icons-outlined");
-          icon.classList.add("material-icons");
-          icon.textContent = "favorite";
-        } else {
-          icon.classList.remove("material-icons");
-          icon.classList.add("material-icons-outlined");
-          icon.textContent = "favorite_border";
-        }
+        wishBtn.innerHTML = on
+          ? '<span class="material-icons" aria-hidden="true">favorite</span>'
+          : '<span class="material-icons-outlined" aria-hidden="true">favorite_border</span>';
+
+        fetch(ctx + "/wish?action=toggle&productNo=" + productNo, { method: "POST" })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.wished !== on) {
+              wishBtn.classList.toggle("is-active", data.wished);
+              wishBtn.setAttribute("aria-pressed", data.wished ? "true" : "false");
+              wishBtn.setAttribute("aria-label", data.wished ? "찜 해제" : "찜하기");
+              wishBtn.innerHTML = data.wished
+                ? '<span class="material-icons" aria-hidden="true">favorite</span>'
+                : '<span class="material-icons-outlined" aria-hidden="true">favorite_border</span>';
+            }
+          })
+          .catch(function () {
+            wishBtn.classList.toggle("is-active", !on);
+            wishBtn.setAttribute("aria-pressed", !on ? "true" : "false");
+            wishBtn.setAttribute("aria-label", !on ? "찜 해제" : "찜하기");
+            wishBtn.innerHTML = !on
+              ? '<span class="material-icons" aria-hidden="true">favorite</span>'
+              : '<span class="material-icons-outlined" aria-hidden="true">favorite_border</span>';
+          });
       });
-    }
+    });
   }
 
   /* 하단 네비: 스크롤 내림(아래 방향) → 숨김, 스크롤 올림(위 방향) → 표시 */

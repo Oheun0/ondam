@@ -28,5 +28,13 @@ public class OrdersService {
 	public boolean removeOrders(int orderNo) {
 		return dao.deleteOrders(orderNo);
 	}
+	
+	public Vector<OrdersDTO> getOrdersByUserNo(int userNo){
+		return dao.getOrdersByUserNo(userNo);
+	}
+	
+	public OrdersDTO getOrderByOrderNo(int orderNo) {
+		return dao.getOrderByOrderNo(orderNo);
+	}
 }
 

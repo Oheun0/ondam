@@ -75,9 +75,9 @@
                     </div>
                 
                     <div class="wallet-button-row">
-                        <a href="${pageContext.request.contextPath}/wallet/charge" class="wallet-button fill">충전하기</a>
-                        <a href="${pageContext.request.contextPath}/wallet/history" class="wallet-button">사용 내역</a>
-                    </div>
+					    <a href="${pageContext.request.contextPath}/wallet?action=charge" class="wallet-button fill">충전하기</a>
+					    <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-button">사용 내역</a>
+					</div>
                 </c:when>
                 
                 <%-- B. 가족에 가입되어 있지 않은 경우 (가입 유도 화면 표시) --%>
@@ -103,41 +103,36 @@
             </c:choose>
 		</section>
 
-        <section class="mypage-section" aria-label="메뉴">
+<section class="mypage-section" aria-label="메뉴">
             <div class="section-head">
                 <h2>메뉴</h2>
             </div>
 
             <div class="menu-card">
-                <a href="${pageContext.request.contextPath}/order/list" class="menu-item">
+                <a href="${pageContext.request.contextPath}/order/order-list" class="menu-item">
                     <div class="menu-left">
-                        <span class="material-icons menu-row-icon" aria-hidden="true">local_shipping</span>
+                        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">local_shipping</span>
                         <strong class="menu-label">주문 / 배송</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/product?action=favorite" class="menu-item">
+                <a href="${pageContext.request.contextPath}/wish" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">favorite_border</span>
                         <strong class="menu-label">찜한 상품</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
-                <a href="${pageContext.request.contextPath}/review/write" class="menu-item">
+
+                <a href="${pageContext.request.contextPath}/review?action=myList" class="menu-item">
                     <div class="menu-left">
-                        <span class="material-icons menu-row-icon" aria-hidden="true">rate_review</span>
-                        <strong class="menu-label">리뷰 작성</strong>
+                        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">rate_review</span>
+                        <strong class="menu-label">나의 후기</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
-                <a href="${pageContext.request.contextPath}/review?action=myList" class="menu-item">
-				    <div class="menu-left">
-				        <span class="material-icons-outlined menu-row-icon" aria-hidden="true">rate_review</span>
-				        <strong class="menu-label">나의 후기</strong>
-				    </div>
-				    <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
-				</a>
+
                 <a href="${pageContext.request.contextPath}/gift/box" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">redeem</span>
@@ -157,7 +152,7 @@
                 <a href="${pageContext.request.contextPath}/support/inquiry" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">support_agent</span>
-                        <strong class="menu-label">문의하기</strong>
+                        <strong class="menu-label">문의내역</strong>
                     </div>
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
@@ -170,7 +165,7 @@
             </div>
 
             <div class="menu-card">
-                <a href="${pageContext.request.contextPath}/notification/settings" class="menu-item">
+                <a href="${pageContext.request.contextPath}/notification/notification-setting" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">notifications_none</span>
                         <strong class="menu-label">알림 설정</strong>

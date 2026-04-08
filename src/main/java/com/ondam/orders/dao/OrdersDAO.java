@@ -16,7 +16,7 @@ public class OrdersDAO {
 		pool = DBConnectionMgr.getInstance();
 	}
 
-	// Select
+	// 전체 Select
 	public Vector<OrdersDTO> getOrders() {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -156,5 +156,79 @@ public class OrdersDAO {
 		}
 		return flag;
 	}
+	
+	// 특정 유저의 주문 내역 Select
+		public Vector<OrdersDTO> getOrdersByUserNo(int userNo) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			Vector<OrdersDTO> vlist = new Vector<>();
+			try {
+				con = pool.getConnection();
+				String sql = "SELECT * FROM Orders WHERE userNo = ? ORDER BY orderDate DESC";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, userNo);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					OrdersDTO dto = new OrdersDTO();
+					dto.setOrderNo(rs.getInt("orderNo"));
+					dto.setUserNo(rs.getInt("userNo"));
+					dto.setOrderCode(rs.getString("orderCode"));
+					dto.setReceiverName(rs.getString("receiverName"));
+					dto.setOrderPrice(rs.getInt("orderPrice"));
+					dto.setOrderState(rs.getInt("orderState"));
+					dto.setOrderDate(rs.getString("orderDate"));
+					dto.setDeliveryState(rs.getInt("deliveryState"));
+					vlist.addElement(dto);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt, rs);
+			}
+			return vlist;
+		}
+		
+		// 특정 주문 번호 상세 정보 Select
+		public OrdersDTO getOrderByOrderNo(int orderNo) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			OrdersDTO dto = null;
+			try {
+				con = pool.getConnection();
+				String sql = "SELECT * FROM Orders WHERE orderNo = ?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, orderNo);
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					dto = new OrdersDTO();
+					dto.setOrderNo(rs.getInt("orderNo"));
+					dto.setUserNo(rs.getInt("userNo"));
+					dto.setOrderCode(rs.getString("orderCode"));
+					dto.setReceiverName(rs.getString("receiverName"));
+					dto.setReceiverTel(rs.getString("receiverTel"));
+					dto.setDeliveryAddr(rs.getString("deliveryAddr"));
+					dto.setDeliveryContent(rs.getString("deliveryContent"));
+					dto.setOrderPrice(rs.getInt("orderPrice"));
+					dto.setCouponDiscount(rs.getInt("couponDiscount"));
+					dto.setWalletUsedAmount(rs.getInt("walletUsedAmount"));
+					dto.setPaymentAmount(rs.getInt("paymentAmount"));
+					dto.setPaymentMethod(rs.getInt("paymentMethod"));
+					dto.setUserCouponNo(rs.getInt("userCouponNo"));
+					dto.setOrderState(rs.getInt("orderState"));
+					dto.setOrderDate(rs.getString("orderDate"));
+					dto.setOrderUpdateDate(rs.getString("orderUpdateDate"));
+					dto.setDeliveryState(rs.getInt("deliveryState"));
+					dto.setOrderType(rs.getInt("orderType"));
+					dto.setGiftReceiverNo(rs.getInt("giftReceiverNo"));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt, rs);
+			}
+			return dto;
+		}
 }
 

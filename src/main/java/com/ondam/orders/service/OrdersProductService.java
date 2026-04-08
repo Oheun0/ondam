@@ -28,5 +28,9 @@ public class OrdersProductService {
 	public boolean removeOrdersProduct(int orderItemNo) {
 		return dao.deleteOrdersProduct(orderItemNo);
 	}
+	
+	public Vector<OrdersProductDTO> getProductsByOrderNo(int orderNo) {
+		return dao.getProductsByOrderNo(orderNo);
+	}
 }
 
