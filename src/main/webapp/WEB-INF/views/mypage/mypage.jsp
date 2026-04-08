@@ -50,41 +50,9 @@
                 <a href="${pageContext.request.contextPath}/profile" class="pill-button">내 정보 수정</a>
             </div>
         </section>
-		<!-- 
+
         <section class="mypage-card wallet-card" aria-label="함께 지갑">
-		    <div class="wallet-top">
-		        <div class="wallet-title-wrap">
-		            <span class="material-icons-outlined wallet-icon" aria-hidden="true">wallet</span>
-		            <strong>함께지갑</strong>
-		        </div>
-		
-		        <a href="${pageContext.request.contextPath}/wallet" class="wallet-link">
-		            자세히보기
-		            <span class="material-icons">chevron_right</span>
-		        </a>
-		    </div>
-		
-		    <div class="wallet-balance-row">
-		        <span class="wallet-balance-label">현재 잔액</span>
-		        <span class="wallet-balance">
-					<c:choose>
-			            <c:when test="${not empty wallet}">
-			                <fmt:formatNumber value="${wallet.balance}" pattern="#,###"/>원
-			            </c:when>
-			            <c:otherwise>0원</c:otherwise>
-					</c:choose>
-		        </span>
-		    </div>
-		
-		    <div class="wallet-button-row">
-		        <a href="${pageContext.request.contextPath}/wallet?action=charge" class="wallet-button fill">충전하기</a>
-		        <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-button">사용 내역</a>
-		    </div>
-		</section>
- 		-->
- 		<!-- 2. 함께 지갑 영역 (수정됨: 가족 유무에 따른 분기 처리) -->
-        <section class="mypage-card wallet-card" aria-label="함께 지갑">
-            <c:choose>
+		    <c:choose>
                 <%-- A. 가족에 가입되어 있는 경우 (지갑 정보 표시) --%>
                 <c:when test="${hasFamily}">
                     <div class="wallet-top">
@@ -117,7 +85,7 @@
                     <div class="wallet-top" style="justify-content: center; padding-bottom: 0;">
                         <div class="wallet-title-wrap" style="flex-direction: column; align-items: center; gap: 8px;">
                             <span class="material-icons wallet-icon" style="font-size: 36px; color: #ccc;">group_add</span>
-                            <strong style="color: #333; font-size: 16px;">아직 소속된 내 사람이 없어요</strong>
+                            <strong style="color: #333; font-size: 16px;">아직 연결된 내 사람이 없어요</strong>
                         </div>
                     </div>
                 
@@ -133,9 +101,9 @@
                     </div>
                 </c:otherwise>
             </c:choose>
-        </section>
- 		
-        <section class="mypage-section" aria-label="메뉴">
+		</section>
+
+<section class="mypage-section" aria-label="메뉴">
             <div class="section-head">
                 <h2>메뉴</h2>
             </div>
@@ -157,7 +125,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/review/write" class="menu-item">
+                <a href="${pageContext.request.contextPath}/review?action=myList" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons-outlined menu-row-icon" aria-hidden="true">rate_review</span>
                         <strong class="menu-label">나의 후기</strong>
@@ -197,7 +165,7 @@
             </div>
 
             <div class="menu-card">
-                <a href="${pageContext.request.contextPath}/notification/settings" class="menu-item">
+                <a href="${pageContext.request.contextPath}/notification/notification-setting" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">notifications_none</span>
                         <strong class="menu-label">알림 설정</strong>
@@ -205,7 +173,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/mypage/withdraw" class="menu-item danger">
+                <a href="javascript:void(0);" onclick="openWithdraw()" class="menu-item danger">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">person_remove</span>
                         <strong class="menu-label">탈퇴하기</strong>
@@ -217,7 +185,8 @@
     </main>
 
     <jsp:include page="../layout/bottomNav.jsp" />
-</div>
+    
+</div><jsp:include page="withdraw.jsp" />
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>

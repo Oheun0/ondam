@@ -111,7 +111,7 @@
                             <h3 class="coupon-card__title">10% 할인</h3>
                             <span class="coupon-card__urgent-inline" aria-label="만료 임박">
                               <span class="material-icons-outlined coupon-card__urgent-icon" aria-hidden="true">alarm</span>
-                              <span class="coupon-card__urgent-text">오늘까지 사용 가능!</span>
+                              <span class="coupon-card__urgent-text">오늘 마감!</span>
                             </span>
                           </div>
                           <p class="coupon-card__desc">모든 상품 사용 가능</p>

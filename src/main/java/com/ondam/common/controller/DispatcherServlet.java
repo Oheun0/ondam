@@ -3,11 +3,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ondam.ai.controller.aiSearchController;
 import com.ondam.cart.controller.CartController;
 import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
+import com.ondam.notification.controller.NotificationSettingController;
 import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
@@ -51,8 +53,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/") // 모든 요청 받기
 @MultipartConfig(
-		maxFileSize = 1024 * 1024 * 5,    		 // 최대 파일 크기 5MB
-	    maxRequestSize = 1024 * 1024 * 10
+		fileSizeThreshold = 1024 * 1024 * 1,  // 1MB (이 이상이면 임시 디렉토리에 저장)
+	    maxFileSize = 1024 * 1024 * 20,       //파일 한 장당 최대 20MB
+	    maxRequestSize = 1024 * 1024 * 100    //전체 요청 최대 100MB
 		) //사진 받아오기
 public class DispatcherServlet extends HttpServlet {
     
@@ -100,6 +103,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/reviewImage", new ReviewImageController());
         handlerMapping.put("/cart", new CartController());
         handlerMapping.put("/wish", new WishController());
+        handlerMapping.put("/aiSearch", new aiSearchController());
+        handlerMapping.put("/notification/notification-setting", new NotificationSettingController());
         
     }
 

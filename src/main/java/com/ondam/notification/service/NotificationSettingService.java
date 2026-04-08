@@ -28,5 +28,13 @@ public class NotificationSettingService {
 	public boolean removeNotificationSetting(int notificationSettingNo) {
 		return dao.deleteNotificationSetting(notificationSettingNo);
 	}
+	
+	public Vector<NotificationSettingDTO> getSettingsByUserNo(int userNo) {
+		return dao.getSettingsByUserNo(userNo);
+	}
+
+	public boolean toggleSetting(int userNo, int notificationType, int isEnabled) {
+		return dao.toggleSetting(userNo, notificationType, isEnabled);
+	}
 }
 

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -19,20 +20,33 @@
       <div class="review-write-sticky-head">
         <div class="review-write-header-wrap">
           <jsp:include page="/WEB-INF/views/layout/back-header.jsp"/>
-          <h1 class="review-write-header-title">후기 작성하기</h1>
+          <h1 class="review-write-header-title">
+              <c:choose>
+                  <c:when test="${not empty reviewDTO}">후기 수정하기</c:when>
+                  <c:otherwise>후기 작성하기</c:otherwise>
+              </c:choose>
+          </h1>
         </div>
       </div>
 
       <main class="review-write-main">
         <!-- 1. 상품 요약 -->
         <section class="review-write-card review-write-product-card" aria-label="주문 상품">
+          <c:set var="targetInfo" value="${not empty reviewDTO ? reviewDTO : itemInfo}" />
+          
           <div class="review-write-product-card__inner">
             <div class="review-write-product-thumb-wrap">
-              <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" class="review-write-product-thumb" width="78" height="78" loading="lazy"/>
+              <c:set var="imgSrc" value="${empty targetInfo.productImg ? 'type-top-knit.jpg' : targetInfo.productImg}" />
+              <img src="${pageContext.request.contextPath}/images/category/${imgSrc}" 
+                   alt="" 
+                   class="review-write-product-thumb" 
+                   width="78" height="78" 
+                   loading="lazy" 
+                   onerror="this.src='${pageContext.request.contextPath}/images/category/type-top-knit.jpg'"/>
             </div>
             <div class="review-write-product-meta">
-              <p class="review-write-product-name">포근한 데일리 니트 가디건</p>
-              <p class="review-write-product-option">노란색 / 90</p>
+              <p class="review-write-product-name">${targetInfo.snapProductName}</p>
+              <p class="review-write-product-option">${targetInfo.snapOptionColor} / ${targetInfo.snapOptionSize}</p>
             </div>
           </div>
         </section>
@@ -59,6 +73,9 @@
                 <span class="material-icons detail-review-star detail-review-star--empty" aria-hidden="true">star</span>
               </button>
             </div>
+            <p id="starErrorMsg" style="display: none; color: #ff4d4f; font-size: 13px; margin-top: 8px;">
+              별점을<br>선택해주세요.
+              </p>
             <span class="review-write-rating-num" id="reviewWriteRatingNum" aria-live="polite" hidden aria-hidden="true"></span>
           </div>
         </section>
@@ -95,7 +112,7 @@
                       maxlength="1000"
                       required
                       autocomplete="off"
-                      placeholder="예) 입었을 때 편하고 따뜻해서 좋아요"></textarea>
+                      placeholder="예) 입었을 때 편하고 따뜻해서 좋아요"><c:if test="${not empty reviewDTO}">${reviewDTO.reviewContent}</c:if></textarea>
             <p class="review-write-char-count" id="reviewWriteCharCount" aria-live="polite">
               <span class="review-write-char-count__num" id="reviewWriteCharCurrent">0</span><span class="review-write-char-count__suffix"> / 1,000</span>
             </p>
@@ -104,20 +121,32 @@
 
         <!-- 5. 사진 (추가 가능한 사진 최대 개수 3~5개??)-->
         <section class="review-write-card review-write-upload-card" aria-label="사진 첨부">
-          <h2 class="review-write-upload-title">
-            <span class="material-icons-outlined review-write-upload-title__icon" aria-hidden="true">photo_camera</span>
-            사진을 추가할 수 있어요 (선택)
-          </h2>
-          <input type="file"
-                 id="reviewWriteFileInput"
-                 class="review-write-file-input"
-                 accept="image/*"
-                 multiple
-                 aria-hidden="true"
-                 tabindex="-1"/>
-          <button type="button" class="review-write-upload-btn" id="reviewWriteUploadBtn">사진 첨부하기</button>
-          <div class="review-write-preview-list" id="reviewWritePreviewList" aria-live="polite"></div>
-        </section>
+  <h2 class="review-write-upload-title">
+    <span class="material-icons-outlined review-write-upload-title__icon" aria-hidden="true">photo_camera</span>
+    사진을 추가할 수 있어요 (선택)
+  </h2>
+  <input type="file"
+         id="reviewWriteFileInput"
+         class="review-write-file-input"
+         accept="image/*"
+         multiple
+         aria-hidden="true"
+         tabindex="-1"/>
+  <button type="button" class="review-write-upload-btn" id="reviewWriteUploadBtn">사진 첨부하기</button>
+  
+  <div class="review-write-preview-list" id="reviewWritePreviewList" aria-live="polite">
+    <c:if test="${not empty imageList}">
+      <c:forEach var="img" items="${imageList}">
+        <div class="review-write-preview-item existing-image" data-img-no="${img.reviewImgNo}">
+          <img src="${pageContext.request.contextPath}/upload/review/${img.reviewImg}" alt="기존 후기 사진">
+          <button type="button" class="review-write-preview-remove" aria-label="사진 삭제">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+      </c:forEach>
+    </c:if>
+  </div>
+</section>
       </main>
     </div>
   </div>
@@ -150,7 +179,30 @@
   </div>
   
   <!-- 추가해야 할 모달 : 별점 미기재, (가능하다면 모바일에서 사진 첨부하기 선택 시 -> 사진 촬영하기 / 보관함에서 선택)  -->
+	<c:set var="isUpdate" value="${not empty reviewDTO}" />
 
+  <form id="realSubmitForm" 
+      action="${pageContext.request.contextPath}/review?action=${isUpdate ? 'update' : 'write'}" 
+      method="post" 
+      enctype="multipart/form-data" 
+      style="display:none;">
+      
+    <c:choose>
+        <c:when test="${isUpdate}">
+            <input type="hidden" name="reviewNo" value="${reviewDTO.reviewNo}">
+            <input type="hidden" id="initRating" value="${reviewDTO.reviewRating}">
+        </c:when>
+        <c:otherwise>
+            <input type="hidden" name="orderItemNo" value="${orderItemNo}">
+        </c:otherwise>
+    </c:choose>
+
+    <input type="hidden" name="reviewRating" id="hiddenRating">
+    <input type="hidden" name="reviewContent" id="hiddenContent">
+    <input type="hidden" name="isBodyPublic" value="1">
+    <input type="hidden" name="deleteImgNos" id="deleteImgNos" value="">
+    
+    </form>
   <script src="${pageContext.request.contextPath}/js/review-write.js"></script>
 </body>
 </html>
