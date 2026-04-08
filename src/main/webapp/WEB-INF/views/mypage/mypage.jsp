@@ -76,7 +76,7 @@
                 
                     <div class="wallet-button-row">
                         <a href="${pageContext.request.contextPath}/wallet?action=charge" class="wallet-button fill">충전하기</a>
-                        <a href="${pageContext.request.contextPath}/wallet?action=history"" class="wallet-button">사용 내역</a>
+                        <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-button">사용 내역</a>
                     </div>
                 </c:when>
                 
@@ -109,7 +109,7 @@
             </div>
 
             <div class="menu-card">
-                <a href="${pageContext.request.contextPath}/order/list" class="menu-item">
+                <a href="${pageContext.request.contextPath}/order/order-list" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons-outlined menu-row-icon" aria-hidden="true">local_shipping</span>
                         <strong class="menu-label">주문 / 배송</strong>

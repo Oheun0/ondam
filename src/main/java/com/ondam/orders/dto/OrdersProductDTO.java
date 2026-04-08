@@ -11,6 +11,7 @@ public class OrdersProductDTO {
     private String snapOptionSize;
     private String snapOptionColor;
     private int orderQuantity;
+    private String productImage;
 
     public OrdersProductDTO() {}
 
@@ -98,5 +99,13 @@ public class OrdersProductDTO {
 
     public void setOrderQuantity(int orderQuantity) {
         this.orderQuantity = orderQuantity;
+    }
+    
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+    
+    public String getProductImage() {
+        return productImage;
     }
 }

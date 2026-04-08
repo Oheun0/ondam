@@ -33,84 +33,70 @@
       <main class="order-list-main" aria-label="주문 및 배송 목록">
         <!-- 상단 상태 요약 -->
         <section class="ol-summary-card" aria-label="주문 상태 요약">
-          <div class="ol-summary-item">
-            <p class="ol-summary-label">배송중</p>
-            <p class="ol-summary-value">1</p>
-          </div>
-          <div class="ol-summary-item">
-            <p class="ol-summary-label">배송완료</p>
-            <p class="ol-summary-value">2</p>
-          </div>
-          <div class="ol-summary-item">
-            <p class="ol-summary-label">취소/반품</p>
-            <p class="ol-summary-value">0</p>
-          </div>
-        </section>
+		  <div class="ol-summary-item">
+		    <p class="ol-summary-label">배송중</p>
+		    <p class="ol-summary-value">${shippingCount}</p> </div>
+		  <div class="ol-summary-item">
+		    <p class="ol-summary-label">배송완료</p>
+		    <p class="ol-summary-value">${deliveredCount}</p> </div>
+		  <div class="ol-summary-item">
+		    <p class="ol-summary-label">취소/반품</p>
+		    <p class="ol-summary-value">${cancelCount}</p> </div>
+		</section>
 
         <c:choose>
-          <c:when test="${orderDummyEmpty}">
-            <!-- 빈 상태 -->
+          <%-- 1. 주문 내역이 하나도 없을 때 --%>
+          <c:when test="${empty orderList}">
             <section class="ol-empty section-box" aria-label="주문 없음">
               <p class="ol-empty-title">아직 주문한 상품이 없어요</p>
               <p class="ol-empty-sub">마음에 드는 상품을 주문해 보세요</p>
               <a href="${pageContext.request.contextPath}/main" class="ol-empty-btn">쇼핑하러 가기</a>
             </section>
           </c:when>
+          
+          <%-- 2. 주문 내역이 있을 때 --%>
           <c:otherwise>
-            <!-- 주문 카드 리스트 -->
             <section class="ol-list" aria-label="주문 목록">
-              <!-- 주문 1 (최신) -->
-              <article class="ol-card" aria-label="주문 2026.04.07">
-                <div class="ol-card-top">
-                  <p class="ol-date">2026.04.07</p>
-                  <button type="button" class="ol-detail-btn" data-order-id="20260407-0001">상세보기</button>
-                </div>
-
-                <div class="ol-items" role="list" aria-label="주문 상품">
-                  <div class="ol-item" role="listitem">
-                    <div class="ol-thumb">
-                      <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" loading="lazy"/>
-                    </div>
-                    <div class="ol-info">
-                      <p class="ol-item-status">배송중</p>
-                      <p class="ol-name">부드러운 라운드 니트 가디건</p>
-                      <p class="ol-opt">노란색 / 90</p>
-                    </div>
+              
+              <%-- 주문 목록을 하나씩 꺼냅니다 --%>
+              <c:forEach var="order" items="${orderList}">
+                <article class="ol-card" aria-label="주문 ${order.orderDate}">
+                  <div class="ol-card-top">
+                    <%-- DB의 주문 날짜 출력 --%>
+                    <p class="ol-date">${order.orderDate}</p>
+                    <%-- JS가 인식할 수 있도록 진짜 주문 번호(orderNo)를 심어줍니다! --%>
+                    <button type="button" class="ol-detail-btn" data-order-id="${order.orderNo}">상세보기</button>
                   </div>
-                  <div class="ol-item" role="listitem">
-                    <div class="ol-thumb">
-                      <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" loading="lazy"/>
-                    </div>
-                    <div class="ol-info">
-                      <p class="ol-item-status">주문완료</p>
-                      <p class="ol-name">편안한 봄 니트 조끼</p>
-                      <p class="ol-opt">베이지 / 95</p>
-                    </div>
-                  </div>
-                </div>
-              </article>
 
-              <!-- 주문 2 -->
-              <article class="ol-card" aria-label="주문 2026.04.05">
-                <div class="ol-card-top">
-                  <p class="ol-date">2026.04.05</p>
-                  <button type="button" class="ol-detail-btn" data-order-id="20260405-0003">상세보기</button>
-                </div>
-
-                <div class="ol-items" role="list" aria-label="주문 상품">
-                  <div class="ol-item" role="listitem">
-                    <div class="ol-thumb">
-                      <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" loading="lazy"/>
-                    </div>
-                    <div class="ol-info">
-                      <p class="ol-item-status">배송완료</p>
-                      <p class="ol-name">봄 니트 가디건</p>
-                      <p class="ol-opt">아이보리 / 95</p>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </section>
+                  <div class="ol-items" role="list" aria-label="주문 상품">
+                    <%-- 
+                      컨트롤러에서 넘긴 HashMap에서 현재 주문번호를 키값으로 사용해 해당 주문의 상품 리스트만 쏙 빼옵니다.
+                    --%>
+                    <c:forEach var="product" items="${orderProductMap[order.orderNo]}">
+                      <div class="ol-item" role="listitem">
+                        <div class="ol-thumb">
+                          <%-- 이미지 폴더 경로 추후 확인--%>
+						<img src="${pageContext.request.contextPath}/uploads/products/${product.productImage}" alt="${product.snapProductName}" loading="lazy"/>
+                        </div>
+                        <div class="ol-info">
+                          <%-- 배송 상태--%>
+                          <p class="ol-item-status">
+                            <c:choose>
+                              <c:when test="${order.deliveryState == 0}">결제완료</c:when>
+                              <c:when test="${order.deliveryState == 1}">배송준비중</c:when>
+                              <c:when test="${order.deliveryState == 2}">배송중</c:when>
+                              <c:when test="${order.deliveryState == 3}">배송완료</c:when>
+                              <c:otherwise>주문접수</c:otherwise>
+                            </c:choose>
+                          </p>
+                          <%-- 스냅샷으로 저장된 상품명, 옵션(색상/사이즈) 출력 --%>
+                          <p class="ol-name">${product.snapProductName}</p>
+                          <p class="ol-opt">${product.snapOptionColor} / ${product.snapOptionSize}</p>
+                        </div>
+                      </div>
+                    </c:forEach> </div>
+                </article>
+              </c:forEach> </section>
           </c:otherwise>
         </c:choose>
 
