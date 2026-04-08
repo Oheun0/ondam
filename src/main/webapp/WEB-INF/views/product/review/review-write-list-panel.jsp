@@ -41,7 +41,7 @@
     <c:otherwise>
       <div class="review-my-empty" role="status">
         <p class="review-my-empty__title">작성할 수 있는 후기가 없어요</p>
-        <p class="review-my-empty__sub">상품을 구매하면 이곳에서 후기를 남길 수 있어요</p>
+        <p class="review-my-empty__sub">상품 구매 후 이곳에서 후기를 남길 수 있어요</p>
       </div>
     </c:otherwise>
   </c:choose>

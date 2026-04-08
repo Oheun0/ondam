@@ -59,11 +59,11 @@
 			<%-- 도움 모드 안내 배너 --%>
 			<c:if test="${isHelperMode}">
 			  <div style="display:flex; align-items:center; gap:8px;
-			              background:#fff8e1; border-left:4px solid #f9a825;
+			              background:#D8EDDA; border-left:4px solid #4CAF50;
 			              padding:10px 14px; border-radius:8px;
-			              margin: 12px 0; font-size:13px; color:#5d4037;">
+			              margin: 12px 0; font-size:14px; color:#111; font-weight: 700;">
 			    <span class="material-icons" style="font-size:18px;">volunteer_activism</span>
-			    <p style="margin:0;">그룹원의 배송지를 대신 수정 중이에요</p>
+			    <p style="margin:0;">내 사람의 배송지를 대신 수정 중이에요</p>
 			  </div>
 			</c:if>
         </section>
