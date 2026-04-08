@@ -5,13 +5,16 @@
     var root = document.getElementById("orderListRoot");
     if (!root) return;
 
+    var contextPath = document.body.getAttribute("data-context-path") || "";
+
     root.addEventListener("click", function (e) {
       var btn = e.target && e.target.closest(".ol-detail-btn[data-order-id]");
       if (!btn) return;
-      var id = btn.getAttribute("data-order-id") || "";
-      // 더미 동작: 실제 이동/서버 연동 없음
-      window.alert("상세보기(더미)\n주문번호: " + id);
+      
+      var orderNo = btn.getAttribute("data-order-id") || "";
+      if (orderNo) {
+        window.location.href = contextPath + "/order/order-detail?orderNo=" + orderNo;
+      }
     });
   });
 })();
-
