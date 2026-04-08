@@ -83,6 +83,7 @@
   padding: 34px 22px 28px;
   text-align: center;
   box-shadow: var(--main-card-shadow);
+  margin-top: 20px;
 }
 
 .gift-empty-icon {
