@@ -57,15 +57,7 @@
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=19" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/out-meeting.jpg" alt=""></span><span class="situation-label">사람 만날 때 입는 옷</span></a></li>
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=20" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/out-weather.jpg" alt=""></span><span class="situation-label">날씨에 맞는 옷</span></a></li>
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=21" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/out-walking.jpg" alt=""></span><span class="situation-label">오래 걸어도 편한 옷</span></a></li>
-							</ul>
-						</div>
-						<div class="detail-section">
-							<h2 class="detail-heading">🏥 병원 갈 때 입어요</h2>
-							<ul class="situation-rows">
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=22" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hospital-easywear.jpg" alt=""></span><span class="situation-label">입고 벗기 쉬운 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=23" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hospital-checkup.jpg" alt=""></span><span class="situation-label">검사 받기 편한 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=24" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hospital-comfy.jpg" alt=""></span><span class="situation-label">편안한 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=25" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hospital-warm.jpg" alt=""></span><span class="situation-label">따뜻한 옷</span></a></li>
 							</ul>
 						</div>
 						<div class="detail-section">
