@@ -170,7 +170,7 @@
             </div>
 
             <div class="menu-card">
-                <a href="${pageContext.request.contextPath}/notification/settings" class="menu-item">
+                <a href="${pageContext.request.contextPath}/notification/notification-setting" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">notifications_none</span>
                         <strong class="menu-label">알림 설정</strong>
