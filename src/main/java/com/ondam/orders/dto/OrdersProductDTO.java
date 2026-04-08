@@ -12,6 +12,8 @@ public class OrdersProductDTO {
     private String snapOptionColor;
     private int orderQuantity;
     private String productImage;
+    private String productBrand;
+    private int reviewNo;
 
     public OrdersProductDTO() {}
 
@@ -107,5 +109,21 @@ public class OrdersProductDTO {
     
     public String getProductImage() {
         return productImage;
+    }
+    
+    public String getProductBrand() { 
+    	return productBrand; 
+    	}
+    
+    public void setProductBrand(String productBrand) { 
+    	this.productBrand = productBrand; 
+    	}
+    
+    public int getReviewNo() {
+        return reviewNo;
+    }
+
+    public void setReviewNo(int reviewNo) {
+        this.reviewNo = reviewNo;
     }
 }

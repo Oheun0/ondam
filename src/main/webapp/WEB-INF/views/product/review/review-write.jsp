@@ -36,14 +36,15 @@
           
           <div class="review-write-product-card__inner">
             <div class="review-write-product-thumb-wrap">
-              <c:set var="imgSrc" value="${empty targetInfo.productImg ? 'type-top-knit.jpg' : targetInfo.productImg}" />
-              <img src="${pageContext.request.contextPath}/images/category/${imgSrc}" 
-                   alt="" 
-                   class="review-write-product-thumb" 
-                   width="78" height="78" 
-                   loading="lazy" 
-                   onerror="this.src='${pageContext.request.contextPath}/images/category/type-top-knit.jpg'"/>
-            </div>
+			  <c:set var="imgSrc" value="${empty targetInfo.productImg ? 'type-top-knit.jpg' : targetInfo.productImg}" />
+			  
+			  <img src="${pageContext.request.contextPath}/uploads/products/${imgSrc}" 
+			       alt="${targetInfo.snapProductName}" 
+			       class="review-write-product-thumb" 
+			       width="78" height="78" 
+			       loading="lazy" 
+			       onerror="this.src='${pageContext.request.contextPath}/images/category/type-top-knit.jpg'"/>
+			</div>
             <div class="review-write-product-meta">
               <p class="review-write-product-name">${targetInfo.snapProductName}</p>
               <p class="review-write-product-option">${targetInfo.snapOptionColor} / ${targetInfo.snapOptionSize}</p>
@@ -201,7 +202,7 @@
     <input type="hidden" name="reviewContent" id="hiddenContent">
     <input type="hidden" name="isBodyPublic" value="1">
     <input type="hidden" name="deleteImgNos" id="deleteImgNos" value="">
-    
+    <input type="hidden" id="returnUrl" value="${param.returnUrl}">
     </form>
   <script src="${pageContext.request.contextPath}/js/review-write.js"></script>
 </body>
