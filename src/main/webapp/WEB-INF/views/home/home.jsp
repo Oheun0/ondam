@@ -24,13 +24,13 @@
 			<div class="slider-viewport">
 				<div class="slider-track" id="sliderTrack">
 					<div class="banner-slide">
-						<img src="${pageContext.request.contextPath}/images/banner1.png" class="banner-img" alt="온담 메인 배너 1" width="800" height="400" decoding="async">
+						<img src="${pageContext.request.contextPath}/images/banner/banner1.png" class="banner-img" alt="온담 메인 배너 1" width="800" height="400" decoding="async">
 					</div>
 					<div class="banner-slide">
-						<img src="${pageContext.request.contextPath}/images/banner2.png" class="banner-img" alt="온담 메인 배너 2" width="800" height="400" decoding="async">
+						<img src="${pageContext.request.contextPath}/images/banner/banner2.png" class="banner-img" alt="온담 메인 배너 2" width="800" height="400" decoding="async">
 					</div>
 					<div class="banner-slide">
-						<img src="${pageContext.request.contextPath}/images/banner3.png" class="banner-img" alt="온담 메인 배너 3" width="800" height="400" decoding="async">
+						<img src="${pageContext.request.contextPath}/images/banner/banner3.png" class="banner-img" alt="온담 메인 배너 3" width="800" height="400" decoding="async">
 					</div>
 				</div>
 				<div class="banner-dots" id="bannerDots" role="tablist" aria-label="배너 위치">
