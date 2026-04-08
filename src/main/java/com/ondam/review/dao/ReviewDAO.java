@@ -227,7 +227,9 @@ public class ReviewDAO {
                     "LEFT JOIN review r ON op.orderItemNo = r.orderItemNo " +
                     "LEFT JOIN (SELECT productNo, MIN(imgFile) as imgFile FROM productimage WHERE imgOrder = 1 GROUP BY productNo) pi " +
                     "ON op.productNo = pi.productNo " +
-                    "WHERE o.userNo = ? AND r.reviewNo IS NULL " + 
+                    "WHERE o.userNo = ? " +
+                    "AND o.deliveryState = 3 " +
+                    "AND r.reviewNo IS NULL " + 
                     "ORDER BY o.orderDate DESC";
             
             pstmt = con.prepareStatement(sql);
@@ -241,7 +243,6 @@ public class ReviewDAO {
                 dto.setSnapOptionSize(rs.getString("snapOptionSize"));
                 dto.setSnapOptionColor(rs.getString("snapOptionColor"));
                 dto.setProductImg(rs.getString("productImg"));
-                
                 vlist.addElement(dto);
             }
         } catch (Exception e) {
