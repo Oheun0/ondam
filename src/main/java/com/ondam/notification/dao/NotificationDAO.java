@@ -211,25 +211,49 @@ public class NotificationDAO {
 		}
 		return dto;
 	}
-	
+
 	// 안 읽은 알림 수 조회
 	public int getUnreadCount(int userNo) {
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    int count = 0;
-	    try {
-	        con = pool.getConnection();
-	        String sql = "SELECT COUNT(*) FROM notification WHERE userNo = ? AND isRead = 0";
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, userNo);
-	        rs = pstmt.executeQuery();
-	        if (rs.next()) count = rs.getInt(1);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        pool.freeConnection(con, pstmt, rs);
-	    }
-	    return count;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int count = 0;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT COUNT(*) FROM notification WHERE userNo = ? AND isRead = 0";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, userNo);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+				count = rs.getInt(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return count;
+	}
+
+	// isEnabled 체크용 (없으면 기본값 1 반환 → 알림 허용)
+	public int getIsEnabled(int userNo, int notificationType) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT isEnabled FROM NotificationSetting WHERE userNo = ? AND notificationType = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, userNo);
+			pstmt.setInt(2, notificationType);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+				return rs.getInt("isEnabled");
+			return 1; // 설정 row 없으면 기본 허용
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 1;
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
 	}
 }
