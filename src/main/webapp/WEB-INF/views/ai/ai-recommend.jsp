@@ -56,7 +56,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!-- 하루에 처음 해당 페이지 접속 시 ai-recommend-modal.jsp 모달 뜸 / ai api 불러올 동안 바운스 모달 유지
+  <!-- 하루에 처음 해당 페이지 접속 시 ai-recommend-modal.jsp 모달 뜸 / ai api 불러올 동안 바운스 모달 유지 첫 번째 뜨는 모달에 뒤로가기? 나가기? 어울리는 버튼 아래에 추가바람
   매일 10개씩? 개수 상관없음 연결하는 분이 정해주길 바람!! 추천 상품마다 카드 위에 추천이유 멘트(1줄?2줄?) 표시됨 -->
   <title>오늘의 추천 상품 | 온담</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
