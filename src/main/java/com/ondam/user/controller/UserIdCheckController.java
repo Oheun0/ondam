@@ -3,7 +3,6 @@ package com.ondam.user.controller;
 import java.io.PrintWriter;
 import com.ondam.common.controller.Controller;
 import com.ondam.user.dao.UserDAO;
-import com.ondam.user.dto.UserDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,12 +14,10 @@ public class UserIdCheckController implements Controller {
         String userId = request.getParameter("userId");
 
         UserDAO userDAO = new UserDAO();
-        UserDTO user = userDAO.getUserId(userId); 
-
+        boolean isDuplicate = userDAO.checkIdDuplicate(userId); 
         response.setContentType("text/plain;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
-        if (user != null) {
+        if (isDuplicate) {
             out.print("duplicate"); 
         } else {
             out.print("available"); 

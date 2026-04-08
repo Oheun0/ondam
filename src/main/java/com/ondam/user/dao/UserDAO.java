@@ -25,7 +25,7 @@ public class UserDAO {
 		
 		try {
 			con = pool.getConnection();
-			sql = "select * from user where userId = ?";
+			sql = "SELECT * FROM user WHERE userId = ? AND isActive = 0";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, userId);
 			rs = pstmt.executeQuery();
@@ -260,28 +260,28 @@ public class UserDAO {
 	}
 	
 	// 회원 탈퇴 처리
-		public int withdrawUser(int userNo) {
-			Connection con = null;
-			PreparedStatement pstmt = null;
-			int result = 0;
-			
-			String query = "UPDATE user SET isActive = 0, deleteAt = NOW() WHERE userNo = ?";
-			
-			try {
-				con = pool.getConnection();
-				pstmt = con.prepareStatement(query);
-				
-				pstmt.setInt(1, userNo);
-				result = pstmt.executeUpdate();
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				pool.freeConnection(con, pstmt);
-			}
-			
-			return result;
-		}
+	public int withdrawUser(int userNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    int result = 0;
+
+	    String query = "UPDATE user SET isActive = 1, deleteAt = NOW() WHERE userNo = ?";
+	    
+	    try {
+	        con = pool.getConnection();
+	        pstmt = con.prepareStatement(query);
+	        
+	        pstmt.setInt(1, userNo);
+	        result = pstmt.executeUpdate();
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    
+	    return result;
+	}
 		
 		public boolean checkPassword(int userNo, String inputPwd) {
 			Connection con = null;
@@ -362,5 +362,29 @@ public class UserDAO {
 	    }
 	    return userPhoneNumber;
 	}
+	
+	//아이디 중복 확인
+		public boolean checkIdDuplicate(String userId) {
+		    Connection con = null;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
+		    boolean isDuplicate = false;
 
+		    try {
+		        con = pool.getConnection();
+		        String sql = "SELECT COUNT(*) FROM user WHERE userId = ?";
+		        pstmt = con.prepareStatement(sql);
+		        pstmt.setString(1, userId);
+		        rs = pstmt.executeQuery();
+
+		        if (rs.next() && rs.getInt(1) > 0) {
+		            isDuplicate = true; 
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        pool.freeConnection(con, pstmt, rs);
+		    }
+		    return isDuplicate;
+		}
 }
