@@ -1,7 +1,14 @@
 package com.ondam.wish.controller;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 import com.ondam.common.controller.Controller;
 import com.ondam.user.dto.UserDTO;
+import com.ondam.wish.dto.WishDTO;
 import com.ondam.wish.service.WishService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,14 +30,35 @@ public class WishController implements Controller {
         int userNo = loginUser.getUserNo();
 
         if ("list".equals(action)) {
-            request.setAttribute("wishList", wishService.getMyWishList(userNo));
-            return "/wish/wishList"; 
+        	String sort = request.getParameter("sort");
+        	String part = request.getParameter("part");
+        	if (sort == null) sort = "담은순";
+        	Vector<WishDTO> wishList = wishService.getMyWishList(userNo, sort, part);
+
+            Set<Integer> wishSet = new HashSet<>();
+            Map<Integer, String> thumbnailMap = new HashMap<>();
+            for (WishDTO w : wishList) {
+                wishSet.add(w.getProductNo());
+                if (w.getProductImg() != null)
+                    thumbnailMap.put(w.getProductNo(), w.getProductImg());
+            }
+
+            request.setAttribute("productList",  wishList);   // product-grid.jsp용
+            request.setAttribute("wishSet",       wishSet);   // 찜 버튼 is-active용
+            request.setAttribute("thumbnailMap",  thumbnailMap); // 썸네일용
+            request.setAttribute("currentSort", sort); // 현재 정렬 상태
+            request.setAttribute("currentPart", part); // 필터
+            return "/product/favorite/favorite-list";
+
         } else if ("toggle".equals(action)) {
             int pNo = Integer.parseInt(request.getParameter("productNo"));
-            // 전달받은 상품번호(pNo)만 넘겨서 토글 실행
-            wishService.toggleWish(userNo, pNo);
-            return "redirect:/wish?action=list";
+            boolean wished = wishService.toggleWish(userNo, pNo);
+
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"wished\":" + wished + ",\"productNo\":" + pNo + "}");
+            return null;
         }
+
         return "redirect:/main";
     }
 }

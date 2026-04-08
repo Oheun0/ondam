@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -37,23 +38,23 @@
           <div class="favorite-filter-row">
             <div class="filter-dropdown-wrap">
               <button type="button" class="filter-dropdown-btn" id="favoriteSortToggleBtn" aria-haspopup="listbox" aria-expanded="false">
-                <span id="favoriteSortSelectedText">담은순</span>
-                <span class="material-icons" aria-hidden="true">expand_more</span>
-              </button>
+				 <span id="favoriteSortSelectedText">${empty currentSort ? '담은순' : currentSort}</span>
+				 <span class="material-icons" aria-hidden="true">expand_more</span>
+			  </button>
               <div class="filter-dropdown-menu hidden" id="favoriteSortDropdown" role="listbox" aria-labelledby="favoriteSortToggleBtn">
-                <button type="button" class="filter-option active" data-sort="담은순" role="option">담은순</button>
-                <button type="button" class="filter-option" data-sort="인기순" role="option">인기순</button>
-                <button type="button" class="filter-option" data-sort="최신순" role="option">최신순</button>
-                <button type="button" class="filter-option" data-sort="가격 낮은순" role="option">가격 낮은순</button>
-                <button type="button" class="filter-option" data-sort="가격 높은순" role="option">가격 높은순</button>
-              </div>
+				  <button type="button" class="filter-option ${empty currentSort || currentSort == '담은순' ? 'active' : ''}" data-sort="담은순" role="option">담은순</button>
+				  <button type="button" class="filter-option ${currentSort == '인기순' ? 'active' : ''}" data-sort="인기순" role="option">인기순</button>
+				  <button type="button" class="filter-option ${currentSort == '최신순' ? 'active' : ''}" data-sort="최신순" role="option">최신순</button>
+				  <button type="button" class="filter-option ${currentSort == '가격 낮은순' ? 'active' : ''}" data-sort="가격 낮은순" role="option">가격 낮은순</button>
+				  <button type="button" class="filter-option ${currentSort == '가격 높은순' ? 'active' : ''}" data-sort="가격 높은순" role="option">가격 높은순</button>
+				</div>
             </div>
 
             <div class="favorite-part-chips" role="group" aria-label="옷 종류">
-              <button type="button" class="favorite-part-chip" data-part="top">윗옷</button>
-              <button type="button" class="favorite-part-chip" data-part="bottom">아랫옷</button>
-              <button type="button" class="favorite-part-chip" data-part="outer">겉옷</button>
-              <button type="button" class="favorite-part-chip" data-part="set">한 벌 옷</button>
+              	<button type="button" class="favorite-part-chip ${currentPart == '윗옷' ? 'active' : ''}" data-part="윗옷">윗옷</button>
+				<button type="button" class="favorite-part-chip ${currentPart == '아랫옷' ? 'active' : ''}" data-part="아랫옷">아랫옷</button>
+				<button type="button" class="favorite-part-chip ${currentPart == '겉옷' ? 'active' : ''}" data-part="겉옷">겉옷</button>
+				<button type="button" class="favorite-part-chip ${currentPart == '한 벌 옷' ? 'active' : ''}" data-part="한 벌 옷">한 벌 옷</button>
             </div>
           </div>
         </section>

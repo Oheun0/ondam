@@ -570,6 +570,44 @@ public class ProductDAO {
 	    return vlist;
 	}
 	
+	// wishCount + 1
+	public boolean increaseWishCount(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE product SET wishCount = wishCount + 1 WHERE productNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return flag;
+	}
+	
+	// wishCount - 1
+	public boolean decreaseWishCount(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE product SET wishCount = wishCount - 1 WHERE productNo = ? AND wishCount > 0";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt);
+	    }
+	    return flag;
+	}
+	
 	// SELECT * 매핑 코드 너무 많아서 라인 수 줄이기 위해
 	private void mapResultSetToDTO(ResultSet rs, ProductDTO dto) throws java.sql.SQLException {
 	    dto.setProductNo(rs.getInt("productNo"));

@@ -55,19 +55,6 @@
         ${product.productBrand}
         <span class="material-icons">chevron_right</span>
       </a>
-      <div class="brand-wish-stat" aria-label="찜 ${product.wishCount}">
-        <span class="brand-wish-stat__icon" aria-hidden="true">
-          <span class="material-symbols-outlined">favorite</span>
-        </span>
-        <span class="brand-wish-stat__num">
-          <c:choose>
-            <c:when test="${product.wishCount >= 10000}">
-              <fmt:formatNumber value="${product.wishCount / 10000.0}" pattern="0.#"/>만
-            </c:when>
-            <c:otherwise>${product.wishCount}</c:otherwise>
-          </c:choose>
-        </span>
-      </div>
     </div>
 
     <h1 class="detail-product-name">${product.productName}</h1>

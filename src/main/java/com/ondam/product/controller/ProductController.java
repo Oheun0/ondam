@@ -1,5 +1,7 @@
 package com.ondam.product.controller;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import com.ondam.common.controller.Controller;
@@ -13,9 +15,13 @@ import com.ondam.product.service.ProductOptionService;
 import com.ondam.product.service.ProductService;
 import com.ondam.situation.dto.SituationDTO;
 import com.ondam.situation.service.SituationService;
+import com.ondam.user.dto.UserDTO;
+import com.ondam.wish.dto.WishDTO;
+import com.ondam.wish.service.WishService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class ProductController implements Controller {
 
@@ -24,6 +30,7 @@ public class ProductController implements Controller {
 	private ProductOptionService productOptionService = new ProductOptionService();
 	private CategoryService categoryService = new CategoryService();
 	private SituationService situationService = new SituationService();
+	private WishService wishService = new WishService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -123,6 +130,13 @@ public class ProductController implements Controller {
 	    request.setAttribute("thumbnailMap",         buildThumbnailMap(productList));
 	    request.setAttribute("currentViewMode",      currentViewMode);
 	    request.setAttribute("currentCategoryName",  currentCategoryName);
+	    
+	    HttpSession session = request.getSession(false);
+	    if (session != null && session.getAttribute("loginUser") != null) {
+	        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+	        Set<Integer> wishSet = wishService.getWishedProductNos(loginUser.getUserNo());
+	        request.setAttribute("wishSet", wishSet);
+	    }
 	    return "product/product-list";
 	}
 
