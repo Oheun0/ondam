@@ -40,6 +40,12 @@
 
     var currentSort = "담은순";
     var selectedParts = new Set();
+	
+	root.querySelectorAll(".product-grid-wish-btn").forEach(function (btn) {
+	    btn.addEventListener("click", function (e) {
+	        e.stopPropagation();
+	    });
+	});
 
     grid.addEventListener("click", function (e) {
       var wishBtn = e.target.closest(".product-grid-wish-btn");

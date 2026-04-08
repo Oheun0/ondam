@@ -7,7 +7,7 @@
         <input
             type="text"
             id="mainSearch"
-            name="keyword"
+            name="q"
             class="search-input"
             placeholder="찾고 싶은 상품을 검색해보세요."
         >

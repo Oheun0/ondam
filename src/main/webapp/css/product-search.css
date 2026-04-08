@@ -227,18 +227,20 @@
   white-space: nowrap;
 }
 
+/* 기본 상태: X 아이콘 숨김 */
 .recent-search-chip-x {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1;
-  color: #555;
-  opacity: 0.85;
+  display: none; 
+}
+
+/* 편집 모드(.is-editing)일 때: 스타일 적용 및 표시 */
+.recent-search-section.is-editing .recent-search-chip-btn {
+  padding: 0 12px 0 16px;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.recent-search-section.is-editing .recent-search-chip-x {
+  display: inline-flex; /* 편집 모드에서만 나타남 */
 }
 
 .search-empty-msg {

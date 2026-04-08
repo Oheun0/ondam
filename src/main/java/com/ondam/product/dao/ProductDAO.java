@@ -608,6 +608,43 @@ public class ProductDAO {
 	    return flag;
 	}
 	
+	// 검색 메소드
+	public Vector<ProductDTO> searchProducts(String keyword) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<ProductDTO> list = new Vector<>();
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM product " +
+	                     "WHERE productName LIKE ? OR productBrand LIKE ? " +
+	                     "AND productState = 1 " +
+	                     "ORDER BY productNo DESC";
+	        pstmt = con.prepareStatement(sql);
+	        String like = "%" + keyword + "%";
+	        pstmt.setString(1, like);
+	        pstmt.setString(2, like);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            ProductDTO dto = new ProductDTO();
+	            // 기존 매핑과 동일하게
+	            dto.setProductNo(rs.getInt("productNo"));
+	            dto.setProductName(rs.getString("productName"));
+	            dto.setProductBrand(rs.getString("productBrand"));
+	            dto.setProductPrice(rs.getInt("productPrice"));
+	            dto.setProductOriginPrice(rs.getInt("productOriginPrice"));
+	            dto.setSaleCount(rs.getInt("saleCount"));
+	            dto.setWishCount(rs.getInt("wishCount"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return list;
+	}
+	
 	// SELECT * 매핑 코드 너무 많아서 라인 수 줄이기 위해
 	private void mapResultSetToDTO(ResultSet rs, ProductDTO dto) throws java.sql.SQLException {
 	    dto.setProductNo(rs.getInt("productNo"));
@@ -627,5 +664,77 @@ public class ProductDAO {
 	    dto.setSaleCount(rs.getInt("saleCount"));
 	    
 	    dto.setProductState(rs.getInt("productState"));
+	}
+	
+	// 검색 + 필터 메소드
+	public Vector<ProductDTO> searchProductsWithFilter(
+	        String keyword, String sort,
+	        String[] colors, String season, String[] features) {
+
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<ProductDTO> list = new Vector<>();
+
+	    try {
+	        con = pool.getConnection();
+	        StringBuilder sql = new StringBuilder(
+	            "SELECT DISTINCT p.* FROM product p WHERE " +
+	            "(p.productName LIKE ? OR p.productBrand LIKE ?) "
+	        );
+	        Vector<Object> params = new Vector<>();
+	        String like = "%" + keyword + "%";
+	        params.add(like);
+	        params.add(like);
+
+	        // 색상
+	        if (colors != null && colors.length > 0) {
+	            for (String color : colors) {
+	                sql.append("AND EXISTS (SELECT 1 FROM productoption po " +
+	                           "WHERE po.productNo = p.productNo AND po.optionColor = ?) ");
+	                params.add(color);
+	            }
+	        }
+
+	        // 계절
+	        if (season != null && !season.isEmpty()) {
+	            sql.append("AND p.productNo IN (" +
+	                       "SELECT productNo FROM productseason WHERE season = ?) ");
+	            params.add(season);
+	        }
+
+	        // 특징
+	        if (features != null && features.length > 0) {
+	            for (String feature : features) {
+	                sql.append("AND EXISTS (SELECT 1 FROM productfeature pf " +
+	                           "WHERE pf.productNo = p.productNo AND pf.feature = ?) ");
+	                params.add(feature);
+	            }
+	        }
+
+	        // 정렬
+	        if      ("가격 낮은순".equals(sort)) sql.append("ORDER BY p.productPrice ASC");
+	        else if ("가격 높은순".equals(sort)) sql.append("ORDER BY p.productPrice DESC");
+	        else if ("최신순".equals(sort))     sql.append("ORDER BY p.productDate DESC");
+	        else if ("인기순".equals(sort))     sql.append("ORDER BY (p.wishCount + p.saleCount) DESC");
+	        else                                sql.append("ORDER BY p.productNo DESC");
+
+	        pstmt = con.prepareStatement(sql.toString());
+	        for (int i = 0; i < params.size(); i++) {
+	            pstmt.setObject(i + 1, params.get(i));
+	        }
+
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            ProductDTO dto = new ProductDTO();
+	            mapResultSetToDTO(rs, dto); // 기존 매핑 메서드 재사용
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return list;
 	}
 }

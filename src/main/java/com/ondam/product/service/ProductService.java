@@ -85,4 +85,14 @@ public class ProductService {
 	public Vector<ProductDTO> getProductsBySituationName(String situationName) {
 	    return dao.getProductsBySituationName(situationName);
 	}
+	
+	public Vector<ProductDTO> searchProducts(String keyword) {
+	    return dao.searchProducts(keyword);
+	}
+	
+	public Vector<ProductDTO> searchProductsWithFilter(
+	        String keyword, String sort,
+	        String[] colors, String season, String[] features) {
+	    return dao.searchProductsWithFilter(keyword, sort, colors, season, features);
+	}
 }

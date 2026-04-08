@@ -215,35 +215,47 @@ document.addEventListener("DOMContentLoaded", function () {
   
   function applyFilters() {
       const params = new URLSearchParams();
-      params.set('action', 'list');
+      const isSearchResult = document.body.classList.contains("search-result-page");
 
-      // 카테고리 or 상황
-      if (currentViewMode === 'situation') {
-          params.set('situationName', currentCategory);
+      if (isSearchResult) {
+          // 검색 결과 페이지: 현재 검색어 유지 + 필터 추가
+          const searchInput = document.getElementById("searchQueryInput");
+          const q = searchInput ? searchInput.value.trim() : "";
+          params.set("q", q);
       } else {
-          params.set('categoryName', currentCategory);
+          // 일반 상품 목록 페이지: 기존 로직
+          params.set("action", "list");
+          if (currentViewMode === "situation") {
+              params.set("situationName", currentCategory);
+          } else {
+              params.set("categoryName", currentCategory);
+          }
       }
 
       // 정렬
-      if (currentSort && currentSort !== '전체') {
-          params.set('sort', currentSort);
+      if (currentSort && currentSort !== "전체") {
+          params.set("sort", currentSort);
       }
 
-      // 색상 (복수)
+      // 색상
       colorInputs.forEach(input => {
-          if (input.checked) params.append('color', input.value);
+          if (input.checked) params.append("color", input.value);
       });
 
-      // 계절 (단수 라디오)
+      // 계절
       const seasonChecked = document.querySelector('#seasonDropdown input[name="productSeason"]:checked');
-      if (seasonChecked) params.set('season', seasonChecked.value);
+      if (seasonChecked) params.set("season", seasonChecked.value);
 
-      // 옷 특징 (복수)
+      // 옷 특징
       featureInputs.forEach(input => {
-          if (input.checked) params.append('feature', input.value);
+          if (input.checked) params.append("feature", input.value);
       });
 
-      window.location.href = CONTEXT_PATH + '/product?' + params.toString();
+      const base = isSearchResult
+          ? CONTEXT_PATH + "/search"
+          : CONTEXT_PATH + "/product";
+
+      window.location.href = base + "?" + params.toString();
   }
 
   function activateSituationSubTab(tabKey) {
@@ -469,7 +481,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   if (resetBtn) resetBtn.addEventListener("click", function () {
-      window.location.href = CONTEXT_PATH + '/product?action=list';
+      const isSearchResult = document.body.classList.contains("search-result-page");
+      if (isSearchResult) {
+          const searchInput = document.getElementById("searchQueryInput");
+          const q = searchInput ? searchInput.value.trim() : "";
+          window.location.href = CONTEXT_PATH + "/search?q=" + encodeURIComponent(q);
+      } else {
+          window.location.href = CONTEXT_PATH + "/product?action=list";
+      }
   });
 
   if (typeCategoryView && situationCategoryView) updateCategoryView();
