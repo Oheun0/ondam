@@ -93,7 +93,7 @@
                     </div>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/wishlist" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/wish" class="shortcut-card">
 
                     <div class="shortcut-text">
                         <div class="shortcut-title-row">
