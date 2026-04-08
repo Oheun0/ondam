@@ -9,9 +9,27 @@
   <link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
   <link rel="stylesheet" href="<%=request.getContextPath()%>/css/auth.css">
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-  <script> const ctxPath = "${pageContext.request.contextPath}";</script>
+ <script> 
+      const ctxPath = "${pageContext.request.contextPath}";
+      const sessionName = "${not empty sessionScope.signupUser.userName ? sessionScope.signupUser.userName : (not empty sessionScope.signupUser.userNick ? sessionScope.signupUser.userNick : '')}";
+      const sessionPhone = "${sessionScope.signupUser.userPhoneNumber}";
+      let p1 = "010", p2 = "", p3 = "";
+      if (sessionPhone) {
+          const phoneParts = sessionPhone.split("-");
+          if (phoneParts.length === 3) {
+              p1 = phoneParts[0];
+              p2 = phoneParts[1];
+              p3 = phoneParts[2];
+          }
+      }
+      const prevUserInfo = {
+          name: sessionName,
+          phone1: p1,
+          phone2: p2,
+          phone3: p3
+      };
+  </script>
   <script defer src="${pageContext.request.contextPath}/js/auth.js?ver=5"></script>
-ain
 </head>
 <body>
   <div class="auth-page">
