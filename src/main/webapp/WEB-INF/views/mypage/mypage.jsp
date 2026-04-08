@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/inquiry-write.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
 </head>
 <body data-context-path="${pageContext.request.contextPath}">
