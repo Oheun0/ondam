@@ -9,6 +9,7 @@ import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
 import com.ondam.group.controller.FamilyGroupController;
 import com.ondam.notification.controller.NotificationController;
+import com.ondam.notification.controller.NotificationSettingController;
 import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
@@ -103,6 +104,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/cart", new CartController());
         handlerMapping.put("/wish", new WishController());
         handlerMapping.put("/aiSearch", new aiSearchController());
+        handlerMapping.put("/notification/notification-setting", new NotificationSettingController());
         
     }
 
