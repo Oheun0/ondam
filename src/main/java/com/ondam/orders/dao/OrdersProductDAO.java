@@ -151,5 +151,44 @@ public class OrdersProductDAO {
 	    }
 	    return productNo;
 	}
+	
+	// 특정 주문 번호에 속한 주문 상품 Select
+	public Vector<OrdersProductDTO> getProductsByOrderNo(int orderNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<OrdersProductDTO> vlist = new Vector<>();
+		try {
+			con = pool.getConnection();
+
+			String sql = "SELECT op.*, "
+			           + "(SELECT imgFile FROM productimage pi WHERE pi.productNo = op.productNo ORDER BY pi.imgOrder ASC LIMIT 1) AS productImage "
+			           + "FROM OrdersProduct op WHERE op.orderNo = ?";
+			
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, orderNo);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				OrdersProductDTO dto = new OrdersProductDTO();
+				dto.setOrderItemNo(rs.getInt("orderItemNo"));
+				dto.setOrderNo(rs.getInt("orderNo"));
+				dto.setProductNo(rs.getInt("productNo"));
+				dto.setProductOptionNo(rs.getInt("productOptionNo")); 
+				dto.setSnapProductName(rs.getString("snapProductName"));
+				dto.setSnapProductPrice(rs.getInt("snapProductPrice"));
+				dto.setSnapOptionSize(rs.getString("snapOptionSize"));
+				dto.setSnapOptionColor(rs.getString("snapOptionColor"));
+				dto.setOrderQuantity(rs.getInt("orderQuantity"));
+				dto.setProductImage(rs.getString("productImage")); 
+				
+				vlist.addElement(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
 }
 
