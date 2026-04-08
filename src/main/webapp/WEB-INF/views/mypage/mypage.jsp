@@ -85,7 +85,7 @@
                     <div class="wallet-top" style="justify-content: center; padding-bottom: 0;">
                         <div class="wallet-title-wrap" style="flex-direction: column; align-items: center; gap: 8px;">
                             <span class="material-icons wallet-icon" style="font-size: 36px; color: #ccc;">group_add</span>
-                            <strong style="color: #333; font-size: 16px;">아직 소속된 내 사람이 없어요</strong>
+                            <strong style="color: #333; font-size: 16px;">아직 연결된 내 사람이 없어요</strong>
                         </div>
                     </div>
                 
