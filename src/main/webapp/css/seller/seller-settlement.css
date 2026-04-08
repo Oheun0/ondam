@@ -1,0 +1,485 @@
+.seller-settlement-page{width:100%}
+
+.seller-settlement-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:16px;
+}
+.seller-settlement-title{
+  margin:0;
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:-0.02em;
+}
+.seller-settlement-sub{
+  margin:8px 0 0;
+  color:var(--seller-muted);
+  font-size:17px;
+  line-height:1.5;
+}
+.seller-settlement-head-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.seller-settlement-btn{
+  height:46px;
+  padding:0 16px;
+  border-radius:14px;
+  border:1px solid var(--seller-border);
+  background:#fff;
+  color:#374151;
+  font-weight:1000;
+  font-size:16px;
+  cursor:pointer;
+  box-shadow: 0 4px 14px rgba(17,24,39,0.06);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.seller-settlement-btn:hover{border-color: rgba(76,101,175,0.35)}
+.seller-settlement-btn--primary{
+  border-color: rgba(76,101,175,0.38);
+  background: var(--seller-primary);
+  color:#fff;
+  box-shadow: 0 8px 20px rgba(76,101,175,0.18);
+}
+
+.seller-settlement-toolbar{margin-bottom:14px}
+.seller-settlement-filters{
+  padding:14px 14px;
+  display:grid;
+  grid-template-columns: 1.1fr 1fr 1fr 1fr 1.1fr auto;
+  gap:12px;
+  align-items:end;
+}
+.seller-settlement-label{
+  display:block;
+  font-size:13px;
+  font-weight:1000;
+  color:#6B7280;
+  margin:0 0 8px;
+}
+.seller-settlement-input,
+.seller-settlement-select{
+  width:100%;
+  height:46px;
+  border-radius:14px;
+  border:1px solid var(--seller-border);
+  background:#fff;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:800;
+  color:#111827;
+  padding:0 12px;
+  box-shadow: 0 4px 14px rgba(17,24,39,0.06);
+  outline:none;
+}
+.seller-settlement-input:focus,
+.seller-settlement-select:focus{
+  border-color: rgba(76,101,175,0.55);
+  box-shadow: 0 10px 26px rgba(76,101,175,0.12);
+}
+.seller-settlement-select{
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+  padding-right:46px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%236B7280' d='M7 10l5 5l5-5z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position: calc(100% - 22px) 50%;
+  background-size:20px 20px;
+}
+.seller-settlement-note{
+  margin:10px 14px 14px;
+  font-size:13px;
+  font-weight:900;
+  color:var(--seller-muted);
+}
+
+.seller-settlement-summary{margin-bottom:14px}
+.seller-settlement-summary-grid{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap:12px;
+}
+.seller-settlement-kpi{
+  background:#fff;
+  border:1px solid var(--seller-border);
+  border-radius:16px;
+  padding:14px 14px;
+  box-shadow: 0 6px 16px rgba(17,24,39,0.06);
+}
+.seller-settlement-kpi .label{
+  font-size:16px;
+  font-weight:900;
+  color:#374151;
+}
+.seller-settlement-kpi .value{
+  margin-top:10px;
+  font-size:28px;
+  font-weight:1000;
+  letter-spacing:-0.03em;
+  color:var(--seller-primary);
+}
+.seller-settlement-kpi .unit{
+  font-size:16px;
+  font-weight:900;
+  color:var(--seller-muted);
+  margin-left:6px;
+}
+.seller-settlement-kpi.kpi--danger .value{color:#b42323}
+
+.seller-settlement-grid{
+  display:grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap:12px;
+  margin-bottom:14px;
+}
+.seller-settlement-section-head{
+  padding:16px 16px 0;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.seller-settlement-section-title{
+  margin:0;
+  font-size:17px;
+  font-weight:1000;
+  letter-spacing:-0.02em;
+}
+.seller-settlement-section-sub{
+  margin:8px 0 0;
+  font-size:14px;
+  font-weight:900;
+  color:var(--seller-muted);
+  line-height:1.5;
+}
+
+/* 결제수단 비중 */
+.seller-settlement-method-list{padding:12px 16px 16px; display:flex; flex-direction:column; gap:12px;}
+.seller-settlement-method{
+  border:1px solid rgba(15,23,42,0.08);
+  border-radius:18px;
+  padding:12px 12px;
+  background: rgba(238,241,246,0.22);
+}
+.seller-settlement-method .top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.seller-settlement-method .name{font-weight:1000;color:#111827}
+.seller-settlement-method .amount{font-weight:1000;color:#111827}
+.seller-settlement-method .pct{color:var(--seller-muted); font-weight:900}
+.seller-settlement-method .bar{
+  margin-top:10px;
+  height:10px;
+  border-radius:999px;
+  background: rgba(17,24,39,0.08);
+  overflow:hidden;
+}
+.seller-settlement-method .fill{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background: rgba(76,101,175,0.82);
+}
+.seller-settlement-method .fill--bank{background: rgba(59,130,246,0.60)}
+.seller-settlement-method.method--wallet{
+  border-color: rgba(76,101,175,0.18);
+  background: rgba(76,101,175,0.08);
+}
+.seller-settlement-method .fill--wallet{background: rgba(76,101,175,0.95)}
+.seller-settlement-method .tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:22px;
+  padding:0 10px;
+  border-radius:999px;
+  border:1px solid rgba(76,101,175,0.24);
+  background: rgba(255,255,255,0.70);
+  color: var(--seller-primary);
+  font-size:12px;
+  font-weight:1000;
+  margin-left:8px;
+}
+.seller-settlement-method .hint{
+  margin:10px 0 0;
+  font-size:13px;
+  font-weight:900;
+  color: var(--seller-primary);
+}
+
+/* 환불/취소 */
+.seller-settlement-refund-kpis{
+  padding:12px 16px 0;
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap:10px;
+}
+.seller-settlement-refund-kpis .mini{
+  border:1px solid rgba(15,23,42,0.08);
+  border-radius:16px;
+  background: rgba(238,241,246,0.22);
+  padding:12px 12px;
+}
+.seller-settlement-refund-kpis .mini .k{font-size:13px;font-weight:1000;color:var(--seller-muted)}
+.seller-settlement-refund-kpis .mini .v{margin-top:8px;font-size:18px;font-weight:1000;color:#111827}
+.seller-settlement-refund-kpis .mini--sum{background: rgba(209,67,67,0.06); border-color: rgba(209,67,67,0.14)}
+.seller-settlement-mini-table-wrap{padding:12px 16px 16px; overflow:auto}
+.seller-settlement-mini-table{
+  width:100%;
+  min-width:520px;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.seller-settlement-mini-table thead th{
+  text-align:left;
+  font-size:13px;
+  font-weight:1000;
+  color:#6B7280;
+  padding:10px 10px;
+  border-bottom:1px solid rgba(15,23,42,0.10);
+  white-space:nowrap;
+}
+.seller-settlement-mini-table tbody td{
+  padding:12px 10px;
+  border-bottom:1px solid rgba(15,23,42,0.08);
+  vertical-align:middle;
+  font-size:14px;
+  font-weight:900;
+  color:#111827;
+  white-space:nowrap;
+}
+.seller-settlement-pill{
+  height:26px;
+  padding:0 10px;
+  border-radius:999px;
+  border:1px solid rgba(15,23,42,0.10);
+  background:#fff;
+  font-size:13px;
+  font-weight:1000;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
+.pill--refund{border-color: rgba(209,67,67,0.20); background: rgba(209,67,67,0.08); color:#b42323}
+.pill--cancel{border-color: rgba(217,119,6,0.22); background: rgba(217,119,6,0.10); color:#92400E}
+
+/* 정산 테이블 */
+.seller-settlement-table-wrap{margin-bottom:14px}
+.seller-settlement-table-head{
+  padding:16px 16px 0;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.seller-settlement-table-scroll{padding:12px 16px 6px; overflow:auto}
+.seller-settlement-table{
+  width:100%;
+  min-width: 1120px;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.seller-settlement-table thead th{
+  text-align:left;
+  font-size:13px;
+  font-weight:1000;
+  color:#6B7280;
+  padding:12px 12px;
+  border-bottom:1px solid rgba(15,23,42,0.10);
+  white-space:nowrap;
+}
+.seller-settlement-table tbody td{
+  padding:14px 12px;
+  border-bottom:1px solid rgba(15,23,42,0.08);
+  vertical-align:top;
+  font-size:14px;
+  font-weight:900;
+  color:#111827;
+  white-space:nowrap;
+}
+.seller-settlement-table tbody tr:hover td{background: rgba(238,241,246,0.28)}
+.seller-settlement-table td.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+.seller-settlement-table td.neg{color:#b42323}
+.seller-settlement-table td.mix{color:#374151}
+.seller-settlement-badge{
+  height:28px;
+  padding:0 12px;
+  border-radius:999px;
+  border:1px solid var(--seller-border);
+  background:#fff;
+  font-size:14px;
+  font-weight:1000;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
+.badge--done{border-color: rgba(76,101,175,0.22); background: rgba(76,101,175,0.10); color: var(--seller-primary)}
+.badge--pending{border-color: rgba(34,197,94,0.22); background: rgba(34,197,94,0.10); color:#166534}
+.badge--warn{border-color: rgba(217,119,6,0.22); background: rgba(217,119,6,0.10); color:#92400E}
+
+.seller-settlement-mini-btn{
+  height:34px;
+  padding:0 10px;
+  border-radius:12px;
+  border:1px solid var(--seller-border);
+  background:#fff;
+  cursor:pointer;
+  font-weight:1000;
+  font-size:13px;
+  color:#374151;
+  box-shadow: 0 2px 8px rgba(17,24,39,0.06);
+}
+.seller-settlement-pagination{
+  padding:10px 16px 16px;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+}
+.seller-settlement-page-btn{
+  height:38px;
+  padding:0 12px;
+  border-radius:12px;
+  border:1px solid var(--seller-border);
+  background:#fff;
+  cursor:pointer;
+  font-weight:900;
+  font-size:14px;
+  color:#374151;
+}
+.seller-settlement-page-btn.active{
+  background: var(--seller-primary);
+  border-color: rgba(76,101,175,0.38);
+  color:#fff;
+}
+
+/* 빈 상태 */
+.seller-settlement-empty{margin-top:14px;padding:22px}
+.seller-settlement-empty-inner{padding:28px 18px;text-align:center}
+.seller-settlement-empty-icon{
+  width:56px;height:56px;margin:0 auto 12px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:18px;
+  background: rgba(76,101,175,0.10);
+  color: var(--seller-primary);
+}
+.seller-settlement-empty-title{margin:0;font-size:19px;font-weight:1000;letter-spacing:-0.02em}
+.seller-settlement-empty-desc{margin:10px 0 16px;color:var(--seller-muted);font-size:16px;line-height:1.5}
+
+/* 상세 모달 */
+.seller-settlement-modal{
+  position:fixed;
+  inset:0;
+  z-index:60;
+}
+.seller-settlement-modal.hidden{display:none !important}
+.seller-settlement-modal__dim{
+  position:absolute;
+  inset:0;
+  background: rgba(17,24,39,0.40);
+}
+.seller-settlement-modal__dialog{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  width: min(720px, 92vw);
+  background:#fff;
+  border:1px solid rgba(15,23,42,0.10);
+  border-radius:18px;
+  box-shadow: 0 20px 60px rgba(15,23,42,0.16);
+  overflow:hidden;
+}
+.seller-settlement-modal__head{
+  padding:16px 16px;
+  border-bottom:1px solid rgba(15,23,42,0.08);
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.seller-settlement-modal__title{
+  margin:0;
+  font-size:18px;
+  font-weight:1000;
+  letter-spacing:-0.02em;
+}
+.seller-settlement-modal__sub{
+  margin:8px 0 0;
+  font-size:14px;
+  font-weight:900;
+  color: var(--seller-muted);
+}
+.seller-settlement-modal__close{
+  width:44px;height:44px;
+  border-radius:12px;
+  border:1px solid var(--seller-border);
+  background:#fff;
+  cursor:pointer;
+  box-shadow: 0 2px 8px rgba(17,24,39,0.06);
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.seller-settlement-modal__body{padding:16px 16px 18px}
+.seller-settlement-detail-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap:10px;
+}
+.seller-settlement-detail-grid .box{
+  border:1px solid rgba(15,23,42,0.08);
+  border-radius:16px;
+  background: rgba(238,241,246,0.22);
+  padding:12px 12px;
+}
+.seller-settlement-detail-grid .box--strong{
+  grid-column: span 2;
+  background: rgba(76,101,175,0.08);
+  border-color: rgba(76,101,175,0.18);
+}
+.seller-settlement-detail-grid .k{font-size:13px;font-weight:1000;color:var(--seller-muted)}
+.seller-settlement-detail-grid .v{margin-top:8px;font-size:16px;font-weight:1000;color:#111827}
+.seller-settlement-detail-grid .v.neg{color:#b42323}
+
+.seller-settlement-detail-pay{margin-top:14px}
+.seller-settlement-detail-pay .h4{
+  margin:0 0 10px;
+  font-size:15px;
+  font-weight:1000;
+}
+.seller-settlement-detail-pay .pay-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 12px;
+  border:1px solid rgba(15,23,42,0.08);
+  border-radius:16px;
+  background:#fff;
+}
+.seller-settlement-detail-pay .pay-row + .pay-row{margin-top:8px}
+.seller-settlement-detail-pay .pay-row .label{font-weight:1000;color:#6B7280}
+.seller-settlement-detail-pay .pay-row .value{font-weight:1000;color:#111827}
+.seller-settlement-detail-pay .pay-row.wallet{
+  border-color: rgba(76,101,175,0.18);
+  background: rgba(76,101,175,0.08);
+}
+.seller-settlement-detail-pay .hint{
+  margin:10px 0 0;
+  font-size:13px;
+  font-weight:900;
+  color: var(--seller-muted);
+}
+
+.hidden{display:none !important}
+
+@media (max-width: 1160px){
+  .seller-settlement-summary-grid{grid-template-columns: repeat(2, minmax(0, 1fr));}
+  .seller-settlement-grid{grid-template-columns: 1fr;}
+  .seller-settlement-filters{grid-template-columns: 1fr 1fr; align-items:stretch;}
+  .seller-settlement-field--btn{grid-column: 1 / -1;}
+  .seller-settlement-detail-grid{grid-template-columns: 1fr 1fr;}
+  .seller-settlement-detail-grid .box--strong{grid-column: 1 / -1;}
+}
+
