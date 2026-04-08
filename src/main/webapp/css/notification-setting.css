@@ -1,0 +1,147 @@
+@charset "UTF-8";
+
+/* 알림 설정 — order-payment 헤더 구조 + 큰 토글 */
+
+.notification-setting-page .detail-page-inner {
+  background: #f5f5f5;
+  padding-bottom: 24px;
+}
+
+.notification-setting-inner {
+  overflow: visible;
+}
+
+.notification-setting-sticky-head {
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  background: #fff;
+  border-bottom: 1px solid #eceff2;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+}
+
+.notification-setting-header-wrap {
+  position: relative;
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.notification-setting-header-wrap .app-back-header {
+  position: absolute;
+  inset: 0;
+  border-bottom: none;
+  background: transparent;
+}
+
+.notification-setting-header-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  font-size: var(--app-header-title-size, 20px);
+  font-weight: 800;
+  color: #111;
+  max-width: 56%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.notification-setting-main {
+  padding: 14px 14px 1px;
+}
+
+.ns-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #eef0f3;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.ns-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 16px;
+  border: none;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ns-row + .ns-row {
+  border-top: 1px solid #f0f1f3;
+}
+
+.ns-row:active {
+  transform: scale(0.98);
+}
+
+.ns-left {
+  min-width: 0;
+}
+
+.ns-title {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #111;
+  letter-spacing: -0.01em;
+}
+
+.ns-desc {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #888;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+/* 큰 토글 스위치 */
+.ns-switch {
+  flex-shrink: 0;
+  width: 58px;
+  height: 32px;
+  border-radius: 999px;
+  background: #ddd;
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.ns-switch__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.14);
+  transition: transform 0.2s ease;
+}
+
+.ns-row.is-on .ns-switch {
+  background: #4caf50;
+}
+
+.ns-row.is-on .ns-switch__thumb {
+  transform: translateX(26px);
+}
+
+.ns-hint {
+  margin: 12px 2px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #9a9a9a;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+

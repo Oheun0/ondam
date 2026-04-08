@@ -1,0 +1,227 @@
+@charset "UTF-8";
+
+/* 주문 완료 화면 전용 — common/mypage/wallet 톤과 정렬 */
+
+.order-complete-page .app-shell {
+  background: var(--bg-light, #f6f6f6);
+}
+
+.order-complete-wrap {
+  padding-top: 14px;
+}
+
+.oc-hero {
+  text-align: center;
+  padding: 28px 18px 24px;
+}
+
+.oc-hero-icon {
+  width: 72px;
+  height: 72px;
+  margin: 2px auto 12px;
+  border-radius: 50px;
+  background: #EAEAEA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.oc-hero-symbol {
+  font-size: 42px;
+  color: #6C6C6C;
+}
+
+.oc-hero-title {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #111;
+}
+
+.oc-hero-sub {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-sub, #777);
+  line-height: 1.45;
+}
+
+.oc-card {
+  padding: 20px 16px;
+}
+
+.oc-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.oc-card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #111;
+}
+
+.oc-order-line {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #f7f8fa;
+  border: 1px solid #eef0f3;
+  margin-bottom: 14px;
+}
+
+.oc-order-count {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 900;
+  color: #111;
+}
+
+.oc-order-desc {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #444;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.oc-kv {
+  margin: 0;
+}
+
+.oc-kv-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.oc-kv-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.oc-kv-key {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #666;
+}
+
+.oc-kv-val {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+  color: #111;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.oc-kv-val--strong {
+  color: #111;
+  font-size: 16px;
+}
+
+.oc-ship-block {
+  padding: 2px 0 0;
+}
+
+.oc-ship-who {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #111;
+  letter-spacing: -0.01em;
+}
+
+.oc-ship-sep {
+  margin: 0 8px;
+  color: #c5c5c5;
+  font-weight: 700;
+}
+
+.oc-ship-addr {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #555;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.oc-ship-req {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #f7f8fa;
+  border: 1px solid #eef0f3;
+  font-size: 14px;
+  font-weight: 800;
+  color: #444;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.oc-ship-req__label {
+  color: #777;
+  font-weight: 900;
+  margin-right: 6px;
+}
+
+.oc-note {
+  margin: 0 0 14px;
+  padding: 16px 16px;
+  border-radius: 18px;
+  background: #EAEAEA;
+}
+
+.oc-note-line {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #6C6C6C;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.oc-note-line + .oc-note-line {
+  margin-top: 6px;
+  color: #6C6C6C;
+}
+
+.oc-actions {
+  padding: 2px 0 6px;
+}
+
+.oc-primary-btn {
+  width: 100%;
+  min-height: 56px;
+  border: none;
+  border-radius: 18px;
+  background: #4caf50;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.oc-primary-btn:active {
+  transform: scale(0.98);
+  opacity: 0.95;
+}
+
+.oc-strong {
+  font-weight: 900;
+  color: #111;
+}
+

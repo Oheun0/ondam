@@ -178,7 +178,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/mypage/withdraw" class="menu-item danger">
+                <a href="javascript:void(0);" onclick="openWithdraw()" class="menu-item danger">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">person_remove</span>
                         <strong class="menu-label">탈퇴하기</strong>
@@ -190,7 +190,8 @@
     </main>
 
     <jsp:include page="../layout/bottomNav.jsp" />
-</div>
+    
+</div><jsp:include page="withdraw.jsp" />
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>
