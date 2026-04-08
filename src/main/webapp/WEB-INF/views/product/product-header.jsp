@@ -3,11 +3,12 @@
 
 <section class="product-header-section">
   <div class="product-topbar">
-    <button type="button" class="product-back-btn" aria-label="뒤로가기">
-      <span class="material-icons">arrow_back_ios_new</span>
-    </button>
+		<button type="button" class="detail-icon-btn" aria-label="뒤로가기"
+			onclick="history.length > 1 ? history.back() : (window.location.href = document.body.dataset.contextPath + '/main')">
+			<span class="material-icons">arrow_back_ios_new</span>
+		</button>
 
-    <div class="product-title-wrap">
+		<div class="product-title-wrap">
       <button type="button" class="product-category-toggle" id="categoryToggleBtn">
         <span class="product-title-label" id="viewModeLabel">
           <c:choose>

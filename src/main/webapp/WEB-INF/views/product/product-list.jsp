@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/category.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product.css">
 </head>
-<body class="product-list-page" data-context-path="${pageContext.request.contextPath}">
+<body class="product-list-page" data-context-path="${pageContext.request.contextPath}" data-login-user="${not empty sessionScope.loginUser ? 'true' : ''}">
   <div class="product-shell">
     <div class="product-page-inner product-page-inner--sticky-header">
       <jsp:include page="/WEB-INF/views/product/product-header.jsp" />
