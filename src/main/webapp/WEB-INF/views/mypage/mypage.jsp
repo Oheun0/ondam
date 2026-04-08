@@ -109,7 +109,7 @@
             </div>
 
             <div class="menu-card">
-                <a href="${pageContext.request.contextPath}/order/list" class="menu-item">
+                <a href="${pageContext.request.contextPath}/order/order-list" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons-outlined menu-row-icon" aria-hidden="true">local_shipping</span>
                         <strong class="menu-label">주문 / 배송</strong>
