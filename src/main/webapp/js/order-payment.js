@@ -455,9 +455,70 @@
 	              return;
 	          }
 	      }
-	      // 다음 단계: 실제 주문 INSERT
-	      window.alert("결제 진행 예정");
-	  }
+		  // 실제 주문 submit
+		      var contextPath = document.body.getAttribute("data-context-path") || "";
+		      var form = document.createElement("form");
+		      form.method = "POST";
+		      form.action = contextPath + "/payment?action=submit";
+
+		      // 배송지 정보 (현재 화면에 표시된 값)
+		      var whoEl  = document.querySelector(".op-ship-who");
+		      var addrEl = document.querySelector(".op-ship-addr");
+		      var receiverName = "";
+		      var receiverTel  = "";
+		      if (whoEl) {
+		          var strongs = whoEl.querySelectorAll(".op-strong");
+		          if (strongs[0]) receiverName = strongs[0].textContent.trim();
+		          if (strongs[1]) receiverTel  = strongs[1].textContent.trim();
+		      }
+		      var deliveryAddr = addrEl ? addrEl.textContent.trim() : "";
+
+		      // 배송 요청사항
+		      var deliveryContent = isDeliveryCustomMode
+		          ? (deliveryCustomInput ? deliveryCustomInput.value.trim() : "")
+		          : selectedDelivery;
+
+		      // 결제 수단 매핑 (0:지갑 1:카드 2:계좌)
+		      var payMethodMap = { wallet: 0, card: 1, transfer: 2 };
+		      var payMethod = payMethodMap[selectedPay] !== undefined ? payMethodMap[selectedPay] : 1;
+
+		      var couponDiscount = computeCouponDiscount();
+		      var payable = Math.max(0, totalProduct - productDiscount - couponDiscount + shippingFee);
+
+		      var fields = {
+		          receiverName:    receiverName,
+		          receiverTel:     receiverTel,
+		          deliveryAddr:    deliveryAddr,
+		          deliveryContent: deliveryContent,
+		          paymentMethod:   payMethod,
+		          selectedCouponId: selectedCouponId || "",
+		          couponDiscount:  couponDiscount,
+		          paymentAmount:   payable
+		      };
+
+		      // cartItemNo 배열도 같이 전송 (hidden input 여러 개)
+		      var checkedItems = document.querySelectorAll(".cart-item__checkbox:checked");
+		      // order-payment.jsp에서 cartItemNo를 hidden으로 넣어두는 방식으로 처리
+		      var cartItemNoInputs = document.querySelectorAll("input[name='cartItemNo']");
+		      cartItemNoInputs.forEach(function(inp) {
+		          var hidden = document.createElement("input");
+		          hidden.type = "hidden";
+		          hidden.name = "cartItemNo";
+		          hidden.value = inp.value;
+		          form.appendChild(hidden);
+		      });
+
+		      Object.keys(fields).forEach(function(key) {
+		          var input = document.createElement("input");
+		          input.type  = "hidden";
+		          input.name  = key;
+		          input.value = fields[key];
+		          form.appendChild(input);
+		      });
+
+		      document.body.appendChild(form);
+		      form.submit();
+		  }
     });
 
     // Coupon mirror toggle (applied coupon box)

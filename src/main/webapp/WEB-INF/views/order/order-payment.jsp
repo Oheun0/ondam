@@ -48,6 +48,10 @@
 		      </p>
 		    </c:if>
 		  </c:forEach>
+		  
+		  <c:forEach var="item" items="${orderItems}">
+		      <input type="hidden" name="cartItemNo" value="${item.cartItemNo}" class="hidden-cart-item-no">
+		  </c:forEach>
 		</section>
 
         <section class="op-card op-ship-card" aria-label="배송지">
