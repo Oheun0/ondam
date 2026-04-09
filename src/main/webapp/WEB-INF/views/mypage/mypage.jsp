@@ -188,6 +188,7 @@
     <jsp:include page="../layout/bottomNav.jsp" />
     
 </div><jsp:include page="withdraw.jsp" />
+<script src="${pageContext.request.contextPath}/js/withdraw.js"></script>
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>
