@@ -269,3 +269,33 @@ public class OrdersDAO {
 	    return orderNo;
 	}
 }
+		
+		public Vector<Integer> getOrderNosByUser(int userNo) {
+		    Connection con = null;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
+		    Vector<Integer> orderNos = new Vector<>();
+
+		    try {
+		        con = pool.getConnection();
+		        // 최근 3개월 동안 해당 사용자가 주문한 주문 번호(orderNo)만 추출
+		        String sql = "SELECT orderNo FROM orders " +
+		                     "WHERE userNo = ? AND orderDate >= DATE_SUB(NOW(), INTERVAL 3 MONTH) " +
+		                     "ORDER BY orderDate DESC";
+		        
+		        pstmt = con.prepareStatement(sql);
+		        pstmt.setInt(1, userNo);
+		        rs = pstmt.executeQuery();
+
+		        while (rs.next()) {
+		            orderNos.add(rs.getInt("orderNo"));
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        pool.freeConnection(con, pstmt, rs);
+		    }
+		    return orderNos;
+		}
+}
+

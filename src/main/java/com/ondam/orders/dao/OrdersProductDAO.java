@@ -194,5 +194,32 @@ public class OrdersProductDAO {
 		}
 		return vlist;
 	}
+	
+	public Vector<Integer> getProductNosByOrderNo(int orderNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Vector<Integer> productIds = new Vector<>();
+
+        try {
+            con = pool.getConnection();
+            
+            // orders_product 테이블에서 해당 주문에 속한 상품 번호만 추출
+            String sql = "SELECT productNo FROM orders_product WHERE orderNo = ?";
+            
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, orderNo);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                productIds.add(rs.getInt("productNo"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return productIds;
+    }
 }
 

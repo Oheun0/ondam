@@ -82,4 +82,29 @@ public class UserHobbyDAO {
 	    }
 	    return result;
 	}
+	
+	public String getUserHobbies(int userNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    StringBuilder sb = new StringBuilder();
+
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT userHobby FROM userHobby WHERE userNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, userNo);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            if (sb.length() > 0) sb.append(",");
+	            sb.append(rs.getString("userHobby"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return sb.toString(); // 예: "등산,수영,텃밭 가꾸기"
+	}
 }

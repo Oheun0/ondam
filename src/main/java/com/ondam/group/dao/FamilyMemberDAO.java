@@ -162,4 +162,39 @@ public class FamilyMemberDAO {
 		}
 		return flag;
 	}
+	
+	//사용자가 속한 가족 그룹 중 랜덤으로 하나를 반환.
+	public int getRandomFamilyMemberUserNo(int loginUserNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    int targetUserNo = 0;
+
+	    try {
+	        con = pool.getConnection();
+	        
+	        // 로직: 
+	        // 1. 내가 속한 familyNo를 찾는다.
+	        // 2. 그 familyNo를 가진 멤버들 중 나(loginUserNo)를 제외한다.
+	        // 3. 남은 멤버들 중 랜덤으로 1명을 뽑아 그 사람의 userNo를 반환한다.
+	        String sql = "SELECT userNo FROM familyMember " +
+	                     "WHERE familyNo = (SELECT familyNo FROM familyMember WHERE userNo = ? ORDER BY RAND() LIMIT 1) " +
+	                     "AND userNo != ? " +
+	                     "ORDER BY RAND() LIMIT 1";
+	        
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, loginUserNo);
+	        pstmt.setInt(2, loginUserNo);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            targetUserNo = rs.getInt("userNo");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return targetUserNo; // 가족이 없으면 0이 반환됨
+	}
 }
