@@ -123,3 +123,60 @@
 .hidden {
   display: none !important;
 }
+
+/* =========================
+   조르기 목록 (poke-list.jsp)
+   cart.jsp 구조 재사용 + 일부 요소 제거/표시용 비활성
+   ========================= */
+
+.poke-list-page .poke-list-inner {
+  padding-bottom: 96px; /* 하단 고정 버튼 공간 */
+}
+
+.poke-list-guide-card {
+  margin: 14px 16px 10px;
+  padding: 16px 16px 14px;
+  border-radius: 18px;
+  background: var(--bg-white);
+  box-shadow: var(--main-card-shadow);
+  border: 1px solid #eef0f2;
+}
+
+.poke-list-guide-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.poke-list-guide-sub {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-sub);
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+/* 툴바: 전체 선택만 노출 */
+.poke-list-toolbar {
+  padding-top: 2px;
+}
+
+/* 옵션 변경 버튼은 표시만(비활성) */
+.poke-list-page .cart-item__option-btn[disabled] {
+  opacity: 1;
+  cursor: default;
+}
+
+.poke-list-page .cart-item__option-btn[disabled]:active {
+  transform: none;
+}
+
+/* 하단 고정 버튼 문구 길어도 줄바꿈 방지 */
+.poke-order-bar .cart-order-bar__btn {
+  white-space: nowrap;
+}

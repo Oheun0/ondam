@@ -37,4 +37,3 @@ public class NotificationSettingService {
 		return dao.toggleSetting(userNo, notificationType, isEnabled);
 	}
 }
-

@@ -34,11 +34,16 @@ public class NotificationSettingController implements Controller {
 	}
 
 	private String viewSettings(HttpServletRequest request, HttpServletResponse response) {
-		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
-		Vector<NotificationSettingDTO> settings = settingService.getSettingsByUserNo(loginUser.getUserNo());
-		request.setAttribute("settings", settings);
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    Vector<NotificationSettingDTO> settings = settingService.getSettingsByUserNo(loginUser.getUserNo());
 
-		return "notification/notification-setting"; 
+	    // type → isEnabled 매핑
+	    java.util.Map<Integer, Integer> settingMap = new java.util.HashMap<>();
+	    for (NotificationSettingDTO s : settings) {
+	        settingMap.put(s.getNotificationType(), s.getIsEnabled());
+	    }
+	    request.setAttribute("settingMap", settingMap);
+	    return "notification/notification-setting";
 	}
 
 	private String toggleSetting(HttpServletRequest request, HttpServletResponse response) throws Exception {

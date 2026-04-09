@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
     const pwdInput = document.getElementById('withdrawPwd');
     const errorMsg = document.getElementById('withdrawErrorMsg');
+    const modal = document.getElementById('withdrawModal');
+    const cancelBtn = document.getElementById('withdrawCancelBtn');
+    const submitBtn = document.getElementById('withdrawSubmitBtn');
 
     if (pwdInput) {
         pwdInput.addEventListener('input', function() {
@@ -11,10 +14,34 @@ document.addEventListener("DOMContentLoaded", function() {
             pwdInput.classList.remove('error-border');
         });
     }
+
+    if (modal) {
+        modal.querySelectorAll("[data-withdraw-dismiss]").forEach(function (dim) {
+            dim.addEventListener("click", function () {
+                closeWithdraw();
+            });
+        });
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", function () {
+            closeWithdraw();
+        });
+    }
+
+    if (submitBtn) {
+        submitBtn.addEventListener("click", function () {
+            submitWithdraw();
+        });
+    }
 });
 
 function openWithdraw() {
-    document.getElementById('withdrawOverlay').style.display = 'flex';
+    const modal = document.getElementById('withdrawModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.setAttribute('aria-hidden', 'false');
+    }
     
     const pwdInput = document.getElementById('withdrawPwd');
     const errorMsg = document.getElementById('withdrawErrorMsg');
@@ -30,7 +57,11 @@ function openWithdraw() {
 }
 
 function closeWithdraw() {
-    document.getElementById('withdrawOverlay').style.display = 'none';
+    const modal = document.getElementById('withdrawModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+    }
 }
 
 function submitWithdraw() {
