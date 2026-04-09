@@ -71,6 +71,7 @@ a {
   margin: 0;
   font-size: 16px;
   color: var(--sub-text);
+  font-weight: 700;
 }
 
 .auth-card {
@@ -164,7 +165,7 @@ a {
   min-height: 58px;
   border: 0;
   border-radius: 16px;
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
   cursor: pointer;
   transition: 0.15s ease;
@@ -227,6 +228,7 @@ a {
   color: #909090;
   font-size: 14px;
   margin: 18px 0;
+  font-weight: 700;
 }
 
 .divider::before,
@@ -245,15 +247,17 @@ a {
   margin-top: 18px;
   font-size: 15px;
   color: var(--sub-text);
+  font-weight: 700;
 }
 
 .info-box {
-  background: #f8faf8;
-  border: 1px solid #ebf1eb;
+  background: #F7F7F7;
+  border: 1px solid #EAEAEA;
   border-radius: 16px;
   padding: 16px;
   font-size: 15px;
-  color: #4d5a4e;
+  color: #6C6C6C;
+  font-weight: 600;
   margin: 0 auto 100px auto;
 }
 

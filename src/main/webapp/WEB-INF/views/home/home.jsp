@@ -93,7 +93,7 @@
                     </div>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/wishlist" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/wish" class="shortcut-card">
 
                     <div class="shortcut-text">
                         <div class="shortcut-title-row">
@@ -266,7 +266,12 @@
                 </div>
                 <div class="notice-item">
                     <span class="notice-dot"></span>
-                    <p>함께 지갑에 내 사람이 넣어준 돈으로 쉽게 구매할 수 있어요</p>
+                    <p>편하게 시작할 수 있도록 이용가이드를 준비했어요</p>
+                    <span class="notice-date">안내</span>
+                </div>
+                <div class="notice-item">
+                    <span class="notice-dot"></span>
+                    <p>함께 지갑에 내 사람이 넣어준 금액으로 쉽게 결제할 수 있어요</p>
                     <span class="notice-date">안내</span>
                 </div>
             </div>

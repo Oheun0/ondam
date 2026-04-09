@@ -6,18 +6,6 @@
   "use strict";
 
   var MAX_RECENT = 10;
-  var recentKeywords = [
-    "니트",
-    "청바지",
-    "가디건",
-    "바람막이",
-    "셔츠",
-    "조끼",
-    "슬랙스",
-    "원피스",
-    "운동화",
-    "자켓",
-  ];
 
   var body = document.body;
   var isSearchHome = body.classList.contains("product-search-page");
@@ -31,6 +19,23 @@
   var backBtn = document.getElementById("searchBackBtn");
 
   var editing = false;
+  
+  function setEditing(next) {
+    editing = !!next;
+    if (sectionEl) {
+      sectionEl.classList.toggle("is-editing", editing);
+    }
+    if (editBtn) {
+      editBtn.textContent = editing ? "완료" : "편집";
+      editBtn.setAttribute("aria-pressed", editing ? "true" : "false");
+    }
+    
+    // 버튼들에도 클래스를 토글해줍니다 (CSS 선택자 대응)
+    var chipBtns = document.querySelectorAll(".recent-search-chip-btn");
+    chipBtns.forEach(function(btn) {
+      btn.classList.toggle("is-editing", editing);
+    });
+  }
 
   function getCtx() {
     return body.getAttribute("data-context-path") || "";
@@ -48,44 +53,7 @@
     if (!q) return;
     window.location.href =
       getCtx() +
-      "/preview?page=product/search-result&q=" +
-      encodeURIComponent(q);
-  }
-
-  function renderRecent() {
-    if (!listEl) return;
-    listEl.innerHTML = "";
-
-    recentKeywords.forEach(function (kw) {
-      var chip = document.createElement("div");
-      chip.className = "recent-search-chip";
-      chip.setAttribute("role", "listitem");
-
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "recent-search-chip-btn";
-      btn.dataset.keyword = kw;
-
-      if (editing) {
-        btn.classList.add("is-editing");
-        btn.setAttribute("aria-label", kw + " 삭제");
-        var textSpan = document.createElement("span");
-        textSpan.className = "recent-search-chip-text";
-        textSpan.textContent = kw;
-        var xSpan = document.createElement("span");
-        xSpan.className = "recent-search-chip-x";
-        xSpan.setAttribute("aria-hidden", "true");
-        xSpan.textContent = "\u00D7";
-        btn.appendChild(textSpan);
-        btn.appendChild(xSpan);
-      } else {
-        btn.setAttribute("aria-label", kw + " 검색");
-        btn.textContent = kw;
-      }
-
-      chip.appendChild(btn);
-      listEl.appendChild(chip);
-    });
+	"/search?q=" + encodeURIComponent(q);
   }
 
   function setEditing(next) {
@@ -97,7 +65,6 @@
       editBtn.textContent = editing ? "완료" : "편집";
       editBtn.setAttribute("aria-pressed", editing ? "true" : "false");
     }
-    renderRecent();
   }
 
   if (editBtn && sectionEl) {
@@ -107,22 +74,30 @@
   }
 
   if (listEl) {
-    listEl.addEventListener("click", function (e) {
-      var chipBtn = e.target.closest(".recent-search-chip-btn");
-      if (!chipBtn) return;
-      e.preventDefault();
-      var key = chipBtn.dataset.keyword;
-      if (editing) {
-        recentKeywords = recentKeywords.filter(function (x) {
-          return x !== key;
-        });
-        renderRecent();
-        return;
-      }
-      if (isSearchHome) {
-        goToSearchResult(key);
-      }
-    });
+      listEl.addEventListener("click", function (e) {
+          var chipBtn = e.target.closest(".recent-search-chip-btn");
+          if (!chipBtn) return;
+          e.preventDefault();
+          var key = chipBtn.dataset.keyword;
+
+          if (editing) {
+              // DOM 즉시 제거
+              var chip = chipBtn.closest(".recent-search-chip");
+              if (chip) chip.remove();
+
+              // DB 삭제
+              fetch(getCtx() + "/search?action=deleteRecent&q=" + encodeURIComponent(key), {
+                  method: "POST"
+              }).catch(function () {
+                  // 실패해도 DOM은 이미 지워진 상태 유지
+              });
+              return;
+          }
+
+          if (isSearchHome) {
+              goToSearchResult(key);
+          }
+      });
   }
 
   if (formEl) {
@@ -136,13 +111,15 @@
   }
 
   if (backBtn) {
-    backBtn.addEventListener("click", function () {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = getCtx() + "/main";
-      }
-    });
+      backBtn.addEventListener("click", function () {
+          // 검색 결과 페이지 → 검색 입력 화면으로
+          if (isSearchResult) {
+              window.location.href = getCtx() + "/search";
+              return;
+          }
+          // 검색 입력 화면 → 이전 페이지(홈/카테고리)로
+          window.location.href = getCtx() + "/main";
+      });
   }
 
   var popularList = document.getElementById("popularSearchList");
@@ -154,9 +131,4 @@
       if (kw) goToSearchResult(kw);
     });
   }
-
-  if (listEl) {
-    renderRecent();
-  }
 })();
-

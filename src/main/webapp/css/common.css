@@ -1,3 +1,12 @@
+/* Pretendard Variable — webapp/fonts/pretendard/PretendardVariable.woff2 */
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 45 920;
+    font-style: normal;
+    font-display: swap;
+    src: url('../fonts/pretendard/PretendardVariable.woff2') format('woff2-variations');
+}
+
 :root {
     --brand-color: #4caf50;
     --brand-light: #edf7ee;
@@ -36,6 +45,27 @@ body {
     color: var(--text-main);
     background: var(--bg-light);
     min-width: 320px;
+}
+
+/* 입력창 placeholder — 브라우저 기본 폰트 대신 Pretendard(웹폰트) 적용 */
+input::placeholder,
+textarea::placeholder,
+.input::placeholder {
+    font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+    opacity: 1;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder,
+.input::-webkit-input-placeholder {
+    font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder,
+.input::-moz-placeholder {
+    font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+    opacity: 1;
 }
 
 a,

@@ -1139,10 +1139,11 @@
 }
 
 /* ----- 그룹 해산 / 나가기 확인 모달 (inquiry-write 확인 모달 톤과 통일) ----- */
+/* 뒤로가기·헤더까지 딤 / 하단 탭바(80px)는 딤 제외 — ai-recommend-modal과 동일 z-index */
 .group-modal {
   position: fixed;
   inset: 0;
-  z-index: 400;
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1157,7 +1158,8 @@
 .group-modal-dim {
   position: fixed;
   top: 0;
-  bottom: 0;
+  /* 하단 탭바 영역은 딤 없음 (home.css .bottom-nav 와 동일 높이) */
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;

@@ -57,15 +57,7 @@
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=19" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/out-meeting.jpg" alt=""></span><span class="situation-label">사람 만날 때 입는 옷</span></a></li>
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=20" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/out-weather.jpg" alt=""></span><span class="situation-label">날씨에 맞는 옷</span></a></li>
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=21" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/out-walking.jpg" alt=""></span><span class="situation-label">오래 걸어도 편한 옷</span></a></li>
-							</ul>
-						</div>
-						<div class="detail-section">
-							<h2 class="detail-heading">🏥 병원 갈 때 입어요</h2>
-							<ul class="situation-rows">
 								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=22" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hospital-easywear.jpg" alt=""></span><span class="situation-label">입고 벗기 쉬운 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=23" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hospital-checkup.jpg" alt=""></span><span class="situation-label">검사 받기 편한 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=24" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hospital-comfy.jpg" alt=""></span><span class="situation-label">편안한 옷</span></a></li>
-								<li><a href="${pageContext.request.contextPath}/product?action=list&situationNo=25" class="situation-row"><span class="situation-thumb" aria-hidden="true"><img src="${pageContext.request.contextPath}/images/category/hospital-warm.jpg" alt=""></span><span class="situation-label">따뜻한 옷</span></a></li>
 							</ul>
 						</div>
 						<div class="detail-section">
@@ -153,13 +145,13 @@
                     <div class="detail-row two-column">
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=5" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-top-short.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-top-short.png" alt="">
                             </div>
                             <p>반팔</p>
                         </a>
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=6" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-top-long.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-top-long.png" alt="">
                             </div>
                             <p>긴팔</p>
                         </a>
@@ -171,13 +163,13 @@
                         </a>
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=8" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-top-shirt.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-top-shirt.png" alt="">
                             </div>
                             <p>셔츠</p>
                         </a>
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=9" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-top-vest.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-top-vest.png" alt="">
                             </div>
                             <p>조끼</p>
                         </a>
@@ -197,13 +189,13 @@
                         </a>
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=11" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-bottom-short.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-bottom-short.png" alt="">
                             </div>
                             <p>반바지</p>
                         </a>
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=12" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-bottom-skirt.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-bottom-skirt.png" alt="">
                             </div>
                             <p>치마</p>
                         </a>
@@ -217,13 +209,13 @@
                     <div class="detail-row two-column">
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=13" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-outer-cardigan.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-outer-cardigan.png" alt="">
                             </div>
                             <p>가디건</p>
                         </a>
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=14" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-outer-jumper.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-outer-jumper.png" alt="">
                             </div>
                             <p>점퍼</p>
                         </a>
@@ -235,7 +227,7 @@
                         </a>
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=16" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-outer-windbreaker.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-outer-padding.png" alt="">
                             </div>
                             <p>바람막이</p>
                         </a>
@@ -255,7 +247,7 @@
                         </a>
                         <a href="${pageContext.request.contextPath}/product?action=list&categoryNo=18" class="detail-card detail-card--type">
                             <div class="detail-thumb detail-thumb--square" aria-hidden="true">
-                                <img src="${pageContext.request.contextPath}/images/category/type-set-two-piece.jpg" alt="">
+                                <img src="${pageContext.request.contextPath}/images/category/type-set-two-piece.png" alt="">
                             </div>
                             <p>세트 옷</p>
                         </a>

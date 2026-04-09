@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product-search.css">
 </head>
-<body class="product-list-page search-result-page" data-context-path="${pageContext.request.contextPath}">
+<body class="product-list-page search-result-page" data-context-path="${pageContext.request.contextPath}" data-login-user="${not empty sessionScope.loginUser ? 'true' : ''}">
   <div class="product-shell">
     <div class="product-page-inner product-page-inner--sticky-header search-result-inner">
       <jsp:include page="/WEB-INF/views/layout/back-searchBar.jsp">
@@ -30,6 +30,7 @@
     <jsp:include page="/WEB-INF/views/layout/bottomNav.jsp"/>
   </div>
 
+  <script>const CONTEXT_PATH = '${pageContext.request.contextPath}';</script>
   <script src="${pageContext.request.contextPath}/js/product-list.js"></script>
   <script src="${pageContext.request.contextPath}/js/product-search.js"></script>
 </body>

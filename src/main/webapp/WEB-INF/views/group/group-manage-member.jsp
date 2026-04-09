@@ -143,16 +143,17 @@
 
 					<div class="pending-member-actions pending-member-actions--column">
 						<%-- 내 familyMemberNo로 memberDelete 호출 --%>
-						<a
-							href="${pageContext.request.contextPath}/group?action=memberDelete&familyMemberNo=${myMember.familyMemberNo}"
-							class="group-empty-btn group-empty-btn--secondary group-empty-btn--danger-outline">
-							그룹 나가기 </a>
+						<button type="button" id="btnLeave"
+						        class="group-empty-btn group-empty-btn--secondary group-empty-btn--danger-outline">
+						  그룹 나가기
+						</button>
 					</div>
 				</div>
 			</div>
 		</section>
 		
     <jsp:include page="../layout/bottomNav.jsp" />
+    <jsp:include page="/WEB-INF/views/group/group-modal.jsp"/>
   </div>
 	<script>
 		const contextPath = document.body.dataset.contextPath;
@@ -219,6 +220,25 @@
 		  helpBtn.classList.add('member-btn--help');
 		  helpBtn.onclick = function() { toggleHelp(helpBtn); return false; };
 		}
+		
+		const leaveModal = document.getElementById('groupModalLeave');
+
+		// 모달 열기
+		document.getElementById('btnLeave').addEventListener('click', function () {
+		    leaveModal.classList.remove('hidden');
+		});
+
+		// 딤 + 계속 사용하기 → 닫기
+		leaveModal.querySelectorAll('[data-group-modal-dismiss]').forEach(function (el) {
+		    el.addEventListener('click', function () {
+		        leaveModal.classList.add('hidden');
+		    });
+		});
+
+		// 나가기 확인 → memberDelete 액션
+		leaveModal.querySelector('.group-modal-btn--danger').addEventListener('click', function () {
+		    window.location.href = contextPath + '/group?action=memberDelete&familyMemberNo=${myMember.familyMemberNo}';
+		});
 		</script>
 	<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>

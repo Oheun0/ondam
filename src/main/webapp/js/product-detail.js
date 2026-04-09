@@ -253,22 +253,62 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const sheetWishlistBtn = document.getElementById("sheetWishlistBtn");
   if (sheetWishlistBtn) {
-    var sheetWishIcon = sheetWishlistBtn.querySelector(".detail-wish-icon");
-    sheetWishlistBtn.addEventListener("click", function () {
-      var on = sheetWishlistBtn.classList.toggle("detail-action-item--wish-on");
-      sheetWishlistBtn.setAttribute("aria-pressed", on ? "true" : "false");
-      sheetWishlistBtn.setAttribute("aria-label", on ? "찜 해제" : "찜하기");
-      if (!sheetWishIcon) return;
-      if (on) {
-        sheetWishIcon.classList.remove("material-icons-outlined");
-        sheetWishIcon.classList.add("material-icons");
-        sheetWishIcon.textContent = "favorite";
-      } else {
-        sheetWishIcon.classList.remove("material-icons");
-        sheetWishIcon.classList.add("material-icons-outlined");
-        sheetWishIcon.textContent = "favorite_border";
+      var sheetWishIcon = sheetWishlistBtn.querySelector(".detail-wish-icon");
+
+      // 초기 찜 상태 반영 (JSP에서 내려온 값)
+      var initWished = sheetWishlistBtn.dataset.wished === "true";
+      if (initWished) {
+          sheetWishlistBtn.classList.add("detail-action-item--wish-on");
+          sheetWishlistBtn.setAttribute("aria-pressed", "true");
+          sheetWishlistBtn.setAttribute("aria-label", "찜 해제");
+          if (sheetWishIcon) {
+              sheetWishIcon.classList.replace("material-icons-outlined", "material-icons");
+              sheetWishIcon.textContent = "favorite";
+          }
       }
-    });
+
+      sheetWishlistBtn.addEventListener("click", function () {
+          var ctx = document.body.getAttribute("data-context-path") || "";
+
+          // 로그인 체크
+          if (!document.body.dataset.loginUser) {
+              window.location.href = ctx + "/login";
+              return;
+          }
+
+          var on = sheetWishlistBtn.classList.toggle("detail-action-item--wish-on");
+          sheetWishlistBtn.setAttribute("aria-pressed", on ? "true" : "false");
+          sheetWishlistBtn.setAttribute("aria-label", on ? "찜 해제" : "찜하기");
+          if (sheetWishIcon) {
+              if (on) {
+                  sheetWishIcon.classList.replace("material-icons-outlined", "material-icons");
+                  sheetWishIcon.textContent = "favorite";
+              } else {
+                  sheetWishIcon.classList.replace("material-icons", "material-icons-outlined");
+                  sheetWishIcon.textContent = "favorite_border";
+              }
+          }
+
+          // 서버 반영
+          fetch(ctx + "/wish?action=toggle&productNo=" + PRODUCT_NO, { method: "POST" })
+              .then(function (r) { return r.json(); })
+              .then(function (data) {
+                  if (data.wished !== on) {
+                      // 서버 결과와 다르면 되돌리기
+                      sheetWishlistBtn.classList.toggle("detail-action-item--wish-on", data.wished);
+                      sheetWishlistBtn.setAttribute("aria-pressed", data.wished ? "true" : "false");
+                      if (sheetWishIcon) {
+                          sheetWishIcon.classList.toggle("material-icons", data.wished);
+                          sheetWishIcon.classList.toggle("material-icons-outlined", !data.wished);
+                          sheetWishIcon.textContent = data.wished ? "favorite" : "favorite_border";
+                      }
+                  }
+              })
+              .catch(function () {
+                  // 실패 시 원상복구
+                  sheetWishlistBtn.classList.toggle("detail-action-item--wish-on", !on);
+              });
+      });
   }
 
   if (openPokeFromSheetBtn) {
@@ -305,11 +345,81 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (sheetAddCartBtn) {
-    sheetAddCartBtn.addEventListener("click", onSheetCartOrBuyClick);
+      sheetAddCartBtn.addEventListener("click", function (e) {
+          if (!isOptionSelected()) {
+              e.preventDefault();
+              e.stopPropagation();
+              showOptionErrorToast();
+              return;
+          }
+
+          var color    = selectedColorText.textContent.trim();
+          var size     = selectedSizeText.textContent.trim();
+          var optionNo = OPTION_NO_MAP[color + "__" + size];
+
+          if (!optionNo) {
+              showOptionErrorToast();
+              return;
+          }
+
+          var ctx = document.body.getAttribute("data-context-path") || "";
+          var form = document.createElement("form");
+          form.method = "POST";
+          form.action = ctx + "/cart?action=add";
+
+          [["productNo", PRODUCT_NO],
+           ["productOptionNo", optionNo],
+           ["quantity", quantity]].forEach(function (pair) {
+              var input = document.createElement("input");
+              input.type = "hidden";
+              input.name = pair[0];
+              input.value = pair[1];
+              form.appendChild(input);
+          });
+
+          document.body.appendChild(form);
+          form.submit();
+      });
   }
 
   if (sheetBuyNowBtn) {
-    sheetBuyNowBtn.addEventListener("click", onSheetCartOrBuyClick);
+      sheetBuyNowBtn.addEventListener("click", function (e) {
+          if (!isOptionSelected()) {
+              e.preventDefault();
+              e.stopPropagation();
+              showOptionErrorToast();
+              return;
+          }
+
+          var color    = selectedColorText.textContent.trim();
+          var size     = selectedSizeText.textContent.trim();
+          var optionNo = OPTION_NO_MAP[color + "__" + size];
+
+          if (!optionNo) {
+              showOptionErrorToast();
+              return;
+          }
+
+          var ctx = document.body.getAttribute("data-context-path") || "";
+          var form = document.createElement("form");
+          form.method = "GET";  // 주문/결제 페이지는 GET으로 파라미터 전달
+          form.action = ctx + "/order/payment";
+
+          [
+              ["productNo",        PRODUCT_NO],
+              ["productOptionNo",  optionNo],
+              ["quantity",         quantity]
+          ].forEach(function (pair) {
+              var input = document.createElement("input");
+              input.type  = "hidden";
+              input.name  = pair[0];
+              input.value = pair[1];
+              form.appendChild(input);
+          });
+
+          document.body.appendChild(form);
+          form.submit();
+      });
   }
 
   if (openShareFromSheetBtn) {
@@ -467,33 +577,53 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.querySelectorAll("[data-color]").forEach((button) => {
-    button.addEventListener("click", function () {
-      document.querySelectorAll("[data-color]").forEach((item) => {
-        item.classList.remove("active");
-        item.setAttribute("aria-selected", "false");
-      });
-      this.classList.add("active");
-      this.setAttribute("aria-selected", "true");
-      selectedColorText.textContent = this.dataset.color;
-      selectedColorText.classList.remove("detail-selected-value--placeholder");
-      colorOptionPanel.classList.add("hidden");
-      syncSheetOptionPanels();
-    });
-  });
+      button.addEventListener("click", function () {
+          document.querySelectorAll("[data-color]").forEach((item) => {
+              item.classList.remove("active");
+              item.setAttribute("aria-selected", "false");
+          });
+          this.classList.add("active");
+          this.setAttribute("aria-selected", "true");
+          selectedColorText.textContent = this.dataset.color;
+          selectedColorText.classList.remove("detail-selected-value--placeholder");
+          colorOptionPanel.classList.add("hidden");
+          syncSheetOptionPanels();
 
-  document.querySelectorAll("[data-size]").forEach((button) => {
-    button.addEventListener("click", function () {
-      document.querySelectorAll("[data-size]").forEach((item) => {
-        item.classList.remove("active");
-        item.setAttribute("aria-selected", "false");
+          // 사이즈 동적 렌더링
+          var selectedColor = this.dataset.color;
+          var sizes = COLOR_SIZE_MAP[selectedColor] || [];
+          var sizeList = document.getElementById("sizeOptionList");
+          if (sizeList) {
+              sizeList.innerHTML = "";
+              sizes.forEach(function (sz) {
+                  var btn = document.createElement("button");
+                  btn.type = "button";
+                  btn.className = "detail-option-row";
+                  btn.setAttribute("data-size", sz);
+                  btn.setAttribute("role", "option");
+                  btn.setAttribute("aria-selected", "false");
+                  btn.textContent = sz;
+                  sizeList.appendChild(btn);
+
+                  btn.addEventListener("click", function () {
+                      sizeList.querySelectorAll(".detail-option-row").forEach(function (b) {
+                          b.classList.remove("active");
+                          b.setAttribute("aria-selected", "false");
+                      });
+                      btn.classList.add("active");
+                      btn.setAttribute("aria-selected", "true");
+                      selectedSizeText.textContent = sz;
+                      selectedSizeText.classList.remove("detail-selected-value--placeholder");
+                      sizeOptionPanel.classList.add("hidden");
+                      syncSheetOptionPanels();
+                  });
+              });
+          }
+
+          // 색상 바뀌면 사이즈 초기화
+          selectedSizeText.textContent = "눌러서 선택하기";
+          selectedSizeText.classList.add("detail-selected-value--placeholder");
       });
-      this.classList.add("active");
-      this.setAttribute("aria-selected", "true");
-      selectedSizeText.textContent = this.dataset.size;
-      selectedSizeText.classList.remove("detail-selected-value--placeholder");
-      sizeOptionPanel.classList.add("hidden");
-      syncSheetOptionPanels();
-    });
   });
 
   syncSheetOptionPanels();

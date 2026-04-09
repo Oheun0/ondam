@@ -2,6 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>보낸 조르기</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+</head>
 <body>
 <h2>보낸 조르기 (임시)</h2>
 <a href="${pageContext.request.contextPath}/poke">받은 조르기 보기</a>

@@ -8,6 +8,7 @@ public class ProductDTO {
     private String productName;
     private String productBrand;
     private String productEx;
+    private int productGender;
     private int productPrice;
     private int productOriginPrice;
     private String productMaterial;
@@ -22,7 +23,7 @@ public class ProductDTO {
     public ProductDTO() {}
 
     public ProductDTO(int productNo, int vendorNo, int categoryNo, String productName, String productBrand,
-                      String productEx, int productPrice, int productOriginPrice, String productMaterial,
+                      String productEx, int productGender, int productPrice, int productOriginPrice, String productMaterial,
                       String productPattern, String productFit, String productThickness, 
                       String productDate, int wishCount, int saleCount, int productState) {
         this.productNo = productNo;
@@ -31,6 +32,7 @@ public class ProductDTO {
         this.productName = productName;
         this.productBrand = productBrand;
         this.productEx = productEx;
+        this.productGender = productGender;
         this.productPrice = productPrice;
         this.productOriginPrice = productOriginPrice;
         this.productMaterial = productMaterial;
@@ -61,7 +63,10 @@ public class ProductDTO {
     public String getProductEx() { return productEx; }
     public void setProductEx(String productEx) { this.productEx = productEx; }
 
-    public int getProductPrice() { return productPrice; }
+    public int getProductGender() { return productGender; }
+    public void setProductGender(int productGender) { this.productGender = productGender; }
+
+	public int getProductPrice() { return productPrice; }
     public void setProductPrice(int productPrice) { this.productPrice = productPrice; }
 
     public int getProductOriginPrice() { return productOriginPrice; }

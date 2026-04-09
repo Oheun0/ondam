@@ -16,6 +16,7 @@ import com.ondam.orders.controller.OrderListController;
 import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
+import com.ondam.product.controller.SearchController;
 import com.ondam.review.controller.ReviewController;
 import com.ondam.review.controller.ReviewImageController;
 import com.ondam.shorts.controller.ShortsApiController;
@@ -45,7 +46,6 @@ import com.ondam.user.controller.SignupStep3PreferenceController;
 import com.ondam.user.controller.UserIdCheckController;
 import com.ondam.wallet.controller.WalletController;
 import com.ondam.wish.controller.WishController;
-
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -112,6 +112,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/order/order-detail", new OrderDetailController());
         handlerMapping.put("/inquiry/inquiry-list", new InquiryController());
         handlerMapping.put("/inquiry", new InquiryController());
+        handlerMapping.put("/search", new SearchController());
         
     }
 

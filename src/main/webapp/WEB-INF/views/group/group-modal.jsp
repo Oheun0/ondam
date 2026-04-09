@@ -20,8 +20,8 @@
       <p class="group-modal-note-line">먼저 꺼낸 후 해산해 주세요</p>
     </div>
     <div class="group-modal-links" aria-label="해산 전 안내 링크">
-      <a href="#" class="group-modal-link">잔액 꺼내고 해산하기</a>
-      <a href="#" class="group-modal-link">그룹장 넘기고 해산하기</a>
+      <a href="${pageContext.request.contextPath}/wallet" class="group-modal-link">잔액 꺼내고 해산하기</a>
+      <a href="#" class="group-modal-link" data-group-modal-dismiss>그룹장 넘기고 해산하기</a>
     </div>
     <div class="group-modal-actions group-modal-actions--double">
       <button type="button" class="group-modal-btn group-modal-btn--ghost" data-group-modal-dismiss>계속 사용하기</button>
