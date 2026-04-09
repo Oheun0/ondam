@@ -95,7 +95,10 @@
 					    리뷰 작성하고 쿠폰받기
 					  </button>
 					</c:if>
-                      <button type="button" class="od-action-btn">상품 문의하기</button>
+                      <button type="button" class="od-action-btn" 
+						        onclick="location.href='${pageContext.request.contextPath}/inquiry?action=writeForm&productNo=${product.productNo}&orderNo=${orderInfo.orderNo}'">
+						  상품 문의하기
+						</button>
                     </div>
                   </article>
                 </li>

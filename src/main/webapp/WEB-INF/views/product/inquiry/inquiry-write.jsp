@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -23,42 +24,45 @@
         </div>
       </div>
 
-      <main class="inquiry-write-main">
-        <!-- 1. 상품 정보 카드 -->
+      <form id="inquiryWriteForm" class="inquiry-write-main">
+
+        <input type="hidden" name="inquiryNo" id="inquiryNo" value="${inquiryData.inquiryNo}">
+<input type="hidden" name="productNo" id="productNo" value="${productInfo.productNo}">
+<input type="hidden" name="orderNo" id="orderNo" value="${param.orderNo}">
+<input type="hidden" name="isSecret" id="isSecret" value="${empty inquiryData ? 0 : inquiryData.isSecret}">
+<input type="hidden" name="isNameHidden" id="isNameHidden" value="${empty inquiryData ? 0 : inquiryData.isNameHidden}">
+
         <section class="inquiry-write-card inquiry-write-product-card" aria-label="문의 상품">
           <div class="inquiry-write-product-card__inner">
             <div class="inquiry-write-product-thumb-wrap">
-              <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" class="inquiry-write-product-thumb" width="65" height="65" loading="lazy"/>
+              <img src="${pageContext.request.contextPath}/uploads/products/${productInfo.productImage}" alt="${productInfo.productName}" class="inquiry-write-product-thumb" width="65" height="65" loading="lazy"/>
             </div>
             <div class="inquiry-write-product-meta">
-              <p class="inquiry-write-brand">A브랜드</p>
-              <p class="inquiry-write-name">포근한 데일리 니트 가디건</p>
+              <p class="inquiry-write-brand">${productInfo.productBrand}</p>
+              <p class="inquiry-write-name">${productInfo.productName}</p>
             </div>
           </div>
         </section>
 
-        <!-- 2. 안내 문구 -->
         <section class="inquiry-write-card inquiry-write-guide" aria-label="안내">
           <h2 class="inquiry-write-title">궁금한 점을 남겨주세요</h2>
           <p class="inquiry-write-desc">
-            배송, 사이즈, 재질처럼 궁금한 내용을 편하게 적어주세요 판매자가 확인 후 답변해드려요
+            배송, 크기, 재질처럼 궁금한 내용을 편하게 적어주세요 판매자가 확인 후 답변해드려요
           </p>
         </section>
 
-        <!-- 3. 문의 입력창 -->
         <section class="inquiry-write-card" aria-labelledby="inquiryWriteTextHeading">
           <h2 class="inquiry-write-title" id="inquiryWriteTextHeading">문의 내용</h2>
           <label class="sr-only" for="inquiryWriteTextarea">문의 내용</label>
           <textarea id="inquiryWriteTextarea"
                     class="inquiry-write-textarea"
-                    name="inquiryBody"
+                    name="inquiryContent"
                     rows="4"
                     required
                     autocomplete="off"
-                    placeholder="예) 소재가 두꺼운 편인가요?"></textarea>
+                    placeholder="예) 소재가 두꺼운 편인가요?">${inquiryData.inquiryContent}</textarea>
         </section>
 
-        <!-- 4. 문의하기 설정 -->
         <section class="inquiry-write-card inquiry-write-setting" aria-label="문의하기 설정">
           <h2 class="inquiry-write-title">공개범위</h2>
 
@@ -75,29 +79,35 @@
             </p>
 
             <div class="inquiry-write-toggle-group" role="radiogroup" aria-label="공개 여부 선택">
-              <button type="button" class="inquiry-write-toggle-btn inquiry-write-toggle-btn--active" data-toggle-group="visibility" data-toggle-value="public" role="radio" aria-checked="true">공개</button>
-              <button type="button" class="inquiry-write-toggle-btn" data-toggle-group="visibility" data-toggle-value="private" role="radio" aria-checked="false">비공개</button>
+              <button type="button" 
+				        class="inquiry-write-toggle-btn ${inquiryData.isSecret != 1 ? 'inquiry-write-toggle-btn--active' : ''}" 
+				        data-toggle-group="visibility" data-toggle-value="public">공개</button>
+				<button type="button" 
+				        class="inquiry-write-toggle-btn ${inquiryData.isSecret == 1 ? 'inquiry-write-toggle-btn--active' : ''}" 
+				        data-toggle-group="visibility" data-toggle-value="private">비공개</button>
             </div>
           </div>
 		  
           <div class="inquiry-write-setting-block inquiry-write-setting-block--spaced">
-          <h2 class="inquiry-write-title">이름 표시</h2>
-            <div class="inquiry-write-toggle-group" role="radiogroup" aria-label="이름 표시 선택">
-              <button type="button" class="inquiry-write-toggle-btn inquiry-write-toggle-btn--active" data-toggle-group="name" data-toggle-value="show" role="radio" aria-checked="true">이름 보이기</button>
-              <button type="button" class="inquiry-write-toggle-btn" data-toggle-group="name" data-toggle-value="hide" role="radio" aria-checked="false">이름 숨기기</button>
-            </div>
-          </div>
+		  <h2 class="inquiry-write-title">이름 표시</h2>
+		  <div class="inquiry-write-toggle-group" role="radiogroup" aria-label="이름 표시 선택">
+		    <button type="button" 
+		            class="inquiry-write-toggle-btn ${inquiryData.isNameHidden != 1 ? 'inquiry-write-toggle-btn--active' : ''}" 
+		            data-toggle-group="name" data-toggle-value="show">이름 보이기</button>
+		    <button type="button" 
+		            class="inquiry-write-toggle-btn ${inquiryData.isNameHidden == 1 ? 'inquiry-write-toggle-btn--active' : ''}" 
+		            data-toggle-group="name" data-toggle-value="hide">이름 숨기기</button>
+		  </div>
+		</div>
         </section>
-      </main>
+      </form>
     </div>
   </div>
 
-  <!-- 5. 하단 버튼 -->
   <div class="inquiry-write-submit-bar">
     <button type="button" class="inquiry-write-submit-btn" id="inquiryWriteSubmitBtn">문의 등록하기</button>
   </div>
 
-  <!-- 6. 입력 누락 안내 모달 -->
   <div class="inquiry-write-modal hidden" id="inquiryWriteModalEmpty" role="dialog" aria-modal="true" aria-labelledby="inquiryWriteModalEmptyTitle">
     <div class="inquiry-write-dim" data-modal-dismiss="empty"></div>
     <div class="inquiry-write-modal-card">
@@ -108,7 +118,6 @@
     </div>
   </div>
 
-  <!-- 7. 등록 확인 모달 -->
   <div class="inquiry-write-modal hidden" id="inquiryWriteModalConfirm" role="dialog" aria-modal="true" aria-labelledby="inquiryWriteModalConfirmTitle">
     <div class="inquiry-write-dim" data-modal-dismiss="confirm"></div>
     <div class="inquiry-write-modal-card">
@@ -120,7 +129,6 @@
     </div>
   </div>
 
-  <!-- 8. 등록 완료 모달 -->
   <div class="inquiry-write-modal hidden" id="inquiryWriteModalDone" role="dialog" aria-modal="true" aria-labelledby="inquiryWriteModalDoneTitle">
     <div class="inquiry-write-dim" data-modal-dismiss="done"></div>
     <div class="inquiry-write-modal-card">
