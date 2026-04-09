@@ -283,4 +283,67 @@ public class UserAddressDAO {
 			// 기본 배송지가 없으면 null을 반환합니다.
 			return dto;
 		}
+		
+		// 1. 배송지 개수 확인
+		public int countAddresses(Connection con, int userNo) {
+		    int count = 0;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
+		    String sql = "SELECT COUNT(*) FROM userAddress WHERE userNo = ?";
+		    try {
+		        pstmt = con.prepareStatement(sql);
+		        pstmt.setInt(1, userNo);
+		        rs = pstmt.executeQuery();
+		        if (rs.next()) {
+		            count = rs.getInt(1);
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try { if (rs != null) rs.close(); } catch (Exception e) {}
+		        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+		    }
+		    return count;
+		}
+
+		// 2. 기본 배송지 설정 해제 
+		public void resetDefaultAddress(Connection con, int userNo) {
+		    PreparedStatement pstmt = null;
+		    String sql = "UPDATE userAddress SET isDefault = 0 WHERE userNo = ?";
+		    try {
+		        pstmt = con.prepareStatement(sql);
+		        pstmt.setInt(1, userNo);
+		        pstmt.executeUpdate();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+		    }
+		}
+
+		// 3. 배송지 정보 수정
+		public int updateUserAddress(Connection con, UserAddressDTO address) {
+		    int result = 0;
+		    PreparedStatement pstmt = null;
+		    String sql = "UPDATE userAddress SET addressName=?, isDefault=?, receiverName=?, "
+		               + "receiverTel=?, userAddress=?, userDetailAddress=?, userZipcode=? "
+		               + "WHERE userAddressNo=?";
+		    try {
+		        pstmt = con.prepareStatement(sql);
+		        pstmt.setString(1, address.getAddressName());
+		        pstmt.setInt(2, address.getIsDefault());
+		        pstmt.setString(3, address.getReceiverName());
+		        pstmt.setString(4, address.getReceiverTel());
+		        pstmt.setString(5, address.getUserAddress());
+		        pstmt.setString(6, address.getUserDetailAddress());
+		        pstmt.setString(7, address.getUserZipcode());
+		        pstmt.setInt(8, address.getUserAddressNo());
+		        result = pstmt.executeUpdate();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+		    }
+		    return result;
+		}
 }

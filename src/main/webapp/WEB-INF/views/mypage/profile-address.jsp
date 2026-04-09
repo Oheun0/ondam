@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/profile.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/inquiry-write.css">
 </head>
 <body data-context-path="${pageContext.request.contextPath}">
 <div class="app-shell">
@@ -114,25 +115,11 @@
 					  </c:otherwise>
 					</c:choose>
                     <c:if test="${addr.isDefault == 0}">
-				        <c:choose>
-						    <c:when test="${isHelperMode}">
-						        <button type="button" class="sub-action-btn reset-btn"
-						            onclick="if(confirm('정말 삭제하시겠습니까?')) { 
-						                location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}&targetUserNo=${targetUserNo}'; 
-						            }">
-						            삭제하기
-						        </button>
-						    </c:when>
-						    <c:otherwise>
-						        <button type="button" class="sub-action-btn reset-btn"
-						            onclick="if(confirm('정말 삭제하시겠습니까?')) { 
-						                location.href='${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}'; 
-						            }">
-						            삭제하기
-						        </button>
-						    </c:otherwise>
-						</c:choose>
-				    </c:if>
+					    <button type="button" class="sub-action-btn reset-btn"
+					        onclick="openDeleteModal('${pageContext.request.contextPath}/address/delete?addressId=${addr.userAddressNo}<c:if test="${isHelperMode}">&targetUserNo=${targetUserNo}</c:if>')">
+					        삭제하기
+					    </button>
+					</c:if>
                 </div>
             </section>
         </c:forEach>
@@ -175,6 +162,42 @@
 
     <jsp:include page="../layout/bottomNav.jsp" />
 </div>
+<div id="customDeleteModal" class="inquiry-write-modal hidden">
+    <div class="inquiry-write-dim" onclick="closeDeleteModal()"></div>
+    
+    <div class="inquiry-write-modal-card">
+        <p class="inquiry-write-modal-message">정말 삭제하시겠습니까?</p>
+        <p class="inquiry-write-modal-sub">삭제된 배송지는 복구할 수 없어요.</p>
+        
+        <div class="inquiry-write-modal-actions inquiry-write-modal-actions--double">
+    <button type="button" class="inquiry-write-modal-btn inquiry-write-modal-btn--ghost" onclick="closeDeleteModal()">취소</button>
+    <button type="button" class="inquiry-write-modal-btn" id="modalConfirmBtn" style="background: #D84C33; color: #fff;">삭제하기</button>
+</div>
+    </div>
+</div>
+
+<script>
+    let deleteUrl = '';
+    function openDeleteModal(url) {
+        deleteUrl = url;
+        document.getElementById('customDeleteModal').classList.remove('hidden');
+    }
+    function closeDeleteModal() {
+        document.getElementById('customDeleteModal').classList.add('hidden');
+        deleteUrl = '';
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        const confirmBtn = document.getElementById('modalConfirmBtn');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function() {
+                if (deleteUrl) {
+                    window.location.href = deleteUrl; // 진짜 삭제 경로로 이동
+                }
+            });
+        }
+    });
+</script>
+
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>

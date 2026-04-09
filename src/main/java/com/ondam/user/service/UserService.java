@@ -238,4 +238,58 @@ public class UserService {
 		    }
 		    return result;
 		}
+		
+		// 배송지 저장 및 수정
+		public int saveUserAddress(UserAddressDTO address, String mode) {
+		    DBConnectionMgr pool = null;
+		    Connection conn = null;
+		    int result = 0;
+
+		    try {
+		        pool = DBConnectionMgr.getInstance();
+		        conn = pool.getConnection();
+		        conn.setAutoCommit(false); // 트랜잭션 시작
+
+		        // 1. 현재 사용자의 배송지 개수 확인
+		        int addressCount = addressDAO.countAddresses(conn, address.getUserNo());
+
+		        // 2. [비즈니스 로직] 첫 번째 배송지라면 무조건 기본 배송지(1)로 설정
+		        if (addressCount == 0) {
+		            address.setIsDefault(1);
+		        }
+
+		        // 3. 만약 이번에 저장/수정하려는 배송지가 '기본 배송지'라면
+		        //    기존에 설정된 다른 기본 배송지들을 모두 일반 배송지(0)로 초기화
+		        if (address.getIsDefault() == 1) {
+		            addressDAO.resetDefaultAddress(conn, address.getUserNo());
+		        }
+
+		        // 4. 모드에 따라 Insert 또는 Update 수행
+		        if ("edit".equals(mode)) {
+		            result = addressDAO.updateUserAddress(conn, address);
+		        } else {
+		            result = addressDAO.insertUserAddress(conn, address);
+		        }
+
+		        if (result > 0) {
+		            conn.commit(); // 모든 과정 성공 시 커밋
+		        } else {
+		            conn.rollback();
+		        }
+
+		    } catch (Exception e) {
+		        if (conn != null) {
+		            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+		        }
+		        e.printStackTrace();
+		    } finally {
+		        if (conn != null) {
+		            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+		        }
+		        if (pool != null && conn != null) {
+		            pool.freeConnection(conn);
+		        }
+		    }
+		    return result;
+		}
 	}

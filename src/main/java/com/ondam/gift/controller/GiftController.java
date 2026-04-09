@@ -1,10 +1,13 @@
 package com.ondam.gift.controller;
 
+import java.util.List;
 import java.util.Vector;
 
 import com.ondam.common.controller.Controller;
 import com.ondam.gift.dto.GiftDTO;
 import com.ondam.gift.service.GiftService;
+import com.ondam.user.dao.UserAddressDAO;
+import com.ondam.user.dto.UserAddressDTO;
 import com.ondam.user.dto.UserDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,8 +17,6 @@ import jakarta.servlet.http.HttpSession;
 public class GiftController implements Controller {
     
     private final GiftService giftService = new GiftService();
-    
-    // [수정됨] DispatcherServlet에서 "/WEB-INF/views/"와 ".jsp"를 자동으로 붙여주므로 "gift/"만 명시합니다.
     private static final String VIEW_PREFIX = "gift/"; 
     private static final String REDIRECT_MAIN = "redirect:/gift";
 
@@ -32,7 +33,7 @@ public class GiftController implements Controller {
     	
         int userNo = loginUser.getUserNo(); 
         
-        // 2. action 파라미터 확인 (없으면 main으로 간주)
+        // 2. action 파라미터 확인
         String action = request.getParameter("action");
         if (action == null || action.trim().isEmpty()) {
             action = "main";
@@ -41,7 +42,7 @@ public class GiftController implements Controller {
         // 3. 라우팅
         switch (action.trim()) {
             case "main":
-            case "received": // 기존 탭 링크와의 호환성을 위해 received, sent도 main으로 보냅니다.
+            case "received":
             case "sent":
                 return handleGiftMain(request, userNo);
             case "detail":
@@ -49,28 +50,56 @@ public class GiftController implements Controller {
             case "sendProc":
                 return handleSendGift(request, userNo);
             case "accept":
-                return handleAccept(request, userNo);
+                return handleAccept(request, userNo); // request 추가 전달
             case "reject":
                 return handleReject(request, userNo);
             default:
                 return REDIRECT_MAIN;
         }
     }
-
-    // ==========================================
     // [Handler Methods]
-    // ==========================================
-
-    // [핵심 변경] 하나의 페이지에 두 개의 탭이 있으므로, 두 데이터를 한 번에 담아서 보냅니다.
+    // 선물함 메인 (받은/보낸 목록 + 배송지 목록)
     private String handleGiftMain(HttpServletRequest request, int userNo) {
+        // 배송지 선택 모달을 위해 주소 목록 조회
+        UserAddressDAO addressDAO = new UserAddressDAO();
+        List<UserAddressDTO> addressList = addressDAO.getAddressListByUser(userNo);
+        
         Vector<GiftDTO> receivedList = giftService.getMyReceivedGifts(userNo);
         Vector<GiftDTO> sentList = giftService.getMySentGifts(userNo);
         
+        request.setAttribute("addressList", addressList);
         request.setAttribute("receivedList", receivedList);
         request.setAttribute("sentList", sentList);
         
-        // 최종 경로: /WEB-INF/views/gift/gift-box.jsp
         return VIEW_PREFIX + "gift-box"; 
+    }
+
+    // 선물 수락 처리 (배송지 번호 포함)
+    private String handleAccept(HttpServletRequest request, int userNo) {
+        int giftNo = parseParam(request.getParameter("giftNo"), -1);
+        int addressNo = parseParam(request.getParameter("addressNo"), -1); // 모달에서 선택한 번호
+        
+        if (addressNo <= 0) {
+            return REDIRECT_MAIN;
+        }
+        
+        GiftDTO gift = giftService.getGiftById(giftNo);
+        if (gift != null && gift.getReceiverNo() == userNo && gift.getGiftState() == 0) {
+            // 서비스에서 수락 상태 업데이트와 배송지 번호 기록을 동시에 처리
+            giftService.acceptGift(giftNo, addressNo);
+        }
+        return REDIRECT_MAIN; 
+    }
+
+    // 선물 거절 처리
+    private String handleReject(HttpServletRequest request, int userNo) {
+        int giftNo = parseParam(request.getParameter("giftNo"), -1);
+        GiftDTO gift = giftService.getGiftById(giftNo);
+        
+        if (gift != null && gift.getReceiverNo() == userNo && gift.getGiftState() == 0) {
+            giftService.rejectGift(giftNo);
+        }
+        return REDIRECT_MAIN;
     }
 
     // 선물 상세 보기
@@ -88,7 +117,7 @@ public class GiftController implements Controller {
         return VIEW_PREFIX + "giftDetail";
     }
 
-    // 선물 보내기 처리
+    // 선물 보내기 처리 (결제 후 호출됨)
     private String handleSendGift(HttpServletRequest request, int senderNo) {
         GiftDTO dto = new GiftDTO();
         dto.setOrderNo(parseParam(request.getParameter("orderNo"), -1));
@@ -105,31 +134,8 @@ public class GiftController implements Controller {
         }
     }
 
-    // 선물 수락 처리
-    private String handleAccept(HttpServletRequest request, int userNo) {
-        int giftNo = parseParam(request.getParameter("giftNo"), -1);
-        GiftDTO gift = giftService.getGiftById(giftNo);
-        
-        if (gift != null && gift.getReceiverNo() == userNo && gift.getGiftState() == 0) {
-            giftService.acceptGift(giftNo);
-        }
-        return "redirect:/gift"; 
-    }
 
-    // 선물 거절 처리
-    private String handleReject(HttpServletRequest request, int userNo) {
-        int giftNo = parseParam(request.getParameter("giftNo"), -1);
-        GiftDTO gift = giftService.getGiftById(giftNo);
-        
-        if (gift != null && gift.getReceiverNo() == userNo && gift.getGiftState() == 0) {
-            giftService.rejectGift(giftNo);
-        }
-        return "redirect:/gift";
-    }
-
-    // ==========================================
     // [Utility Methods]
-    // ==========================================
     private int parseParam(String param, int defaultValue) {
         if (param == null || param.trim().isEmpty()) {
             return defaultValue;
