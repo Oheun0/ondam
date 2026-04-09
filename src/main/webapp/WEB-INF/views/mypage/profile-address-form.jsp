@@ -34,7 +34,7 @@
 				  </c:otherwise>
 				</c:choose>
                     <span class="material-icons">chevron_left</span>
-                	</a>
+                </a>
 
                 <div class="intro-text">
                     <h1>내 정보 수정하기</h1>
@@ -75,6 +75,7 @@
                 <c:if test="${mode == 'edit'}">
                     <input type="hidden" name="userAddressNo" value="${addrInfo.userAddressNo}">
                 </c:if>
+                
                 <div class="form-block">
                     <label for="addressName" class="block-label">배송지명</label>
                     <input type="text" id="addressName" name="addressName" class="input-box"
@@ -111,36 +112,33 @@
                 </div>
 
                 <div class="form-block">
-                    <label class="check-row">
-                        <input type="checkbox" name="isDefault" value="1" ${addrInfo.isDefault == 1 ? 'checked' : ''}>
-                        <span>기본 배송지로 저장할게요</span>
-                    </label>
-                </div>
+    <c:choose>
+        <c:when test="${mode == 'edit' && addrInfo.isDefault == 1}">
+            <div style="color: #D84C33; font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; padding: 5px 0;">
+                <span class="material-icons" style="font-size: 20px;">verified</span>
+                현재 기본 배송지입니다.
+            </div>
+            <input type="hidden" name="isDefault" value="1">
+        </c:when>
+        <c:otherwise>
+            <label class="check-row">
+                <input type="checkbox" name="isDefault" value="1" 
+                       ${(mode == 'add' && empty addressList) || addrInfo.isDefault == 1 ? 'checked' : ''}>
+                <span>기본 배송지로 저장할게요</span>
+            </label>
+        </c:otherwise>
+    </c:choose>
+</div>
 
                 <button type="submit" class="save-btn">${mode == 'edit' ? '변경사항 저장하기' : '배송지 추가하기'}</button>
 
-                <c:if test="${mode == 'edit'}">
-                    <c:choose>
-					    <c:when test="${isHelperMode}">
-					        <button type="button" class="secondary-full-btn"
-					            onclick="location.href='${pageContext.request.contextPath}/address/delete?addressId=${addrInfo.userAddressNo}&targetUserNo=${targetUserNo}'">
-					            삭제하기
-					        </button>
-					    </c:when>
-					    <c:otherwise>
-					        <button type="button" class="secondary-full-btn"
-					            onclick="location.href='${pageContext.request.contextPath}/address/delete?addressId=${addrInfo.userAddressNo}'">
-					            삭제하기
-					        </button>
-					    </c:otherwise>
-					</c:choose>
-                </c:if>
             </form>
         </section>
     </main>
 
     <jsp:include page="../layout/bottomNav.jsp" />
 </div>
+
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 <script>
     function execDaumPostcode() {

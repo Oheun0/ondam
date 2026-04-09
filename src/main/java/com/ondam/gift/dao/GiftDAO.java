@@ -155,20 +155,37 @@ public class GiftDAO {
 	}
 
 	// 8. 거절이나 수락으로 인한 선물 상태 업데이트 (응답시간 NOW() 처리)
-	public boolean updateGiftState(int giftNo, int newState) {
+	public boolean updateGiftState(int giftNo, int newState, int addressNo) {
 		Connection con = null; PreparedStatement pstmt = null;
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
 			// 상태를 변경하면서 응답 시간(respondedAt)도 현재 시간으로 자동 갱신
-			String sql = "UPDATE gift SET giftState = ?, respondedAt = NOW() WHERE giftNo = ?";
+			String sql = "UPDATE gift SET giftState = ?, addressNo = ?, respondedAt = NOW() WHERE giftNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, newState);
-			pstmt.setInt(2, giftNo);
+	        pstmt.setInt(2, addressNo);
+	        pstmt.setInt(3, giftNo);
 			if (pstmt.executeUpdate() > 0) flag = true;
 		} catch (Exception e) { e.printStackTrace(); } 
 		finally { pool.freeConnection(con, pstmt); }
 		return flag;
+	}
+	
+	// 8-1. 거절이나 만료 시 호출할 기존 메서드 (addressNo가 필요 없는 경우를 위해 남겨둠)
+	public boolean updateGiftState(int giftNo, int newState) {
+	    Connection con = null; PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE gift SET giftState = ?, respondedAt = NOW() WHERE giftNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, newState);
+	        pstmt.setInt(2, giftNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) { e.printStackTrace(); } 
+	    finally { pool.freeConnection(con, pstmt); }
+	    return flag;
 	}
 
 	// 9. 선물 삭제
@@ -195,8 +212,19 @@ public class GiftDAO {
 		dto.setReceiverNo(rs.getInt("receiverNo"));
 		dto.setGiftMsg(rs.getString("giftMsg"));
 		dto.setGiftState(rs.getInt("giftState"));
-		dto.setSentAt(rs.getString("sentAt"));
-		dto.setRespondedAt(rs.getString("respondedAt"));
+		String sentAt = rs.getString("sentAt");
+		if (sentAt != null && sentAt.length() >= 19) {
+			dto.setSentAt(sentAt.substring(0, 19)); // "2026-04-09 14:30:00" 까지만 자름
+		} else {
+			dto.setSentAt(sentAt);
+		}
+		
+		String respondedAt = rs.getString("respondedAt");
+		if (respondedAt != null && respondedAt.length() >= 19) {
+			dto.setRespondedAt(respondedAt.substring(0, 19));
+		} else {
+			dto.setRespondedAt(respondedAt);
+		}
 		return dto;
 	}
 }

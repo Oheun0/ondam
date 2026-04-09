@@ -60,6 +60,7 @@ public class GiftService {
                 gift.setReceiverPhoneNumber("");
                 gift.setReceiverName("");
             }else {
+            	gift.setAddressNo(defaultAddress.getUserAddressNo());
             	gift.setReceiverAddressName(defaultAddress.getAddressName());
                 gift.setReceiverAddress(defaultAddress.getUserAddress());
                 gift.setReceiverDetailAddress(defaultAddress.getUserDetailAddress());
@@ -103,9 +104,9 @@ public class GiftService {
 		return dao.insertGift(dto);
 	}
 
-	// [상태 변경] 선물 수락 (상태값: 1)
-	public boolean acceptGift(int giftNo) {
-		return dao.updateGiftState(giftNo, 1);
+	// [상태 변경] 선물 수락
+	public boolean acceptGift(int giftNo, int addressNo) {
+	    return dao.updateGiftState(giftNo, 1, addressNo);
 	}
 
 	// [상태 변경] 선물 거절 (상태값: 2)
@@ -127,6 +128,4 @@ public class GiftService {
 	public boolean removeGift(int giftNo) {
 		return dao.deleteGift(giftNo);
 	}
-	
-	
 }
