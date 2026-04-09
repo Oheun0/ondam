@@ -150,7 +150,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/support/inquiry" class="menu-item">
+                <a href="${pageContext.request.contextPath}/inquiry/inquiry-list" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">support_agent</span>
                         <strong class="menu-label">문의내역</strong>
