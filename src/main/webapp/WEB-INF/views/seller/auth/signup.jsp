@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>온담 판매자센터 | 회원가입</title>
+  <title>온담 파트너 | 회원가입</title>
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
@@ -17,9 +17,8 @@
   <div class="seller-auth-shell">
     <main class="seller-auth-main seller-auth-main--signup" aria-labelledby="sellerSignupTitle">
       <header class="seller-auth-brand seller-auth-brand--signup">
-        <div class="seller-auth-brand__row" aria-hidden="true">
-          <span class="seller-auth-mark">온담</span>
-          <span class="seller-auth-brand__badge">판매자센터</span>
+        <div class="seller-auth-brand__logo" aria-hidden="true">
+          <img src="${pageContext.request.contextPath}/images/logo/logo_4.svg" alt="" class="seller-auth-logo" width="140" height="44" decoding="async">
         </div>
         <h1 class="seller-auth-title" id="sellerSignupTitle">판매자 회원가입</h1>
         <p class="seller-auth-sub">판매자 정보를 입력하면 운영 화면을 사용할 수 있어요</p>
