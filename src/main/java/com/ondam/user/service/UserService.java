@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.ondam.common.DBConnectionMgr;
+import com.ondam.notification.dao.NotificationSettingDAO;
+import com.ondam.notification.dto.NotificationSettingDTO;
 import com.ondam.user.dao.UserAddressDAO;
 import com.ondam.user.dao.UserDAO;
 import com.ondam.user.dao.UserHobbyDAO;
@@ -127,16 +129,31 @@ public class UserService {
 	                    }
 	                }
 	                
-	                if (addressResult > 0 && hobbyResult > 0 &&colorResult > 0) {
-	                    conn.commit();
-	                    result = 1;
+	                if (addressResult > 0 && hobbyResult > 0 && colorResult > 0) {
+
+	                    // 알림 설정 7개 생성 (트랜잭션 안에서 같이 처리)
+	                    NotificationSettingDAO notiSettingDao = new NotificationSettingDAO();
+	                    int notiResult = 1;
+	                    for (int type = 0; type <= 6; type++) {
+	                        NotificationSettingDTO setting = new NotificationSettingDTO();
+	                        setting.setUserNo(userNo);
+	                        setting.setNotificationType(type);
+	                        setting.setIsEnabled(1);
+	                        boolean ok = notiSettingDao.insertNotificationSetting(conn, setting); // conn 전달
+	                        if (!ok) { notiResult = 0; break; }
+	                    }
+
+	                    if (notiResult > 0) {
+	                        conn.commit();
+	                        result = 1;
+	                    } else {
+	                        conn.rollback();
+	                    }
+
 	                } else {
 	                    conn.rollback();
 	                }
-	            } else {
-	                conn.rollback();
 	            }
-	            
 	        } catch (Exception e) {
 	            if (conn != null) {
 	                try { 

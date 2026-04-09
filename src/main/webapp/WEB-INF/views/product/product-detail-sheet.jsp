@@ -65,6 +65,11 @@
         };
         const UNIT_PRICE = ${product.productPrice};
         const PRODUCT_NO = ${product.productNo};
+        const OPTION_NO_MAP = {
+        	    <c:forEach var="opt" items="${optionList}" varStatus="st">
+        	      "${opt.optionColor}__${opt.optionSize}": ${opt.productOptionNo}${st.last ? '' : ','}
+        	    </c:forEach>
+        	  };
       </script>
 
       <div class="detail-action-grid">

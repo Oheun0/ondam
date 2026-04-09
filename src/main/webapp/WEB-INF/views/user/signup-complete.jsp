@@ -14,7 +14,7 @@
 		
       <div class="auth-card" style="text-align:center;">
         <div class="brand-logo">
-		  <img src="<%=request.getContextPath()%>/images/logo.svg" alt="온담 로고">
+		  <img src="<%=request.getContextPath()%>/images/logo/logo_1.svg" alt="온담 로고">
 		</div>
         <h1 class="page-title">이제 모든 준비가 끝났어요</h1>
         <p class="page-desc">

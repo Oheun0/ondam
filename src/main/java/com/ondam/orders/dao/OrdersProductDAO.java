@@ -161,9 +161,12 @@ public class OrdersProductDAO {
 		try {
 			con = pool.getConnection();
 
-			String sql = "SELECT op.*, "
-			           + "(SELECT imgFile FROM productimage pi WHERE pi.productNo = op.productNo ORDER BY pi.imgOrder ASC LIMIT 1) AS productImage "
-			           + "FROM OrdersProduct op WHERE op.orderNo = ?";
+			String sql = "SELECT op.*, p.productBrand, r.reviewNo, "
+		               + "(SELECT imgFile FROM productimage pi WHERE pi.productNo = op.productNo ORDER BY pi.imgOrder ASC LIMIT 1) AS productImage "
+		               + "FROM OrdersProduct op "
+		               + "JOIN product p ON op.productNo = p.productNo "
+		               + "LEFT JOIN review r ON op.orderItemNo = r.orderItemNo "
+		               + "WHERE op.orderNo = ?";
 			
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, orderNo);
@@ -179,8 +182,9 @@ public class OrdersProductDAO {
 				dto.setSnapOptionSize(rs.getString("snapOptionSize"));
 				dto.setSnapOptionColor(rs.getString("snapOptionColor"));
 				dto.setOrderQuantity(rs.getInt("orderQuantity"));
+				dto.setProductBrand(rs.getString("productBrand"));
 				dto.setProductImage(rs.getString("productImage")); 
-				
+				dto.setReviewNo(rs.getInt("reviewNo"));
 				vlist.addElement(dto);
 			}
 		} catch (Exception e) {

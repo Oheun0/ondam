@@ -50,21 +50,23 @@ public class ProductDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT Product (vendorNo, categoryNo, productName, productBrand, productEx, productPrice, productOriginPrice, productMaterial, productPattern, productFit, productThickness, productDate, productState) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			// productEx 다음에 productGender 추가 (DB 순서에 맞춤)
+			sql = "INSERT Product (vendorNo, categoryNo, productName, productBrand, productEx, productGender, productPrice, productOriginPrice, productMaterial, productPattern, productFit, productThickness, productDate, productState) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getVendorNo());
 			pstmt.setInt(2, dto.getCategoryNo());
 			pstmt.setString(3, dto.getProductName());
 			pstmt.setString(4, dto.getProductBrand());
 			pstmt.setString(5, dto.getProductEx());
-			pstmt.setInt(6, dto.getProductPrice());
-			pstmt.setInt(7, dto.getProductOriginPrice());
-			pstmt.setString(8, dto.getProductMaterial());
-			pstmt.setString(9, dto.getProductPattern());
-			pstmt.setString(10, dto.getProductFit());
-			pstmt.setString(11, dto.getProductThickness());
-			pstmt.setString(12, dto.getProductDate());
-			pstmt.setInt(13, dto.getProductState());
+			pstmt.setInt(6, dto.getProductGender());
+			pstmt.setInt(7, dto.getProductPrice());
+			pstmt.setInt(8, dto.getProductOriginPrice());
+			pstmt.setString(9, dto.getProductMaterial());
+			pstmt.setString(10, dto.getProductPattern());
+			pstmt.setString(11, dto.getProductFit());
+			pstmt.setString(12, dto.getProductThickness());
+			pstmt.setString(13, dto.getProductDate());
+			pstmt.setInt(14, dto.getProductState());
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -83,21 +85,22 @@ public class ProductDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE Product SET vendorNo = ?, categoryNo = ?, productName = ?, productBrand = ?, productEx = ?, productPrice = ?, productOriginPrice = ?, productMaterial = ?, productPattern = ?, productFit = ?, productThickness = ?, productState = ? WHERE productNo = ?";
+			sql = "UPDATE Product SET vendorNo = ?, categoryNo = ?, productName = ?, productBrand = ?, productEx = ?, productGender = ?, productPrice = ?, productOriginPrice = ?, productMaterial = ?, productPattern = ?, productFit = ?, productThickness = ?, productState = ? WHERE productNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getVendorNo());
 			pstmt.setInt(2, dto.getCategoryNo());
 			pstmt.setString(3, dto.getProductName());
 			pstmt.setString(4, dto.getProductBrand());
 			pstmt.setString(5, dto.getProductEx());
-			pstmt.setInt(6, dto.getProductPrice());
-			pstmt.setInt(7, dto.getProductOriginPrice());
-			pstmt.setString(8, dto.getProductMaterial());
-			pstmt.setString(9, dto.getProductPattern());
-			pstmt.setString(10, dto.getProductFit());
-			pstmt.setString(11, dto.getProductThickness());
-			pstmt.setInt(12, dto.getProductState());
-			pstmt.setInt(13, productNo);
+			pstmt.setInt(6, dto.getProductGender());
+			pstmt.setInt(7, dto.getProductPrice());
+			pstmt.setInt(8, dto.getProductOriginPrice());
+			pstmt.setString(9, dto.getProductMaterial());
+			pstmt.setString(10, dto.getProductPattern());
+			pstmt.setString(11, dto.getProductFit());
+			pstmt.setString(12, dto.getProductThickness());
+			pstmt.setInt(13, dto.getProductState());
+			pstmt.setInt(14, productNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -377,237 +380,327 @@ public class ProductDAO {
 		}
 		return vlist;
 	}
-	
+
 	// 필터별 상품 불러오기
-	public Vector<ProductDTO> getProductsByFilter(
-	        String viewMode, String category,
-	        String sort, String[] colors,
-	        String[] seasons, boolean seasonAllMatch,
-	        String[] features) {
+	public Vector<ProductDTO> getProductsByFilter(String viewMode, String category, String sort, String[] colors,
+			String[] seasons, boolean seasonAllMatch, String[] features) {
 
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    Vector<ProductDTO> vlist = new Vector<>();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<ProductDTO> vlist = new Vector<>();
 
-	    try {
-	        con = pool.getConnection();
+		try {
+			con = pool.getConnection();
 
-	        StringBuilder sql = new StringBuilder();
-	        Vector<Object> params = new Vector<>();
+			StringBuilder sql = new StringBuilder();
+			Vector<Object> params = new Vector<>();
 
-	        sql.append(
-	            "SELECT DISTINCT p.* " +
-	            "FROM product p "
-	        );
+			sql.append("SELECT DISTINCT p.* " + "FROM product p ");
 
-	        if ("situation".equals(viewMode)) {
-	            sql.append(
-	                "JOIN situationmapping sm ON p.productNo = sm.productNo " +
-	                "JOIN situation s ON sm.situationNo = s.situationNo "
-	            );
-	        }
+			if ("situation".equals(viewMode)) {
+				sql.append("JOIN situationmapping sm ON p.productNo = sm.productNo "
+						+ "JOIN situation s ON sm.situationNo = s.situationNo ");
+			}
 
-	        sql.append("WHERE p.productState = 1 ");
+			sql.append("WHERE p.productState = 1 ");
 
-	        // 카테고리 / 상황 조건
-	        if (category != null && !category.isEmpty()) {
-	            if ("type".equals(viewMode)) {
-	                sql.append(
-	                    "AND p.categoryNo = (" +
-	                    "  SELECT categoryNo FROM category " +
-	                    "  WHERE categoryName = ? AND categoryLevel = 1 LIMIT 1) "
-	                );
-	                params.add(category);
-	            } else {
-	                sql.append("AND s.situationName = ? AND s.situationLevel = 2 ");
-	                params.add(category);
-	            }
-	        }
+			// 카테고리 / 상황 조건
+			if (category != null && !category.isEmpty()) {
+				if ("type".equals(viewMode)) {
+					sql.append("AND p.categoryNo = (" + "  SELECT categoryNo FROM category "
+							+ "  WHERE categoryName = ? AND categoryLevel = 1 LIMIT 1) ");
+					params.add(category);
+				} else {
+					sql.append("AND s.situationName = ? AND s.situationLevel = 2 ");
+					params.add(category);
+				}
+			}
 
-	        // 색상 필터
-	        if (colors != null && colors.length > 0) {
-	            for (String color : colors) {
-	                sql.append("AND EXISTS (SELECT 1 FROM productoption po " +
-	                           "WHERE po.productNo = p.productNo AND po.optionColor = ?) ");
-	                params.add(color);
-	            }
-	        }
+			// 색상 필터
+			if (colors != null && colors.length > 0) {
+				for (String color : colors) {
+					sql.append("AND EXISTS (SELECT 1 FROM productoption po "
+							+ "WHERE po.productNo = p.productNo AND po.optionColor = ?) ");
+					params.add(color);
+				}
+			}
 
-	        if (seasons != null && seasons.length > 0) {
-	            if (seasonAllMatch) {
-	                sql.append(
-	                    "AND p.productNo IN (" +
-	                    "  SELECT productNo FROM productseason " +
-	                    "  WHERE season IN (");
-	                for (int i = 0; i < seasons.length; i++) {
-	                    sql.append(i == 0 ? "?" : ",?");
-	                    params.add(seasons[i]);
-	                }
-	                sql.append(") GROUP BY productNo ");
-	                sql.append("  HAVING COUNT(DISTINCT season) = ").append(seasons.length);
-	                sql.append(") ");
-	            } else {
-	                sql.append(
-	                    "AND p.productNo IN (" +
-	                    "  SELECT productNo FROM productseason WHERE season IN (");
-	                for (int i = 0; i < seasons.length; i++) {
-	                    sql.append(i == 0 ? "?" : ",?");
-	                    params.add(seasons[i]);  // ← 이 줄도 빠져있었음
-	                }
-	                sql.append(")) ");
-	            }
-	        }
+			if (seasons != null && seasons.length > 0) {
+				if (seasonAllMatch) {
+					sql.append(
+							"AND p.productNo IN (" + "  SELECT productNo FROM productseason " + "  WHERE season IN (");
+					for (int i = 0; i < seasons.length; i++) {
+						sql.append(i == 0 ? "?" : ",?");
+						params.add(seasons[i]);
+					}
+					sql.append(") GROUP BY productNo ");
+					sql.append("  HAVING COUNT(DISTINCT season) = ").append(seasons.length);
+					sql.append(") ");
+				} else {
+					sql.append("AND p.productNo IN (" + "  SELECT productNo FROM productseason WHERE season IN (");
+					for (int i = 0; i < seasons.length; i++) {
+						sql.append(i == 0 ? "?" : ",?");
+						params.add(seasons[i]); // ← 이 줄도 빠져있었음
+					}
+					sql.append(")) ");
+				}
+			}
 
-	        // 특징 필터 (선택한 특징 전부 가진 상품만)
-	        if (features != null && features.length > 0) {
-	            for (String feature : features) {
-	                sql.append("AND EXISTS (SELECT 1 FROM productfeature pf " +
-	                           "WHERE pf.productNo = p.productNo AND pf.feature = ?) ");
-	                params.add(feature);
-	            }
-	        }
+			// 특징 필터 (선택한 특징 전부 가진 상품만)
+			if (features != null && features.length > 0) {
+				for (String feature : features) {
+					sql.append("AND EXISTS (SELECT 1 FROM productfeature pf "
+							+ "WHERE pf.productNo = p.productNo AND pf.feature = ?) ");
+					params.add(feature);
+				}
+			}
 
-	        // 정렬
-	        if ("가격 낮은순".equals(sort)) {
-	            sql.append("ORDER BY p.productPrice ASC");
-	        } else if ("가격 높은순".equals(sort)) {
-	            sql.append("ORDER BY p.productPrice DESC");
-	        } else if ("최신순".equals(sort)) {
-	            sql.append("ORDER BY p.productDate DESC");
-	        } else if ("인기순".equals(sort)) {
-	            sql.append("ORDER BY (p.wishCount + p.saleCount) DESC");
-	        } else {
-	            sql.append("ORDER BY p.productNo ASC");
-	        }
+			// 정렬
+			if ("가격 낮은순".equals(sort)) {
+				sql.append("ORDER BY p.productPrice ASC");
+			} else if ("가격 높은순".equals(sort)) {
+				sql.append("ORDER BY p.productPrice DESC");
+			} else if ("최신순".equals(sort)) {
+				sql.append("ORDER BY p.productDate DESC");
+			} else if ("인기순".equals(sort)) {
+				sql.append("ORDER BY (p.wishCount + p.saleCount) DESC");
+			} else {
+				sql.append("ORDER BY p.productNo ASC");
+			}
 
-	        pstmt = con.prepareStatement(sql.toString());
-	        for (int i = 0; i < params.size(); i++) {
-	            pstmt.setObject(i + 1, params.get(i));
-	        }
+			pstmt = con.prepareStatement(sql.toString());
+			for (int i = 0; i < params.size(); i++) {
+				pstmt.setObject(i + 1, params.get(i));
+			}
 
-	        rs = pstmt.executeQuery();
-	        while (rs.next()) {
-	            ProductDTO dto = new ProductDTO();
-	            mapResultSetToDTO(rs, dto);
-	            vlist.add(dto);
-	        }
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ProductDTO dto = new ProductDTO();
+				mapResultSetToDTO(rs, dto);
+				vlist.add(dto);
+			}
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        pool.freeConnection(con, pstmt, rs);
-	    }
-	    return vlist;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
 	}
-	
+
 	public Vector<ProductDTO> getProductsByCategoryName(String categoryName) {
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    Vector<ProductDTO> vlist = new Vector<>();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<ProductDTO> vlist = new Vector<>();
 
-	    try {
-	        con = pool.getConnection();
+		try {
+			con = pool.getConnection();
 
-	        String sql =
-	            "SELECT p.* FROM product p " +
-	            "JOIN category c ON p.categoryNo = c.categoryNo " +
-	            "WHERE c.categoryName = ? AND p.productState = 1 " +
-	            "ORDER BY p.productNo ASC";
+			String sql = "SELECT p.* FROM product p " + "JOIN category c ON p.categoryNo = c.categoryNo "
+					+ "WHERE c.categoryName = ? AND p.productState = 1 " + "ORDER BY p.productNo ASC";
 
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setString(1, categoryName);
-	        rs = pstmt.executeQuery();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, categoryName);
+			rs = pstmt.executeQuery();
 
-	        while (rs.next()) {
-	            ProductDTO dto = new ProductDTO();
-	            mapResultSetToDTO(rs, dto);
-	            vlist.add(dto);
-	        }
+			while (rs.next()) {
+				ProductDTO dto = new ProductDTO();
+				mapResultSetToDTO(rs, dto);
+				vlist.add(dto);
+			}
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        pool.freeConnection(con, pstmt, rs);
-	    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
 
-	    return vlist;
+		return vlist;
 	}
 
 	public Vector<ProductDTO> getProductsBySituationName(String situationName) {
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    Vector<ProductDTO> vlist = new Vector<>();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<ProductDTO> vlist = new Vector<>();
 
-	    try {
-	        con = pool.getConnection();
+		try {
+			con = pool.getConnection();
 
-	        String sql =
-	            "SELECT DISTINCT p.* FROM product p " +
-	            "JOIN situationmapping sm ON p.productNo = sm.productNo " +
-	            "JOIN situation s ON sm.situationNo = s.situationNo " +
-	            "WHERE s.situationName = ? AND p.productState = 1 " +
-	            "ORDER BY p.productNo ASC";
+			String sql = "SELECT DISTINCT p.* FROM product p "
+					+ "JOIN situationmapping sm ON p.productNo = sm.productNo "
+					+ "JOIN situation s ON sm.situationNo = s.situationNo "
+					+ "WHERE s.situationName = ? AND p.productState = 1 " + "ORDER BY p.productNo ASC";
 
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setString(1, situationName);
-	        rs = pstmt.executeQuery();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, situationName);
+			rs = pstmt.executeQuery();
 
-	        while (rs.next()) {
-	            ProductDTO dto = new ProductDTO();
-	            mapResultSetToDTO(rs, dto);
-	            vlist.add(dto);
-	        }
+			while (rs.next()) {
+				ProductDTO dto = new ProductDTO();
+				mapResultSetToDTO(rs, dto);
+				vlist.add(dto);
+			}
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        pool.freeConnection(con, pstmt, rs);
-	    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
 
-	    return vlist;
+		return vlist;
 	}
-	
+
 	// wishCount + 1
 	public boolean increaseWishCount(int productNo) {
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    boolean flag = false;
-	    try {
-	        con = pool.getConnection();
-	        String sql = "UPDATE product SET wishCount = wishCount + 1 WHERE productNo = ?";
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, productNo);
-	        if (pstmt.executeUpdate() > 0) flag = true;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        pool.freeConnection(con, pstmt);
-	    }
-	    return flag;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			String sql = "UPDATE product SET wishCount = wishCount + 1 WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
 	}
-	
+
 	// wishCount - 1
 	public boolean decreaseWishCount(int productNo) {
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    boolean flag = false;
-	    try {
-	        con = pool.getConnection();
-	        String sql = "UPDATE product SET wishCount = wishCount - 1 WHERE productNo = ? AND wishCount > 0";
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, productNo);
-	        if (pstmt.executeUpdate() > 0) flag = true;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        pool.freeConnection(con, pstmt);
-	    }
-	    return flag;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			String sql = "UPDATE product SET wishCount = wishCount - 1 WHERE productNo = ? AND wishCount > 0";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
 	}
-	
+
+	// 검색 메소드
+	public Vector<ProductDTO> searchProducts(String keyword) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<ProductDTO> list = new Vector<>();
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT * FROM product " + "WHERE productName LIKE ? OR productBrand LIKE ? "
+					+ "AND productState = 1 " + "ORDER BY productNo DESC";
+			pstmt = con.prepareStatement(sql);
+			String like = "%" + keyword + "%";
+			pstmt.setString(1, like);
+			pstmt.setString(2, like);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ProductDTO dto = new ProductDTO();
+				// 기존 매핑과 동일하게
+				dto.setProductNo(rs.getInt("productNo"));
+				dto.setProductName(rs.getString("productName"));
+				dto.setProductBrand(rs.getString("productBrand"));
+				dto.setProductPrice(rs.getInt("productPrice"));
+				dto.setProductOriginPrice(rs.getInt("productOriginPrice"));
+				dto.setSaleCount(rs.getInt("saleCount"));
+				dto.setWishCount(rs.getInt("wishCount"));
+				list.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return list;
+	}
+
+	// 검색 + 필터 메소드
+	public Vector<ProductDTO> searchProductsWithFilter(String keyword, String sort, String[] colors, String season,
+			String[] features) {
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<ProductDTO> list = new Vector<>();
+
+		try {
+			con = pool.getConnection();
+			StringBuilder sql = new StringBuilder(
+					"SELECT DISTINCT p.* FROM product p WHERE " + "(p.productName LIKE ? OR p.productBrand LIKE ?) ");
+			Vector<Object> params = new Vector<>();
+			String like = "%" + keyword + "%";
+			params.add(like);
+			params.add(like);
+
+			// 색상
+			if (colors != null && colors.length > 0) {
+				for (String color : colors) {
+					sql.append("AND EXISTS (SELECT 1 FROM productoption po "
+							+ "WHERE po.productNo = p.productNo AND po.optionColor = ?) ");
+					params.add(color);
+				}
+			}
+
+			// 계절
+			if (season != null && !season.isEmpty()) {
+				sql.append("AND p.productNo IN (" + "SELECT productNo FROM productseason WHERE season = ?) ");
+				params.add(season);
+			}
+
+			// 특징
+			if (features != null && features.length > 0) {
+				for (String feature : features) {
+					sql.append("AND EXISTS (SELECT 1 FROM productfeature pf "
+							+ "WHERE pf.productNo = p.productNo AND pf.feature = ?) ");
+					params.add(feature);
+				}
+			}
+
+			// 정렬
+			if ("가격 낮은순".equals(sort))
+				sql.append("ORDER BY p.productPrice ASC");
+			else if ("가격 높은순".equals(sort))
+				sql.append("ORDER BY p.productPrice DESC");
+			else if ("최신순".equals(sort))
+				sql.append("ORDER BY p.productDate DESC");
+			else if ("인기순".equals(sort))
+				sql.append("ORDER BY (p.wishCount + p.saleCount) DESC");
+			else
+				sql.append("ORDER BY p.productNo DESC");
+
+			pstmt = con.prepareStatement(sql.toString());
+			for (int i = 0; i < params.size(); i++) {
+				pstmt.setObject(i + 1, params.get(i));
+			}
+
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ProductDTO dto = new ProductDTO();
+				mapResultSetToDTO(rs, dto); // 기존 매핑 메서드 재사용
+				list.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return list;
+	}
+
 	// SELECT * 매핑 코드 너무 많아서 라인 수 줄이기 위해
 	private void mapResultSetToDTO(ResultSet rs, ProductDTO dto) throws java.sql.SQLException {
 	    dto.setProductNo(rs.getInt("productNo"));

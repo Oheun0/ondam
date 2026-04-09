@@ -55,7 +55,7 @@ public class CartController implements Controller {
     private String list(HttpServletRequest request, int userNo) {
         Vector<CartItemDTO> cartList = cartService.getCartList(userNo);
         request.setAttribute("cartList", cartList);
-        return "/cart/cart";
+        return "/product/cart/cart";
     }
     
     private void syncCartSession(HttpServletRequest request, int userNo) {

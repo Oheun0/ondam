@@ -174,10 +174,10 @@
 			        </a>
 			    </c:otherwise>
 			</c:choose>
-		      <a href="${pageContext.request.contextPath}/group?action=delete&familyNo=${myGroup.familyNo}"
-		         class="group-empty-btn group-empty-btn--secondary group-empty-btn--danger-outline">
-		        그룹 해산하기
-		      </a>
+		      	<button type="button" id="btnDissolve"
+				        class="group-empty-btn group-empty-btn--secondary group-empty-btn--danger-outline">
+				  그룹 해산하기
+				</button>
 		    </div>
 		  </div>
 		</div>
@@ -185,6 +185,7 @@
 		</section>
     
     <jsp:include page="../layout/bottomNav.jsp" />
+    <jsp:include page="/WEB-INF/views/group/group-modal.jsp"/>
   </div>
 	<script>
 	const contextPath = document.body.dataset.contextPath;
@@ -251,6 +252,25 @@
 	    helpBtn.classList.add('member-btn--help');
 	    helpBtn.onclick = function() { toggleHelp(helpBtn); return false; };
 	}
+	
+	const dissolveModal = document.getElementById('groupModalDissolve');
+
+	// 모달 열기
+	document.getElementById('btnDissolve').addEventListener('click', function () {
+	    dissolveModal.classList.remove('hidden');
+	});
+
+	// 딤 + 계속 사용하기 → 닫기
+	dissolveModal.querySelectorAll('[data-group-modal-dismiss]').forEach(function (el) {
+	    el.addEventListener('click', function () {
+	        dissolveModal.classList.add('hidden');
+	    });
+	});
+
+	// 해산하기 확인 → delete 액션
+	dissolveModal.querySelector('.group-modal-btn--danger').addEventListener('click', function () {
+	    window.location.href = contextPath + '/group?action=delete&familyNo=${myGroup.familyNo}';
+	});
 </script>
 	<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>

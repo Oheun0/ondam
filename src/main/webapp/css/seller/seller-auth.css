@@ -1,0 +1,770 @@
+@charset "UTF-8";
+
+/* Seller Auth (운영자 UI) — auth.css 기반 확장 */
+
+.seller-auth-page {
+  --seller-primary: #4C65AF;
+  --seller-bg: #eef1f6;
+  --seller-card: #ffffff;
+  --seller-line: rgba(15, 23, 42, 0.10);
+  --seller-text: #111827;
+  --seller-sub: #6b7280;
+  --seller-shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+
+  background: var(--seller-bg);
+  color: var(--seller-text);
+}
+
+.seller-auth-page body,
+body.seller-auth-page {
+  font-size: 16px;
+}
+
+.seller-auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 16px;
+  box-sizing: border-box;
+}
+
+.seller-auth-main {
+  width: 100%;
+  max-width: 420px;
+}
+
+.seller-auth-brand {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.seller-auth-brand__logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.seller-auth-logo {
+  display: block;
+  width: auto;
+  height: 100px;
+  object-fit: contain;
+}
+
+.seller-auth-title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.seller-auth-sub {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(17, 24, 39, 0.86);
+  line-height: 1.5;
+}
+
+.seller-auth-sub--muted {
+  margin-top: 4px;
+  color: var(--seller-sub);
+  font-weight: 600;
+}
+
+.seller-auth-card {
+  background: var(--seller-card);
+  border: 1px solid var(--seller-line);
+  border-radius: 20px;
+  box-shadow: var(--seller-shadow);
+  padding: 22px 18px 18px;
+}
+
+.seller-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.seller-auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.seller-auth-label {
+  font-size: 14px;
+  font-weight: 800;
+  color: rgba(17, 24, 39, 0.9);
+  letter-spacing: -0.02em;
+}
+
+/* auth.css .input 을 그대로 쓰되, seller 색상으로 포커스 */
+.seller-auth-page .seller-auth-input.input {
+  height: 56px;
+  border: 1.5px solid rgba(15, 23, 42, 0.16);
+  border-radius: 16px;
+  font-size: 18px;
+  padding: 0 16px;
+}
+
+.seller-auth-page .seller-auth-input.input:focus {
+  border-color: var(--seller-primary);
+  box-shadow: 0 0 0 4px rgba(76, 101, 175, 0.14);
+}
+
+.seller-auth-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.seller-auth-row--between {
+  justify-content: space-between;
+}
+
+.seller-auth-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--seller-sub);
+  user-select: none;
+}
+
+.seller-auth-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--seller-primary);
+}
+
+.seller-auth-btn {
+  width: 100%;
+  min-height: 54px;
+  border-radius: 16px;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+}
+
+.seller-auth-btn--primary {
+  background: var(--seller-primary);
+  color: #fff;
+  /* 버튼 그림자: 과하지 않게, 아래로 처지지 않게 */
+  box-shadow: 0 8px 18px rgba(76, 101, 175, 0.18);
+}
+
+.seller-auth-btn--primary:active {
+  transform: scale(0.98);
+  opacity: 0.95;
+}
+
+.seller-auth-btn--primary:focus-visible {
+  outline: 3px solid rgba(76, 101, 175, 0.55);
+  outline-offset: 3px;
+}
+
+.seller-auth-helper {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(107, 114, 128, 0.9);
+  line-height: 1.45;
+}
+
+.seller-auth-error {
+  margin: 0;
+  font-size: 14px;
+}
+
+.seller-auth-error--form {
+  margin-top: 2px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.seller-auth-links {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.seller-auth-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 800;
+  color: rgba(17, 24, 39, 0.78);
+  text-decoration: none;
+  border-radius: 12px;
+}
+
+.seller-auth-link--inline {
+  min-height: auto;
+  padding: 0 4px;
+  border-radius: 8px;
+  color: var(--seller-primary);
+}
+
+.seller-auth-link--inline:hover {
+  text-decoration: underline;
+}
+
+.seller-auth-link:hover {
+  color: var(--seller-primary);
+}
+
+.seller-auth-link:focus-visible {
+  outline: 2px solid var(--seller-primary);
+  outline-offset: 2px;
+}
+
+.seller-auth-link-sep {
+  color: rgba(107, 114, 128, 0.6);
+  font-weight: 700;
+}
+
+/* =============================================================================
+   Desktop-first adjustments (판매자: PC 기준)
+   ============================================================================= */
+@media (min-width: 768px) {
+  .seller-auth-shell {
+    padding: 48px 28px;
+  }
+
+  .seller-auth-main {
+    max-width: 520px;
+  }
+
+  .seller-auth-title {
+    font-size: 26px;
+  }
+
+  .seller-auth-card {
+    border-radius: 22px;
+    padding: 26px 24px 22px;
+  }
+
+  .seller-auth-page .seller-auth-input.input {
+    height: 58px;
+    border-radius: 18px;
+  }
+
+  .seller-auth-btn {
+    min-height: 56px;
+    border-radius: 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .seller-auth-shell {
+    padding: 64px 40px;
+  }
+
+  .seller-auth-main {
+    max-width: 560px;
+  }
+
+  .seller-auth-brand {
+    margin-bottom: 22px;
+  }
+
+  .seller-auth-card {
+    box-shadow: 0 22px 70px rgba(15, 23, 42, 0.12);
+  }
+}
+
+/* =============================================================================
+   Signup extensions
+   ============================================================================= */
+.seller-auth-main--signup {
+  max-width: 460px;
+}
+
+.seller-auth-card--signup {
+  padding: 18px 16px 16px;
+}
+
+.seller-auth-section {
+  padding: 16px 14px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.seller-signup-form {
+  gap: 14px;
+}
+
+.seller-auth-section-title {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: rgba(17, 24, 39, 0.92);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seller-auth-section-title::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--seller-primary);
+  box-shadow: 0 6px 14px rgba(76, 101, 175, 0.25);
+}
+
+.seller-auth-required {
+  color: #d9534f;
+  font-weight: 900;
+}
+
+.seller-auth-hint {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(107, 114, 128, 0.95);
+  line-height: 1.45;
+}
+
+.seller-auth-divider {
+  height: 1px;
+  width: 100%;
+  margin: 12px 0 12px;
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.seller-auth-subtitle {
+  margin: 6px 0 10px;
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.seller-auth-inline-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.seller-auth-inline-row .seller-auth-input {
+  flex: 0 1 25%;
+  min-width: 0;
+}
+
+.seller-auth-inline-row .seller-auth-mini-btn {
+  flex: 0 1 25%;
+  min-width: 0;
+  height: 56px;
+}
+
+.seller-auth-mini-btn {
+  min-height: 56px;
+  padding: 0 10px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(15, 23, 42, 0.16);
+  background: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.82);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seller-auth-mini-btn:active {
+  transform: scale(0.98);
+  opacity: 0.95;
+}
+
+.seller-auth-mini-btn:focus-visible {
+  outline: 3px solid rgba(76, 101, 175, 0.35);
+  outline-offset: 2px;
+}
+
+.seller-auth-check-row {
+  margin-top: 4px;
+}
+
+.seller-auth-check--strong {
+  color: rgba(17, 24, 39, 0.82);
+}
+
+.seller-auth-section--terms .seller-auth-terms-box {
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 18px;
+  padding: 12px 12px;
+  background: rgba(238, 241, 246, 0.65);
+}
+
+.seller-auth-check--term {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 10px 8px;
+  border-radius: 14px;
+}
+
+.seller-auth-check--term input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.seller-auth-check--all {
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.88);
+}
+
+.seller-auth-terms-divider {
+  height: 1px;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.10);
+  margin: 8px 0;
+}
+
+.seller-auth-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.seller-auth-btn--ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: rgba(15, 23, 42, 0.06);
+  color: rgba(17, 24, 39, 0.86);
+  box-shadow: none;
+}
+
+.seller-auth-btn--ghost:active {
+  transform: scale(0.98);
+  opacity: 0.95;
+}
+
+.seller-auth-footer-text {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(107, 114, 128, 0.95);
+}
+
+/* =============================================================================
+   Signup complete
+   ============================================================================= */
+.seller-auth-main--complete {
+  max-width: 760px;
+}
+
+.seller-auth-brand--complete {
+  text-align: center;
+}
+
+.seller-auth-complete-card {
+  padding: 28px 26px 24px;
+}
+
+.seller-auth-complete-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.seller-auth-complete-icon .material-icons {
+  font-size: 34px;
+  color: var(--seller-primary);
+}
+
+.seller-auth-complete-title {
+  margin: 0;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: rgba(17, 24, 39, 0.92);
+}
+
+.seller-auth-complete-desc {
+  margin: 8px 0 18px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(107, 114, 128, 0.95);
+}
+
+.seller-auth-summary-card {
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 18px;
+  background: rgba(238, 241, 246, 0.55);
+  padding: 14px 14px;
+  margin: 0 0 14px;
+}
+
+.seller-auth-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 8px;
+}
+
+.seller-auth-summary-row + .seller-auth-summary-row {
+  border-top: 1px solid rgba(15, 23, 42, 0.10);
+}
+
+.seller-auth-summary-label {
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.78);
+}
+
+.seller-auth-summary-value {
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.92);
+  text-align: right;
+  word-break: break-all;
+}
+
+.seller-auth-next-card {
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 18px;
+  background: #fff;
+  padding: 16px 14px;
+  margin: 0 0 18px;
+}
+
+.seller-auth-next-title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.88);
+}
+
+.seller-auth-next-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: rgba(17, 24, 39, 0.82);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.seller-auth-actions--complete {
+  align-items: center;
+  gap: 12px;
+}
+
+.seller-auth-actions--complete .seller-auth-btn--primary {
+  width: 100%;
+  max-width: 420px;
+}
+
+.seller-auth-fallback-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(17, 24, 39, 0.72);
+  text-decoration: none;
+}
+
+.seller-auth-fallback-link:hover {
+  color: var(--seller-primary);
+}
+
+.seller-auth-complete-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.seller-auth-complete-card--in {
+  animation: sellerCompleteIn 0.38s ease both;
+}
+
+@keyframes sellerCompleteIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 1024px) {
+  .seller-auth-main--complete {
+    max-width: 860px;
+  }
+
+  .seller-auth-complete-card {
+    padding: 34px 32px 28px;
+  }
+
+  .seller-auth-complete-title {
+    font-size: 22px;
+  }
+}
+
+@media (min-width: 768px) {
+  .seller-auth-main--signup {
+    max-width: 980px;
+  }
+
+  .seller-auth-brand--signup {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  .seller-auth-brand--signup .seller-auth-brand__row {
+    justify-content: center;
+  }
+
+  /* 긴 폼을 2열로: 섹션 단위 배치 */
+  .seller-auth-card--signup {
+    padding: 22px 20px 18px;
+  }
+
+  .seller-signup-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 16px;
+  }
+
+  .seller-signup-form > .seller-auth-section {
+    margin: 0;
+  }
+
+  /* 약관/버튼/하단 문구는 전체 폭 */
+  .seller-auth-section--contact,
+  .seller-auth-section--terms,
+  .seller-auth-actions,
+  .seller-auth-footer-text {
+    grid-column: 1 / -1;
+  }
+
+  .seller-auth-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .seller-auth-actions .seller-auth-btn--primary,
+  .seller-auth-actions .seller-auth-btn--ghost {
+    width: auto;
+    min-width: 220px;
+  }
+
+  .seller-auth-footer-text {
+    text-align: center;
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .seller-auth-main--signup {
+    max-width: 1040px;
+  }
+
+  .seller-auth-section {
+    padding: 18px 16px 16px;
+    border-radius: 20px;
+  }
+
+  .seller-auth-section-title {
+    font-size: 17px;
+  }
+}
+
+/* =============================================================================
+   Find ID / Reset password extensions
+   ============================================================================= */
+.seller-auth-result-box {
+  margin-top: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 18px;
+  background: rgba(238, 241, 246, 0.55);
+  padding: 14px 14px;
+}
+
+.seller-auth-result-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.88);
+  margin-bottom: 10px;
+}
+
+.seller-auth-result-head .material-icons-outlined {
+  color: var(--seller-primary);
+}
+
+.seller-auth-result-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 10px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.seller-auth-result-label {
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.72);
+}
+
+.seller-auth-result-value {
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.92);
+  letter-spacing: 0.02em;
+}
+
+.seller-auth-helper--result {
+  margin-top: 10px;
+}
+
+.seller-auth-code-row {
+  margin-top: 2px;
+}
+
+.seller-auth-helper--code {
+  margin-top: 8px;
+}
+
+.seller-auth-helper--rule {
+  margin-top: 8px;
+  color: rgba(107, 114, 128, 0.95);
+}
+

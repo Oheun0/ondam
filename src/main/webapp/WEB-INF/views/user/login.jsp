@@ -18,10 +18,10 @@
 
       <div class="brand-box">
         <div class="brand-logo">
-		  <img src="<%=request.getContextPath()%>/images/logo.svg" alt="온담 로고">
+		  <img src="<%=request.getContextPath()%>/images/logo/logo_2.svg" alt="온담 로고">
 		</div>
         <h1 class="brand-title">온담 시작하기</h1>
-        <p class="brand-desc">편하게 보고, 쉽게 고르는 옷</p>
+        <p class="brand-desc">온기를 담아, 당신에게!</p>
       </div>
 
       <div class="auth-card">
@@ -61,7 +61,7 @@
 
       <div class="info-box">
         지인과 함께 쇼핑하는 즐거움을 느껴보세요!<br>
-        카카오로 시작하면 더 빠르게 이용할 수 있어요.
+        카카오로 시작하면 더 빠르게 이용할 수 있어요
       </div></div>
     </div><jsp:include page="../layout/bottomNav.jsp" />
   </div> <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>

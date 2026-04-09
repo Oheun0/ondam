@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="poke-modal-dim hidden" id="giftModalDim"></div>
 
@@ -8,27 +9,28 @@
     <h2 class="poke-modal-title">누구에게 선물할까요?</h2>
 
     <div class="poke-person-list">
-      <button type="button" class="gift-person-btn" data-name="김남준">
-        김남준님에게 선물하기
-      </button>
-
-      <button type="button" class="gift-person-btn" data-name="김가빈">
-        김가빈님에게 선물하기
-      </button>
-
-      <button type="button" class="gift-person-btn" data-name="김지현">
-        김지현님에게 선물하기
-      </button>
+      <c:choose>
+        <c:when test="${not empty pokeMemberList}">
+          <c:forEach var="m" items="${pokeMemberList}">
+            <button type="button" class="gift-person-btn"
+                    data-user-no="${m.userNo}"
+                    data-name="${m.userName}">
+              ${m.userName}님에게 선물하기
+            </button>
+          </c:forEach>
+        </c:when>
+        <c:otherwise>
+          <p style="text-align:center; color:#999; padding:16px 0;">
+            함께하는 사람이 없어요.<br>
+            <a href="${pageContext.request.contextPath}/group?action=groupName">그룹 만들기</a>
+          </p>
+        </c:otherwise>
+      </c:choose>
     </div>
 
     <div class="poke-modal-bottom">
-      <button type="button" class="poke-bottom-btn cancel" id="closeGiftModalBtn">
-        취소
-      </button>
-
-      <button type="button" class="poke-bottom-btn confirm" id="confirmGiftBtn">
-        선물하기
-      </button>
+      <button type="button" class="poke-bottom-btn cancel" id="closeGiftModalBtn">취소</button>
+      <button type="button" class="poke-bottom-btn confirm" id="confirmGiftBtn">선물하기</button>
     </div>
 
   </div>

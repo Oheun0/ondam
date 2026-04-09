@@ -42,8 +42,15 @@
 						<div class="form-group">
 							<label class="form-label">휴대폰 번호</label>
 							<div class="input-row">
-								<input type="text" name="phone1" id="phone1" class="input" value="010" style="max-width: 80px;"> 
-								<input type="text" name="phone2" id="phone2" class="input" placeholder="1234"> 
+								<select class="select" style="max-width: 110px;" name="phone1" id="phone1">
+									<option selected>010</option>
+									<option>011</option>
+									<option>016</option>
+									<option>017</option>
+									<option>018</option>
+									<option>019</option>
+								</select>
+								<input type="text" name="phone2" id="phone2" class="input" placeholder="1234">
 								<input type="text" name="phone3" id="phone3" class="input" placeholder="5678">
 							</div>
 							<span class="error-msg" id="err-phone"></span>

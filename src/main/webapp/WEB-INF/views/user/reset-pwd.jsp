@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>온담 - 비밀번호 재설정</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
@@ -39,8 +40,11 @@
                         <button type="submit" class="btn btn-primary" style="width: 100%;">비밀번호 변경하기</button>
                     </div>
                 </form>
-            </div></div>
-        </div><jsp:include page="../layout/bottomNav.jsp" />
-    </div><script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
+            </div>
+        </div>
+    </div>
+    <jsp:include page="../layout/bottomNav.jsp" />
+</div>
+<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>

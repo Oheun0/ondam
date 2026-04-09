@@ -18,7 +18,11 @@ public class NotificationService {
 	}
 
 	public boolean createNotification(NotificationDTO dto) {
-		return dao.insertNotification(dto);
+	    // 수신 설정 확인 → 꺼져 있으면 INSERT 안 함
+	    int isEnabled = dao.getIsEnabled(dto.getUserNo(), dto.getNotificationType());
+	    if (isEnabled == 0) return false;
+
+	    return dao.insertNotification(dto); // 기존 INSERT 로직
 	}
 
 	public boolean modifyNotification(NotificationDTO dto, int notificationNo) {

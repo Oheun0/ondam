@@ -6,21 +6,15 @@
     if (!root) return;
 
     var contextPath = document.body.getAttribute("data-context-path") || "";
-    var typeMapping = {
-      "order": 1,
-      "shipping": 2,
-      "group": 3,
-      "recommend": 4
-    };
     root.addEventListener("click", function (e) {
       var row = e.target && e.target.closest(".ns-row[role='switch']");
       if (!row) return;
-      var key = row.getAttribute("data-ns-key");
-      var notificationType = typeMapping[key];
-      if (!notificationType) {
-        console.error("알 수 없는 알림 타입입니다:", key);
-        return;
-      }
+	  var key = row.getAttribute("data-ns-key");
+	  var notificationType = parseInt(key, 10);
+	  if (isNaN(notificationType)) {
+	      console.error("알 수 없는 알림 타입입니다:", key);
+	      return;
+	  }
       var checked = row.getAttribute("aria-checked") === "true";
       var next = !checked;
       var isEnabled = next ? 1 : 0;

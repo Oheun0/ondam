@@ -4,8 +4,8 @@
 <section class="product-header-section">
   <div class="product-topbar">
 		<button type="button" class="detail-icon-btn" aria-label="뒤로가기"
-			onclick="history.length > 1 ? history.back() : (window.location.href = document.body.dataset.contextPath + '/main')">
-			<span class="material-icons">arrow_back_ios_new</span>
+		onclick="window.location.href = document.body.dataset.contextPath + '/category'">
+		  <span class="material-icons">arrow_back_ios_new</span>
 		</button>
 
 		<div class="product-title-wrap">

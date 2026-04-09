@@ -111,72 +111,91 @@ public class NotificationSettingDAO {
 		}
 		return flag;
 	}
-	
-	// 마이페이지 select
-		public Vector<NotificationSettingDTO> getSettingsByUserNo(int userNo) {
-			Connection con = null;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			Vector<NotificationSettingDTO> vlist = new Vector<>();
-			try {
-				con = pool.getConnection();
-				String sql = "SELECT * FROM NotificationSetting WHERE userNo = ?";
-				pstmt = con.prepareStatement(sql);
-				pstmt.setInt(1, userNo);
-				rs = pstmt.executeQuery();
-				while (rs.next()) {
-					NotificationSettingDTO dto = new NotificationSettingDTO();
-					dto.setNotificationSettingNo(rs.getInt("notificationSettingNo"));
-					dto.setUserNo(rs.getInt("userNo"));
-					dto.setNotificationType(rs.getInt("notificationType"));
-					dto.setIsEnabled(rs.getInt("isEnabled"));
-					vlist.addElement(dto);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				pool.freeConnection(con, pstmt, rs);
-			}
-			return vlist;
-		}
 
-		// 알림 설정 토글 (있으면 Update, 없으면 Insert)
-		public boolean toggleSetting(int userNo, int notificationType, int isEnabled) {
-			Connection con = null;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			boolean flag = false;
-			try {
-				con = pool.getConnection();
-				String checkSql = "SELECT notificationSettingNo FROM NotificationSetting WHERE userNo = ? AND notificationType = ?";
-				pstmt = con.prepareStatement(checkSql);
+	// 마이페이지 select
+	public Vector<NotificationSettingDTO> getSettingsByUserNo(int userNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<NotificationSettingDTO> vlist = new Vector<>();
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT * FROM NotificationSetting WHERE userNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, userNo);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				NotificationSettingDTO dto = new NotificationSettingDTO();
+				dto.setNotificationSettingNo(rs.getInt("notificationSettingNo"));
+				dto.setUserNo(rs.getInt("userNo"));
+				dto.setNotificationType(rs.getInt("notificationType"));
+				dto.setIsEnabled(rs.getInt("isEnabled"));
+				vlist.addElement(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
+
+	// 알림 설정 토글 (있으면 Update, 없으면 Insert)
+	public boolean toggleSetting(int userNo, int notificationType, int isEnabled) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			String checkSql = "SELECT notificationSettingNo FROM NotificationSetting WHERE userNo = ? AND notificationType = ?";
+			pstmt = con.prepareStatement(checkSql);
+			pstmt.setInt(1, userNo);
+			pstmt.setInt(2, notificationType);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				int settingNo = rs.getInt(1);
+				pstmt.close();
+				String updateSql = "UPDATE NotificationSetting SET isEnabled = ? WHERE notificationSettingNo = ?";
+				pstmt = con.prepareStatement(updateSql);
+				pstmt.setInt(1, isEnabled);
+				pstmt.setInt(2, settingNo);
+				if (pstmt.executeUpdate() > 0)
+					flag = true;
+			} else {
+				pstmt.close();
+				String insertSql = "INSERT INTO NotificationSetting (userNo, notificationType, isEnabled) VALUES (?, ?, ?)";
+				pstmt = con.prepareStatement(insertSql);
 				pstmt.setInt(1, userNo);
 				pstmt.setInt(2, notificationType);
-				rs = pstmt.executeQuery();
-
-				if (rs.next()) {
-					int settingNo = rs.getInt(1);
-					pstmt.close();
-					String updateSql = "UPDATE NotificationSetting SET isEnabled = ? WHERE notificationSettingNo = ?";
-					pstmt = con.prepareStatement(updateSql);
-					pstmt.setInt(1, isEnabled);
-					pstmt.setInt(2, settingNo);
-					if (pstmt.executeUpdate() > 0) flag = true;
-				} else {
-					pstmt.close();
-					String insertSql = "INSERT INTO NotificationSetting (userNo, notificationType, isEnabled) VALUES (?, ?, ?)";
-					pstmt = con.prepareStatement(insertSql);
-					pstmt.setInt(1, userNo);
-					pstmt.setInt(2, notificationType);
-					pstmt.setInt(3, isEnabled);
-					if (pstmt.executeUpdate() > 0) flag = true;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				pool.freeConnection(con, pstmt, rs);
+				pstmt.setInt(3, isEnabled);
+				if (pstmt.executeUpdate() > 0)
+					flag = true;
 			}
-			return flag;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
 		}
+		return flag;
+	}
+	
+	// Connection 받는 버전 INSERT
+	public boolean insertNotificationSetting(Connection conn, NotificationSettingDTO dto) {
+	    PreparedStatement pstmt = null;
+	    try {
+	        String sql = "INSERT INTO NotificationSetting (userNo, notificationType, isEnabled) VALUES (?, ?, ?)";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, dto.getUserNo());
+	        pstmt.setInt(2, dto.getNotificationType());
+	        pstmt.setInt(3, dto.getIsEnabled());
+	        return pstmt.executeUpdate() > 0;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        if (pstmt != null) try { pstmt.close(); } catch (Exception e) {}
+	    }
+	}
 }
-

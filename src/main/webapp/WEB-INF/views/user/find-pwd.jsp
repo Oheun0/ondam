@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>온담 - 비밀번호 찾기</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
@@ -42,7 +43,14 @@
 					<div class="form-group">
 						<label class="form-label">휴대폰 번호</label>
 						<div class="input-row">
-							<input type="text" name="phone1" id="phone1" class="input" value="010" style="max-width: 80px;">
+							<select class="select" style="max-width: 110px;" name="phone1" id="phone1">
+								<option selected>010</option>
+								<option>011</option>
+								<option>016</option>
+								<option>017</option>
+								<option>018</option>
+								<option>019</option>
+							</select>
 							<input type="text" name="phone2" id="phone2" class="input" placeholder="1234">
 							<input type="text" name="phone3" id="phone3" class="input" placeholder="5678">
 						</div>
@@ -54,8 +62,11 @@
 						<button type="submit" class="btn btn-primary">다음</button>
 					</div>
 				</form>
-			</div></div>
-		</div>	<jsp:include page="../layout/bottomNav.jsp" />
-	</div>	<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
+				</div>
+			</div>
+		</div>
+		<jsp:include page="../layout/bottomNav.jsp" />
+	</div>
+	<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>
