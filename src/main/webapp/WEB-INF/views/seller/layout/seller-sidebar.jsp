@@ -3,11 +3,11 @@
   String active = (String) request.getAttribute("sellerActiveMenu");
   if (active == null) active = "dashboard";
 %>
-<aside class="seller-sidebar" aria-label="판매자센터 메뉴">
-  <div class="seller-sidebar__brand" aria-label="온담 판매자센터">
+<aside class="seller-sidebar" aria-label="파트너 메뉴">
+  <div class="seller-sidebar__brand" aria-label="온담 파트너">
     <div class="seller-sidebar__logo">
-      <span class="seller-sidebar__logo-text">온담</span>
-      <span class="seller-sidebar__badge">판매자센터</span>
+      <img src="${pageContext.request.contextPath}/images/logo/logo_3.svg" alt="온담" class="seller-sidebar__logo-img" width="92" height="28" decoding="async">
+      <span class="seller-sidebar__badge">파트너</span>
     </div>
   </div>
 

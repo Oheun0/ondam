@@ -16,7 +16,7 @@
 html,body{height:100%}
 body.seller-app{
   margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
+  font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
   color:var(--seller-text);
   background:var(--seller-bg);
 }
@@ -52,10 +52,11 @@ button{font:inherit}
   gap:10px;
 }
 
-.seller-sidebar__logo-text{
-  font-weight:800;
-  letter-spacing:-0.02em;
-  font-size:22px;
+.seller-sidebar__logo-img{
+  display:block;
+  width:auto;
+  height:40px;
+  object-fit:contain;
 }
 
 .seller-sidebar__badge{
@@ -136,6 +137,19 @@ button{font:inherit}
   font-size:18px;
   font-weight:800;
   letter-spacing:-0.02em;
+}
+
+.seller-header__logo-link{
+  display:inline-flex;
+  align-items:center;
+  text-decoration:none;
+}
+
+.seller-header__logo{
+  display:block;
+  width:auto;
+  height:40px;
+  object-fit:contain;
 }
 
 .seller-header__right{

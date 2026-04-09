@@ -18,7 +18,7 @@
 
       <div class="brand-box">
         <div class="brand-logo">
-		  <img src="<%=request.getContextPath()%>/images/logo.svg" alt="온담 로고">
+		  <img src="<%=request.getContextPath()%>/images/logo/logo_2.svg" alt="온담 로고">
 		</div>
         <h1 class="brand-title">온담 시작하기</h1>
         <p class="brand-desc">온기를 담아, 당신에게!</p>
