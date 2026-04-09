@@ -19,7 +19,6 @@ public class ProductDTO {
     private int wishCount;
     private int saleCount;
     private int productState;
-    private int productGender;
 
     public ProductDTO() {}
 
@@ -97,13 +96,4 @@ public class ProductDTO {
     public int getProductState() { return productState; }
     public void setProductState(int productState) { this.productState = productState; }
 
-	public int getProductGender() {
-		return productGender;
-	}
-
-	public void setProductGender(int productGender) {
-		this.productGender = productGender;
-	}
-    
-    
 }
