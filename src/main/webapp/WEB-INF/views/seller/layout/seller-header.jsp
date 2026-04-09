@@ -1,13 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-  String title = (String) request.getAttribute("sellerPageTitle");
-  if (title == null) title = "대시보드";
   String sellerName = (String) request.getAttribute("sellerName");
   if (sellerName == null) sellerName = "온담스토어";
 %>
 <header class="seller-header" role="banner">
   <div class="seller-header__left">
-    <h1 class="seller-header__title"><%= title %></h1>
+    <%-- 좌측은 비움(브랜드는 사이드바에 고정) --%>
   </div>
 
   <div class="seller-header__right">

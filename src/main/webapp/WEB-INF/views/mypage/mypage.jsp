@@ -86,19 +86,19 @@
                     <div class="wallet-top" style="justify-content: center; padding-bottom: 0;">
                         <div class="wallet-title-wrap" style="flex-direction: column; align-items: center; gap: 8px;">
                             <span class="material-icons wallet-icon" style="font-size: 36px; color: #ccc;">group_add</span>
-                            <strong style="color: #333; font-size: 16px;">아직 연결된 내 사람이 없어요</strong>
+                            <strong style="color: #333; font-size: 18px;">아직 연결된 내 사람이 없어요</strong>
                         </div>
                     </div>
                 
-                    <div class="wallet-balance-row" style="justify-content: center; text-align: center; padding: 15px 0;">
-                        <span class="wallet-balance-label" style="font-size: 14px; color: #666; line-height: 1.5;">
+                    <div class="wallet-balance-row" style="justify-content: center; text-align: center; padding: 10px 0;">
+                        <span class="wallet-balance-label" style="font-size: 16px; color: #666; line-height: 1.5;">
                             내 사람을 등록하고 온담의<br>함께 지갑 서비스를 이용해 보세요.
                         </span>
                     </div>
                 
                     <div class="wallet-button-row">
                         <!-- /group 페이지로 이동하여 가족을 생성하거나 참여하도록 유도합니다. -->
-                        <a href="${pageContext.request.contextPath}/group" class="wallet-button fill" style="width: 100%; text-align: center;">내 사람 만들기 / 참여하기</a>
+                        <a href="${pageContext.request.contextPath}/group" class="wallet-button fill" style="width: 100%; font-weight: 800; text-align: center;">내 사람 만들기 / 참여하기</a>
                     </div>
                 </c:otherwise>
             </c:choose>
@@ -150,7 +150,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/support/inquiry" class="menu-item">
+                <a href="${pageContext.request.contextPath}/inquiry/inquiry-list" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">support_agent</span>
                         <strong class="menu-label">문의내역</strong>
@@ -188,6 +188,7 @@
     <jsp:include page="../layout/bottomNav.jsp" />
     
 </div><jsp:include page="withdraw.jsp" />
+<script src="${pageContext.request.contextPath}/js/withdraw.js"></script>
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>

@@ -39,32 +39,17 @@ body.seller-auth-page {
   margin-bottom: 18px;
 }
 
-.seller-auth-brand__row {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.seller-auth-mark {
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-}
-
-.seller-auth-brand__badge {
-  display: inline-flex;
-  align-items: center;
+.seller-auth-brand__logo {
+  display: flex;
   justify-content: center;
-  height: 30px;
-  padding: 0 12px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  color: #fff;
-  background: var(--seller-primary);
-  box-shadow: 0 8px 18px rgba(76, 101, 175, 0.28);
+  margin-bottom: 12px;
+}
+
+.seller-auth-logo {
+  display: block;
+  width: auto;
+  height: 100px;
+  object-fit: contain;
 }
 
 .seller-auth-title {

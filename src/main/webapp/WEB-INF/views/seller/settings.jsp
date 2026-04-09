@@ -8,12 +8,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>설정 | 온담 판매자센터</title>
+  <title>설정 | 온담 파트너</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/seller/seller-layout.css" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/seller/seller-settings.css" />
 </head>
@@ -38,7 +39,7 @@
             <header class="seller-settings-section-head">
               <div>
                 <h3 class="seller-settings-section-title">스토어 정보</h3>
-                <p class="seller-settings-section-sub">판매자센터와 주문 화면에 연결되는 기본 정보를 설정해 주세요</p>
+                <p class="seller-settings-section-sub">파트너와 주문 화면에 연결되는 기본 정보를 설정해 주세요</p>
               </div>
             </header>
 

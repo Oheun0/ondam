@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>온담 판매자센터 | 아이디 찾기</title>
+  <title>온담 파트너 | 아이디 찾기</title>
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
@@ -17,9 +17,8 @@
   <div class="seller-auth-shell">
     <main class="seller-auth-main" aria-labelledby="sellerAuthTitle">
       <header class="seller-auth-brand">
-        <div class="seller-auth-brand__row" aria-hidden="true">
-          <span class="seller-auth-mark">온담</span>
-          <span class="seller-auth-brand__badge">판매자센터</span>
+        <div class="seller-auth-brand__logo" aria-hidden="true">
+          <img src="${pageContext.request.contextPath}/images/logo/logo_4.svg" alt="" class="seller-auth-logo" width="140" height="44" decoding="async">
         </div>
         <h1 class="seller-auth-title" id="sellerAuthTitle">아이디 찾기</h1>
         <p class="seller-auth-sub">가입 시 입력한 정보로 아이디를 확인할 수 있어요</p>
