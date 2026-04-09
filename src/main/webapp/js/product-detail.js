@@ -383,7 +383,43 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (sheetBuyNowBtn) {
-    sheetBuyNowBtn.addEventListener("click", onSheetCartOrBuyClick);
+      sheetBuyNowBtn.addEventListener("click", function (e) {
+          if (!isOptionSelected()) {
+              e.preventDefault();
+              e.stopPropagation();
+              showOptionErrorToast();
+              return;
+          }
+
+          var color    = selectedColorText.textContent.trim();
+          var size     = selectedSizeText.textContent.trim();
+          var optionNo = OPTION_NO_MAP[color + "__" + size];
+
+          if (!optionNo) {
+              showOptionErrorToast();
+              return;
+          }
+
+          var ctx = document.body.getAttribute("data-context-path") || "";
+          var form = document.createElement("form");
+          form.method = "GET";  // 주문/결제 페이지는 GET으로 파라미터 전달
+          form.action = ctx + "/order/payment";
+
+          [
+              ["productNo",        PRODUCT_NO],
+              ["productOptionNo",  optionNo],
+              ["quantity",         quantity]
+          ].forEach(function (pair) {
+              var input = document.createElement("input");
+              input.type  = "hidden";
+              input.name  = pair[0];
+              input.value = pair[1];
+              form.appendChild(input);
+          });
+
+          document.body.appendChild(form);
+          form.submit();
+      });
   }
 
   if (openShareFromSheetBtn) {
