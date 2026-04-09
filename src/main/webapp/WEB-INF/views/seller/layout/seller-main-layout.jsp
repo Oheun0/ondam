@@ -17,6 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/seller/seller-layout.css" />
   <%
     String extraCss = (String) request.getAttribute("sellerExtraCss");
