@@ -10,7 +10,7 @@
 
         <a href="${pageContext.request.contextPath}/main" class="logo-box" aria-label="온담 홈으로 이동">
 
-            <img src="${pageContext.request.contextPath}/images/logo.svg" alt="온담 로고" class="logo-img">
+            <img src="${pageContext.request.contextPath}/images/logo/logo_1.svg" alt="온담 로고" class="logo-img">
         </a>
 
         <div class="top-right">

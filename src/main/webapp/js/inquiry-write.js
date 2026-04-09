@@ -1,150 +1,114 @@
 /**
- * 상품 문의 작성 — 설정 토글, 모달 제어 (순수 JS)
+ * 상품 문의하기 — 순수 JS
  */
 (function () {
   "use strict";
 
   document.addEventListener("DOMContentLoaded", function () {
-    var root = document.getElementById("inquiryWritePageRoot");
-    if (!root) return;
+    var ctx = document.body.getAttribute("data-context-path") || "";
 
+    var form = document.getElementById("inquiryWriteForm");
     var textarea = document.getElementById("inquiryWriteTextarea");
     var submitBtn = document.getElementById("inquiryWriteSubmitBtn");
+    var isSecretInput = document.getElementById("isSecret");
+	var isNameHiddenInput = document.getElementById("isNameHidden");
 
     var modalEmpty = document.getElementById("inquiryWriteModalEmpty");
     var modalConfirm = document.getElementById("inquiryWriteModalConfirm");
     var modalDone = document.getElementById("inquiryWriteModalDone");
 
-    var selectedVisibility = "public";
-    var selectedName = "show";
-
-    var backBtn = document.getElementById("appBackHeaderBtn");
-    if (backBtn) {
-      backBtn.addEventListener("click", function () {
-        if (window.history.length > 1) {
-          window.history.back();
-        } else {
-          var ctx = document.body.getAttribute("data-context-path") || "";
-          window.location.href = ctx + "/main";
-        }
-      });
-    }
-
-    function setToggle(groupName, value, clickedBtn) {
-      root.querySelectorAll('.inquiry-write-toggle-btn[data-toggle-group="' + groupName + '"]').forEach(function (b) {
-        var on = b === clickedBtn;
-        b.classList.toggle("inquiry-write-toggle-btn--active", on);
-        b.setAttribute("aria-checked", on ? "true" : "false");
-      });
-      if (groupName === "visibility") selectedVisibility = value;
-      if (groupName === "name") selectedName = value;
-    }
-
-    root.querySelectorAll(".inquiry-write-toggle-btn").forEach(function (btn) {
+    var toggleBtns = document.querySelectorAll(".inquiry-write-toggle-btn");
+    toggleBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         var group = btn.getAttribute("data-toggle-group");
-        var value = btn.getAttribute("data-toggle-value");
-        if (!group || !value) return;
-        setToggle(group, value, btn);
+		var value = btn.getAttribute("data-toggle-value");
+        if (group === "visibility") {
+          // 비공개면 1, 공개면 0 세팅
+          isSecretInput.value = btn.getAttribute("data-toggle-value") === "private" ? "1" : "0";
+        }
+		else if (group === "name") {
+		      document.getElementById("isNameHidden").value = (value === "hide" ? "1" : "0");
+		    }
+        var siblings = document.querySelectorAll('.inquiry-write-toggle-btn[data-toggle-group="' + group + '"]');
+        siblings.forEach(function (sib) {
+          sib.classList.remove("inquiry-write-toggle-btn--active");
+          sib.setAttribute("aria-checked", "false");
+        });
+        btn.classList.add("inquiry-write-toggle-btn--active");
+        btn.setAttribute("aria-checked", "true");
       });
     });
 
-    function openModal(el) {
-      if (!el) return;
-      el.classList.remove("hidden");
-      document.body.style.overflow = "hidden";
+    function closeModal(modalEl) {
+      modalEl.classList.add("hidden");
+      modalEl.setAttribute("aria-hidden", "true");
+    }
+    function openModal(modalEl) {
+      modalEl.classList.remove("hidden");
+      modalEl.setAttribute("aria-hidden", "false");
     }
 
-    function closeModal(el) {
-      if (!el) return;
-      el.classList.add("hidden");
-      document.body.style.overflow = "";
-    }
+    document.querySelectorAll("[data-modal-dismiss]").forEach(function (dim) {
+      dim.addEventListener("click", function () {
+        closeModal(dim.closest(".inquiry-write-modal"));
+      });
+    });
+    document.querySelectorAll("[data-modal-action$='-cancel'], [data-modal-action$='-ok']").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var action = btn.getAttribute("data-modal-action");
+        if (action === "empty-ok") closeModal(modalEmpty);
+        if (action === "confirm-cancel") closeModal(modalConfirm);
 
-    function closeEmptyModalAndFocus() {
-      closeModal(modalEmpty);
-      if (textarea) {
-        textarea.focus();
-        try {
-          var len = textarea.value.length;
-          textarea.setSelectionRange(len, len);
-        } catch (e) {
-          /* ignore */
+        if (action === "done-ok") {
+          window.location.replace(ctx + "/inquiry?action=list");
         }
-      }
-    }
-
-    if (modalEmpty) {
-      modalEmpty.querySelectorAll("[data-modal-dismiss='empty']").forEach(function (dim) {
-        dim.addEventListener("click", closeEmptyModalAndFocus);
       });
-      var emptyOk = modalEmpty.querySelector("[data-modal-action='empty-ok']");
-      if (emptyOk) emptyOk.addEventListener("click", closeEmptyModalAndFocus);
-    }
-
-    if (modalConfirm) {
-      modalConfirm.querySelectorAll("[data-modal-dismiss='confirm']").forEach(function (dim) {
-        dim.addEventListener("click", function () {
-          closeModal(modalConfirm);
-        });
-      });
-      var cancelBtn = modalConfirm.querySelector("[data-modal-action='confirm-cancel']");
-      if (cancelBtn) cancelBtn.addEventListener("click", function () {
-        closeModal(modalConfirm);
-      });
-      var submitModalBtn = modalConfirm.querySelector("[data-modal-action='confirm-submit']");
-      if (submitModalBtn) submitModalBtn.addEventListener("click", function () {
-        var payload = {
-          inquiryText: textarea ? textarea.value.trim() : "",
-          visibility: selectedVisibility,
-          name: selectedName,
-        };
-        console.log("[inquiry-write] 등록(임시)", payload);
-        closeModal(modalConfirm);
-        openModal(modalDone);
-      });
-    }
-
-    if (modalDone) {
-      modalDone.querySelectorAll("[data-modal-dismiss='done']").forEach(function (dim) {
-        dim.addEventListener("click", function () {
-          closeModal(modalDone);
-        });
-      });
-      var doneOk = modalDone.querySelector("[data-modal-action='done-ok']");
-      if (doneOk) doneOk.addEventListener("click", function () {
-        closeModal(modalDone);
-      });
-    }
-
-    document.addEventListener("keydown", function (e) {
-      if (e.key !== "Escape") return;
-      if (modalDone && !modalDone.classList.contains("hidden")) {
-        closeModal(modalDone);
-        e.preventDefault();
-        return;
-      }
-      if (modalConfirm && !modalConfirm.classList.contains("hidden")) {
-        closeModal(modalConfirm);
-        e.preventDefault();
-        return;
-      }
-      if (modalEmpty && !modalEmpty.classList.contains("hidden")) {
-        closeEmptyModalAndFocus();
-        e.preventDefault();
-      }
     });
 
     if (submitBtn) {
       submitBtn.addEventListener("click", function () {
-        var text = textarea ? textarea.value.trim() : "";
-        if (!text) {
-          openModal(modalEmpty);
-          return;
+        if (textarea.value.trim() === "") {
+          openModal(modalEmpty); // 글이 비었으면 알림창
+        } else {
+          openModal(modalConfirm); // 글이 있으면 진짜 등록할건지 물어봄
         }
-        openModal(modalConfirm);
+      });
+    }
+
+    var finalSubmitBtn = document.querySelector("[data-modal-action='confirm-submit']");
+    if (finalSubmitBtn) {
+      finalSubmitBtn.addEventListener("click", function () {
+        closeModal(modalConfirm);
+		
+		var inquiryNoEl = document.getElementById("inquiryNo");
+		var inquiryNo = inquiryNoEl ? inquiryNoEl.value : "";
+		var actionName = (inquiryNo && inquiryNo !== "") ? "edit" : "write";
+
+        var formData = new FormData(form);
+        var urlSearchParams = new URLSearchParams(formData);
+		
+        fetch(ctx + "/inquiry?action=" + actionName, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: urlSearchParams.toString()
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          if (data.success) {
+            openModal(modalDone);
+          } else {
+            alert("문의 등록에 실패했습니다. 다시 시도해주세요.");
+          }
+        })
+        .catch(function(error) {
+          console.error("Error:", error);
+          alert("서버 통신 오류가 발생했습니다.");
+        });
       });
     }
   });
 })();
-

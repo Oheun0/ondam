@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/inquiry-write.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
 </head>
 <body data-context-path="${pageContext.request.contextPath}">
@@ -40,7 +41,7 @@
                     <h1>${loginUser.userName}님, 안녕하세요</h1>
                     <p>
                         내 정보와 주문, 쿠폰, 선물함을<br>
-                        한곳에서 쉽게 볼 수 있어요.
+                        한곳에서 쉽게 확인할 수 있어요
                     </p>
                 </div>
             </div>
@@ -75,9 +76,9 @@
                     </div>
                 
                     <div class="wallet-button-row">
-					    <a href="${pageContext.request.contextPath}/wallet?action=charge" class="wallet-button fill">충전하기</a>
-					    <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-button">사용 내역</a>
-					</div>
+                        <a href="${pageContext.request.contextPath}/wallet?action=charge" class="wallet-button fill">충전하기</a>
+                        <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-button">사용 내역</a>
+                    </div>
                 </c:when>
                 
                 <%-- B. 가족에 가입되어 있지 않은 경우 (가입 유도 화면 표시) --%>
@@ -85,19 +86,19 @@
                     <div class="wallet-top" style="justify-content: center; padding-bottom: 0;">
                         <div class="wallet-title-wrap" style="flex-direction: column; align-items: center; gap: 8px;">
                             <span class="material-icons wallet-icon" style="font-size: 36px; color: #ccc;">group_add</span>
-                            <strong style="color: #333; font-size: 16px;">아직 연결된 내 사람이 없어요</strong>
+                            <strong style="color: #333; font-size: 18px;">아직 연결된 내 사람이 없어요</strong>
                         </div>
                     </div>
                 
-                    <div class="wallet-balance-row" style="justify-content: center; text-align: center; padding: 15px 0;">
-                        <span class="wallet-balance-label" style="font-size: 14px; color: #666; line-height: 1.5;">
+                    <div class="wallet-balance-row" style="justify-content: center; text-align: center; padding: 10px 0;">
+                        <span class="wallet-balance-label" style="font-size: 16px; color: #666; line-height: 1.5;">
                             내 사람을 등록하고 온담의<br>함께 지갑 서비스를 이용해 보세요.
                         </span>
                     </div>
                 
                     <div class="wallet-button-row">
                         <!-- /group 페이지로 이동하여 가족을 생성하거나 참여하도록 유도합니다. -->
-                        <a href="${pageContext.request.contextPath}/group" class="wallet-button fill" style="width: 100%; text-align: center;">내 사람 만들기 / 참여하기</a>
+                        <a href="${pageContext.request.contextPath}/group" class="wallet-button fill" style="width: 100%; font-weight: 800; text-align: center;">내 사람 만들기 / 참여하기</a>
                     </div>
                 </c:otherwise>
             </c:choose>
@@ -149,7 +150,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/support/inquiry" class="menu-item">
+                <a href="${pageContext.request.contextPath}/inquiry/inquiry-list" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">support_agent</span>
                         <strong class="menu-label">문의내역</strong>
@@ -187,6 +188,7 @@
     <jsp:include page="../layout/bottomNav.jsp" />
     
 </div><jsp:include page="withdraw.jsp" />
+<script src="${pageContext.request.contextPath}/js/withdraw.js"></script>
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 </body>
 </html>

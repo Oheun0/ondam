@@ -10,13 +10,11 @@
 
     var backBtn = document.getElementById("appBackHeaderBtn");
     if (backBtn) {
-      backBtn.addEventListener("click", function () {
-        if (window.history.length > 1) {
-          window.history.back();
-        } else {
-          var ctx = document.body.getAttribute("data-context-path") || "";
-          window.location.href = ctx + "/main";
-        }
+      backBtn.addEventListener("click", function (e) {
+        e.preventDefault(); 
+        
+        var ctx = document.body.getAttribute("data-context-path") || "";
+        window.location.href = ctx + "/mypage";
       });
     }
 

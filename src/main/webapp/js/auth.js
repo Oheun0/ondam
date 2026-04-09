@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   bindSelectableCards();
   bindUserIdInputReset();
   bindErrorReset();
+  bindLoadPrevInfo();
 });
 
 function validate() {
@@ -258,4 +259,35 @@ function openPostcode() {
       document.getElementById("userDetailAddress").focus();
     }
   }).open();
+}
+
+//이전 정보 불러오기
+function bindLoadPrevInfo() {
+  const loadPrevCheckbox = document.querySelector("input[name='loadPrevInfo']");
+  const receiverNameInput = document.getElementById("receiverName");
+  const phone1Select = document.getElementById("phone1");
+  const phone2Input = document.getElementById("phone2");
+  const phone3Input = document.getElementById("phone3");
+
+  if (!loadPrevCheckbox || !receiverNameInput) return; 
+  function applyPrevInfo() {
+    if (typeof prevUserInfo === 'undefined') return;
+
+    if (loadPrevCheckbox.checked) {
+      receiverNameInput.value = prevUserInfo.name;
+      phone1Select.value = prevUserInfo.phone1;
+      phone2Input.value = prevUserInfo.phone2;
+      phone3Input.value = prevUserInfo.phone3;
+      receiverNameInput.classList.remove("error-border");
+      phone2Input.classList.remove("error-border");
+      phone3Input.classList.remove("error-border");
+    } else {
+      receiverNameInput.value = "";
+      phone1Select.value = "010";
+      phone2Input.value = "";
+      phone3Input.value = "";
+    }
+  }
+  loadPrevCheckbox.addEventListener("change", applyPrevInfo);
+  applyPrevInfo();
 }

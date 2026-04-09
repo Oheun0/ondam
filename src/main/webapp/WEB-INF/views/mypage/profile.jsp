@@ -107,7 +107,7 @@
                     <div class="readonly-box">
                         <div class="readonly-row">
                             <span>가입 방식</span>
-                            <strong>카카오 로그인</strong>
+                            <strong>${empty loginUser.userPwd ? '카카오 로그인' : '일반 가입'}</strong>
                         </div>
                         <div class="readonly-row">
                             <span>계정 정보</span>
