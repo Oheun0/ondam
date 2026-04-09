@@ -1,10 +1,11 @@
 package com.ondam.product.controller;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
 import com.ondam.common.controller.Controller;
+import com.ondam.group.dto.FamilyMemberDTO;
+import com.ondam.group.service.FamilyMemberService;
 import com.ondam.product.dto.CategoryDTO;
 import com.ondam.product.dto.ProductDTO;
 import com.ondam.product.dto.ProductImageDTO;
@@ -16,7 +17,6 @@ import com.ondam.product.service.ProductService;
 import com.ondam.situation.dto.SituationDTO;
 import com.ondam.situation.service.SituationService;
 import com.ondam.user.dto.UserDTO;
-import com.ondam.wish.dto.WishDTO;
 import com.ondam.wish.service.WishService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +31,7 @@ public class ProductController implements Controller {
 	private CategoryService categoryService = new CategoryService();
 	private SituationService situationService = new SituationService();
 	private WishService wishService = new WishService();
+	private FamilyMemberService familyMemberService = new FamilyMemberService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -157,12 +158,27 @@ public class ProductController implements Controller {
 	            .computeIfAbsent(opt.getOptionColor(), k -> new java.util.ArrayList<>())
 	            .add(opt.getOptionSize());
 	    }
+	    
+	    // 조르기용 그룹 멤버 리스트 추가
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    if (loginUser != null) {
+	        FamilyMemberDTO myMember = familyMemberService
+	                .getFamilyMemberByUserNo(loginUser.getUserNo());
+	        if (myMember != null) {
+	            Vector<FamilyMemberDTO> memberList = familyMemberService
+	                    .getFamilyMembersByFamilyNo(myMember.getFamilyNo());
+	            // 본인 제외
+	            memberList.removeIf(m -> m.getUserNo() == loginUser.getUserNo());
+	            request.setAttribute("pokeMemberList", memberList);
+	        }
+	    }
 
 	    request.setAttribute("product",      product);
 	    request.setAttribute("images",       images);
 	    request.setAttribute("options",      options);
 	    request.setAttribute("colorSet",     colorSet);
 	    request.setAttribute("colorSizeMap", colorSizeMap);
+	    request.setAttribute("optionList",   options);
 
 	    return "product/product-detail";
 	}
