@@ -3,6 +3,8 @@ package com.ondam.product.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import com.ondam.common.DBConnectionMgr;
@@ -174,5 +176,39 @@ public class ProductOptionDAO {
             pool.freeConnection(con, pstmt, rs);
         }
         return dto;
+    }
+    public List<ProductOptionDTO> getProductOptionList(int productNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = null;
+        List<ProductOptionDTO> list = new ArrayList<>();
+
+        try {
+            con = pool.getConnection();
+            // 재고(optionStock)가 0보다 큰 것만 가져와야 AI가 품절된 상품을 추천하지 않습니다.
+            sql = "SELECT * FROM productoption WHERE productNo = ? AND optionStock > 0 ORDER BY optionSize ASC";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productNo);
+            
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ProductOptionDTO dto = new ProductOptionDTO();
+                dto.setProductOptionNo(rs.getInt("productOptionNo"));
+                dto.setProductNo(rs.getInt("productNo"));
+                dto.setOptionSize(rs.getString("optionSize"));
+                dto.setOptionColor(rs.getString("optionColor"));
+                dto.setOptionAddPrice(rs.getInt("optionAddPrice"));
+                dto.setOptionStock(rs.getInt("optionStock"));
+                
+                list.add(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return list;
     }
 }

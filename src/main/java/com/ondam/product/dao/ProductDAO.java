@@ -616,6 +616,7 @@ public class ProductDAO {
 	    dto.setProductName(rs.getString("productName"));
 	    dto.setProductBrand(rs.getString("productBrand"));
 	    dto.setProductEx(rs.getString("productEx"));
+	    dto.setProductGender(rs.getInt("productGender"));
 	    dto.setProductPrice(rs.getInt("productPrice"));
 	    dto.setProductOriginPrice(rs.getInt("productOriginPrice"));
 	    dto.setProductMaterial(rs.getString("productMaterial"));
@@ -625,7 +626,30 @@ public class ProductDAO {
 	    dto.setProductDate(rs.getString("productDate"));
 	    dto.setWishCount(rs.getInt("wishCount"));
 	    dto.setSaleCount(rs.getInt("saleCount"));
-	    
 	    dto.setProductState(rs.getInt("productState"));
+	}
+
+	public Vector<ProductDTO> getAllActiveProducts() {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		Vector<ProductDTO> vlist = new Vector<ProductDTO>();
+		try {
+			con = pool.getConnection();
+			sql = "SELECT * FROM product where productState = 1";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ProductDTO dto = new ProductDTO();
+				mapResultSetToDTO(rs, dto);
+				vlist.addElement(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
 	}
 }

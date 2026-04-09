@@ -362,5 +362,34 @@ public class UserDAO {
 	    }
 	    return userPhoneNumber;
 	}
+	public UserDTO getUserPhysicalInfo(int userNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    UserDTO dto = null;
+
+	    try {
+	        con = pool.getConnection();
+	        // userName, birth, gender, height, weight만 선택적으로 조회
+	        String sql = "SELECT userName, userBirth, userGender, userHeight, userWeight FROM user WHERE userNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, userNo);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            dto = new UserDTO();
+	            dto.setUserName(rs.getString("userName"));
+	            dto.setUserBirth(rs.getString("userBirth")); // "1990-01-01" 형태 가정
+	            dto.setUserGender(rs.getInt("userGender"));
+	            dto.setUserHeight(rs.getInt("userHeight"));
+	            dto.setUserWeight(rs.getInt("userWeight"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return dto;
+	}
 
 }
