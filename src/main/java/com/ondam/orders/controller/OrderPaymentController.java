@@ -161,6 +161,12 @@ public class OrderPaymentController implements Controller {
                             : i.getProductPrice() * i.getCartQuantity())
                     .sum();
 
+            int productDiscount = selectedItems.stream()
+                    .mapToInt(i -> i.getProductOriginPrice() > 0
+                            ? (i.getProductOriginPrice() - i.getProductPrice()) * i.getCartQuantity()
+                            : 0)
+                    .sum();
+
             int walletUsedAmount = (paymentMethod == 0) ? paymentAmount : 0; // 0 = 함께지갑
 
             // ── 4. 주문 코드 생성 (ORD + timestamp + 랜덤 4자리) ──
@@ -176,8 +182,8 @@ public class OrderPaymentController implements Controller {
             ordersDto.setDeliveryAddr(deliveryAddr);
             ordersDto.setDeliveryContent(deliveryContent);
             ordersDto.setOrderPrice(orderPrice);
+            ordersDto.setProductDiscount(productDiscount);
             ordersDto.setCouponDiscount(couponDiscount);
-            ordersDto.setWalletUsedAmount(walletUsedAmount);
             ordersDto.setPaymentAmount(paymentAmount);
             ordersDto.setPaymentMethod(paymentMethod);
             ordersDto.setUserCouponNo(userCouponNo);

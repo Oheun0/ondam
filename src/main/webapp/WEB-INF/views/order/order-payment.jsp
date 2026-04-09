@@ -239,9 +239,8 @@
         <div class="op-toggle-grid" role="presentation">
           <button type="button" class="op-toggle-btn" data-delivery="배송 전에 꼭 연락주세요." role="option" aria-selected="false">배송 전에 꼭 연락주세요.</button>
           <button type="button" class="op-toggle-btn" data-delivery="부재 시 경비실에 맡겨주세요." role="option" aria-selected="false">부재 시 경비실에 맡겨주세요.</button>
-          <button type="button" class="op-toggle-btn" data-delivery="집 앞에 놓아주세요" role="option" aria-selected="false">집 앞에 놓아주세요.</button>
+          <button type="button" class="op-toggle-btn" data-delivery="집 앞에 놓아주세요." role="option" aria-selected="false">집 앞에 놓아주세요.</button>
           <button type="button" class="op-toggle-btn" data-delivery="집으로 직접 배송해주세요." role="option" aria-selected="false">집으로 직접 배송해주세요.</button>
-          <button type="button" class="op-toggle-btn" data-delivery="배송 전에 꼭 연락주세요." role="option" aria-selected="false">배송 전에 꼭 연락주세요.</button>
           <button type="button" class="op-toggle-btn" data-delivery="직접 입력" data-delivery-custom="true" role="option" aria-selected="false">직접 입력</button>
         </div>
       </div>
