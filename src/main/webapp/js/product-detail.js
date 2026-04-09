@@ -403,7 +403,7 @@ document.addEventListener("DOMContentLoaded", function () {
           var ctx = document.body.getAttribute("data-context-path") || "";
           var form = document.createElement("form");
           form.method = "GET";  // 주문/결제 페이지는 GET으로 파라미터 전달
-          form.action = ctx + "/order/payment";
+          form.action = ctx + "/payment";
 
           [
               ["productNo",        PRODUCT_NO],

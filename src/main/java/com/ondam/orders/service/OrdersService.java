@@ -36,5 +36,8 @@ public class OrdersService {
 	public OrdersDTO getOrderByOrderNo(int orderNo) {
 		return dao.getOrderByOrderNo(orderNo);
 	}
+	
+	public int createOrdersAndGetNo(OrdersDTO dto) {
+	    return dao.insertOrdersAndGetNo(dto);
+	}
 }
-

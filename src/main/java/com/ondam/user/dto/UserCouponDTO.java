@@ -9,6 +9,29 @@ public class UserCouponDTO {
 		private String usedAt;
 		private Integer orderNo;
 		
+		private String couponName;
+		private int discountType;
+		private int discountValue;
+		private int minOrderAmount;
+		private Integer maxDiscountAmount;
+		private String validFrom;
+		private String validUntil;
+		
+		public String getCouponName() { return couponName; }
+		public void setCouponName(String couponName) { this.couponName = couponName; }
+		public int getDiscountType() { return discountType; }
+		public void setDiscountType(int discountType) { this.discountType = discountType; }
+		public int getDiscountValue() { return discountValue; }
+		public void setDiscountValue(int discountValue) { this.discountValue = discountValue; }
+		public int getMinOrderAmount() { return minOrderAmount; }
+		public void setMinOrderAmount(int minOrderAmount) { this.minOrderAmount = minOrderAmount; }
+		public Integer getMaxDiscountAmount() { return maxDiscountAmount; }
+		public void setMaxDiscountAmount(Integer maxDiscountAmount) { this.maxDiscountAmount = maxDiscountAmount; }
+		public String getValidFrom() { return validFrom; }
+		public void setValidFrom(String validFrom) { this.validFrom = validFrom; }
+		public String getValidUntil() { return validUntil; }
+		public void setValidUntil(String validUntil) { this.validUntil = validUntil; }
+		
 		public int getUserCouponNo() {
 			return userCouponNo;
 		}
