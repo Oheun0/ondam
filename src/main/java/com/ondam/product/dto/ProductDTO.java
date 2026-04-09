@@ -95,4 +95,5 @@ public class ProductDTO {
 
     public int getProductState() { return productState; }
     public void setProductState(int productState) { this.productState = productState; }
+
 }

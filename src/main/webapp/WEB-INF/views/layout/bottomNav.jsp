@@ -13,7 +13,7 @@
         <span class="material-icons nav-icon">smart_display</span>
         <span class="nav-label">영상보기</span>
     </a>
-    <a href="${pageContext.request.contextPath}/ai" class="nav-item <%= "ai".equals(bottomNav) ? "active" : "" %>" aria-label="AI 추천">
+    <a href="${pageContext.request.contextPath}/ai-intro" class="nav-item <%= "ai".equals(bottomNav) ? "active" : "" %>" aria-label="AI 추천">
         <span class="material-icons nav-icon">auto_awesome</span>
         <span class="nav-label">옷추천</span>
     </a>

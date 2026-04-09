@@ -171,4 +171,26 @@ public class ProductImageDAO {
 	    }
 	    return dto;
 	}
+	
+	public String getProductImageFile(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String imgFile = null;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT imgFile FROM productImage WHERE productNo = ? ORDER BY imgOrder ASC LIMIT 1";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            imgFile = rs.getString("imgFile");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return imgFile; // String을 직접 리턴
+	}
 }

@@ -132,4 +132,27 @@ public class ProductSeasonDAO {
         }
         return seasons;
     }
+	// 참고용: ProductSeasonDAO.java 내부에 들어갈 메서드 예시
+	public String getProductSeasons(int productNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    StringBuilder sb = new StringBuilder();
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT season FROM productseason WHERE productNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, productNo);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            if (sb.length() > 0) sb.append(",");
+	            sb.append(rs.getString("season")); // 예: "봄,가을"
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return sb.toString();
+	}
 }
