@@ -274,11 +274,12 @@
 
 #homeClothesSection .section-title {
     margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .category-chip span:last-child {
     font-size: 0.92rem;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .shortcut-grid {
@@ -348,7 +349,7 @@
 
 .shortcut-text p {
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--text-sub);
     margin: 0;
     text-align: left;
@@ -536,6 +537,7 @@
 .banner-card p {
     color: var(--text-sub);
     margin-bottom: 14px;
+    font-weight: 500;
 }
 
 .banner-link {
@@ -664,6 +666,7 @@
 .shorts-info p {
     color: var(--text-sub);
     margin-bottom: 12px;
+    font-weight: 500;
 }
 
 .shorts-btn {
@@ -705,11 +708,13 @@
 .notice-item p {
     flex: 1;
     font-size: 0.96rem;
+    font-weight: 500;
 }
 
 .notice-date {
     color: var(--text-muted);
     font-size: 0.82rem;
+    font-weight: 500;
 }
 
 .bottom-nav {
@@ -795,7 +800,7 @@ body.product-list-page .bottom-nav.bottom-nav--collapsed {
     border-radius: var(--radius-md);
     width: 100%;
     aspect-ratio: 2 / 1;
-    background: var(--brand-color);
+    background: #fff;
 }
 
 .slider-track {
@@ -819,7 +824,7 @@ body.product-list-page .bottom-nav.bottom-nav--collapsed {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--brand-color);
+    background: #fff;
     box-sizing: border-box;
 }
 
