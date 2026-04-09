@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%-- 더미: 빈 장바구니 UI 테스트 시 true --%>
-<c:set var="cartDummyEmpty" value="false"/>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -33,7 +32,7 @@
       </header>
 
       <c:choose>
-        <c:when test="${cartDummyEmpty}">
+        <c:when test="${empty cartList}">
           <main class="cart-main cart-main--empty">
             <div class="cart-empty-card">
               <p class="cart-empty-title">장바구니에 상품이 없어요</p>
@@ -57,134 +56,76 @@
           </div>
 
           <main class="cart-main" id="cartMainList">
-            <%-- 브랜드 0: 메가하우스 2종 --%>
-            <section class="cart-brand-group" aria-labelledby="cartBrand0">
-              <h2 class="cart-brand-group__title" id="cartBrand0">메가하우스 배송상품</h2>
-              <ul class="cart-brand-group__list">
-                <li>
-                  <article class="cart-item"
-                      data-cart-id="1"
-                      data-unit-price="40000"
-                      data-original-price="50000"
-                      data-qty="1"
-                      data-discounted="true"
-                      data-option="빨간색 / 95 / 1개"
-                      data-product-name="데일리 오버핏 후드"
-                      data-brand="메가하우스"
-                      data-image="${pageContext.request.contextPath}/images/category/type-top-knit.jpg">
-                    <label class="cart-item__check">
-                      <input type="checkbox" class="cart-item__checkbox" checked aria-label="상품 선택"/>
-                    </label>
-                    <button type="button" class="cart-item__remove" aria-label="상품 삭제">
-                      <span class="material-icons-outlined" aria-hidden="true">close</span>
-                    </button>
-                    <div class="cart-item__left">
-                      <div class="cart-item__thumb-wrap">
-                        <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" class="cart-item__thumb" width="96" height="96" loading="lazy"/>
-                      </div>
-                    </div>
-                    <button type="button" class="cart-item__option-btn" aria-label="옵션 변경하기: 빨간색 / 95 / 1개">빨간색 / 95 / 1개</button>
-                    <div class="cart-item__body">
-                      <p class="cart-item__brand">메가하우스</p>
-                      <p class="cart-item__name">데일리 오버핏 후드데일리 오버핏</p>
-                      <div class="cart-item__bottom">
-                        <div class="cart-item__price-block">
-                          <span class="cart-item__price-original">50,000원</span>
-                          <span class="cart-item__price-sale">40,000원</span>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                </li>
-                <li>
-                  <article class="cart-item cart-item--soldout"
-                      data-cart-id="2"
-                      data-unit-price="29000"
-                      data-original-price="29000"
-                      data-qty="1"
-                      data-discounted="false"
-                      data-soldout="true"
-                      data-option="네이비 / 100 / 1개"
-                      data-product-name="스트라이프 긴팔 티셔츠"
-                      data-brand="메가하우스"
-                      data-image="${pageContext.request.contextPath}/images/category/type-top-knit.jpg">
-                    <label class="cart-item__check">
-                      <input type="checkbox" class="cart-item__checkbox" checked aria-label="상품 선택"/>
-                    </label>
-                    <button type="button" class="cart-item__remove" aria-label="상품 삭제">
-                      <span class="material-icons-outlined" aria-hidden="true">close</span>
-                    </button>
-                    <div class="cart-item__left">
-                      <div class="cart-item__thumb-wrap">
-                        <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" class="cart-item__thumb" width="96" height="96" loading="lazy"/>
-                        <span class="cart-item__soldout-badge">품절</span>
-                      </div>
-                    </div>
-                    <button type="button" class="cart-item__option-btn" aria-label="옵션 변경하기: 네이비 / 100 / 1개" disabled>네이비 / 100 / 1개</button>
-                    <div class="cart-item__body">
-                      <p class="cart-item__brand">메가하우스</p>
-                      <p class="cart-item__name">스트라이프 긴팔 티셔츠</p>
-                      <div class="cart-item__bottom">
-                        <div class="cart-item__price-block cart-item__price-block--plain">
-                          <span class="cart-item__price-sale">29,000원</span>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                </li>
-              </ul>
-            </section>
-
-            <%-- 브랜드 1: ABC 1종 --%>
-            <section class="cart-brand-group" aria-labelledby="cartBrand1">
-              <h2 class="cart-brand-group__title" id="cartBrand1">ABC브랜드 배송상품</h2>
-              <ul class="cart-brand-group__list">
-                <li>
-                  <article class="cart-item"
-                      data-cart-id="3"
-                      data-unit-price="67500"
-                      data-original-price="75000"
-                      data-qty="2"
-                      data-line-sale="135000"
-                      data-line-original="150000"
-                      data-discounted="true"
-                      data-option="블랙 / 105 / 2개"
-                      data-product-name="가벼운 방풍 재킷"
-                      data-brand="ABC브랜드"
-                      data-image="${pageContext.request.contextPath}/images/category/type-top-knit.jpg">
-                    <label class="cart-item__check">
-                      <input type="checkbox" class="cart-item__checkbox" checked aria-label="상품 선택"/>
-                    </label>
-                    <button type="button" class="cart-item__remove" aria-label="상품 삭제">
-                      <span class="material-icons-outlined" aria-hidden="true">close</span>
-                    </button>
-                    <div class="cart-item__left">
-                      <div class="cart-item__thumb-wrap">
-                        <img src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="" class="cart-item__thumb" width="96" height="96" loading="lazy"/>
-                      </div>
-                    </div>
-                    <button type="button" class="cart-item__option-btn" aria-label="옵션 변경하기: 블랙 / 105 / 2개">블랙 / 105 / 2개</button>
-                    <div class="cart-item__body">
-                      <p class="cart-item__brand">ABC브랜드</p>
-                      <p class="cart-item__name">가벼운 방풍 재킷</p>
-                      <div class="cart-item__bottom">
-                        <div class="cart-item__price-block">
-                          <span class="cart-item__price-original">150,000원</span>
-                          <span class="cart-item__price-sale">135,000원</span>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                </li>
-              </ul>
-            </section>
-          </main>
+			  <section class="cart-brand-group" aria-labelledby="cartBrandAll">
+			    <h2 class="cart-brand-group__title" id="cartBrandAll">주문 상품</h2>
+			    <ul class="cart-brand-group__list">
+			      <c:forEach var="item" items="${cartList}">
+			        <li>
+			          <article class="cart-item ${item.optionStock == 0 ? 'cart-item--soldout' : ''}"
+			              data-cart-id="${item.cartItemNo}"
+			              data-unit-price="${item.productPrice}"
+			              data-original-price="${item.productPrice}"
+			              data-qty="${item.cartQuantity}"
+			              data-discounted="false"
+			              data-soldout="${item.optionStock == 0}"
+			              data-option="${item.optionColor} / ${item.optionSize} / ${item.cartQuantity}개"
+			              data-product-name="${item.productName}"
+			              data-image="${pageContext.request.contextPath}/images/product/${item.productImg}">
+			
+			            <label class="cart-item__check">
+			              <input type="checkbox" class="cart-item__checkbox"
+			                     ${item.optionStock == 0 ? 'disabled' : 'checked'}
+			                     aria-label="상품 선택"/>
+			            </label>
+			
+			            <button type="button" class="cart-item__remove"
+			                    aria-label="상품 삭제"
+			                    data-cart-item-no="${item.cartItemNo}">
+			              <span class="material-icons-outlined" aria-hidden="true">close</span>
+			            </button>
+			
+			            <div class="cart-item__left">
+			              <div class="cart-item__thumb-wrap">
+			                <img src="${pageContext.request.contextPath}/images/product/${item.productImg}"
+			                     alt="${item.productName}"
+			                     class="cart-item__thumb"
+			                     width="96" height="96" loading="lazy"/>
+			                <c:if test="${item.optionStock == 0}">
+			                  <span class="cart-item__soldout-badge">품절</span>
+			                </c:if>
+			              </div>
+			            </div>
+			
+			            <button type="button" class="cart-item__option-btn"
+			                    aria-label="옵션 변경하기: ${item.optionColor} / ${item.optionSize} / ${item.cartQuantity}개"
+			                    ${item.optionStock == 0 ? 'disabled' : ''}>
+			              ${item.optionColor} / ${item.optionSize} / ${item.cartQuantity}개
+			            </button>
+			
+			            <div class="cart-item__body">
+			              <p class="cart-item__name">${item.productName}</p>
+			              <div class="cart-item__bottom">
+			                <div class="cart-item__price-block cart-item__price-block--plain">
+			                  <span class="cart-item__price-sale">
+			                    <fmt:formatNumber value="${item.productPrice * item.cartQuantity}" pattern="#,###"/>원
+			                  </span>
+			                </div>
+			              </div>
+			            </div>
+			          </article>
+			        </li>
+			      </c:forEach>
+			    </ul>
+			  </section>
+			</main>
 
           <div class="cart-order-bar" id="cartOrderBar">
-            <button type="button" class="cart-order-bar__btn detail-sheet-btn primary" id="cartOrderSubmitBtn">
-              총 <span id="cartOrderCount">3</span>개 상품 주문하기
-            </button>
-          </div>
+			  <button type="button"
+			          class="cart-order-bar__btn detail-sheet-btn primary"
+			          id="cartOrderSubmitBtn">
+			    총 <span id="cartOrderCount">${cartList.size()}</span>개 상품 주문하기
+			  </button>
+			</div>
           </div>
 
           <main class="cart-main cart-main--empty hidden" id="cartJsEmpty" aria-live="polite">

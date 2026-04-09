@@ -12,6 +12,7 @@ import com.ondam.notification.controller.NotificationController;
 import com.ondam.notification.controller.NotificationSettingController;
 import com.ondam.orders.controller.OrderDetailController;
 import com.ondam.orders.controller.OrderListController;
+import com.ondam.orders.controller.OrderPaymentController;
 import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
@@ -109,6 +110,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/notification/notification-setting", new NotificationSettingController());
         handlerMapping.put("/order/order-list", new OrderListController());
         handlerMapping.put("/order/order-detail", new OrderDetailController());
+        handlerMapping.put("/payment", new OrderPaymentController());
         handlerMapping.put("/search", new SearchController());
         
     }

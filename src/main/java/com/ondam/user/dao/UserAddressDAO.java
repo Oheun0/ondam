@@ -251,10 +251,11 @@ public class UserAddressDAO {
 			ResultSet rs = null;
 			UserAddressDTO dto = null;
 			
-			// 요청하신 4개의 컬럼만 정확하게 지정하여 성능을 최적화한 SQL 쿼리입니다.
-			String sql = "SELECT addressName, userAddress, userDetailAddress, userZipcode, receiverName, receiverTel "
-					   + "FROM userAddress "
-					   + "WHERE userNo = ? AND isDefault = 1";
+			// 요청하신 4개의 컬럼만 정확하게 지정하여 성능을 최적화한 SQL 쿼리입니다. (26/04/09 1248i isDefault 컬럼 추가)
+			String sql = "SELECT addressName, userAddress, userDetailAddress, userZipcode, "
+			           + "receiverName, receiverTel, isDefault "
+			           + "FROM userAddress "
+			           + "WHERE userNo = ? AND isDefault = 1";
 			
 			try {
 				con = pool.getConnection();
@@ -271,6 +272,7 @@ public class UserAddressDAO {
 					dto.setUserZipcode(rs.getString("userZipcode"));
 					dto.setReceiverName(rs.getString("receiverName"));
 					dto.setReceiverTel(rs.getString("receiverTel"));
+					dto.setIsDefault(rs.getInt("isDefault"));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

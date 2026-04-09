@@ -92,11 +92,11 @@
 
     function syncSelectAll() {
       var items = getItems();
-      var boxes = items
-        .map(function (el) {
-          return el.querySelector(".cart-item__checkbox");
-        })
-        .filter(Boolean);
+	  var boxes = items.map(function (el) {
+	      return el.querySelector(".cart-item__checkbox");
+	  }).filter(function(cb) {
+	      return cb && !cb.disabled;
+	  });
       if (!boxes.length) {
         selectAll.checked = false;
         selectAll.indeterminate = false;
@@ -112,17 +112,44 @@
       selectAll.indeterminate = anyOn && !allOn;
     }
 
-    function selectedLineCount() {
-      return getItems().filter(function (el) {
-        var cb = el.querySelector(".cart-item__checkbox");
-        return cb && cb.checked;
-      }).length;
-    }
+	function selectedLineCount() {
+	    return getItems().filter(function (el) {
+	        var cb = el.querySelector(".cart-item__checkbox");
+	        return cb && cb.checked && !cb.disabled;
+	    }).length;
+	}
 
     function updateOrderBar() {
       if (orderCountEl) orderCountEl.textContent = String(selectedLineCount());
       if (orderBtn) orderBtn.disabled = selectedLineCount() === 0;
     }
+	
+	if (orderBtn) {
+	    orderBtn.addEventListener("click", function () {
+	        var checkedItems = getItems().filter(function (item) {
+	            var cb = item.querySelector(".cart-item__checkbox");
+	            return cb && cb.checked;
+	        });
+
+	        if (checkedItems.length === 0) return;
+
+	        var ctx = document.body.getAttribute("data-context-path") || "";
+	        var form = document.createElement("form");
+	        form.method = "POST";
+	        form.action = ctx + "/payment";
+
+	        checkedItems.forEach(function (item) {
+	            var input = document.createElement("input");
+	            input.type  = "hidden";
+	            input.name  = "cartItemNo";
+	            input.value = item.getAttribute("data-cart-id");
+	            form.appendChild(input);
+	        });
+
+	        document.body.appendChild(form);
+	        form.submit();
+	    });
+	}
 
     function syncOptionPanelsAria() {
       if (colorToggle && colorPanel) {
@@ -214,19 +241,31 @@
       currentArticle = null;
     }
 
-    function removeArticle(article) {
-      if (!article) return;
-      var li = article.closest("li");
-      if (li) {
-        var ul = li.parentElement;
-        li.remove();
-        if (ul && !ul.querySelector("li")) {
-          var group = ul.closest(".cart-brand-group");
-          if (group) group.remove();
-        }
-      }
-      afterListChange();
-    }
+	function removeArticle(article) {
+	    if (!article) return;
+
+	    var cartItemNo = article.getAttribute("data-cart-id");
+	    var ctx = document.body.getAttribute("data-context-path") || "";
+
+	    // 서버 삭제 요청
+	    fetch(ctx + "/cart?action=delete&cartItemNo=" + cartItemNo, {
+	        method: "GET"
+	    }).catch(function (err) {
+	        console.error("삭제 실패:", err);
+	    });
+
+	    // DOM 제거 (기존 로직 유지)
+	    var li = article.closest("li");
+	    if (li) {
+	        var ul = li.parentElement;
+	        li.remove();
+	        if (ul && !ul.querySelector("li")) {
+	            var group = ul.closest(".cart-brand-group");
+	            if (group) group.remove();
+	        }
+	    }
+	    afterListChange();
+	}
 
     function afterListChange() {
       if (getItems().length === 0) {
@@ -270,16 +309,16 @@
       closeOptionSheet();
     }
 
-    /* 전체 선택 */
-    selectAll.addEventListener("change", function () {
-      var on = selectAll.checked;
-      getItems().forEach(function (item) {
-        var cb = item.querySelector(".cart-item__checkbox");
-        if (cb) cb.checked = on;
-      });
-      selectAll.indeterminate = false;
-      updateOrderBar();
-    });
+	/* 전체 선택 */
+	selectAll.addEventListener("change", function () {
+	    var on = selectAll.checked;
+	    getItems().forEach(function (item) {
+	        var cb = item.querySelector(".cart-item__checkbox");
+	        if (cb && !cb.disabled) cb.checked = on;  // disabled 제외
+	    });
+	    selectAll.indeterminate = false;
+	    updateOrderBar();
+	});
 
     mainList.addEventListener("change", function (e) {
       if (e.target && e.target.classList.contains("cart-item__checkbox")) {

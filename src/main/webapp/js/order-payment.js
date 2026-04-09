@@ -15,15 +15,14 @@
     if (!root) return;
 
     // Dummy money
-    var totalProduct = 80000;
-    var productDiscount = 5000;
-    var shippingFee = 0;
-    var originalForPaybar = 88000; // 더미: 할인 전 표시용
+	var totalProduct    = parseInt(root.getAttribute("data-total-product") || "0", 10);
+	var productDiscount = parseInt(root.getAttribute("data-product-discount") || "0", 10);    var shippingFee = 0;
+    var originalForPaybar = totalProduct;
 
     // State
     var selectedDelivery = "";
     var isDeliveryCustomMode = false;
-    var selectedCouponId = "spring3000"; // 더미 기본값: -3,000원
+	var selectedCouponId = "";
     var selectedPay = "";
 
     // Elements
@@ -49,6 +48,16 @@
 
     var walletExtra = document.getElementById("opWalletExtra");
     var unknownHint = document.getElementById("opUnknownHint");
+	var payGrid          = document.getElementById("opPayGrid");
+	var preferPayment    = payGrid ? parseInt(payGrid.getAttribute("data-prefer") || "0", 10) : 0;
+	var walletBalanceRaw = payGrid ? parseInt(payGrid.getAttribute("data-wallet-balance") || "0", 10) : 0;
+	var familyNo         = payGrid ? parseInt(payGrid.getAttribute("data-family-no") || "0", 10) : 0;
+
+	// 실제 잔액으로 교체
+	var walletBalanceEl = document.getElementById("opWalletBalance");
+	if (walletBalanceEl) {
+	    walletBalanceEl.textContent = walletBalanceRaw.toLocaleString("ko-KR") + "원";
+	}
     var walletConnectModal = document.getElementById("opWalletConnectModal");
     var walletConnectGoBtn = document.getElementById("opWalletConnectGoBtn");
     // 함께지갑 잔액 부족 모달 (#opWalletInsufficientModal)
@@ -106,6 +115,69 @@
       setHidden(walletInsufficientModal, true);
       unlockBodyScroll();
     }
+	
+	function closeWalletInsufficientModal() {
+	    if (!walletInsufficientModal) return;
+	    setHidden(walletInsufficientModal, true);
+	    unlockBodyScroll();
+	}
+
+	// ↓ 여기에 배송지 변경 모달 코드 추가
+	var addressModal     = document.getElementById("opAddressModal");
+	var addressModalDim  = document.getElementById("opAddressModalDim");
+	var addressCloseBtn  = document.getElementById("opAddressModalCloseBtn");
+	var addressChangeBtn = document.querySelector(".op-link-btn[aria-label='배송지 변경하기']");
+
+	function openAddressModal() {
+	    if (!addressModal) return;
+	    setHidden(addressModal, false);
+	    lockBodyScroll();
+	}
+
+	function closeAddressModal() {
+	    if (!addressModal) return;
+	    setHidden(addressModal, true);
+	    unlockBodyScroll();
+	}
+
+	if (addressChangeBtn) addressChangeBtn.addEventListener("click", openAddressModal);
+	if (addressCloseBtn)  addressCloseBtn.addEventListener("click", closeAddressModal);
+	if (addressModalDim)  addressModalDim.addEventListener("click", closeAddressModal);
+
+	if (addressModal) {
+	    addressModal.addEventListener("click", function (e) {
+	        var item = e.target.closest(".op-address-item");
+	        if (!item) return;
+
+	        var name      = item.getAttribute("data-receiver-name");
+	        var tel       = item.getAttribute("data-receiver-tel");
+	        var addr      = item.getAttribute("data-address");
+	        var detail    = item.getAttribute("data-detail");
+	        var zipcode   = item.getAttribute("data-zipcode");
+	        var isDefault = item.getAttribute("data-is-default") === "1";
+
+	        var whoEl   = document.querySelector(".op-ship-who");
+	        var addrEl  = document.querySelector(".op-ship-addr");
+	        var badgeEl = document.querySelector(".op-card-head__left .op-badge--muted");
+
+	        if (whoEl) {
+	            whoEl.innerHTML =
+	                '<span class="op-strong">' + name + '</span>' +
+	                '<span class="op-ship-sep" aria-hidden="true">|</span>' +
+	                '<span class="op-strong">' + tel + '</span>';
+	        }
+	        if (addrEl) {
+	            addrEl.textContent = "(" + zipcode + ") " + addr + (detail ? ", " + detail : "");
+	        }
+
+	        // 기본배송지 뱃지 업데이트
+	        if (badgeEl) {
+	            setHidden(badgeEl, !isDefault);
+	        }
+
+	        closeAddressModal();
+	    });
+	}
 
     function setAccExpanded(accKey, expanded) {
       var toggle = root.querySelector('.op-acc-toggle[data-acc="' + accKey + '"]');
@@ -116,22 +188,30 @@
       panel.classList.toggle("hidden", !expanded);
     }
 
-    function computeCouponDiscount() {
-      if (!selectedCouponId) return 0;
-      var base = Math.max(0, totalProduct - productDiscount);
+	function computeCouponDiscount() {
+	    if (!selectedCouponId) return 0;
+	    var base = Math.max(0, totalProduct - productDiscount);
 
-      if (selectedCouponId === "welcome10") {
-        // 데모용: 10%지만 화면 예시(-3,000원)에 맞춰 3,000원 캡
-        var pct = Math.round(base * 0.1);
-        return clamp(pct, 0, 3000);
-      }
+	    var btn = root.querySelector('.op-coupon-card[data-coupon-id="' + selectedCouponId + '"]');
+	    if (!btn) return 0;
 
-      if (selectedCouponId === "spring3000") {
-        return base >= 20000 ? 3000 : 0;
-      }
+	    var discountType  = parseInt(btn.getAttribute("data-discount-type") || "0", 10);
+	    var discountValue = parseInt(btn.getAttribute("data-discount-value") || "0", 10);
+	    var minOrder      = parseInt(btn.getAttribute("data-min-order") || "0", 10);
+	    var maxAttr       = btn.getAttribute("data-max-discount");
+	    var maxDiscount   = (maxAttr && maxAttr !== "null") ? parseInt(maxAttr, 10) : null;
 
-      return 0;
-    }
+	    if (base < minOrder) return 0;
+
+	    var discount = 0;
+	    if (discountType === 0) {
+	        discount = discountValue;
+	    } else {
+	        discount = Math.round(base * discountValue / 100);
+	        if (maxDiscount !== null) discount = Math.min(discount, maxDiscount);
+	    }
+	    return Math.min(discount, base);
+	}
 
     function updateMoneyUI() {
       var couponDiscount = computeCouponDiscount();
@@ -362,28 +442,22 @@
       }
 
       // Submit (no server)
-      if (e.target && e.target.id === "opPaySubmitBtn") {
-        // 더미: 내 사람 미연동 상태라고 가정 → 함께지갑이면 항상 모달 노출
-        if (selectedPay === "wallet") {
-          openWalletConnectModal();
-          return;
-        }
-        var deliveryMsg = "선택 안 함";
-        if (isDeliveryCustomMode) {
-          deliveryMsg = (deliveryCustomInput && deliveryCustomInput.value.trim()) || "직접 입력(미입력)";
-        } else if (selectedDelivery) {
-          deliveryMsg = selectedDelivery;
-        }
-        var msg =
-          "화면 설계용 데모입니다.\n\n" +
-          "- 배송 요청사항: " +
-          deliveryMsg +
-          "\n- 쿠폰: " +
-          (selectedCouponId || "사용 안 함") +
-          "\n- 결제수단: " +
-          (selectedPay || "선택 안 함");
-        window.alert(msg);
-      }
+	  if (e.target && e.target.id === "opPaySubmitBtn") {
+	      if (selectedPay === "wallet") {
+	          if (familyNo === 0) {
+	              openWalletConnectModal();
+	              return;
+	          }
+	          var couponDiscount = computeCouponDiscount();
+	          var payable = Math.max(0, totalProduct - productDiscount - couponDiscount + shippingFee);
+	          if (walletBalanceRaw < payable) {
+	              openWalletInsufficientModal();
+	              return;
+	          }
+	      }
+	      // 다음 단계: 실제 주문 INSERT
+	      window.alert("결제 진행 예정");
+	  }
     });
 
     // Coupon mirror toggle (applied coupon box)
@@ -408,6 +482,7 @@
         closeDeliveryDropdown();
         closeWalletConnectModal();
         closeWalletInsufficientModal();
+		closeAddressModal();
       }
     });
 
@@ -433,14 +508,14 @@
       });
     }
 
-    if (walletChargeGoBtn) {
-      walletChargeGoBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        closeWalletInsufficientModal();
-        // TODO: 함께지갑 충전 화면 URL로 이동
-        window.alert("충전 페이지는 준비 중입니다.");
-      });
-    }
+	if (walletChargeGoBtn) {
+	    walletChargeGoBtn.addEventListener("click", function (e) {
+	        e.preventDefault();
+	        closeWalletInsufficientModal();
+	        var contextPath = document.body.getAttribute("data-context-path") || "";
+	        window.location.href = contextPath + "/wallet?action=charge";
+	    });
+	}
 
     window.addEventListener("resize", function () {
       positionDeliveryDropdown();
@@ -465,7 +540,8 @@
       defaultCoupon.classList.add("is-active");
       defaultCoupon.setAttribute("aria-checked", "true");
     }
-    setPaySelection("card");
+	var preferPayMap = { 0: "card", 1: "card", 2: "transfer", 3: "wallet" };
+	setPaySelection(preferPayMap[preferPayment] || "card");
   });
 })();
 

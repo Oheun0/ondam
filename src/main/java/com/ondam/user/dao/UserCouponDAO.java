@@ -82,6 +82,15 @@ public class UserCouponDAO {
 				dto.setIssuedAt(rs.getString("issuedAt"));
 				dto.setUsedAt(rs.getString("usedAt"));
 				dto.setOrderNo(rs.getInt("orderNo"));
+				
+				dto.setCouponName(rs.getString("couponName"));
+			    dto.setDiscountType(rs.getInt("discountType"));
+			    dto.setDiscountValue(rs.getInt("discountValue"));
+			    dto.setMinOrderAmount(rs.getInt("minOrderAmount"));
+			    int max = rs.getInt("maxDiscountAmount");
+			    dto.setMaxDiscountAmount(rs.wasNull() ? null : max);
+			    dto.setValidFrom(rs.getString("validFrom"));
+			    dto.setValidUntil(rs.getString("validUntil"));
 				list.add(dto);
             }
         } catch (Exception e) {

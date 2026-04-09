@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -16,7 +18,9 @@
 </head>
 <body class="order-payment-page" data-context-path="${pageContext.request.contextPath}">
   <div class="detail-shell">
-    <div class="detail-page-inner detail-page-inner--sticky-header order-payment-inner" id="orderPaymentRoot">
+    <div class="detail-page-inner detail-page-inner--sticky-header order-payment-inner" id="orderPaymentRoot"
+     data-total-product="${totalProductPrice}"
+     data-product-discount="${totalProductDiscount}">
       <div class="order-payment-sticky-head">
         <div class="order-payment-header-wrap">
           <jsp:include page="/WEB-INF/views/layout/back-header.jsp"/>
@@ -27,31 +31,59 @@
       <main class="order-payment-main" aria-label="주문 및 결제">
         <!-- 주문 상품 요약 -->
         <section class="op-card op-order-summary" aria-label="주문 상품 요약">
-          <div class="op-order-summary__top">
-            <h2 class="op-card-title">주문 상품 <span class="op-strong">2개</span></h2>
-          </div>
-          <p class="op-order-summary__line">
-            <span class="op-strong">봄 니트 가디건 1개</span> 외 <span class="op-strong">1건</span>
-          </p>
-        </section>
+		  <div class="op-order-summary__top">
+		    <h2 class="op-card-title">
+		      주문 상품 <span class="op-strong">${orderItemCount}개</span>
+		    </h2>
+		  </div>
+		
+		  <c:forEach var="item" items="${orderItems}" varStatus="status">
+		    <c:if test="${status.first}">
+		      <%-- 첫 번째 상품만 대표로 표시 --%>
+		      <p class="op-order-summary__line">
+		        <span class="op-strong">${item.productName} ${item.cartQuantity}개</span>
+		        <c:if test="${orderItemCount > 1}">
+		          외 <span class="op-strong">${orderItemCount - 1}건</span>
+		        </c:if>
+		      </p>
+		    </c:if>
+		  </c:forEach>
+		</section>
 
-        <!-- 배송지 변경하기 버튼 클릭 시 회원정보 수정 - 배송지수정으로 -->
         <section class="op-card op-ship-card" aria-label="배송지">
-          <div class="op-card-head">
-            <div class="op-card-head__left">
-              <h2 class="op-card-title">배송지</h2>
-              <span class="op-badge op-badge--muted" aria-label="기본배송지">기본배송지</span>
-            </div>
-            <button type="button" class="op-link-btn" aria-label="배송지 변경하기">배송지 변경하기</button>
-          </div>
-          <div class="op-ship-info">
-            <p class="op-ship-who">
-              <span class="op-strong">김지현</span>
-              <span class="op-ship-sep" aria-hidden="true">|</span>
-              <span class="op-strong">010-1234-5678</span>
-            </p>
-            <p class="op-ship-addr">(47323) 부산광역시 부산진구 가야대로 123, 101호</p>
-          </div>
+		  <div class="op-card-head">
+		    <div class="op-card-head__left">
+		      <h2 class="op-card-title">배송지</h2>
+		      <c:if test="${defaultAddress.isDefault == 1}">
+		        <span class="op-badge op-badge--muted" aria-label="기본배송지">기본배송지</span>
+		      </c:if>
+		    </div>
+		    <button type="button" class="op-link-btn" aria-label="배송지 변경하기">배송지 변경하기</button>
+		  </div>
+		
+		  <c:choose>
+		    <c:when test="${defaultAddress != null}">
+		      <div class="op-ship-info">
+		        <p class="op-ship-who">
+		          <span class="op-strong">${defaultAddress.receiverName}</span>
+		          <span class="op-ship-sep" aria-hidden="true">|</span>
+		          <span class="op-strong">${defaultAddress.receiverTel}</span>
+		        </p>
+		        <p class="op-ship-addr">
+		          (${defaultAddress.userZipcode})
+		          ${defaultAddress.userAddress}
+		          <c:if test="${not empty defaultAddress.userDetailAddress}">
+		            , ${defaultAddress.userDetailAddress}
+		          </c:if>
+		        </p>
+		      </div>
+		    </c:when>
+		    <c:otherwise>
+		      <div class="op-ship-info">
+		        <p class="op-ship-addr">등록된 배송지가 없습니다.</p>
+		      </div>
+		    </c:otherwise>
+		  </c:choose>
 
           <!-- 배송 요청사항: 입력창(읽기 전용) 클릭 → 오버레이 선택창 (페이지 안 밀림) -->
           <div class="op-ship-request">
@@ -97,30 +129,49 @@
             </button>
           </div>
           <div class="op-acc-panel hidden" id="opCouponPanel" role="region" aria-label="쿠폰 선택">
-            <p class="op-sub-toggle" id="opCouponCountText">사용 가능 쿠폰 2장</p>
-            <div class="op-coupon-list" role="radiogroup" aria-label="쿠폰 목록">
-              <button type="button"
-                      class="op-coupon-card"
-                      data-coupon-id="welcome10"
-                      data-coupon-title="신규 회원 전용"
-                      data-coupon-desc="10% 할인"
-                      role="radio"
-                      aria-checked="false">
-                <span class="op-coupon-title">신규 회원 전용</span>
-                <span class="op-coupon-desc">10% 할인</span>
-              </button>
-              <button type="button"
-                      class="op-coupon-card"
-                      data-coupon-id="spring3000"
-                      data-coupon-title="봄맞이 기획전 참여 브랜드"
-                      data-coupon-desc="20,000원 이상 구매 시 3,000원 할인"
-                      role="radio"
-                      aria-checked="false">
-                <span class="op-coupon-title">봄맞이 기획전 참여 브랜드</span>
-                <span class="op-coupon-desc">20,000원 이상 구매 시 3,000원 할인</span>
-              </button>
-            </div>
-          </div>
+            <p class="op-sub-toggle" id="opCouponCountText">
+			  사용 가능 쿠폰 ${fn:length(availableCoupons)}장
+			</p>
+			
+			<div class="op-coupon-list" role="radiogroup" aria-label="쿠폰 목록">
+			  <c:choose>
+			    <c:when test="${empty availableCoupons}">
+			      <p class="op-address-empty">사용 가능한 쿠폰이 없습니다.</p>
+			    </c:when>
+			    <c:otherwise>
+			      <c:forEach var="uc" items="${availableCoupons}">
+			        <button type="button"
+			                class="op-coupon-card"
+			                data-coupon-id="${uc.userCouponNo}"
+			                data-coupon-title="${uc.couponName}"
+			                data-discount-type="${uc.discountType}"
+			                data-discount-value="${uc.discountValue}"
+			                data-min-order="${uc.minOrderAmount}"
+			                data-max-discount="${uc.maxDiscountAmount}"
+			                role="radio"
+			                aria-checked="false">
+			          <span class="op-coupon-title">${uc.couponName}</span>
+			          <span class="op-coupon-desc">
+			            <c:choose>
+			              <c:when test="${uc.discountType == 0}">
+			                <fmt:formatNumber value="${uc.discountValue}" type="number"/>원 할인
+			              </c:when>
+			              <c:otherwise>
+			                ${uc.discountValue}% 할인
+			              </c:otherwise>
+			            </c:choose>
+			            <c:if test="${uc.minOrderAmount > 0}">
+			              (<fmt:formatNumber value="${uc.minOrderAmount}" type="number"/>원 이상 구매 시)
+			            </c:if>
+			          </span>
+			          <c:if test="${not empty uc.validUntil}">
+			            <span class="op-coupon-expire">~${uc.validUntil}</span>
+			          </c:if>
+			        </button>
+			      </c:forEach>
+			    </c:otherwise>
+			  </c:choose>
+			</div>
         </section>
 
         <!-- 결제수단 : 회원가입할 때 지정한 결제수단이 기본값, 주문 기록이 있다면 이전에 사용한 결제수단으로 체크되어있음 -->
@@ -128,7 +179,10 @@
           <div class="op-card-head op-card-head--simple">
             <h2 class="op-card-title">결제수단</h2>
           </div>
-          <div class="op-pay-grid" id="opPayGrid" role="radiogroup" aria-label="결제수단 선택">
+          <div class="op-pay-grid" id="opPayGrid" role="radiogroup" aria-label="결제수단 선택"
+		     data-prefer="${preferPayment}"
+		     data-wallet-balance="${walletBalance}"
+		     data-family-no="${familyNo}">
             <button type="button" class="op-pay-btn" data-pay="wallet" role="radio" aria-checked="false">함께지갑</button>
             <div class="op-pay-extra hidden" id="opWalletExtra" aria-live="polite">
               <p class="op-wallet-line op-strong">가족과 함께 쓰는 지갑이에요</p>
@@ -147,11 +201,15 @@
           <dl class="op-price-list" aria-label="금액 상세">
             <div class="op-price-row">
               <dt class="op-price-label">총 상품 금액</dt>
-              <dd class="op-price-value" id="opTotalProduct">80,000원</dd>
+              <dd class="op-price-value" id="opTotalProduct">
+				    <fmt:formatNumber value="${totalProductPrice}" type="number"/>원
+				</dd>
             </div>
             <div class="op-price-row">
               <dt class="op-price-label">상품 할인</dt>
-              <dd class="op-price-value op-price-value--minus" id="opProductDiscount">-5,000원</dd>
+              <dd class="op-price-value op-price-value--minus" id="opProductDiscount">
+				    -<fmt:formatNumber value="${totalProductDiscount}" type="number"/>원
+				</dd>
             </div>
             <div class="op-price-row">
               <dt class="op-price-label">쿠폰 할인</dt>
@@ -212,6 +270,49 @@
       </div>
     </div>
   </div>
+  
+  <%-- 배송지 변경 모달 --%>
+<div class="op-modal hidden" id="opAddressModal" role="dialog" aria-modal="true" aria-labelledby="opAddressModalTitle">
+  <div class="op-modal-dim" id="opAddressModalDim"></div>
+  <div class="op-modal-card op-modal-card--address">
+    <h2 class="op-modal-title" id="opAddressModalTitle">배송지 선택</h2>
+
+    <div class="op-address-list">
+      <c:choose>
+        <c:when test="${empty addressList}">
+          <p class="op-address-empty">등록된 배송지가 없습니다.</p>
+        </c:when>
+        <c:otherwise>
+          <c:forEach var="addr" items="${addressList}">
+            <button type="button"
+                    class="op-address-item"
+                    data-receiver-name="${addr.receiverName}"
+                    data-receiver-tel="${addr.receiverTel}"
+                    data-address="${addr.userAddress}"
+                    data-detail="${addr.userDetailAddress}"
+                    data-zipcode="${addr.userZipcode}"
+                    data-is-default="${addr.isDefault}">
+              <span class="op-address-item__name">
+                ${addr.addressName}
+                <c:if test="${addr.isDefault == 1}">
+                  <span class="op-badge op-badge--muted">기본</span>
+                </c:if>
+              </span>
+              <span class="op-address-item__receiver">${addr.receiverName} | ${addr.receiverTel}</span>
+              <span class="op-address-item__addr">(${addr.userZipcode}) ${addr.userAddress}
+                <c:if test="${not empty addr.userDetailAddress}">, ${addr.userDetailAddress}</c:if>
+              </span>
+            </button>
+          </c:forEach>
+        </c:otherwise>
+      </c:choose>
+    </div>
+
+    <div class="op-modal-actions">
+      <button type="button" class="op-modal-btn op-modal-btn--ghost" id="opAddressModalCloseBtn">닫기</button>
+    </div>
+  </div>
+</div>
 
   <%--
     함께지갑 잔액 부족 안내 모달

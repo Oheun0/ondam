@@ -32,6 +32,8 @@ public class CartService {
             if(pDto != null) {
                 item.setProductName(pDto.getProductName());
                 item.setProductPrice(pDto.getProductPrice());
+                item.setProductOriginPrice(pDto.getProductOriginPrice());
+                
             }
             if(pIDto != null) {
                 item.setProductImg(pIDto.getImgFile());
