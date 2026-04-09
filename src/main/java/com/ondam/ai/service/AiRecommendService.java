@@ -9,6 +9,8 @@ import com.ondam.product.dao.*;
 import com.ondam.product.dto.*;
 import com.ondam.user.dao.*;
 import com.ondam.user.dto.*;
+// [추가 1] 찜 목록을 가져오기 위해 WishDAO import
+import com.ondam.wish.dao.WishDAO; 
 
 public class AiRecommendService {
     private final UserDAO userDAO = new UserDAO();
@@ -17,6 +19,8 @@ public class AiRecommendService {
     private final FamilyMemberDAO familyMemberDAO = new FamilyMemberDAO();
     private final ProductDAO productDAO = new ProductDAO();
     private final ProductImageDAO productImageDAO = new ProductImageDAO();
+    // [추가 2] WishDAO 객체 생성
+    private final WishDAO wishDAO = new WishDAO(); 
 
     public Vector<AiRecommendDTO> getTodayRecommendations(int userNo, String scriptPath) {
         UserDTO me = userDAO.getUserPhysicalInfo(userNo);
@@ -37,7 +41,11 @@ public class AiRecommendService {
         String jsonInput = composeJsonInput(me, myHobbies, myColors, family, activeProducts);
         String rawPythonResult = executePython(scriptPath, jsonInput);
 
-        return assembleFinalDtoList(rawPythonResult, me, myHobbies, myColors);
+        // [추가 3] 현재 로그인한 유저가 찜한 상품 번호(productNo) 목록을 Set으로 가져옴
+        Set<Integer> myWishSet = wishDAO.getWishedProductNos(userNo);
+
+        // [수정] 조립 메서드에 myWishSet도 함께 넘겨줍니다
+        return assembleFinalDtoList(rawPythonResult, me, myHobbies, myColors, myWishSet);
     }
 
     private String composeJsonInput(UserDTO me, String meHobbies, String myColors, UserDTO family, Vector<ProductDTO> activeProducts) {
@@ -80,7 +88,8 @@ public class AiRecommendService {
         return sb.toString();
     }
 
-    private Vector<AiRecommendDTO> assembleFinalDtoList(String json, UserDTO me, String hobbies, String colors) {
+    // [수정] 파라미터에 Set<Integer> myWishSet 추가
+    private Vector<AiRecommendDTO> assembleFinalDtoList(String json, UserDTO me, String hobbies, String colors, Set<Integer> myWishSet) {
         Vector<AiRecommendDTO> list = new Vector<>();
         
         if (json == null || !json.contains("[") || json.trim().equals("[]")) {
@@ -118,13 +127,18 @@ public class AiRecommendService {
                     dto.setProductName(p.getProductName());
                     dto.setProductBrand(p.getProductBrand());
                     
-                    // [핵심 추가] 누락되었던 원가 가격과 찜 횟수 정보 세팅
                     dto.setProductPrice(p.getProductPrice());
                     dto.setProductOriginPrice(p.getProductOriginPrice());
                     dto.setProductWishCount(p.getWishCount());
                     
                     dto.setProductGender(p.getProductGender());
                     dto.setImgFile(productImageDAO.getProductImageFile(p.getProductNo()));
+                    
+                    // =========================================================
+                    // [핵심 추가] 내 찜 목록(myWishSet)에 이 상품의 번호가 들어있다면, true로 세팅!
+                    dto.setWishActive(myWishSet.contains(p.getProductNo()));
+                    // =========================================================
+
                     list.add(dto);
                 }
             }
