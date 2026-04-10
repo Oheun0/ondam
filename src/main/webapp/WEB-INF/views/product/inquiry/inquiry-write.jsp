@@ -27,11 +27,12 @@
       <form id="inquiryWriteForm" class="inquiry-write-main">
 
         <input type="hidden" name="inquiryNo" id="inquiryNo" value="${inquiryData.inquiryNo}">
-<input type="hidden" name="productNo" id="productNo" value="${productInfo.productNo}">
-<input type="hidden" name="orderNo" id="orderNo" value="${param.orderNo}">
-<input type="hidden" name="isSecret" id="isSecret" value="${empty inquiryData ? 0 : inquiryData.isSecret}">
-<input type="hidden" name="isNameHidden" id="isNameHidden" value="${empty inquiryData ? 0 : inquiryData.isNameHidden}">
-
+		<input type="hidden" name="productNo" id="productNo" value="${productInfo.productNo}">
+		<input type="hidden" name="orderNo" id="orderNo" value="${param.orderNo}">
+		<input type="hidden" name="isSecret" id="isSecret" value="${empty inquiryData ? 0 : inquiryData.isSecret}">
+		<input type="hidden" name="isNameHidden" id="isNameHidden" value="${empty inquiryData ? 0 : inquiryData.isNameHidden}">
+		<input type="hidden" name="returnUrl" id="returnUrl" value="${returnUrl}">
+		
         <section class="inquiry-write-card inquiry-write-product-card" aria-label="문의 상품">
           <div class="inquiry-write-product-card__inner">
             <div class="inquiry-write-product-thumb-wrap">

@@ -211,4 +211,27 @@ public class ProductOptionDAO {
         }
         return list;
     }
+    
+    // 재고 감소
+    public boolean decreaseStock(int productOptionNo, int quantity) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        boolean flag = false;
+        try {
+            con = pool.getConnection();
+            // 재고가 0 이하로 내려가지 않도록 WHERE 조건 추가
+            String sql = "UPDATE ProductOption SET optionStock = optionStock - ? " +
+                         "WHERE productOptionNo = ? AND optionStock >= ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, quantity);
+            pstmt.setInt(2, productOptionNo);
+            pstmt.setInt(3, quantity);
+            if (pstmt.executeUpdate() > 0) flag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt);
+        }
+        return flag;
+    }
 }

@@ -8,7 +8,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.ondam.cart.service.CartService;
 import com.ondam.common.controller.Controller;
+import com.ondam.notification.service.NotificationService;
 import com.ondam.user.dto.UserDTO;
 import com.ondam.user.service.UserService;
 
@@ -51,11 +53,27 @@ public class KakaoCallbackController implements Controller {
                 HttpSession session = request.getSession();
                 if (loginUser.getSignUpCompleted() == 1) {
                     session.setAttribute("loginUser", loginUser);
-                    return "redirect:/main"; // (또는 홈으로 가는 URL)
+                    NotificationService notificationService = new NotificationService();
+                    int unreadCount = notificationService.getUnreadCount(loginUser.getUserNo());
+                    session.setAttribute("unreadCount", unreadCount);
+                    
+                    CartService cartService = new CartService();
+                    int totalQty = cartService.refreshCartTotalQuantity(loginUser.getUserNo());
+                    session.setAttribute("cartCount", totalQty);
+                    
+                    return "redirect:/main";
                     
                 } else {
                     session.setAttribute("signupUser", loginUser);
                     session.setAttribute("loginUser", loginUser); 
+                    NotificationService notificationService = new NotificationService();
+                    int unreadCount = notificationService.getUnreadCount(loginUser.getUserNo());
+                    session.setAttribute("unreadCount", unreadCount);
+                    
+                    CartService cartService = new CartService();
+                    int totalQty = cartService.refreshCartTotalQuantity(loginUser.getUserNo());
+                    session.setAttribute("cartCount", totalQty);
+                    
                     return "redirect:/signup-step0-basic";
                 }
             }

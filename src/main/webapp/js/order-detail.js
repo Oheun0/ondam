@@ -7,19 +7,17 @@ window.addEventListener('pageshow', function(event) {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  var root = document.getElementById("orderDetailRoot");
-  if (!root) return;
-
   var contextPath = document.body.getAttribute("data-context-path") || "";
-  
-  // 뒤로가기를 orderlist로 override
+
   var backBtn = document.getElementById("appBackHeaderBtn");
-    if (backBtn) {
-        backBtn.removeAttribute("onclick");
-        backBtn.addEventListener("click", function () {
-            window.location.href = contextPath + "/order/order-list";
-        });
-    }
+  if (backBtn) {
+    var newBtn = backBtn.cloneNode(true);
+    newBtn.removeAttribute("onclick");
+    backBtn.parentNode.replaceChild(newBtn, backBtn);
+    newBtn.addEventListener("click", function () {
+      window.location.href = contextPath + "/order/order-list";
+    });
+  }
 
   root.addEventListener("click", function (e) {
     var btn = e.target.closest(".review-write-btn");
