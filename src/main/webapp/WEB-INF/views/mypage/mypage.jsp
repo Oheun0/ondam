@@ -142,7 +142,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/coupon/list" class="menu-item">
+                <a href="${pageContext.request.contextPath}/userCoupon?action=list" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons-outlined menu-row-icon" aria-hidden="true">local_activity</span>
                         <strong class="menu-label">내 쿠폰</strong>
