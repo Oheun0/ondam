@@ -300,28 +300,25 @@
 	                return;
 	            }
 
-	            // DB 업데이트
-	            var form = document.createElement("form");
-	            form.method = "POST";
-	            form.action = ctx + "/cart";
+				var formData = new URLSearchParams();
+				formData.append("action", "updateOption");
+				formData.append("cartItemNo", cartItemNo);
+				formData.append("productOptionNo", matched.productOptionNo);
+				formData.append("quantity", String(sheetQty));
 
-	            var fields = {
-	                action: "updateOption",
-	                cartItemNo: cartItemNo,
-	                productOptionNo: matched.productOptionNo,  // 실제 optionNo
-	                quantity: String(sheetQty)
-	            };
-
-	            Object.keys(fields).forEach(function(key) {
-	                var input = document.createElement("input");
-	                input.type = "hidden";
-	                input.name = key;
-	                input.value = fields[key];
-	                form.appendChild(input);
-	            });
-
-	            document.body.appendChild(form);
-	            form.submit();  // redirect:/cart?action=list 로 리로드
+				fetch(ctx + "/cart", {
+				    method: "POST",
+				    headers: {
+				        "Content-Type": "application/x-www-form-urlencoded"
+				    },
+				    body: formData.toString()
+				}).then(function() {
+				    // location.replace()를 쓰면 뒤로가기 기록이 남지 않습니다!
+				    window.location.replace(ctx + "/cart?action=list");
+				}).catch(function(err) {
+				    console.error("옵션 변경 실패:", err);
+				    alert("옵션 변경 중 오류가 발생했습니다.");
+				});
 	        });
 
 	    closeOptionSheet();

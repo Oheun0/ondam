@@ -1,3 +1,4 @@
+/*reset-password.js*/
 /* global document, alert, console, window */
 (function () {
   function $(id) { return document.getElementById(id); }
@@ -108,33 +109,31 @@
   }
 
   if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
+      form.addEventListener('submit', function (e) {
+        // e.preventDefault(); <-- 💡 이거 지우거나 막아주세요! (서버로 넘어가야 하니까요)
 
-      // 코드 단계가 열려있지 않으면 안내
-      if (codeArea && codeArea.classList.contains('hidden')) {
-        showError('sellerFormError', '먼저 인증코드를 받아주세요.');
-        return;
-      }
+        if (codeArea && codeArea.classList.contains('hidden')) {
+          e.preventDefault(); // 이때는 전송 막음
+          showError('sellerFormError', '먼저 인증코드를 받아주세요.');
+          return;
+        }
 
-      var v1 = validateStep1();
-      if (!v1.ok) return;
+        var v1 = validateStep1();
+        if (!v1.ok) { e.preventDefault(); return; }
 
-      var v2 = validateCode();
-      if (!v2.ok) return;
+        var v2 = validateCode();
+        if (!v2.ok) { e.preventDefault(); return; }
 
-      if (v2.code !== '123456') {
-        showError('sellerFormError', '인증코드가 올바르지 않습니다.');
-        return;
-      }
+        if (v2.code !== '123456') {
+          e.preventDefault();
+          showError('sellerFormError', '인증코드가 올바르지 않습니다.');
+          return;
+        }
 
-      console.log('[SellerResetPw] verify success (dummy)', { id: v1.id, email: v1.email });
-      alert('인증이 완료됐어요. (더미)\n\n다음 단계로 이동합니다.');
-
-      // 실제 서버 연동 대신, 다음 화면으로 이동(더미)
-      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/seller/auth/reset-password-form';
-    });
-  }
+        // 검증 다 통과했으면 여기서 알아서 서버(Controller)로 POST 전송됩니다!
+        // 아래에 있던 window.location.href 로직은 삭제합니다.
+      });
+    }
 
   ['sellerId', 'sellerEmail', 'sellerCode'].forEach(function (id) {
     var el = $(id);

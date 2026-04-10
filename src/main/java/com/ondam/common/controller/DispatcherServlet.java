@@ -22,6 +22,11 @@ import com.ondam.product.controller.ProductController;
 import com.ondam.product.controller.SearchController;
 import com.ondam.review.controller.ReviewController;
 import com.ondam.review.controller.ReviewImageController;
+import com.ondam.seller.controller.SellerAuthController;
+import com.ondam.seller.controller.SellerFindIdController;
+import com.ondam.seller.controller.SellerResetPwController;
+import com.ondam.seller.controller.SellerResetPwFormController;
+import com.ondam.seller.controller.SellerSignupController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.AddressDeleteController;
@@ -121,6 +126,12 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/inquiry", new InquiryController());
         handlerMapping.put("/search", new SearchController());
         handlerMapping.put("/aiSearch", new AiSearchController());
+        
+        handlerMapping.put("/seller/auth", new SellerAuthController());
+        handlerMapping.put("/seller/auth/signup", new SellerSignupController());
+        handlerMapping.put("/seller/auth/find-id", new SellerFindIdController());
+        handlerMapping.put("/seller/auth/reset-password", new SellerResetPwController());
+        handlerMapping.put("/seller/auth/reset-password-form", new SellerResetPwFormController());
         handlerMapping.put("/userCoupon", new UserCouponController());
 
     }

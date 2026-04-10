@@ -1,10 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>온담 파트너 | 회원가입</title>
+
+  <!-- 우편번호 API 라이브러리 -->
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
@@ -26,7 +30,10 @@
       </header>
 
       <section class="seller-auth-card seller-auth-card--signup" aria-label="판매자 회원가입 입력">
-        <form class="seller-auth-form seller-signup-form" id="sellerSignupForm" action="#" method="post" novalidate>
+        <form class="seller-auth-form" id="sellerSignupForm" 
+		      action="${pageContext.request.contextPath}/seller/auth/signup" 
+		      method="post" novalidate>
+          
           <!-- 섹션 1. 사업자/기본 정보 -->
           <section class="seller-auth-section" aria-labelledby="sellerSignupSectionBiz">
             <h2 class="seller-auth-section-title" id="sellerSignupSectionBiz">사업자/기본 정보</h2>
@@ -44,10 +51,10 @@
             </div>
 
             <div class="seller-auth-field">
-              <label class="seller-auth-label" for="bizNo">사업자등록번호 <span class="seller-auth-required" aria-hidden="true">*</span></label>
-              <input type="text" id="bizNo" name="bizNo" class="input seller-auth-input" placeholder="사업자등록번호 10자리를 입력해 주세요" inputmode="numeric" autocomplete="off" maxlength="10">
-              <p class="check-message error seller-auth-error hidden" id="bizNoError"></p>
-            </div>
+			  <label class="seller-auth-label" for="bizNo">사업자등록번호 <span class="seller-auth-required" aria-hidden="true">*</span></label>
+			  <input type="text" id="bizNo" name="bizNo" class="input seller-auth-input" placeholder="사업자등록번호 10자리를 입력해 주세요" inputmode="numeric" autocomplete="off" maxlength="10">
+			  <p class="check-message error seller-auth-error hidden" id="bizNoError"></p>
+			</div>
           </section>
 
           <!-- 섹션 2. 계정 정보 -->
@@ -97,7 +104,7 @@
             <div class="seller-auth-field seller-auth-field--zip">
               <label class="seller-auth-label" for="shipZip">출고지 우편번호 <span class="seller-auth-required" aria-hidden="true">*</span></label>
               <div class="seller-auth-inline-row">
-                <input type="text" id="shipZip" name="shipZip" class="input seller-auth-input" placeholder="우편번호" inputmode="numeric" autocomplete="postal-code">
+                <input type="text" id="shipZip" name="shipZip" class="input seller-auth-input" placeholder="우편번호" inputmode="numeric" autocomplete="postal-code" readonly>
                 <button type="button" class="seller-auth-mini-btn" id="shipZipBtn">우편번호 찾기</button>
               </div>
               <p class="check-message error seller-auth-error hidden" id="shipZipError"></p>
@@ -105,7 +112,7 @@
 
             <div class="seller-auth-field">
               <label class="seller-auth-label" for="shipAddr1">출고지 주소 <span class="seller-auth-required" aria-hidden="true">*</span></label>
-              <input type="text" id="shipAddr1" name="shipAddr1" class="input seller-auth-input" placeholder="주소를 입력해 주세요" autocomplete="street-address">
+              <input type="text" id="shipAddr1" name="shipAddr1" class="input seller-auth-input" placeholder="주소를 입력해 주세요" autocomplete="street-address" readonly>
               <p class="check-message error seller-auth-error hidden" id="shipAddr1Error"></p>
             </div>
 
@@ -129,7 +136,7 @@
             <div class="seller-auth-field seller-auth-field--zip">
               <label class="seller-auth-label" for="returnZip">반품지 우편번호 <span class="seller-auth-required" aria-hidden="true">*</span></label>
               <div class="seller-auth-inline-row">
-                <input type="text" id="returnZip" name="returnZip" class="input seller-auth-input" placeholder="우편번호" inputmode="numeric" autocomplete="postal-code">
+                <input type="text" id="returnZip" name="returnZip" class="input seller-auth-input" placeholder="우편번호" inputmode="numeric" autocomplete="postal-code" readonly>
                 <button type="button" class="seller-auth-mini-btn" id="returnZipBtn">우편번호 찾기</button>
               </div>
               <p class="check-message error seller-auth-error hidden" id="returnZipError"></p>
@@ -137,7 +144,7 @@
 
             <div class="seller-auth-field">
               <label class="seller-auth-label" for="returnAddr1">반품지 주소 <span class="seller-auth-required" aria-hidden="true">*</span></label>
-              <input type="text" id="returnAddr1" name="returnAddr1" class="input seller-auth-input" placeholder="주소를 입력해 주세요" autocomplete="street-address">
+              <input type="text" id="returnAddr1" name="returnAddr1" class="input seller-auth-input" placeholder="주소를 입력해 주세요" autocomplete="street-address" readonly>
               <p class="check-message error seller-auth-error hidden" id="returnAddr1Error"></p>
             </div>
 
@@ -181,6 +188,12 @@
           </section>
 
           <div class="seller-auth-actions">
+            <p class="check-message error seller-auth-error--form ${empty signupError and empty sessionScope.signupError ? 'hidden' : ''}" 
+               id="sellerSignupError" style="color: red; margin-bottom: 12px; ${(not empty signupError or not empty sessionScope.signupError) ? 'display: block;' : ''}">
+              ${not empty sessionScope.signupError ? sessionScope.signupError : signupError}
+              <c:remove var="signupError" scope="session" />
+            </p>
+            
             <button type="submit" class="seller-auth-btn seller-auth-btn--primary" id="sellerSignupBtn">가입하기</button>
             <a href="${pageContext.request.contextPath}/seller/auth/login" class="seller-auth-btn seller-auth-btn--ghost">로그인으로</a>
           </div>

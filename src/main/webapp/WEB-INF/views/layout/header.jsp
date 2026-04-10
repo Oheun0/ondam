@@ -34,3 +34,53 @@
         </div>
     </div>
 </header>
+
+<script> //즉시 변경한 갯수 반영되도록 비동기 스크립트 적용
+function updateCartBadgeSilently() {
+    // 💡 1. JSP 태그를 직접 써서 어느 페이지에서든 경로를 확실하게 잡습니다.
+    var ctx = "${pageContext.request.contextPath}";
+    
+    // 💡 2. 브라우저 캐시 방지용 난수(현재 시간) 생성
+    var timestamp = new Date().getTime();
+    
+    // 💡 3. 캐시를 절대 쓰지 못하게 강력한 옵션을 걸어서 요청합니다.
+    fetch(ctx + "/cart?action=getCartCount&t=" + timestamp, {
+        cache: 'no-store' 
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        var count = data.count;
+        
+        // 헤더 장바구니 업데이트
+        var headerCartLnk = document.querySelector('a[href*="/cart"].badge-wrap');
+        if (headerCartLnk) {
+            var badge = headerCartLnk.querySelector('.badge');
+            if (count > 0) {
+                if (badge) badge.textContent = count;
+                else headerCartLnk.insertAdjacentHTML('beforeend', '<span class="badge">' + count + '</span>');
+            } else {
+                if (badge) badge.remove();
+            }
+        }
+        
+        // 기획전/상세페이지 장바구니 업데이트
+        var detailCartBtns = document.querySelectorAll('.cart-icon-wrap');
+        detailCartBtns.forEach(function(btn) {
+            var badge = btn.querySelector('.cart-badge');
+            if (count > 0) {
+                if (badge) badge.textContent = count;
+                else btn.insertAdjacentHTML('beforeend', '<span class="cart-badge">' + count + '</span>');
+            } else {
+                if (badge) badge.remove();
+            }
+        });
+    })
+    .catch(function(err) { console.error("장바구니 개수 동기화 실패:", err); });
+}
+
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        updateCartBadgeSilently();
+    }
+});
+</script>
