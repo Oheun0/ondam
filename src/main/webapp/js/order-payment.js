@@ -495,10 +495,10 @@
 			      couponDiscount:  couponDiscount,
 			      paymentAmount:   payable,
 			      // ── 바로구매 / 장바구니 구분 ──
-			      buyType:         document.querySelector('input[name="buyType"]')?.value || "",
-			      directProductNo: document.querySelector('input[name="directProductNo"]')?.value || "",
-			      directOptionNo:  document.querySelector('input[name="directOptionNo"]')?.value || "",
-			      directQuantity:  document.querySelector('input[name="directQuantity"]')?.value || ""
+				  buyType:         (document.querySelector('input[name="buyType"]') || {}).value || "",
+				  directProductNo: (document.querySelector('input[name="directProductNo"]') || {}).value || "",
+				  directOptionNo:  (document.querySelector('input[name="directOptionNo"]') || {}).value || "",
+				  directQuantity:  (document.querySelector('input[name="directQuantity"]') || {}).value || ""
 			  };
 
 		      // cartItemNo 배열도 같이 전송 (hidden input 여러 개)
