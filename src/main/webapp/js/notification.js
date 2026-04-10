@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			            location.href = contextPath + "/poke?action=detail&pokeNo=" + data.refNo;
 			            break;
 			        case 2: // 주문/배송
+						location.href = contextPath + "/order/order-detail?orderNo=" + data.refNo;
 			        case 3: // 쿠폰
 					case 4: // 배송지 수정
 				        location.href = contextPath + "/profile-address";

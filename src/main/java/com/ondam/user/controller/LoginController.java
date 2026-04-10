@@ -1,5 +1,6 @@
 package com.ondam.user.controller;
 
+import com.ondam.cart.service.CartService;
 import com.ondam.common.controller.Controller;
 import com.ondam.notification.service.NotificationService;
 import com.ondam.user.dto.UserDTO;
@@ -40,7 +41,7 @@ public class LoginController implements Controller {
 				int unreadCount = notificationService.getUnreadCount(loginUser.getUserNo());
 			    session.setAttribute("unreadCount", unreadCount);
 
-				com.ondam.cart.service.CartService cartService = new com.ondam.cart.service.CartService();
+				CartService cartService = new CartService();
 			    int totalQty = cartService.refreshCartTotalQuantity(loginUser.getUserNo());
 			    session.setAttribute("cartCount", totalQty);
 			    
