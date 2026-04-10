@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ondam.common.controller.Controller;
+import com.ondam.coupon.service.CouponService;
 import com.ondam.user.dto.UserCouponDTO;
 import com.ondam.user.dto.UserDTO;
 
@@ -16,12 +17,14 @@ import jakarta.servlet.http.HttpSession;
 public class UserCouponController implements Controller {
 
 	private final com.ondam.user.service.UserCouponService userCouponService;
+	private final CouponService couponService;
     
     private static final String VIEW_PREFIX = "coupon/";
     private static final String REDIRECT_LOGIN = "redirect:/login";
 
     public UserCouponController() {
     	this.userCouponService = new com.ondam.user.service.UserCouponService();
+    	this.couponService = new CouponService();
     }
 
     @Override
@@ -39,16 +42,26 @@ public class UserCouponController implements Controller {
         String action = getAction(request);
 
         switch (action) {
-            case "list":
-                return handleMyCouponList(request, loginUser.getUserNo());
-            case "download":
-                return handleDownloadCoupon(request, loginUser.getUserNo());
-            case "available":
+        case "list":
+            return handleMyCouponList(request, loginUser.getUserNo());
+        case "register":
+            return handleRegister(request, response, loginUser.getUserNo());
+        case "download":
+            return handleDownloadCoupon(request, loginUser.getUserNo());
+        case "available":
                 // 팝업/모달 창에 쿠폰 목록을 리스팅하기 위한 JSP 포워딩
                 return handleAvailableCouponsForOrder(request, loginUser.getUserNo());
             default:
                 return "redirect:/main";
         }
+    }
+    
+    private String handleRegister(HttpServletRequest request, HttpServletResponse response, int userNo) throws Exception {
+        String couponCode = request.getParameter("couponCode");
+        String result = couponService.registerUserCoupon(userNo, couponCode);
+        response.setContentType("text/plain; charset=UTF-8");
+        response.getWriter().write(result);
+        return null; 
     }
 
     /**

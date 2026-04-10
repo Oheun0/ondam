@@ -33,6 +33,7 @@ public class CouponDAO {
 				CouponDTO dto = new CouponDTO();
 				dto.setCouponNo(rs.getInt("couponNo"));
 				dto.setCouponName(rs.getString("couponName"));
+				dto.setCouponCode(rs.getString("couponCode"));
 				dto.setDiscountType(rs.getInt("discountType"));
 				dto.setDiscountValue(rs.getInt("discountValue"));
 				dto.setMinOrderAmount(rs.getInt("minOrderAmount"));
@@ -61,21 +62,22 @@ public class CouponDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT INTO coupon (couponName, discountType, discountValue, minOrderAmount, maxDiscountAmount, validFrom, validUntil) VALUES (?, ?, ?, ?, ?, ?, ?)";
+			sql = "INSERT INTO coupon (couponName, couponCode, discountType, discountValue, minOrderAmount, maxDiscountAmount, validFrom, validUntil) VALUES (?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, dto.getCouponName());
-			pstmt.setInt(2, dto.getDiscountType());
-			pstmt.setInt(3, dto.getDiscountValue());
-			pstmt.setInt(4, dto.getMinOrderAmount());
+	        pstmt.setString(2, dto.getCouponCode());
+	        pstmt.setInt(3, dto.getDiscountType());
+	        pstmt.setInt(4, dto.getDiscountValue());
+	        pstmt.setInt(5, dto.getMinOrderAmount());
 			
-			if (dto.getMaxDiscountAmount() == null) {
-			    pstmt.setNull(5, Types.INTEGER);
-			} else {
-			    pstmt.setInt(5, dto.getMaxDiscountAmount());
-			}
-			
-			pstmt.setString(6, dto.getValidFrom());
-			pstmt.setString(7, dto.getValidUntil());
+	        if (dto.getMaxDiscountAmount() == null) {
+	            pstmt.setNull(6, Types.INTEGER);
+	        } else {
+	            pstmt.setInt(6, dto.getMaxDiscountAmount());
+	        }
+	        
+	        pstmt.setString(7, dto.getValidFrom());
+	        pstmt.setString(8, dto.getValidUntil());
 			
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
@@ -95,22 +97,23 @@ public class CouponDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE coupon SET couponName = ?, discountType = ?, discountValue = ?, minOrderAmount = ?, maxDiscountAmount = ?, validFrom = ?, validUntil = ? WHERE couponNo = ?";
+			sql = "UPDATE coupon SET couponName = ?, couponCode = ?, discountType = ?, discountValue = ?, minOrderAmount = ?, maxDiscountAmount = ?, validFrom = ?, validUntil = ? WHERE couponNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, dto.getCouponName());
-			pstmt.setInt(2, dto.getDiscountType());
-			pstmt.setInt(3, dto.getDiscountValue());
-			pstmt.setInt(4, dto.getMinOrderAmount());
+			pstmt.setString(2, dto.getCouponCode());
+			pstmt.setInt(3, dto.getDiscountType());
+			pstmt.setInt(4, dto.getDiscountValue());
+			pstmt.setInt(5, dto.getMinOrderAmount());
 			
 			if (dto.getMaxDiscountAmount() == null) {
-			    pstmt.setNull(5, Types.INTEGER);
+			    pstmt.setNull(6, Types.INTEGER);
 			} else {
-			    pstmt.setInt(5, dto.getMaxDiscountAmount());
+			    pstmt.setInt(6, dto.getMaxDiscountAmount());
 			}
 			
-			pstmt.setString(6, dto.getValidFrom());
-			pstmt.setString(7, dto.getValidUntil());
-			pstmt.setInt(8, couponNo);
+			pstmt.setString(7, dto.getValidFrom());
+			pstmt.setString(8, dto.getValidUntil());
+			pstmt.setInt(9, couponNo);
 			
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
@@ -161,6 +164,7 @@ public class CouponDAO {
             	dto = new CouponDTO();
 				dto.setCouponNo(rs.getInt("couponNo"));
 				dto.setCouponName(rs.getString("couponName"));
+				dto.setCouponCode(rs.getString("couponCode"));
 				dto.setDiscountType(rs.getInt("discountType"));
 				dto.setDiscountValue(rs.getInt("discountValue"));
 				dto.setMinOrderAmount(rs.getInt("minOrderAmount"));
@@ -178,5 +182,64 @@ public class CouponDAO {
             pool.freeConnection(con, pstmt, rs);
         }
         return dto;
+    }
+    
+    public CouponDTO getCouponByCode(String code) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        CouponDTO coupon = null;
+        
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT * FROM coupon WHERE couponCode = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, code);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                coupon = new CouponDTO(
+                    rs.getInt("couponNo"),
+                    rs.getString("couponName"),
+                    rs.getString("couponCode"),
+                    rs.getInt("discountType"),
+                    rs.getInt("discountValue"),
+                    rs.getInt("minOrderAmount"),
+                    (Integer) rs.getObject("maxDiscountAmount"),
+                    rs.getString("validFrom"),
+                    rs.getString("validUntil"),
+                    rs.getString("createdAt")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return coupon;
+    }
+
+    // 유저가 이미 이 쿠폰을 보유하고 있는지 확인
+    public boolean isCouponAlreadyIssued(int userNo, int couponNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean exists = false;
+        
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT COUNT(*) FROM userCoupon WHERE userNo = ? AND couponNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, userNo);
+            pstmt.setInt(2, couponNo);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next() && rs.getInt(1) > 0) exists = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return exists;
     }
 }
