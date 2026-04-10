@@ -52,6 +52,11 @@
 		  <c:forEach var="item" items="${orderItems}">
 		      <input type="hidden" name="cartItemNo" value="${item.cartItemNo}" class="hidden-cart-item-no">
 		  </c:forEach>
+		  <%-- 바로구매 / 장바구니구매 구분 --%>
+				<input type="hidden" name="buyType" value="${buyType}">
+				<input type="hidden" name="directProductNo" value="${directProductNo}">
+				<input type="hidden" name="directOptionNo" value="${directOptionNo}">
+				<input type="hidden" name="directQuantity" value="${directQuantity}">
 		</section>
 
         <section class="op-card op-ship-card" aria-label="배송지">
