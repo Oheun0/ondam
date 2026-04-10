@@ -291,3 +291,36 @@ function bindLoadPrevInfo() {
   loadPrevCheckbox.addEventListener("change", applyPrevInfo);
   applyPrevInfo();
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+	const ctxPath = document.body.dataset.contextPath || "";
+    const urlParams = new URLSearchParams(window.location.search);
+    const modal = document.getElementById('reactivateModal');
+
+	if (!modal) return;
+
+    if (urlParams.get('status') === 'withdrawn') {
+        modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        modal.classList.add('hidden');
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+	const btnCancel = document.getElementById('btnCancelReactivate');
+	    const btnDim = document.getElementById('btnCancelDim');
+	    const btnReactivate = document.getElementById('btnReactivate');
+
+	    if (btnCancel) btnCancel.addEventListener('click', closeModal);
+	    if (btnDim) btnDim.addEventListener('click', closeModal);
+
+	    if (btnReactivate) {
+	        btnReactivate.addEventListener('click', function() {
+	            const targetId = urlParams.get('targetId');
+	            if(targetId) {
+	               location.href = ctxPath + "/login?action=reactivate&userId=" + targetId;
+      	  }
+ 	   });
+	}
+});
