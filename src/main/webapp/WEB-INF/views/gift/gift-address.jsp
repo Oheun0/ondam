@@ -1,6 +1,7 @@
 <%-- gift-address.jsp --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/order-payment.css">
 
 <div class="op-modal hidden" id="opAddressModal" role="dialog" aria-modal="true" aria-labelledby="opAddressModalTitle">
     <div class="op-modal-dim" id="opAddressModalDim"></div>
