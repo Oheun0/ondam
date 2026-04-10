@@ -32,4 +32,8 @@ public class ProductOptionService {
 	public Vector<ProductOptionDTO> getOptionsByProductNo(int productNo) {
 	    return dao.getByProductNo(productNo);
 	}
+	
+	public ProductOptionDTO getProductOptionByNo(int productOptionNo) {
+		return dao.getProductOptionByNo(productOptionNo);
+	}
 }
