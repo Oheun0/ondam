@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -16,6 +17,7 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product-detail.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/poke.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/share-modal.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/cart.css">
 </head>
 <body data-context-path="${pageContext.request.contextPath}"
       data-login-user="${not empty sessionScope.loginUser ? 'true' : ''}">
@@ -23,6 +25,15 @@
     <span class="material-icons option-toast__icon" aria-hidden="true">error</span>
     <span class="option-toast__text">먼저 색상과 사이즈를 골라주세요</span>
   </div>
+  
+  <%-- 재고 부족 토스트 --%>
+  <c:if test="${not empty sessionScope.errorMsg}">
+    <div class="cart-error-toast" role="alert">
+      <span class="material-icons">error_outline</span>
+      ${sessionScope.errorMsg}
+    </div>
+    <% session.removeAttribute("errorMsg"); %>
+  </c:if>
 
   <div class="detail-shell">
     <div class="detail-page-inner detail-page-inner--sticky-header">

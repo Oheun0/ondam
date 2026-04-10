@@ -1,5 +1,6 @@
 package com.ondam.user.controller;
 
+import com.ondam.cart.service.CartService;
 import com.ondam.common.controller.Controller;
 import com.ondam.notification.service.NotificationService;
 import com.ondam.user.dto.UserDTO;
@@ -60,21 +61,16 @@ public class LoginController implements Controller {
 			UserDTO loginUser = userService.login(userId, userPwd);
 
 			if (loginUser != null) {
-				if (loginUser.getIsActive() == 1) {
-					return "redirect:/login?status=withdrawn&targetId=" + userId;
-				} else {
-					HttpSession session = request.getSession();
-					session.setAttribute("loginUser", loginUser);
-					
-					int unreadCount = notificationService.getUnreadCount(loginUser.getUserNo());
-					session.setAttribute("unreadCount", unreadCount);
+				HttpSession session = request.getSession();
+				session.setAttribute("loginUser", loginUser);
+				int unreadCount = notificationService.getUnreadCount(loginUser.getUserNo());
+			    session.setAttribute("unreadCount", unreadCount);
 
-					com.ondam.cart.service.CartService cartService = new com.ondam.cart.service.CartService();
-					int totalQty = cartService.refreshCartTotalQuantity(loginUser.getUserNo());
-					session.setAttribute("cartCount", totalQty);
-					
-					return "redirect:/main";
-				}
+				CartService cartService = new CartService();
+			    int totalQty = cartService.refreshCartTotalQuantity(loginUser.getUserNo());
+			    session.setAttribute("cartCount", totalQty);
+			    
+				return "redirect:/main";
 			} else {
 				request.setAttribute("오류", "아이디 또는 비밀번호가 일치하지 않습니다.");
 				return "user/login";

@@ -36,4 +36,8 @@ public class ProductOptionService {
 	public ProductOptionDTO getProductOptionByNo(int productOptionNo) {
 		return dao.getProductOptionByNo(productOptionNo);
 	}
+	
+	public boolean decreaseStock(int productOptionNo, int quantity) {
+	    return dao.decreaseStock(productOptionNo, quantity);
+	}
 }

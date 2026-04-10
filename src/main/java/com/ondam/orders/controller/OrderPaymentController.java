@@ -8,6 +8,8 @@ import com.ondam.cart.service.CartService;
 import com.ondam.common.controller.Controller;
 import com.ondam.group.dto.FamilyMemberDTO;
 import com.ondam.group.service.FamilyMemberService;
+import com.ondam.notification.dto.NotificationDTO;
+import com.ondam.notification.service.NotificationService;
 import com.ondam.orders.dto.OrdersDTO;
 import com.ondam.orders.dto.OrdersProductDTO;
 import com.ondam.orders.service.OrdersProductService;
@@ -42,6 +44,7 @@ public class OrderPaymentController implements Controller {
 	private ProductService productService = new ProductService();
 	private ProductImageService productImageService = new ProductImageService();
 	private ProductOptionService productOptionService = new ProductOptionService();
+	private NotificationService notificationService = new NotificationService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -335,18 +338,49 @@ public class OrderPaymentController implements Controller {
 			if (orderNo == 0)
 				return "redirect:/cart";
 
-			// ── 7. OrdersProduct INSERT ───────────────────────
+			// ── 7. OrdersProduct INSERT + 재고 검증 및 차감 ──────────
 			for (CartItemDTO item : selectedItems) {
-				OrdersProductDTO opDto = new OrdersProductDTO();
-				opDto.setOrderNo(orderNo);
-				opDto.setProductNo(item.getProductNo());
-				opDto.setProductOptionNo(item.getProductOptionNo());
-				opDto.setSnapProductName(item.getProductName());
-				opDto.setSnapProductPrice(item.getProductPrice());
-				opDto.setSnapOptionSize(item.getOptionSize());
-				opDto.setSnapOptionColor(item.getOptionColor());
-				opDto.setOrderQuantity(item.getCartQuantity());
-				ordersProductService.createOrdersProduct(opDto);
+
+			    // 재고 검증
+			    ProductOptionDTO optDto = productOptionService.getProductOptionByNo(item.getProductOptionNo());
+			    if (optDto == null || optDto.getOptionStock() < item.getCartQuantity()) {
+			        ordersService.removeOrders(orderNo);
+			        request.getSession().setAttribute("errorMsg",
+			        	    "[" + item.getProductName() + "] 재고가 부족합니다.\n(남은 재고: " +
+			        	    (optDto != null ? optDto.getOptionStock() : 0) + "개)");
+
+			        // 바로구매 → 상품 상세 / 장바구니 구매 → 장바구니
+			        if ("direct".equals(buyType)) {
+			        	return "redirect:/product?action=detail&productNo=" + item.getProductNo();
+			        }
+			        return "redirect:/cart";
+			    }
+
+			    // OrdersProduct INSERT
+			    OrdersProductDTO opDto = new OrdersProductDTO();
+			    opDto.setOrderNo(orderNo);
+			    opDto.setProductNo(item.getProductNo());
+			    opDto.setProductOptionNo(item.getProductOptionNo());
+			    opDto.setSnapProductName(item.getProductName());
+			    opDto.setSnapProductPrice(item.getProductPrice());
+			    opDto.setSnapOptionSize(item.getOptionSize());
+			    opDto.setSnapOptionColor(item.getOptionColor());
+			    opDto.setOrderQuantity(item.getCartQuantity());
+			    ordersProductService.createOrdersProduct(opDto);
+
+			    // 재고 차감
+			    boolean decreased = productOptionService.decreaseStock(item.getProductOptionNo(), item.getCartQuantity());
+			    if (!decreased) {
+			        ordersService.removeOrders(orderNo);
+			        request.getSession().setAttribute("errorMsg",
+			            "[" + item.getProductName() + "] 재고 처리 중 오류가 발생했습니다.");
+
+			        // 동일하게 분기
+			        if ("direct".equals(buyType)) {
+			        	return "redirect:/product?action=detail&productNo=" + item.getProductNo();
+			        }
+			        return "redirect:/cart";
+			    }
 			}
 
 			// ── 8. 장바구니 삭제 (장바구니 구매만) ────────────────
@@ -370,8 +404,25 @@ public class OrderPaymentController implements Controller {
 					walletService.deductBalance(myMember.getFamilyNo(), walletUsedAmount, orderNo, loginUser);
 				}
 			}
+			
+			// ── 11. 알림 발송 ─────────────────────────────
+			String firstProductName = selectedItems.get(0).getProductName();
+			String notiMsg;
+			if (selectedItems.size() == 1) {
+			    notiMsg = firstProductName + " " + selectedItems.get(0).getCartQuantity() + "개가 결제 완료되었어요!";
+			} else {
+			    notiMsg = firstProductName + " 외 " + (selectedItems.size() - 1) + "건이 결제 완료되었어요!";
+			}
 
-			// ── 11. 주문 완료 → order-detail ─────────────────
+			NotificationDTO notiDto = new NotificationDTO();
+			notiDto.setUserNo(loginUser.getUserNo());
+			notiDto.setNotificationContent(notiMsg);
+			notiDto.setNotificationType(2);   // 주문/배송
+			notiDto.setRefNo(orderNo);        // 주문번호 참조
+			notiDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+			notificationService.createNotification(notiDto);
+
+			// ── 12. 주문 완료 → order-detail ─────────────────
 			return "redirect:/order/order-detail?orderNo=" + orderNo;
 
 		} catch (Exception e) {

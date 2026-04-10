@@ -605,18 +605,48 @@ document.addEventListener("DOMContentLoaded", function () {
                   btn.textContent = sz;
                   sizeList.appendChild(btn);
 
-                  btn.addEventListener("click", function () {
-                      sizeList.querySelectorAll(".detail-option-row").forEach(function (b) {
-                          b.classList.remove("active");
-                          b.setAttribute("aria-selected", "false");
-                      });
-                      btn.classList.add("active");
-                      btn.setAttribute("aria-selected", "true");
-                      selectedSizeText.textContent = sz;
-                      selectedSizeText.classList.remove("detail-selected-value--placeholder");
-                      sizeOptionPanel.classList.add("hidden");
-                      syncSheetOptionPanels();
-                  });
+				  btn.addEventListener("click", function () {
+				      sizeList.querySelectorAll(".detail-option-row").forEach(function (b) {
+				          b.classList.remove("active");
+				          b.setAttribute("aria-selected", "false");
+				      });
+				      btn.classList.add("active");
+				      btn.setAttribute("aria-selected", "true");
+				      selectedSizeText.textContent = sz;
+				      selectedSizeText.classList.remove("detail-selected-value--placeholder");
+				      sizeOptionPanel.classList.add("hidden");
+				      syncSheetOptionPanels();
+
+				      // ── 재고 세팅 추가 ──
+				      var optKey = selectedColor + "__" + sz;
+				      var stock = OPTION_STOCK_MAP[optKey] !== undefined ? OPTION_STOCK_MAP[optKey] : 9999;
+				      detailOptionSheet.setAttribute("data-option-stock", stock);
+
+				      // 재고 0이면 버튼 비활성화
+				      if (stock === 0) {
+				          if (sheetBuyNowBtn) {
+				              sheetBuyNowBtn.disabled = true;
+				              sheetBuyNowBtn.textContent = "품절";
+				          }
+				          if (sheetAddCartBtn) {
+				              sheetAddCartBtn.disabled = true;
+				          }
+				      } else {
+				          if (sheetBuyNowBtn) {
+				              sheetBuyNowBtn.disabled = false;
+				              sheetBuyNowBtn.textContent = "구매하기";
+				          }
+				          if (sheetAddCartBtn) {
+				              sheetAddCartBtn.disabled = false;
+				          }
+				      }
+
+				      // 수량이 재고 초과 시 수량 재조정
+				      if (quantity > stock) {
+				          quantity = Math.max(1, stock);
+				          syncQtyStepper();
+				      }
+				  });
               });
           }
 
@@ -666,10 +696,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (plusQtyBtn) {
-    plusQtyBtn.addEventListener("click", function () {
-      quantity += 1;
-      syncQtyStepper();
-    });
+      plusQtyBtn.addEventListener("click", function () {
+          var maxStock = parseInt(detailOptionSheet.getAttribute("data-option-stock") || "9999", 10);
+          if (quantity >= maxStock) return;
+          quantity += 1;
+          syncQtyStepper();
+      });
   }
 
   syncQtyStepper();

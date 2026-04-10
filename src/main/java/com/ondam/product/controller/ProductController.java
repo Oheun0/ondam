@@ -197,6 +197,7 @@ public class ProductController implements Controller {
 	    for (int i = 0; i < options.size(); i++) {
 	        ProductOptionDTO opt = options.get(i);
 	        json.append("{");
+	        json.append("\"productOptionNo\":").append(opt.getProductOptionNo()).append(","); 
 	        json.append("\"optionColor\":\"").append(opt.getOptionColor()).append("\",");
 	        json.append("\"optionSize\":\"").append(opt.getOptionSize()).append("\",");
 	        json.append("\"optionAddPrice\":").append(opt.getOptionAddPrice());

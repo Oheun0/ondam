@@ -117,14 +117,15 @@ public class CartController implements Controller {
     }
     
     private String updateOption(HttpServletRequest request, int userNo) {
-        // 파라미터 추출
         int cartItemNo = Integer.parseInt(request.getParameter("cartItemNo"));
         int productOptionNo = Integer.parseInt(request.getParameter("productOptionNo"));
-        
-        // 서비스 호출 (userNo를 추가하여 인자 3개를 맞춤)
+        int quantity = request.getParameter("quantity") != null
+            ? Integer.parseInt(request.getParameter("quantity")) : 1;  // 수량 추가
+
         cartService.updateItemOption(userNo, cartItemNo, productOptionNo);
-        
+        cartService.updateItemQuantity(userNo, cartItemNo, quantity);  // 수량도 반영
+        syncCartSession(request, userNo);
+
         return "redirect:/cart?action=list";
     }
-    
 }
