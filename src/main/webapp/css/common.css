@@ -18,6 +18,8 @@
     --bg-white: #ffffff;
     --border-color: #e5e7eb;
     --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
+    --danger: #d32f2f;
+    --success: #2e7d32;
     /* 스크롤 콘텐츠 영역 최상위 흰 카드(헤더·하단 네비 제외) */
     --main-card-shadow: var(--shadow-soft);
     --radius-lg: 22px;
@@ -155,11 +157,11 @@ img {
 }
 
 .check-message.success {
-  color: #2e7d32;
+  color: var(--success);
 }
 
 .check-message.error {
-  color: #d32f2f;
+  color: var(--danger);
 }
 
 .error-msg {

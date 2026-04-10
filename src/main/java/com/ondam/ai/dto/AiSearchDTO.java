@@ -2,18 +2,20 @@ package com.ondam.ai.dto;
 
 import java.util.Vector;
 
-public class aiSearchDTO {
+public class AiSearchDTO {
     private int rank;
     private double score;
     private int productNo;
     private String productName;
     private int productPrice;
     private String imgFile;
-    private Vector<String> seasons; // [변경] Vector 사용
 
-    public aiSearchDTO() {}
+    private int productOriginPrice;
+    private String productBrand;
+    
+    public AiSearchDTO() {}
 
-    public aiSearchDTO(int rank, double score, int productNo, String productName, int productPrice, String imgFile,
+    public AiSearchDTO(int rank, double score, int productNo, String productName, int productPrice, String imgFile,
 			Vector<String> seasons) {
 		super();
 		this.rank = rank;
@@ -22,7 +24,8 @@ public class aiSearchDTO {
 		this.productName = productName;
 		this.productPrice = productPrice;
 		this.imgFile = imgFile;
-		this.seasons = seasons;
+		
+		
 	}
 
 	// Getter & Setter
@@ -38,6 +41,21 @@ public class aiSearchDTO {
     public void setProductPrice(int productPrice) { this.productPrice = productPrice; }
     public String getImgFile() { return imgFile; }
     public void setImgFile(String imgFile) { this.imgFile = imgFile; }
-    public Vector<String> getSeasons() { return seasons; }
-    public void setSeasons(Vector<String> seasons) { this.seasons = seasons; }
-}
+
+	public int getProductOriginPrice() {
+		return productOriginPrice;
+	}
+
+	public void setProductOriginPrice(int productOriginPrice) {
+		this.productOriginPrice = productOriginPrice;
+	}
+
+	public String getProductBrand() {
+		return productBrand;
+	}
+
+	public void setProductBrand(String productBrand) {
+		this.productBrand = productBrand;
+	}
+    
+}	

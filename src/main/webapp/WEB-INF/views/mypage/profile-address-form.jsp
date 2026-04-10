@@ -67,7 +67,7 @@
                 <p>${mode == 'edit' ? '배송지를 변경하고 기본 주소로 설정할 수 있어요' : '배송지는 최대 3개까지 저장 가능해요'}</p>
             </div>
 
-            <form action="${pageContext.request.contextPath}/address/save" method="post" class="edit-form">
+            <form action="${pageContext.request.contextPath}/address/save" method="post" class="edit-form" id="addressForm">
                 <input type="hidden" name="mode" value="${mode}">
                 <c:if test="${isHelperMode}">
 			        <input type="hidden" name="targetUserNo" value="${targetUserNo}">
@@ -78,60 +78,64 @@
                 
                 <div class="form-block">
                     <label for="addressName" class="block-label">배송지명</label>
-                    <input type="text" id="addressName" name="addressName" class="input-box"
+                    <input type="text" id="addressName" name="addressName" class="input-box input"
                            value="${addrInfo.addressName}" placeholder="배송지 이름을 입력하세요 (예: 우리집)">
+                    <p class="error-msg" id="err-addressName"></p>
                 </div>
 
                 <div class="form-block">
                     <label for="receiverName" class="block-label">받는 분</label>
-                    <input type="text" id="receiverName" name="receiverName" class="input-box"
+                    <input type="text" id="receiverName" name="receiverName" class="input-box input"
                            value="${addrInfo.receiverName}" placeholder="받는 분 이름을 입력하세요">
+                    <p class="error-msg" id="err-receiverName"></p>
                 </div>
 
                 <div class="form-block">
                     <label for="receiverTel" class="block-label">연락처</label>
-                    <input type="text" id="receiverTel" name="receiverTel" class="input-box"
+                    <input type="text" id="receiverTel" name="receiverTel" class="input-box input"
                            value="${addrInfo.receiverTel}" placeholder="연락처를 입력하세요">
+                    <p class="error-msg" id="err-receiverTel"></p>
                 </div>
 
                 <div class="form-block">
                     <label for="userZipcode" class="block-label">우편번호</label>
                     <div class="address-inline-row">
-                        <input type="text" id="userZipcode" name="userZipcode" class="input-box"
+                        <input type="text" id="userZipcode" name="userZipcode" class="input-box input"
                                value="${addrInfo.userZipcode}" placeholder="우편번호" readonly>
                         <button type="button" class="zip-lookup-btn" onclick="execDaumPostcode()">우편번호 조회</button>
                     </div>
+                    <p class="error-msg" id="err-userZipcode"></p>
                 </div>
 
                 <div class="form-block">
                     <label class="block-label" for="userAddress">주소</label>
-                    <input type="text" id="userAddress" name="userAddress" class="input-box"
+                    <input type="text" id="userAddress" name="userAddress" class="input-box input"
                            value="${addrInfo.userAddress}" placeholder="주소를 입력하세요" readonly>
-                    <input type="text" id="userDetailAddress" name="userDetailAddress" class="input-box input-box--stacked"
+                    <input type="text" id="userDetailAddress" name="userDetailAddress" class="input-box input input-box--stacked"
                            value="${addrInfo.userDetailAddress}" placeholder="상세 주소를 입력하세요">
+                    <p class="error-msg" id="err-userDetailAddress"></p>
                 </div>
 
                 <div class="form-block">
-    <c:choose>
-        <c:when test="${mode == 'edit' && addrInfo.isDefault == 1}">
-            <div style="color: #D84C33; font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; padding: 5px 0;">
-                <span class="material-icons" style="font-size: 20px;">verified</span>
-                현재 기본 배송지입니다.
-            </div>
-            <input type="hidden" name="isDefault" value="1">
-        </c:when>
-        <c:otherwise>
-            <label class="check-row">
-                <input type="checkbox" name="isDefault" value="1" 
-                       ${(mode == 'add' && empty addressList) || addrInfo.isDefault == 1 ? 'checked' : ''}>
-                <span>기본 배송지로 저장할게요</span>
-            </label>
-        </c:otherwise>
-    </c:choose>
-</div>
+                    <c:choose>
+                        <c:when test="${mode == 'edit' && addrInfo.isDefault == 1}">
+                            <div style="color: #D84C33; font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; padding: 5px 0;">
+                                <span class="material-icons" style="font-size: 20px;">verified</span>
+                                현재 기본 배송지입니다.
+                            </div>
+                            <input type="hidden" name="isDefault" value="1">
+                        </c:when>
+                        <c:otherwise>
+                            <label class="check-row">
+                                <input type="checkbox" name="isDefault" value="1" 
+                                       ${(mode == 'add' && empty addressList) || addrInfo.isDefault == 1 ? 'checked' : ''}>
+                                <span>기본 배송지로 저장할게요</span>
+                            </label>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
 
-                <button type="submit" class="save-btn">${mode == 'edit' ? '변경사항 저장하기' : '배송지 추가하기'}</button>
-
+                <button type="button" class="save-btn" onclick="executeSubmit()">${mode == 'edit' ? '변경사항 저장하기' : '배송지 추가하기'}</button>
             </form>
         </section>
     </main>
@@ -140,16 +144,6 @@
 </div>
 
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
-<script>
-    function execDaumPostcode() {
-        new daum.Postcode({
-            oncomplete: function(data) {
-                document.getElementById('userZipcode').value = data.zonecode;
-                document.getElementById('userAddress').value = data.address;
-                document.getElementById('userDetailAddress').focus();
-            }
-        }).open();
-    }
-</script>
+<script src="${pageContext.request.contextPath}/js/address-form.js"></script>
 </body>
 </html>

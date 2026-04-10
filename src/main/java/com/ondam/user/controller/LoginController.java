@@ -18,17 +18,42 @@ public class LoginController implements Controller {
 	public LoginController() {
 		userService = new UserService();
 		notificationService = new NotificationService();
-		
 	}
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String method = request.getMethod();
+		String action = request.getParameter("action");
 
 		if (method.equals("GET")) {
+			if ("reactivate".equals(action)) {
+				String userId = request.getParameter("userId");
+				
+				if (userId != null && !userId.trim().isEmpty()) {
+					boolean isSuccess = userService.reactivateUser(userId); 
+					
+					if (isSuccess) {
+						com.ondam.user.dao.UserDAO userDAO = new com.ondam.user.dao.UserDAO();
+						UserDTO reactivatedUser = userDAO.getUserId(userId);
+						
+						if (reactivatedUser != null) {
+							HttpSession session = request.getSession();
+							session.setAttribute("loginUser", reactivatedUser);
+							
+							int unreadCount = notificationService.getUnreadCount(reactivatedUser.getUserNo());
+							session.setAttribute("unreadCount", unreadCount);
+
+							com.ondam.cart.service.CartService cartService = new com.ondam.cart.service.CartService();
+							int totalQty = cartService.refreshCartTotalQuantity(reactivatedUser.getUserNo());
+							session.setAttribute("cartCount", totalQty);
+						}
+						return "redirect:/main";
+					}
+				}
+				return "redirect:/login?error=reactivate_fail";
+			}
 			return "user/login";
 		}
-
 		if (method.equals("POST")) {
 			String userId = request.getParameter("userId");
 			String userPwd = request.getParameter("userPwd");

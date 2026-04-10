@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ondam.ai.controller.AiIntroController;
 import com.ondam.ai.controller.AiRecommendController;
+import com.ondam.ai.controller.AiSearchController;
 import com.ondam.cart.controller.CartController;
 import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
@@ -45,6 +46,7 @@ import com.ondam.user.controller.SignupStep0BasicController;
 import com.ondam.user.controller.SignupStep1BasicController;
 import com.ondam.user.controller.SignupStep2AddressController;
 import com.ondam.user.controller.SignupStep3PreferenceController;
+import com.ondam.user.controller.UserCouponController;
 import com.ondam.user.controller.UserIdCheckController;
 import com.ondam.wallet.controller.WalletController;
 import com.ondam.wish.controller.WishController;
@@ -118,7 +120,9 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/inquiry/inquiry-list", new InquiryController());
         handlerMapping.put("/inquiry", new InquiryController());
         handlerMapping.put("/search", new SearchController());
-        
+        handlerMapping.put("/aiSearch", new AiSearchController());
+        handlerMapping.put("/userCoupon", new UserCouponController());
+
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 

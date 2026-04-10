@@ -16,9 +16,6 @@
   <div class="search-shell">
     <div class="search-page-inner">
       <jsp:include page="/WEB-INF/views/layout/back-searchBar.jsp"/>
-
-      <main class="search-page-main" id="searchPageMain">
-
         <%-- 최근 검색어 --%>
         <section class="recent-search-section" id="recentSearchSection" aria-labelledby="recentSearchTitle">
           <div class="search-section-head">
@@ -67,6 +64,14 @@
               </ul>
             </c:otherwise>
           </c:choose>
+        </section>
+
+		<section class="image-search-full-section">
+          <button type="button" class="image-search-full-btn" id="imageSearchEntryBtn">
+            <span class="material-icons-outlined">photo_camera</span>
+            <span class="image-search-full-text">찾으시는 상품이 없나요? 이미지로 검색해보세요!</span>
+            <span class="material-icons">chevron_right</span>
+          </button>
         </section>
 
       </main>

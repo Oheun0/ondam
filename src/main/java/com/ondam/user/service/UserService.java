@@ -292,4 +292,7 @@ public class UserService {
 		    }
 		    return result;
 		}
+		public boolean reactivateUser(String userId) {
+		    return userDAO.updateUserActiveStatus(userId, 0); 
+		}
 	}

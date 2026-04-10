@@ -27,5 +27,15 @@
         window.location.href = contextPath + "/order/order-detail?orderNo=" + orderNo;
       }
     });
-  });
-})();
+	var backBtn = document.querySelector(".app-back-header__btn, .app-back-btn, .back-btn");
+	    
+	    if (backBtn) {
+	      backBtn.addEventListener("click", function (e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        window.location.replace(contextPath + "/mypage"); 
+	      }, true); 
+	    }
+	    
+	  });
+	})();
