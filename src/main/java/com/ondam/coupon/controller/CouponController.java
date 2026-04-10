@@ -109,6 +109,7 @@ public class CouponController implements Controller {
     private CouponDTO extractCouponDto(HttpServletRequest request) {
         CouponDTO dto = new CouponDTO();
         dto.setCouponName(request.getParameter("couponName"));
+        dto.setCouponCode(request.getParameter("couponCode"));
         dto.setDiscountType(parseParam(request.getParameter("discountType"), 0));
         dto.setDiscountValue(parseParam(request.getParameter("discountValue"), 0));
         dto.setMinOrderAmount(parseParam(request.getParameter("minOrderAmount"), 0));
