@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ondam.ai.controller.AiIntroController;
 import com.ondam.ai.controller.AiRecommendController;
+import com.ondam.ai.controller.AiSearchController;
 import com.ondam.cart.controller.CartController;
 import com.ondam.coupon.controller.CouponController;
 import com.ondam.gift.controller.GiftController;
@@ -115,7 +116,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/inquiry/inquiry-list", new InquiryController());
         handlerMapping.put("/inquiry", new InquiryController());
         handlerMapping.put("/search", new SearchController());
-        
+        handlerMapping.put("/aiSearch", new AiSearchController());
+
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 
