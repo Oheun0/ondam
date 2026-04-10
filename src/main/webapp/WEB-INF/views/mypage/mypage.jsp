@@ -62,7 +62,7 @@
                             <strong>함께지갑</strong>
                         </div>
                 
-                        <a href="${pageContext.request.contextPath}/wallet" class="wallet-link">
+                        <a href="${pageContext.request.contextPath}/wallet?from=mypage" class="wallet-link">
                             자세히보기
                             <span class="material-icons">chevron_right</span>
                         </a>
@@ -76,8 +76,8 @@
                     </div>
                 
                     <div class="wallet-button-row">
-                        <a href="${pageContext.request.contextPath}/wallet?action=charge" class="wallet-button fill">충전하기</a>
-                        <a href="${pageContext.request.contextPath}/wallet?action=history" class="wallet-button">사용 내역</a>
+                        <a href="${pageContext.request.contextPath}/wallet?action=charge&from=mypage" class="wallet-button fill">충전하기</a>
+                        <a href="${pageContext.request.contextPath}/wallet?action=history&from=mypage" class="wallet-button">사용 내역</a>
                     </div>
                 </c:when>
                 
@@ -134,7 +134,7 @@
                     <span class="material-icons menu-arrow" aria-hidden="true">chevron_right</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/gift/box" class="menu-item">
+                <a href="${pageContext.request.contextPath}/gift?from=mypage" class="menu-item">
                     <div class="menu-left">
                         <span class="material-icons menu-row-icon" aria-hidden="true">redeem</span>
                         <strong class="menu-label">선물함</strong>

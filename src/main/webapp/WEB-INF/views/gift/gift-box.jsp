@@ -16,7 +16,7 @@
     request.setAttribute("yesterdayDate", cal.getTime()); // 어제
 %>
 
-<%-- 구한 날짜를 비교하기 쉽게 "yyyy-MM-dd" 형태의 문자열로 만들어둡니다. --%>
+<%-- "yyyy-MM-dd" 형태 --%>
 <fmt:formatDate value="${todayDate}" pattern="yyyy-MM-dd" var="todayStr" />
 <fmt:formatDate value="${yesterdayDate}" pattern="yyyy-MM-dd" var="yesterdayStr" />
 
@@ -45,8 +45,21 @@
     <main class="main-content gift-main">
         <div class="gift-page">
 
+			<c:if test="${not empty param.from}">
+                <c:set var="giftOrigin" value="${param.from}" scope="session" />
+            </c:if>
+
+            <c:choose>
+                <c:when test="${sessionScope.giftOrigin == 'mypage'}">
+                    <c:set var="backLink" value="/mypage" />
+                </c:when>
+                <c:otherwise>
+                    <c:set var="backLink" value="/group" />
+                </c:otherwise>
+            </c:choose>
+            
             <div class="wallet-top">
-                <a href="${pageContext.request.contextPath}/group" class="back-btn">
+                <a href="${pageContext.request.contextPath}${backLink}" class="back-btn">
                     <span class="material-icons">arrow_back_ios</span>
                     <span>뒤로가기</span>
                 </a>
@@ -58,9 +71,7 @@
                 <button type="button" class="top-tab" data-tab="sent" id="tabGiftSent" role="tab" aria-selected="false" aria-controls="gift-sent-panel">보낸 선물</button>
             </div>
 
-            <!-- ============================================== -->
             <!-- 1. 받은 선물 패널 -->
-            <!-- ============================================== -->
             <div class="tab-content active gift-box-tab-panel" id="gift-received-panel" role="tabpanel" aria-labelledby="tabGiftReceived">
                 <section class="gift-box-section">
                     <div class="gift-chat-wrap gift-chat-wrap--box">
@@ -123,16 +134,34 @@
 
                                     <c:choose>
                                         <c:when test="${gift.giftState == 0}">
-                                            <div class="gift-address-box">
-                                                <p class="gift-address-label">기본 배송지 : ${gift.receiverAddressName}</p>
-                                                <p class="gift-address-text">${gift.receiverName} · ${gift.receiverPhoneNumber}<br>
-                                                (${gift.receiverZipcode}) ${gift.receiverAddress} ${gift.receiverDetailAddress}</p>
-                                            </div>
-                                            <a href="${pageContext.request.contextPath}/mypage/profile-address" class="gift-go-btn gift-go-btn--secondary">배송지 관리 페이지로 이동하기</a>
+    <div class="gift-address-box" id="display-address-${gift.giftNo}">
+        <p class="gift-address-label">선택된 배송지 : ${gift.receiverAddressName}</p>
+        <p class="gift-address-text">${gift.receiverName} · ${gift.receiverPhoneNumber}<br>
+        (${gift.receiverZipcode}) ${gift.receiverAddress} ${gift.receiverDetailAddress}</p>
+    </div>
+    
+    <%-- 링크 대신 모달을 여는 버튼으로 변경 --%>
+    <button type="button" class="gift-go-btn gift-go-btn--secondary" onclick="openAddressModal('${gift.giftNo}')">다른 배송지 선택하기</button>
                                             <div class="gift-action-row">
-                                                <a href="${pageContext.request.contextPath}/gift?action=accept&giftNo=${gift.giftNo}" class="gift-action-btn gift-action-btn--accept">수락하기</a>
-                                                <a href="${pageContext.request.contextPath}/gift?action=reject&giftNo=${gift.giftNo}" class="gift-action-btn gift-action-btn--reject">거절하기</a>
-                                            </div>
+											    <c:choose>
+											        <%-- 배송지가 하나도 없는 경우 --%>
+											        <c:when test="${gift.addressNo == -1}">
+											            <a href="javascript:void(0);" 
+											               onclick="alert('기본 배송지가 없습니다. 배송지를 먼저 등록해주세요!'); location.href='${pageContext.request.contextPath}/profile-address';"
+											               class="gift-action-btn gift-action-btn--accept">배송지 등록 후 수락</a>
+											        </c:when>
+											        
+											        <%-- 배송지가 있는 경우 (기본 배송지 번호를 포함시킴) --%>
+											        <c:otherwise>
+											            <a href="${pageContext.request.contextPath}/gift?action=accept&giftNo=${gift.giftNo}&addressNo=${gift.addressNo}" 
+											               id="accept-btn-${gift.giftNo}" 
+											               class="gift-action-btn gift-action-btn--accept">수락하기</a>
+											        </c:otherwise>
+											    </c:choose>
+											    
+											    <a href="${pageContext.request.contextPath}/gift?action=reject&giftNo=${gift.giftNo}" 
+											       class="gift-action-btn gift-action-btn--reject">거절하기</a>
+											</div>
                                         </c:when>
                                         <c:when test="${gift.giftState == 1}">
                                             <div class="gift-state-box gift-state-box--success">선물을 받았어요!</div>
@@ -143,7 +172,7 @@
                                     </c:choose>
                                 </div>
                                 
-                                <%-- 4. 시간만 "오전/오후 H시 mm분" 형태로 뽑아내기 --%>
+                                <%-- 4. "오전/오후 H시 mm분" 형태 --%>
                                 <fmt:formatDate value="${parsedDate}" pattern="a h시 mm분" var="timeStr" />
                                 <p class="gift-time">${timeStr}</p>
                             </div>
@@ -153,9 +182,7 @@
                 </section>
             </div>
 
-            <!-- ============================================== -->
             <!-- 2. 보낸 선물 패널 -->
-            <!-- ============================================== -->
             <div class="tab-content gift-box-tab-panel" id="gift-sent-panel" role="tabpanel" aria-labelledby="tabGiftSent" hidden>
                 <section class="gift-box-section">
                     <div class="gift-chat-wrap gift-chat-wrap--box">
@@ -233,7 +260,7 @@
 
         </div>
     </main>
-
+	<jsp:include page="gift-address.jsp" />
     <jsp:include page="../layout/bottomNav.jsp" />
 </div>
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>

@@ -32,4 +32,8 @@ public class ProductImageService {
 	public Vector<ProductImageDTO> getImagesByProductNo(int productNo) {
 	    return dao.getByProductNo(productNo);
 	}
+	
+	public ProductImageDTO getProductImageById(int productNo) {
+		return dao.getProductImageById(productNo);
+	}
 }

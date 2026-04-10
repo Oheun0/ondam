@@ -168,8 +168,44 @@
 /* 그리드 영역 배경 */
 .favorite-list-scroll .product-content {
   background: transparent;
+  /* 나의 후기(.review-my-panels)와 동일한 여백 */
+  padding: 20px 16px 28px;
 }
 
 .favorite-list-scroll .product-list-section {
   padding-bottom: 24px;
+}
+
+/* =========================
+   찜한 상품 빈 상태 카드
+   ========================= */
+.favorite-list-page .product-grid .favorite-empty-card {
+  /* product-grid(2열) 안에서 한 줄 전체를 차지 */
+  grid-column: 1 / -1;
+}
+
+.favorite-list-scroll .favorite-empty-card {
+  margin: 0;
+  padding: 34px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.favorite-empty-card__title {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #444;
+  line-height: 1.5;
+}
+
+.favorite-empty-card__desc {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #777;
+  line-height: 1.55;
+  word-break: keep-all;
 }

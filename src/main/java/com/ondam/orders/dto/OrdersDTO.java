@@ -11,7 +11,7 @@ public class OrdersDTO {
     private String deliveryContent;
     private int orderPrice;
     private int couponDiscount;
-    private int walletUsedAmount;
+    private int productDiscount;
     private int paymentAmount;
     private int paymentMethod;
     private int userCouponNo;
@@ -26,7 +26,7 @@ public class OrdersDTO {
 
     public OrdersDTO(int orderNo, int userNo, String orderCode, String receiverName, String receiverTel,
                      String deliveryAddr, String deliveryContent, int orderPrice, int couponDiscount,
-                     int walletUsedAmount, int paymentAmount, int paymentMethod, int userCouponNo,
+                     int productDiscount, int paymentAmount, int paymentMethod, int userCouponNo,
                      int orderState, String orderDate, String orderUpdateDate, int deliveryState,
                      int orderType, int giftReceiverNo) {
         this.orderNo = orderNo;
@@ -38,7 +38,7 @@ public class OrdersDTO {
         this.deliveryContent = deliveryContent;
         this.orderPrice = orderPrice;
         this.couponDiscount = couponDiscount;
-        this.walletUsedAmount = walletUsedAmount;
+        this.productDiscount = productDiscount;
         this.paymentAmount = paymentAmount;
         this.paymentMethod = paymentMethod;
         this.userCouponNo = userCouponNo;
@@ -122,15 +122,15 @@ public class OrdersDTO {
         this.couponDiscount = couponDiscount;
     }
 
-    public int getWalletUsedAmount() {
-        return walletUsedAmount;
-    }
+    public int getProductDiscount() {
+		return productDiscount;
+	}
 
-    public void setWalletUsedAmount(int walletUsedAmount) {
-        this.walletUsedAmount = walletUsedAmount;
-    }
+	public void setProductDiscount(int productDiscount) {
+		this.productDiscount = productDiscount;
+	}
 
-    public int getPaymentAmount() {
+	public int getPaymentAmount() {
         return paymentAmount;
     }
 

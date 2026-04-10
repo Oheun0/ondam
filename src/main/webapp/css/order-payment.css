@@ -663,6 +663,67 @@
   grid-template-columns: 1fr 2fr;
 }
 
+.op-modal-card--address {
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.op-address-list {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+/* 배송지 선택 모달 */
+.op-address-item {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border: 1px solid #e2e2e2;
+  border-radius: 16px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 0.15s;
+}
+
+.op-address-item:active,
+.op-address-item.active {
+  background: #f1f1f1;
+  border-color: #ccc;
+}
+
+.op-address-item__name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.op-address-item__receiver {
+  font-size: 13px;
+  color: #555;
+}
+
+.op-address-item__addr {
+  font-size: 13px;
+  color: #777;
+}
+
+.op-address-empty {
+  text-align: center;
+  color: #aaa;
+  padding: 24px 0;
+  font-size: 14px;
+}
+
 .op-modal-btn {
   min-height: 50px;
   padding: 0 14px;

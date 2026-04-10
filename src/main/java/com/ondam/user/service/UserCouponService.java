@@ -12,7 +12,6 @@ public class UserCouponService {
     public UserCouponService() {
         this.dao = new UserCouponDAO();
     }
-
     // 마이페이지 내 쿠폰함 조회
     public List<UserCouponDTO> getMyCouponList(int userNo) {
         if (userNo <= 0) return null;
@@ -31,5 +30,9 @@ public class UserCouponService {
         
         // TODO: 이미 발급받은 쿠폰인지 검증하는 로직 추가 필요 (DAO에 existsUserCoupon 구현 요망)
         return dao.insertUserCoupon(userNo, couponNo);
+    }
+    
+    public boolean useUserCoupon(int userCouponNo, int orderNo) {
+        return dao.useUserCoupon(userCouponNo, orderNo);
     }
 }
