@@ -129,42 +129,42 @@
         </section>
 
         <section class="od-card" aria-label="결제 정보">
-          <h2 class="od-card-title">결제 정보</h2>
-          <dl class="od-pay">
-            <div class="od-pay-row">
-              <dt class="od-pay-key">결제 방법</dt>
-              <dd class="od-pay-val">
-                <c:choose>
-                  <c:when test="${orderInfo.paymentMethod == 0}">함께지갑</c:when>
-                  <c:when test="${orderInfo.paymentMethod == 1}">카드결제</c:when>
-                  <c:otherwise>기타결제</c:otherwise>
-                </c:choose>
-              </dd>
-            </div>
-            <div class="od-pay-row">
-              <dt class="od-pay-key">총 상품 금액</dt>
-              <dd class="od-pay-val"><fmt:formatNumber value="${orderInfo.orderPrice}" pattern="#,###"/>원</dd>
-            </div>
-            <div class="od-pay-row">
-              <dt class="od-pay-key">쿠폰 할인</dt>
-              <dd class="od-pay-val od-pay-val--minus">
-                -<fmt:formatNumber value="${orderInfo.couponDiscount}" pattern="#,###"/>원
-              </dd>
-            </div>
-            <div class="od-pay-row">
-              <dt class="od-pay-key">지갑 사용액</dt>
-              <dd class="od-pay-val od-pay-val--minus">
-                -<fmt:formatNumber value="${orderInfo.walletUsedAmount}" pattern="#,###"/>원
-              </dd>
-            </div>
-            <div class="od-pay-row od-pay-row--total">
-              <dt class="od-pay-key">최종 결제금액</dt>
-              <dd class="od-pay-val od-pay-val--total">
-                <fmt:formatNumber value="${orderInfo.paymentAmount}" pattern="#,###"/>원
-              </dd>
-            </div>
-          </dl>
-        </section>
+		  <h2 class="od-card-title">결제 정보</h2>
+		  <dl class="od-pay">
+		    <div class="od-pay-row">
+		      <dt class="od-pay-key">결제 방법</dt>
+		      <dd class="od-pay-val">
+		        <c:choose>
+		          <c:when test="${orderInfo.paymentMethod == 0}">함께지갑</c:when>
+		          <c:when test="${orderInfo.paymentMethod == 1}">카드결제</c:when>
+		          <c:otherwise>계좌이체</c:otherwise>
+		        </c:choose>
+		      </dd>
+		    </div>
+		    <div class="od-pay-row">
+		      <dt class="od-pay-key">총 상품 금액</dt>
+		      <dd class="od-pay-val"><fmt:formatNumber value="${orderInfo.orderPrice}" pattern="#,###"/>원</dd>
+		    </div>
+		    <c:if test="${orderInfo.productDiscount > 0}">
+		    <div class="od-pay-row">
+		      <dt class="od-pay-key">상품 할인</dt>
+		      <dd class="od-pay-val od-pay-val--minus">-<fmt:formatNumber value="${orderInfo.productDiscount}" pattern="#,###"/>원</dd>
+		    </div>
+		    </c:if>
+		    <c:if test="${orderInfo.couponDiscount > 0}">
+		    <div class="od-pay-row">
+		      <dt class="od-pay-key">쿠폰 할인</dt>
+		      <dd class="od-pay-val od-pay-val--minus">-<fmt:formatNumber value="${orderInfo.couponDiscount}" pattern="#,###"/>원</dd>
+		    </div>
+		    </c:if>
+		    <div class="od-pay-row od-pay-row--total">
+		      <dt class="od-pay-key">최종 결제금액</dt>
+		      <dd class="od-pay-val od-pay-val--total">
+		        <fmt:formatNumber value="${orderInfo.paymentAmount}" pattern="#,###"/>원
+		      </dd>
+		    </div>
+		  </dl>
+		</section>
 
         <div class="od-bottom-spacer" aria-hidden="true"></div>
       </main>

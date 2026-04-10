@@ -2,6 +2,22 @@
  * 상품 검색 상단바 + 검색 홈(최근/인기) — 순수 DOM API
  * 검색 실행 시 /preview?page=product/search-result&q= 로 이동 (ProductController 없이 화면 미리보기)
  */
+document.addEventListener('DOMContentLoaded', function() {
+    // 버튼 요소 가져오기
+    var imageSearchBtn = document.getElementById('imageSearchEntryBtn');
+    
+    // 버튼이 존재할 때만 이벤트 리스너 등록
+    if (imageSearchBtn) {
+        imageSearchBtn.addEventListener('click', function() {
+            // body에 설정된 data-context-path 값을 가져옴
+            var contextPath = document.body.getAttribute('data-context-path');
+            
+            // 전용 이미지 검색 페이지로 이동
+            // AiSearchController의 execute에서 action=view를 처리함
+            location.href = contextPath + "/aiSearch";
+        });
+    }
+});
 (function () {
   "use strict";
 

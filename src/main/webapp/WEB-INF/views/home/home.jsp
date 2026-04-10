@@ -24,13 +24,19 @@
 			<div class="slider-viewport">
 				<div class="slider-track" id="sliderTrack">
 					<div class="banner-slide">
-						<img src="${pageContext.request.contextPath}/images/banner/banner1.png" class="banner-img" alt="온담 메인 배너 1" width="800" height="400" decoding="async">
+						<a href="${pageContext.request.contextPath}/main" class="banner-slide-link" aria-label="배너 1: 홈으로 이동">
+							<img src="${pageContext.request.contextPath}/images/banner/banner1.png" class="banner-img" alt="온담 메인 배너 1" width="800" height="400" decoding="async">
+						</a>
 					</div>
 					<div class="banner-slide">
-						<img src="${pageContext.request.contextPath}/images/banner/banner2.png" class="banner-img" alt="온담 메인 배너 2" width="800" height="400" decoding="async">
+						<a href="${pageContext.request.contextPath}/group" class="banner-slide-link" aria-label="배너 2: 내 사람으로 이동">
+							<img src="${pageContext.request.contextPath}/images/banner/banner2.png" class="banner-img" alt="온담 메인 배너 2" width="800" height="400" decoding="async">
+						</a>
 					</div>
 					<div class="banner-slide">
-						<img src="${pageContext.request.contextPath}/images/banner/banner3.png" class="banner-img" alt="온담 메인 배너 3" width="800" height="400" decoding="async">
+						<a href="${pageContext.request.contextPath}/ai" class="banner-slide-link" aria-label="배너 3: 옷 추천으로 이동">
+							<img src="${pageContext.request.contextPath}/images/banner/banner3.png" class="banner-img" alt="온담 메인 배너 3" width="800" height="400" decoding="async">
+						</a>
 					</div>
 				</div>
 				<div class="banner-dots" id="bannerDots" role="tablist" aria-label="배너 위치">
