@@ -268,7 +268,6 @@ public class OrdersDAO {
 	    }
 	    return orderNo;
 	}
-}
 		
 		public Vector<Integer> getOrderNosByUser(int userNo) {
 		    Connection con = null;

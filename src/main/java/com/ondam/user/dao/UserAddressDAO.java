@@ -250,9 +250,8 @@ public class UserAddressDAO {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			UserAddressDTO dto = null;
-			
-			// 요청하신 4개의 컬럼만 정확하게 지정하여 성능을 최적화한 SQL 쿼리입니다. (26/04/09 1248i isDefault 컬럼 추가)
-			String sql = "SELECT addressName, userAddress, userDetailAddress, userZipcode, "
+
+			String sql = "SELECT userAddressNo, addressName, userAddress, userDetailAddress, userZipcode, "
 			           + "receiverName, receiverTel, isDefault "
 			           + "FROM userAddress "
 			           + "WHERE userNo = ? AND isDefault = 1";
@@ -263,9 +262,9 @@ public class UserAddressDAO {
 				pstmt.setInt(1, userNo);
 				rs = pstmt.executeQuery();
 
-				// 기본 배송지가 존재한다면 객체에 값을 담아줍니다.
 				if (rs.next()) {
 					dto = new UserAddressDTO();
+					dto.setUserAddressNo(rs.getInt("userAddressNo"));
 					dto.setAddressName(rs.getString("addressName"));
 					dto.setUserAddress(rs.getString("userAddress"));
 					dto.setUserDetailAddress(rs.getString("userDetailAddress"));
@@ -279,8 +278,7 @@ public class UserAddressDAO {
 			} finally {
 				pool.freeConnection(con, pstmt, rs);
 			}
-			
-			// 기본 배송지가 없으면 null을 반환합니다.
+			// 기본 배송지가 없으면 null을 반환.
 			return dto;
 		}
 		
