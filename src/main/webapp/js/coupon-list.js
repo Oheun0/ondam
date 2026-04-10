@@ -135,17 +135,27 @@
       };
       var attr = attrByMode[mode] || attrByMode.discount;
       var items = Array.prototype.slice.call(cardList.querySelectorAll(".coupon-card"));
-      items.sort(function (a, b) {
-        var va = parseInt(a.getAttribute(attr), 10) || 0;
-        var vb = parseInt(b.getAttribute(attr), 10) || 0;
-        if (mode === "expiry") return va - vb;
-        if (mode === "received") return va - vb;
-        return vb - va;
-      });
-      items.forEach(function (li) {
-        cardList.appendChild(li);
-      });
-    }
+	  items.sort(function (a, b) {
+	      var va = a.getAttribute(attr);
+	      var vb = b.getAttribute(attr);
+
+		  if (mode === "expiry" || mode === "received") {
+		          var cleanA = (va || "").split('.')[0]; 
+		          var cleanB = (vb || "").split('.')[0];
+
+		          var dateA = new Date(cleanA).getTime() || 0;
+		          var dateB = new Date(cleanB).getTime() || 0;
+		          
+		          if (mode === "expiry") return dateA - dateB; // 임박순 (날짜 작은 게 위로)
+		          return dateB - dateA; // 받은순 (날짜 큰 게 위로)
+		      }
+		      return (parseInt(vb, 10) || 0) - (parseInt(va, 10) || 0);
+		  });
+
+	    items.forEach(function (li) {
+	      cardList.appendChild(li);
+	    });
+	  }
 
     sortOptions.forEach(function (opt) {
       opt.addEventListener("click", function (e) {
