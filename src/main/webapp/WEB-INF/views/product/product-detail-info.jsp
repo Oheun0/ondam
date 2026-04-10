@@ -177,7 +177,10 @@
            data-detail-tab-panel="inquiry" aria-hidden="true">
         <div class="detail-inquiry-intro">
           <p class="detail-inquiry-intro-text">지금 보고 있는 상품이 궁금하신가요?</p>
-          <button type="button" class="detail-inquiry-primary-btn">상품 문의하기</button>
+          <button type="button" class="detail-inquiry-primary-btn"
+			        onclick="window.location.href = '${pageContext.request.contextPath}/inquiry?action=writeForm&productNo=${product.productNo}&returnUrl=' + encodeURIComponent(window.location.href)">
+			  상품 문의하기
+			</button>
         </div>
         <div class="detail-inquiry-list">
           <%-- 추후 inquiryList 연동 예정 --%>

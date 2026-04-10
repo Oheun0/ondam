@@ -79,9 +79,10 @@
         var inquiryNo = item.getAttribute("data-id");
         closeAllMenus();
 
-        if (action === "edit") {
-          window.location.href = ctx + "/inquiry?action=editForm&inquiryNo=" + inquiryNo;
-        } else if (action === "delete") {
+		if (action === "edit") {
+		    window.location.href = ctx + "/inquiry?action=editForm&inquiryNo=" + inquiryNo
+		        + "&returnUrl=" + encodeURIComponent(ctx + "/inquiry?action=list");
+		} else if (action === "delete") {
           openDeleteModal(inquiryNo); 
         }
       });

@@ -76,6 +76,7 @@ public class InquiryController implements Controller {
         
         request.setAttribute("inquiryData", inquiryData);
         request.setAttribute("productInfo", inquiryData); // 상품 정보도 같이 담겨있음
+        request.setAttribute("returnUrl", request.getParameter("returnUrl"));
         return "product/inquiry/inquiry-write";
     }
 

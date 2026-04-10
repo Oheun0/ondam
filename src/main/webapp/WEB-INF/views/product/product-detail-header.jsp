@@ -19,8 +19,10 @@
       <span class="material-icons-outlined">search</span>
     </a>
     <button type="button" class="detail-icon-btn cart-icon-wrap" aria-label="장바구니">
-      <span class="material-icons-outlined">shopping_cart</span>
-      <span class="cart-badge">3</span>
-    </button>
+  <span class="material-icons-outlined">shopping_cart</span>
+  <c:if test="${sessionScope.cartCount > 0}">
+    <span class="cart-badge">${sessionScope.cartCount}</span>
+  </c:if>
+</button>
   </div>
 </header>
