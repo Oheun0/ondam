@@ -78,7 +78,7 @@
                 <h2>자주 쓰는 메뉴</h2>
             </div>
             <div class="shortcut-grid">
-                <a href="${pageContext.request.contextPath}/ai" class="shortcut-card">
+                 <a href="${pageContext.request.contextPath}/ai-intro" class="shortcut-card">
 
                     <div class="shortcut-text">
                         <div class="shortcut-title-row">
@@ -126,7 +126,7 @@
         <section class="section-box banner-card">
             <strong>지금 인기 있는 봄 옷을 모아봤어요</strong>
             <p>가볍게 입기 좋은 옷을 한눈에 볼 수 있어요.</p>
-            <a href="#" class="banner-link">
+           <a href="${pageContext.request.contextPath}/main?action=spring-sale" class="banner-link">
                 기획전 보기
                 <span class="material-icons" style="font-size:18px;">chevron_right</span>
             </a>
