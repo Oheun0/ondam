@@ -8,9 +8,19 @@
 
       <c:choose>
         <c:when test="${empty productList}">
-          <div class="product-empty">
-            <p>해당 조건의 상품이 없습니다.</p>
-          </div>
+          <c:choose>
+            <c:when test="${productEmptyVariant == 'favorite'}">
+              <div class="favorite-empty-card" role="status" aria-label="찜한 상품 없음 안내">
+                <p class="favorite-empty-card__title">마음에 드는 옷을 찾아볼까요?</p>
+                <p class="favorite-empty-card__desc">하트 버튼을 누르면 여기에 차곡차곡 모여요</p>
+              </div>
+            </c:when>
+            <c:otherwise>
+              <div class="product-empty">
+                <p>해당 조건의 상품이 없습니다.</p>
+              </div>
+            </c:otherwise>
+          </c:choose>
         </c:when>
 
         <c:otherwise>
