@@ -9,6 +9,7 @@ import com.ondam.gift.service.GiftService;
 import com.ondam.user.dao.UserAddressDAO;
 import com.ondam.user.dto.UserAddressDTO;
 import com.ondam.user.dto.UserDTO;
+import com.ondam.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 public class GiftController implements Controller {
     
     private final GiftService giftService = new GiftService();
+    private final UserService userService = new UserService();
     private static final String VIEW_PREFIX = "gift/"; 
     private static final String REDIRECT_MAIN = "redirect:/gift";
 
@@ -45,6 +47,8 @@ public class GiftController implements Controller {
             case "received":
             case "sent":
                 return handleGiftMain(request, userNo);
+            case "chat":
+                return handleChat(request, userNo);
             case "detail":
                 return handleDetail(request, userNo);
             case "sendProc":
@@ -72,6 +76,26 @@ public class GiftController implements Controller {
         request.setAttribute("sentList", sentList);
         
         return VIEW_PREFIX + "gift-box"; 
+    }
+    
+    // gift-chat.jsp로 보내기
+    private String handleChat(HttpServletRequest request, int myUserNo) {
+        String receiverNoParam = request.getParameter("receiverNo");
+        if (receiverNoParam == null) return REDIRECT_MAIN;
+
+        int otherNo = Integer.parseInt(receiverNoParam);
+
+        // 상대방 이름
+        String otherName = userService.getUserName(otherNo);
+        request.setAttribute("otherNo", otherNo);
+        request.setAttribute("otherName", otherName);
+
+        // 두 사람 사이 선물 내역
+        Vector<GiftDTO> chatList = giftService.getGiftsBetween(myUserNo, otherNo);
+        request.setAttribute("chatList", chatList);
+        request.setAttribute("myUserNo", myUserNo);
+
+        return VIEW_PREFIX + "gift-chat";
     }
 
     // 선물 수락 처리 (배송지 번호 포함)

@@ -33,15 +33,15 @@
                     <span class="material-icons">arrow_back_ios</span>
                     <span>뒤로가기</span>
                 </a>
-                <a href="#" class="gift-chat-poke-link">
-				  <span class="material-icons">volunteer_activism</span>
-				  조르기 목록보기
+                <a href="${pageContext.request.contextPath}/poke?receiverNo=${otherNo}" class="gift-chat-poke-link">
+				    <span class="material-icons">volunteer_activism</span>
+				    조르기 목록보기
 				</a>
             </div>
 
             <div class="topbar-center topbar-user">
-                <span class="topbar-username">성연수님</span>
-            </div>
+			    <span class="topbar-username">${otherName}님</span>
+			</div>
 
             <!-- =====================
                  아무 내역 없을 때

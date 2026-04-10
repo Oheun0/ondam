@@ -48,9 +48,10 @@
 											class="member-name">${m.userName}</strong>
 									</div>
 									<div class="member-btn-row">
-										<a href="#" class="member-btn member-btn--gift"> <span
-											class="material-symbols-outlined member-btn-gift-icon"
-											aria-hidden="true">featured_seasonal_and_gifts</span> 선물하기
+										<a href="${pageContext.request.contextPath}/gift?action=chat&receiverNo=${m.userNo}" 
+										   class="member-btn member-btn--gift">
+										    <span class="material-symbols-outlined member-btn-gift-icon" aria-hidden="true">featured_seasonal_and_gifts</span>
+										    선물하기
 										</a> <a href="#" class="member-btn">찜 목록 보기</a>
 									</div>
 								</div>
@@ -72,9 +73,10 @@
 										<strong class="member-name">${m.userName}</strong>
 									</div>
 									<div class="member-btn-row">
-										<a href="#" class="member-btn member-btn--gift"> <span
-											class="material-symbols-outlined member-btn-gift-icon"
-											aria-hidden="true">featured_seasonal_and_gifts</span> 선물하기
+										<a href="${pageContext.request.contextPath}/gift?action=chat&receiverNo=${m.userNo}" 
+										   class="member-btn member-btn--gift">
+										    <span class="material-symbols-outlined member-btn-gift-icon" aria-hidden="true">featured_seasonal_and_gifts</span>
+										    선물하기
 										</a> <a href="#" class="member-btn">찜 목록 보기</a>
 									</div>
 								</div>

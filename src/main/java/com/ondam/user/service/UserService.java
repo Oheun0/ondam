@@ -295,4 +295,8 @@ public class UserService {
 		public boolean reactivateUser(String userId) {
 		    return userDAO.updateUserActiveStatus(userId, 0); 
 		}
+		
+		public String getUserName(int userNo) {
+			return userDAO.getUserName(userNo);
+		}
 	}
