@@ -4,6 +4,7 @@ public class CouponDTO {
 
     private int couponNo;
     private String couponName;
+    private String couponCode;
     private int discountType;
     private int discountValue;
     private int minOrderAmount;
@@ -14,11 +15,12 @@ public class CouponDTO {
 
     public CouponDTO() {}
 
-    public CouponDTO(int couponNo, String couponName, int discountType, int discountValue,
+    public CouponDTO(int couponNo, String couponName, String couponCode,  int discountType, int discountValue,
                      int minOrderAmount, Integer maxDiscountAmount, String validFrom, String validUntil,
                      String createdAt) {
         this.couponNo = couponNo;
         this.couponName = couponName;
+        this.couponCode = couponCode;
         this.discountType = discountType;
         this.discountValue = discountValue;
         this.minOrderAmount = minOrderAmount;
@@ -43,6 +45,14 @@ public class CouponDTO {
     public void setCouponName(String couponName) {
         this.couponName = couponName;
     }
+
+    public String getCouponCode() { 
+    	return couponCode;
+    	}
+    
+    public void setCouponCode(String couponCode) { 
+    	this.couponCode = couponCode; 
+    	}
 
     public int getDiscountType() {
         return discountType;

@@ -59,9 +59,15 @@
         if (action === "empty-ok") closeModal(modalEmpty);
         if (action === "confirm-cancel") closeModal(modalConfirm);
 
-        if (action === "done-ok") {
-          window.location.replace(ctx + "/inquiry?action=list");
-        }
+		if (action === "done-ok") {
+		    var returnUrlEl = document.getElementById("returnUrl");
+		    if (returnUrlEl && returnUrlEl.value !== "") {
+		        window.location.replace(returnUrlEl.value);
+		    } else {
+		        var productNo = document.getElementById("productNo").value;
+		        window.location.replace(ctx + "/product?action=detail&productNo=" + productNo);
+		    }
+		}
       });
     });
 

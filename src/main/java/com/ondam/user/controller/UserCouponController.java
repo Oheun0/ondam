@@ -1,8 +1,12 @@
 package com.ondam.user.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ondam.common.controller.Controller;
+import com.ondam.coupon.service.CouponService;
 import com.ondam.user.dto.UserCouponDTO;
 import com.ondam.user.dto.UserDTO;
 
@@ -12,14 +16,15 @@ import jakarta.servlet.http.HttpSession;
 
 public class UserCouponController implements Controller {
 
-    // 향후 Service 클래스 연동을 위한 주석 처리
-    // private final UserCouponService userCouponService;
+	private final com.ondam.user.service.UserCouponService userCouponService;
+	private final CouponService couponService;
     
-    private static final String VIEW_PREFIX = "user/coupon/";
+    private static final String VIEW_PREFIX = "coupon/";
     private static final String REDIRECT_LOGIN = "redirect:/login";
 
     public UserCouponController() {
-        // this.userCouponService = new UserCouponService();
+    	this.userCouponService = new com.ondam.user.service.UserCouponService();
+    	this.couponService = new CouponService();
     }
 
     @Override
@@ -37,26 +42,65 @@ public class UserCouponController implements Controller {
         String action = getAction(request);
 
         switch (action) {
-            case "list":
-                return handleMyCouponList(request, loginUser.getUserNo());
-            case "download":
-                return handleDownloadCoupon(request, loginUser.getUserNo());
-            case "available":
+        case "list":
+            return handleMyCouponList(request, loginUser.getUserNo());
+        case "register":
+            return handleRegister(request, response, loginUser.getUserNo());
+        case "download":
+            return handleDownloadCoupon(request, loginUser.getUserNo());
+        case "available":
                 // 팝업/모달 창에 쿠폰 목록을 리스팅하기 위한 JSP 포워딩
                 return handleAvailableCouponsForOrder(request, loginUser.getUserNo());
             default:
                 return "redirect:/main";
         }
     }
+    
+    private String handleRegister(HttpServletRequest request, HttpServletResponse response, int userNo) throws Exception {
+        String couponCode = request.getParameter("couponCode");
+        String result = couponService.registerUserCoupon(userNo, couponCode);
+        response.setContentType("text/plain; charset=UTF-8");
+        response.getWriter().write(result);
+        return null; 
+    }
 
     /**
      * [조회] 마이페이지 - 내 쿠폰함 리스트
      */
     private String handleMyCouponList(HttpServletRequest request, int userNo) {
-        // List<UserCouponDTO> couponList = userCouponService.getCouponList(userNo);
-        // request.setAttribute("myCoupons", couponList);
+    	List<UserCouponDTO> allCoupons = userCouponService.getMyCouponList(userNo);
+    	List<UserCouponDTO> availableCoupons = new ArrayList<>();
+        List<UserCouponDTO> pastCoupons = new ArrayList<>();
         
-        return VIEW_PREFIX + "list"; 
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        if (allCoupons != null) {
+            for (UserCouponDTO c : allCoupons) {
+                if (c.getIsUsed() == 1) {
+                    // 1. 이미 사용한 쿠폰
+                    pastCoupons.add(c);
+                } else {
+                    // 2. 사용 안 했지만 기간이 지났는지 확인
+                    try {
+                        String dateStr = c.getValidUntil().length() > 10 ? c.getValidUntil().substring(0, 10) : c.getValidUntil();
+                        LocalDate validUntil = LocalDate.parse(dateStr, formatter);
+                        
+                        if (today.isAfter(validUntil)) {
+                            pastCoupons.add(c); // 기간 만료
+                        } else {
+                            availableCoupons.add(c); // 사용 가능
+                        }
+                    } catch (Exception e) {
+                        availableCoupons.add(c); // 날짜 파싱 오류 시 기본값
+                    }
+                }
+            }
+        }
+        request.setAttribute("availableCoupons", availableCoupons);
+        request.setAttribute("pastCoupons", pastCoupons);
+
+        return VIEW_PREFIX + "coupon-list"; 
     }
 
     /**

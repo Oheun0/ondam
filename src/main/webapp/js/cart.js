@@ -278,36 +278,51 @@
       }
     }
 
-    function applyOptionToArticle() {
-      if (!currentArticle) return;
-      var color = selectedColorText ? selectedColorText.textContent.trim() : "";
-      var size = selectedSizeText ? selectedSizeText.textContent.trim() : "";
-      var optionText = color + " / " + size + " / " + sheetQty + "개";
-      currentArticle.setAttribute("data-option", optionText);
-      currentArticle.setAttribute("data-qty", String(sheetQty));
+	function applyOptionToArticle() {
+	    if (!currentArticle) return;
+	    var color = selectedColorText ? selectedColorText.textContent.trim() : "";
+	    var size = selectedSizeText ? selectedSizeText.textContent.trim() : "";
+	    var optionText = color + " / " + size + " / " + sheetQty + "개";
 
-      updateOptionButton(currentArticle);
+	    var cartItemNo = currentArticle.getAttribute("data-cart-id");
+	    var productNo = currentArticle.getAttribute("data-product-no");
+	    var ctx = document.body.getAttribute("data-context-path") || "";
 
-      var lineSale = unitSale * sheetQty;
-      var block = currentArticle.querySelector(".cart-item__price-block");
-      if (block) {
-        if (discounted) {
-          var lineOrig = unitOrig * sheetQty;
-          block.classList.remove("cart-item__price-block--plain");
-          block.innerHTML =
-            '<span class="cart-item__price-original">' +
-            formatKRW(lineOrig) +
-            '원</span><span class="cart-item__price-sale">' +
-            formatKRW(lineSale) +
-            "원</span>";
-        } else {
-          block.classList.add("cart-item__price-block--plain");
-          block.innerHTML =
-            '<span class="cart-item__price-sale">' + formatKRW(lineSale) + "원</span>";
-        }
-      }
-      closeOptionSheet();
-    }
+	    // ✅ 서버에서 색상+사이즈로 productOptionNo 조회 후 업데이트
+	    fetch(ctx + "/product?action=getOptions&productNo=" + productNo)
+	        .then(function(res) { return res.json(); })
+	        .then(function(options) {
+	            var matched = options.find(function(opt) {
+	                return opt.optionColor === color && opt.optionSize === size;
+	            });
+	            if (!matched) {
+	                alert("해당 옵션을 찾을 수 없습니다.");
+	                return;
+	            }
+
+				var formData = new URLSearchParams();
+				formData.append("action", "updateOption");
+				formData.append("cartItemNo", cartItemNo);
+				formData.append("productOptionNo", matched.productOptionNo);
+				formData.append("quantity", String(sheetQty));
+
+				fetch(ctx + "/cart", {
+				    method: "POST",
+				    headers: {
+				        "Content-Type": "application/x-www-form-urlencoded"
+				    },
+				    body: formData.toString()
+				}).then(function() {
+				    // location.replace()를 쓰면 뒤로가기 기록이 남지 않습니다!
+				    window.location.replace(ctx + "/cart?action=list");
+				}).catch(function(err) {
+				    console.error("옵션 변경 실패:", err);
+				    alert("옵션 변경 중 오류가 발생했습니다.");
+				});
+	        });
+
+	    closeOptionSheet();
+	}
 
 	/* 전체 선택 */
 	selectAll.addEventListener("change", function () {

@@ -30,9 +30,11 @@
           <h1 class="favorite-list-title">찜한 상품</h1>
           <div class="favorite-list-header-actions">
             <button type="button" class="detail-icon-btn cart-icon-wrap" aria-label="장바구니">
-              <span class="material-icons-outlined" aria-hidden="true">shopping_cart</span>
-              <span class="cart-badge">3</span>
-            </button>
+			  <span class="material-icons-outlined" aria-hidden="true">shopping_cart</span>
+			  <c:if test="${sessionScope.cartCount > 0}">
+			    <span class="cart-badge">${sessionScope.cartCount}</span>
+			  </c:if>
+			</button>
           </div>
         </div>
       </div>

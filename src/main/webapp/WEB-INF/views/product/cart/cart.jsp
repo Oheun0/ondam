@@ -17,6 +17,13 @@
 </head>
 <body class="cart-page" data-context-path="${pageContext.request.contextPath}">
   <div class="detail-shell">
+	  <c:if test="${not empty sessionScope.errorMsg}">
+	      <div class="cart-error-toast" role="alert">
+	        <span class="material-icons">error_outline</span>
+	        ${sessionScope.errorMsg}
+	      </div>
+	      <% session.removeAttribute("errorMsg"); %>
+	    </c:if>
     <div class="detail-page-inner detail-page-inner--sticky-header cart-page-inner" id="cartPageRoot">
 
       <header class="detail-header cart-header">
@@ -63,6 +70,7 @@
 			        <li>
 			          <article class="cart-item ${item.optionStock == 0 ? 'cart-item--soldout' : ''}"
 			              data-cart-id="${item.cartItemNo}"
+			              data-product-no="${item.productNo}"
 			              data-unit-price="${item.productPrice}"
 			              data-original-price="${item.productPrice}"
 			              data-qty="${item.cartQuantity}"

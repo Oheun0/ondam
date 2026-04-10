@@ -7,11 +7,22 @@
 
 	var backBtn = document.getElementById("appBackHeaderBtn");
 	if (backBtn) {
-	  backBtn.addEventListener("click", function () {
-	    var ctx = document.body.getAttribute("data-context-path") || "";
-	    window.location.href = ctx + "/mypage";
-	  });
-	}
+		backBtn.removeAttribute("onclick");
+		      backBtn.onclick = null;
+			  
+			  backBtn.addEventListener("click", function (e) {
+			          e.preventDefault();
+					  var ctx = document.body.getAttribute("data-context-path") || "";
+					  var referrer = document.referrer;
+							  
+							  if (referrer && referrer.indexOf(window.location.host) !== -1) {
+							            window.history.back();
+							          } else {
+							            // 링크를 직접 쳐서 들어왔거나 새 탭으로 열어서 돌아갈 곳이 없으면 마이페이지로 이동
+							            window.location.href = ctx + "/mypage";
+							          }
+							        });
+							      }
 
     var sortToggleBtn = document.getElementById("favoriteSortToggleBtn");
     var sortDropdown = document.getElementById("favoriteSortDropdown");

@@ -22,10 +22,11 @@ public class UserCouponDAO {
 		List<UserCouponDTO> list = new ArrayList<>();
 		try {
 			con = pool.getConnection();
-			sql = "SELECT uc.*, c.couponName, c.discountType, c.discountValue, c.minOrderAmount, c.maxDiscountAmount, c.validFrom, c.validUntil " +
-                    "FROM userCoupon uc " +
-                    "JOIN coupon c ON uc.couponNo = c.couponNo " +
-                    "WHERE uc.userNo = ? ORDER BY uc.issuedAt DESC";
+			sql = "SELECT uc.*, c.couponName, c.discountType, c.discountValue, " +
+		              "c.minOrderAmount, c.maxDiscountAmount, c.validFrom, c.validUntil " +
+		              "FROM userCoupon uc " +
+		              "JOIN coupon c ON uc.couponNo = c.couponNo " +
+		              "WHERE uc.userNo = ? ORDER BY uc.issuedAt DESC";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, userNo);
 			rs = pstmt.executeQuery();
@@ -39,6 +40,18 @@ public class UserCouponDAO {
 				dto.setIssuedAt(rs.getString("issuedAt"));
 				dto.setUsedAt(rs.getString("usedAt"));
 				dto.setOrderNo(rs.getInt("orderNo"));
+				
+				dto.setCouponName(rs.getString("couponName"));
+			    dto.setDiscountType(rs.getInt("discountType"));
+			    dto.setDiscountValue(rs.getInt("discountValue"));
+			    dto.setMinOrderAmount(rs.getInt("minOrderAmount"));
+			    
+			    int max = rs.getInt("maxDiscountAmount");
+			    dto.setMaxDiscountAmount(rs.wasNull() ? null : max);
+			    
+			    dto.setValidFrom(rs.getString("validFrom"));
+			    dto.setValidUntil(rs.getString("validUntil"));
+				
 				list.add(dto);
 			}
 		} catch (Exception e) {

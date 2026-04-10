@@ -25,7 +25,7 @@ public class UserDAO {
 		
 		try {
 			con = pool.getConnection();
-			sql = "SELECT * FROM user WHERE userId = ? AND isActive = 0";
+			sql = "SELECT * FROM user WHERE userId = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, userId);
 			rs = pstmt.executeQuery();
@@ -416,4 +416,29 @@ public class UserDAO {
 		    }
 		    return isDuplicate;
 		}
-}
+		
+		public boolean updateUserActiveStatus(String userId, int status) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			boolean flag = false;
+
+			try {
+				con = pool.getConnection();
+				String sql = "UPDATE user SET isActive = ?, deleteAt = NULL WHERE userId = ?";
+				
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, status);
+				pstmt.setString(2, userId);
+
+				if (pstmt.executeUpdate() > 0) {
+					flag = true;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				pool.freeConnection(con, pstmt);
+			}
+			
+			return flag;
+		}
+	}

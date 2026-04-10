@@ -39,8 +39,10 @@
           <button type="button" class="detail-icon-btn cart-icon-wrap" aria-label="장바구니"
                   onclick="window.location.href = document.body.dataset.contextPath + '/cart?action=list'">
             <span class="material-icons-outlined">shopping_cart</span>
-            <span class="cart-badge">3</span>
-          </button>
+            <c:if test="${sessionScope.cartCount > 0}">
+			      <span class="cart-badge">${sessionScope.cartCount}</span>
+			  </c:if>
+			</button>
         </div>
       </header>
 

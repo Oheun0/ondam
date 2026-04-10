@@ -4,6 +4,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     var root = document.getElementById("couponListPageRoot");
     if (!root) return;
+    var ctx = document.body.getAttribute("data-context-path") || "";
 
     var backBtn = document.getElementById("appBackHeaderBtn");
     if (backBtn) {
@@ -11,7 +12,6 @@
         if (window.history.length > 1) {
           window.history.back();
         } else {
-          var ctx = document.body.getAttribute("data-context-path") || "";
           window.location.href = ctx + "/mypage";
         }
       });
@@ -126,26 +126,36 @@
       });
     }
 
-    function applyCouponSort(mode) {
-      if (!cardList) return;
-      var attrByMode = {
-        discount: "data-coupon-sort-discount",
-        received: "data-coupon-sort-received",
-        expiry: "data-coupon-sort-expiry"
-      };
-      var attr = attrByMode[mode] || attrByMode.discount;
-      var items = Array.prototype.slice.call(cardList.querySelectorAll(".coupon-card"));
-      items.sort(function (a, b) {
-        var va = parseInt(a.getAttribute(attr), 10) || 0;
-        var vb = parseInt(b.getAttribute(attr), 10) || 0;
-        if (mode === "expiry") return va - vb;
-        if (mode === "received") return va - vb;
-        return vb - va;
-      });
-      items.forEach(function (li) {
-        cardList.appendChild(li);
-      });
-    }
+	function applyCouponSort(mode) {
+	      if (!cardList) return;
+	      var attrByMode = {
+	        discount: "data-coupon-sort-discount",
+	        received: "data-coupon-sort-received",
+	        expiry: "data-coupon-sort-expiry"
+	      };
+	      var attr = attrByMode[mode] || attrByMode.discount;
+	      var items = Array.prototype.slice.call(cardList.querySelectorAll(".coupon-card"));
+	      
+	      items.sort(function (a, b) {
+	        var va = a.getAttribute(attr);
+	        var vb = b.getAttribute(attr);
+
+	        if (mode === "expiry" || mode === "received") {
+	          var cleanA = (va || "").split('.')[0]; 
+	          var cleanB = (vb || "").split('.')[0];
+	          var dateA = new Date(cleanA).getTime() || 0;
+	          var dateB = new Date(cleanB).getTime() || 0;
+	          
+	          if (mode === "expiry") return dateA - dateB; // 임박순
+	          return dateB - dateA; // 받은순
+	        }
+	        return (parseInt(vb, 10) || 0) - (parseInt(va, 10) || 0);
+	      });
+
+	      items.forEach(function (li) {
+	        cardList.appendChild(li);
+	      });
+	    }
 
     sortOptions.forEach(function (opt) {
       opt.addEventListener("click", function (e) {
@@ -277,18 +287,39 @@
       codeInput.addEventListener("input", syncSubmitEnabled);
     }
 
-    if (submitBtn && codeInput) {
-      submitBtn.addEventListener("click", function () {
-        var code = codeInput.value.trim();
-        if (!code) return;
-        if (code === "aaa") {
-          closeModal();
-          codeInput.value = "";
-          syncSubmitEnabled();
-          return;
-        }
-        showCouponErrorToast("존재하지 않거나 만료된 쿠폰입니다");
-      });
-    }
-  });
-})();
+	if (submitBtn && codeInput) {
+	      submitBtn.addEventListener("click", function () {
+	        var code = codeInput.value.trim();
+	        if (!code) return;
+	        submitBtn.disabled = true;
+
+	        fetch(ctx + "/userCoupon?action=register&couponCode=" + encodeURIComponent(code))
+	          .then(function(res) { return res.text(); })
+	          .then(function(result) {
+	            if (result === "SUCCESS") {
+	              closeModal();
+	              location.reload(); 
+	            } else if (result === "NOT_FOUND") {
+	              showCouponErrorToast("존재하지 않거나 만료된 쿠폰 코드입니다.");
+	            } else if (result === "DUPLICATE") {
+	              showCouponErrorToast("이미 등록된 쿠폰입니다.");
+	            } else if (result === "LOGIN_REQUIRED") {
+	              showCouponErrorToast("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+	              setTimeout(function() {
+	                window.location.href = ctx + "/login"; 
+	              }, 1000); // 토스트를 읽을 시간을 약간 줍니다.
+	            } else {
+	              showCouponErrorToast("쿠폰 등록 중 오류가 발생했습니다.");
+	            }
+	          })
+	          .catch(function(err) {
+	            console.error("Fetch error:", err);
+	            showCouponErrorToast("서버와의 통신이 원활하지 않습니다.");
+	          })
+	          .finally(function() {
+	            submitBtn.disabled = false;
+	          });
+	      });
+	    }
+	  });
+	})();

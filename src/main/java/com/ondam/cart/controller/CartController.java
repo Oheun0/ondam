@@ -21,7 +21,15 @@ public class CartController implements Controller {
 
         HttpSession session = request.getSession();
         
-        // 수정: "loginUser" 이름으로 UserDTO 객체를 꺼냅니다.
+        if ("getCartCount".equals(action)) {
+            int count = 0;
+            if (session.getAttribute("cartCount") != null) {
+                count = (Integer) session.getAttribute("cartCount");
+            }
+            response.setContentType("application/json; charset=UTF-8");
+            response.getWriter().write("{\"count\": " + count + "}");
+            return null;
+        }
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
         // 로그인 체크
@@ -117,14 +125,15 @@ public class CartController implements Controller {
     }
     
     private String updateOption(HttpServletRequest request, int userNo) {
-        // 파라미터 추출
         int cartItemNo = Integer.parseInt(request.getParameter("cartItemNo"));
         int productOptionNo = Integer.parseInt(request.getParameter("productOptionNo"));
-        
-        // 서비스 호출 (userNo를 추가하여 인자 3개를 맞춤)
+        int quantity = request.getParameter("quantity") != null
+            ? Integer.parseInt(request.getParameter("quantity")) : 1;  // 수량 추가
+
         cartService.updateItemOption(userNo, cartItemNo, productOptionNo);
-        
+        cartService.updateItemQuantity(userNo, cartItemNo, quantity);  // 수량도 반영
+        syncCartSession(request, userNo);
+
         return "redirect:/cart?action=list";
     }
-    
 }

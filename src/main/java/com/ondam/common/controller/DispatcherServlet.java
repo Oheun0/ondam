@@ -51,6 +51,7 @@ import com.ondam.user.controller.SignupStep0BasicController;
 import com.ondam.user.controller.SignupStep1BasicController;
 import com.ondam.user.controller.SignupStep2AddressController;
 import com.ondam.user.controller.SignupStep3PreferenceController;
+import com.ondam.user.controller.UserCouponController;
 import com.ondam.user.controller.UserIdCheckController;
 import com.ondam.wallet.controller.WalletController;
 import com.ondam.wish.controller.WishController;
@@ -131,6 +132,8 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/auth/find-id", new SellerFindIdController());
         handlerMapping.put("/seller/auth/reset-password", new SellerResetPwController());
         handlerMapping.put("/seller/auth/reset-password-form", new SellerResetPwFormController());
+        handlerMapping.put("/userCoupon", new UserCouponController());
+
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 

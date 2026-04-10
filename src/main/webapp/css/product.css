@@ -771,7 +771,8 @@ body.product-list-page .product-page-inner--sticky-header .product-header-sectio
 }
 
 .favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn,
-.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn {
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn,
+.spring-sale-page .product-grid .related-wish-btn.product-grid-wish-btn {
   display: flex;
   position: absolute;
   top: 8px;
@@ -794,33 +795,45 @@ body.product-list-page .product-page-inner--sticky-header .product-header-sectio
 }
 
 .favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons-outlined,
-.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons-outlined {
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons-outlined, 
+.spring-sale-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons-outlined {
   font-size: 22px;
   line-height: 1;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.35));
 }
 
 .favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons,
-.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons {
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons,
+.spring-sale-page .product-grid .related-wish-btn.product-grid-wish-btn .material-icons {
   font-size: 22px;
   line-height: 1;
 }
 
 .favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn.is-active .material-icons,
-.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn.is-active .material-icons {
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn.is-active .material-icons,
+.spring-sale-page .product-grid .related-wish-btn.product-grid-wish-btn.is-active .material-icons {
   color: #e33a67;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
 }
 
 .favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus,
-.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus {
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus,
+.spring-sale-page .product-grid .related-wish-btn.product-grid-wish-btn:focus {
   outline: none;
 }
 
 .favorite-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus-visible,
-.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus-visible {
+.product-list-page .product-grid .related-wish-btn.product-grid-wish-btn:focus-visible,
+.spring-sale-page .product-grid .related-wish-btn.product-grid-wish-btn:focus-visible {
   outline: 2px solid #4caf50;
   outline-offset: 2px;
+}
+
+.product-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .product-thumb.placeholder {
