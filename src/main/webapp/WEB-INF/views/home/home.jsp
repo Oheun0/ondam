@@ -78,7 +78,7 @@
                 <h2>자주 쓰는 메뉴</h2>
             </div>
             <div class="shortcut-grid">
-                 <a href="${pageContext.request.contextPath}/ai-intro" class="shortcut-card">
+                <a href="${pageContext.request.contextPath}/ai-intro" class="shortcut-card">
 
                     <div class="shortcut-text">
                         <div class="shortcut-title-row">

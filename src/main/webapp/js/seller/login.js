@@ -1,4 +1,5 @@
-/* 온담 파트너 로그인 (더미 검증용) */
+/*login.js*/
+/* 온담 파트너 로그인 (실제 서버 연동 버전) */
 (function () {
   "use strict";
 
@@ -32,23 +33,25 @@
 
     function clearFormError() {
       showError(formErr, "");
+	  if (formErr) {
+	      formErr.style.display = ""; // JSP에서 넣은 인라인 스타일 강제 삭제
+	    }
     }
 
     idInput.addEventListener("input", function () {
       if (idInput.value.trim().length > 0) {
         setFieldError(idInput, idErr, "");
       }
-      clearFormError();
     });
 
     pwInput.addEventListener("input", function () {
       if (pwInput.value.trim().length > 0) {
         setFieldError(pwInput, pwErr, "");
       }
-      clearFormError();
     });
 
     form.addEventListener("submit", function (e) {
+      // 1. 일단 기본 전송을 막고 빈칸 검사부터 시작
       e.preventDefault();
       clearFormError();
 
@@ -70,32 +73,17 @@
         setFieldError(pwInput, pwErr, "");
       }
 
+      // 2. 검사 실패 시 여기서 중단
       if (!ok) return;
 
-      // 더미 인증 흐름 (실서버 연동 전)
+      // 3. 검사 통과 시: 중복 클릭을 막고 진짜 서버로 폼 전송!
       if (loginBtn) {
         loginBtn.disabled = true;
-        var prev = loginBtn.textContent;
-        loginBtn.textContent = "확인 중...";
-
-        setTimeout(function () {
-          // 예시: 특정 조합만 성공처럼 처리하고 나머지는 실패 메시지
-          var success = idVal === "seller" && pwVal === "1234";
-
-          if (success) {
-            console.log("[SELLER LOGIN] dummy success", { sellerId: idVal });
-            showError(formErr, "");
-            alert("더미 로그인 성공(서버 연동 전)입니다.");
-          } else {
-            console.log("[SELLER LOGIN] dummy fail", { sellerId: idVal });
-            showError(formErr, "아이디 또는 비밀번호가 올바르지 않습니다");
-          }
-
-          loginBtn.disabled = false;
-          loginBtn.textContent = prev;
-        }, 650);
+        loginBtn.textContent = "로그인 중...";
       }
+      
+      // 진짜 컨트롤러로 데이터를 날립니다.
+      form.submit(); 
     });
   });
 })();
-

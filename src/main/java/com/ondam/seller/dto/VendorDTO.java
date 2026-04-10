@@ -8,6 +8,7 @@ public class VendorDTO {
     private String bizRegNo;
     private String repName;
     private String bizAddr;
+    private String bizReturnAddr;
     private String bizTel;
     private String contactEmail;
     private String bizRegImg;
@@ -23,7 +24,7 @@ public class VendorDTO {
     public VendorDTO() {}
 
     public VendorDTO(int vendorNo, String vendorName, int bizType, String bizRegNo, String repName,
-                     String bizAddr, String bizTel, String contactEmail, String bizRegImg,
+                     String bizAddr, String bizReturnAddr, String bizTel, String contactEmail, String bizRegImg,
                      String mailOrderImg, String sealCertImg, String corpRegImg, String logoImg,
                      String bizDescription, int reviewStatus, String rejectReason, String applyDate) {
         this.vendorNo = vendorNo;
@@ -32,6 +33,7 @@ public class VendorDTO {
         this.bizRegNo = bizRegNo;
         this.repName = repName;
         this.bizAddr = bizAddr;
+        this.bizReturnAddr = bizReturnAddr;
         this.bizTel = bizTel;
         this.contactEmail = contactEmail;
         this.bizRegImg = bizRegImg;
@@ -91,6 +93,13 @@ public class VendorDTO {
 
     public void setBizAddr(String bizAddr) {
         this.bizAddr = bizAddr;
+    }
+    public String getBizReturnAddr() {
+        return bizReturnAddr;
+    }
+
+    public void setBizReturnAddr(String bizReturnAddr) {
+        this.bizReturnAddr = bizReturnAddr;
     }
 
     public String getBizTel() {

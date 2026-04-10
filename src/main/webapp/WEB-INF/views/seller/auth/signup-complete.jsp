@@ -1,21 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%
-  // 더미 표시(서버 연동 전). 쿼리스트링으로 들어오면 우선 사용: ?storeName=...&sellerId=...
-  String storeName = request.getParameter("storeName");
-  if (storeName == null || storeName.trim().isEmpty()) storeName = "온담스토어";
-  storeName = storeName.trim();
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-  String sellerId = request.getParameter("sellerId");
-  if (sellerId == null || sellerId.trim().isEmpty()) sellerId = "ondam_seller";
-  sellerId = sellerId.trim();
+<%-- 파라미터 받기 및 기본값 설정 --%>
+<c:set var="storeName" value="${empty param.storeName ? '온담 파트너스' : param.storeName}" />
+<c:set var="sellerId" value="${empty param.sellerId ? 'ondam_seller' : param.sellerId}" />
 
-  String maskedSellerId = sellerId;
-  if (sellerId.length() >= 4) {
-    maskedSellerId = sellerId.substring(0, Math.min(6, sellerId.length())) + "****";
-  } else {
-    maskedSellerId = "****";
-  }
-%>
+<%-- 아이디 마스킹 처리 로직 (앞 최대 6자리 노출 + ****) --%>
+<c:choose>
+  <c:when test="${fn:length(sellerId) >= 4}">
+    <c:set var="maskLen" value="${fn:length(sellerId) > 6 ? 6 : fn:length(sellerId)}" />
+    <c:set var="maskedSellerId" value="${fn:substring(sellerId, 0, maskLen)}****" />
+  </c:when>
+  <c:otherwise>
+    <c:set var="maskedSellerId" value="****" />
+  </c:otherwise>
+</c:choose>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -53,11 +54,12 @@
         <div class="seller-auth-summary-card" aria-label="가입 정보 요약">
           <div class="seller-auth-summary-row">
             <span class="seller-auth-summary-label">상호명</span>
-            <span class="seller-auth-summary-value"><%= storeName %></span>
+            <!-- JSTL의 c:out을 사용하여 XSS 방어 -->
+            <span class="seller-auth-summary-value"><c:out value="${storeName}"/></span>
           </div>
           <div class="seller-auth-summary-row">
             <span class="seller-auth-summary-label">판매자 아이디</span>
-            <span class="seller-auth-summary-value"><%= maskedSellerId %></span>
+            <span class="seller-auth-summary-value"><c:out value="${maskedSellerId}"/></span>
           </div>
         </div>
 
@@ -82,4 +84,3 @@
   <script src="${pageContext.request.contextPath}/js/seller/signup-complete.js"></script>
 </body>
 </html>
-
