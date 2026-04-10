@@ -21,7 +21,15 @@ public class CartController implements Controller {
 
         HttpSession session = request.getSession();
         
-        // 수정: "loginUser" 이름으로 UserDTO 객체를 꺼냅니다.
+        if ("getCartCount".equals(action)) {
+            int count = 0;
+            if (session.getAttribute("cartCount") != null) {
+                count = (Integer) session.getAttribute("cartCount");
+            }
+            response.setContentType("application/json; charset=UTF-8");
+            response.getWriter().write("{\"count\": " + count + "}");
+            return null;
+        }
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
         // 로그인 체크
