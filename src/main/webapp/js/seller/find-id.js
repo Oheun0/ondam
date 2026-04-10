@@ -1,7 +1,6 @@
-/* global document, alert */
+/* global document */
 (function () {
   function $(id) { return document.getElementById(id); }
-
   function show(el) { if (el) el.classList.remove('hidden'); }
   function hide(el) { if (el) el.classList.add('hidden'); }
   function setText(el, text) { if (el) el.textContent = text; }
@@ -23,15 +22,7 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
   }
 
-  function maskId(id) {
-    var s = String(id || '');
-    if (s.length <= 4) return s[0] ? (s[0] + '***') : '****';
-    return s.slice(0, Math.max(1, s.length - 4)) + '****';
-  }
-
   var form = $('sellerFindIdForm');
-  var resultBox = $('sellerFindIdResult');
-  var resultValue = $('sellerFindIdValue');
 
   function validate() {
     var ok = true;
@@ -40,8 +31,9 @@
 
     clearError('sellerManagerNameError');
     clearError('sellerEmailError');
+    // JS 검사 시 기존 서버 에러나 결과창도 일단 숨김
     clearError('sellerFindIdFormError');
-    hide(resultBox);
+    hide($('sellerFindIdResult'));
 
     if (!name) {
       showError('sellerManagerNameError', '담당자명을 입력해 주세요.');
@@ -54,27 +46,17 @@
       showError('sellerEmailError', '이메일 형식을 확인해 주세요.');
       ok = false;
     }
-
-    return { ok: ok, name: name, email: email };
+    return ok;
   }
 
   if (form) {
     form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var v = validate();
-      if (!v.ok) return;
-
-      // 더미 실패 조건
-      if (v.email.toLowerCase() === 'fail@ondam.com') {
-        showError('sellerFindIdFormError', '입력 정보를 확인해 주세요.');
-        return;
+      var ok = validate();
+      if (!ok) {
+        // 검사 실패 시에만 서버 전송 막기
+        e.preventDefault(); 
       }
-
-      // 더미 성공 결과
-      var dummyId = 'ondam_seller01';
-      setText(resultValue, maskId(dummyId));
-      show(resultBox);
-      alert('아이디 찾기 성공(더미) — 아래에서 아이디를 확인해 주세요.');
+      // 통과하면 e.preventDefault()가 안 걸렸으므로 자연스럽게 서버로 전송됨!
     });
   }
 
@@ -87,4 +69,3 @@
     });
   });
 })();
-

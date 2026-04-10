@@ -174,5 +174,62 @@ public class VendorDAO {
 	    }
 	    return vendorName;
 	}
+	
+	public int insertVendorAndGetNo(VendorDTO dto) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    int vendorNo = 0;
+	    try {
+	        con = pool.getConnection();
+	        // 가입 폼의 필드들에 맞춰 SQL 작성 (출고지/반품지 컬럼이 DB에 있다고 가정)
+	        String sql = "INSERT INTO vendor (vendorName, bizType, bizRegNo, repName, bizAddr, bizReturnAddr, bizTel, contactEmail) " +
+	                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	        // RETURN_GENERATED_KEYS를 사용하여 생성된 PK값을 가져옵니다.
+	        pstmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+	        pstmt.setString(1, dto.getVendorName());
+	        pstmt.setInt(2, dto.getBizType());
+	        pstmt.setString(3, dto.getBizRegNo());
+	        pstmt.setString(4, dto.getRepName());
+	        pstmt.setString(5, dto.getBizTel());
+	        pstmt.setString(6, dto.getContactEmail());
+	        pstmt.setString(7, dto.getBizAddr()); // 출고지 주소 (가공해서 저장)
+	        pstmt.setString(8, dto.getBizReturnAddr()); // 반품지 주소 (가공해서 저장)
+	        
+	        pstmt.executeUpdate();
+	        rs = pstmt.getGeneratedKeys();
+	        if (rs.next()) {
+	            vendorNo = rs.getInt(1);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vendorNo;
+	}
+	// [인증용 - Vendor] 업체 번호(vendorNo)로 담당자 이메일 가져오기
+	public String getEmailByVendorNo(int vendorNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String email = null;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT contactEmail FROM vendor WHERE vendorNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, vendorNo);
+	        rs = pstmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            email = rs.getString("contactEmail");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return email;
+	}
 }
 

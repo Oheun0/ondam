@@ -1,3 +1,4 @@
+<!-- reset-password-form.jsp -->
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
@@ -25,7 +26,7 @@
       </header>
 
       <section class="seller-auth-card" aria-label="새 비밀번호 설정">
-        <form class="seller-auth-form" id="sellerResetPwForm2" action="#" method="post" novalidate>
+        <form class="seller-auth-form" id="sellerResetPwForm2" action="${pageContext.request.contextPath}/seller/auth/reset-password-form" method="post" novalidate>
           <div class="seller-auth-field">
             <label class="seller-auth-label" for="newPw">새 비밀번호</label>
             <input
@@ -60,7 +61,9 @@
             <a class="seller-auth-btn seller-auth-btn--ghost" href="${pageContext.request.contextPath}/seller/auth/login">로그인으로</a>
           </div>
 
-          <p class="check-message error seller-auth-error seller-auth-error--form hidden" id="sellerFormError" aria-live="assertive"></p>
+          <p class="check-message error seller-auth-error seller-auth-error--form ${empty resetFormError ? 'hidden' : ''}" id="sellerFormError" aria-live="assertive">
+		    ${resetFormError}
+		  </p>
         </form>
       </section>
     </main>
