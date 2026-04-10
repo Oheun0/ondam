@@ -18,6 +18,10 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/favorite-list.css">
 </head>
 <body class="favorite-list-page" data-context-path="${pageContext.request.contextPath}">
+  <%
+    // product-grid.jsp 빈 상태 문구를 찜 전용으로 교체하기 위한 플래그
+    request.setAttribute("productEmptyVariant", "favorite");
+  %>
   <div class="detail-shell">
     <div class="detail-page-inner favorite-list-inner" id="favoriteListPageRoot">
       <div class="favorite-list-sticky-head">

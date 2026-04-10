@@ -10,6 +10,7 @@ public class GiftDTO {
     private int giftState;
     private String sentAt;
     private String respondedAt;
+    private int addressNo;
 
     
     private String senderName;    // 보낸 사람 이름
@@ -120,4 +121,10 @@ public class GiftDTO {
     public void setRespondedAt(String respondedAt) {
         this.respondedAt = respondedAt;
     }
+	public int getAddressNo() {
+		return addressNo;
+	}
+	public void setAddressNo(int addressNo) {
+		this.addressNo = addressNo;
+	}
 }

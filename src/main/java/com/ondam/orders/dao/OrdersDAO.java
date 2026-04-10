@@ -237,7 +237,7 @@ public class OrdersDAO {
 		}
 		return orderNo;
 	}
-
+  
 	// ── 공통 매핑 헬퍼 ──────────────────────────────
 	private OrdersDTO mapRow(ResultSet rs) throws Exception {
 		OrdersDTO dto = new OrdersDTO();

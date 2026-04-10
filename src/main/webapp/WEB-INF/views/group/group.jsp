@@ -88,8 +88,8 @@
     <!-- 하단 고정 액션 버튼 -->
     <div class="group-fixed-actions">
         <a href="${pageContext.request.contextPath}/group?action=manage" class="group-fixed-btn">멤버 관리</a>
-        <a href="${pageContext.request.contextPath}/wallet" class="group-fixed-btn">지갑 관리</a>
-        <a href="${pageContext.request.contextPath}/gift" class="group-fixed-btn group-fixed-btn--gift-history">선물함</a>
+        <a href="${pageContext.request.contextPath}/wallet?from=group" class="group-fixed-btn">지갑 관리</a>
+        <a href="${pageContext.request.contextPath}/gift?from=group" class="group-fixed-btn group-fixed-btn--gift-history">선물함</a>
     </div>
     <jsp:include page="../layout/bottomNav.jsp" />
 </div>
