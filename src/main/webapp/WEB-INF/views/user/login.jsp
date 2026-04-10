@@ -10,8 +10,9 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/inquiry-write.css">
 </head>
-<body>
+<body data-context-path="${pageContext.request.contextPath}">
 <div class="app-shell">
   <div class="auth-page">
     <div class="auth-wrap">
@@ -64,6 +65,21 @@
         카카오로 시작하면 더 빠르게 이용할 수 있어요
       </div></div>
     </div><jsp:include page="../layout/bottomNav.jsp" />
-  </div> <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
+      </div> 
+          <div class="inquiry-write-modal hidden" id="reactivateModal" role="dialog" aria-modal="true">
+			    <div class="inquiry-write-dim" id="btnCancelDim"></div>
+			    <div class="inquiry-write-modal-card">
+			        <h3 class="inquiry-write-modal-message">탈퇴한 계정입니다</h3>
+			        <p class="inquiry-write-modal-sub">이전에 탈퇴 처리된 계정입니다.<br>계정을 다시 활성화하시겠습니까?</p>
+			        
+			        <div class="inquiry-write-modal-actions inquiry-write-modal-actions--double">
+			            <button type="button" class="inquiry-write-modal-btn inquiry-write-modal-btn--ghost" id="btnCancelReactivate">취소</button>
+			            <button type="button" class="inquiry-write-modal-btn inquiry-write-modal-btn--primary" id="btnReactivate">활성화 할게요</button>
+			        </div>
+			    </div>
+			</div>
+    
+  <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
+  <script src="${pageContext.request.contextPath}/js/auth.js"></script>
 </body>
 </html>
