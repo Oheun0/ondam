@@ -47,10 +47,10 @@
     var orderNo = card ? card.getAttribute('data-order-no') : '(unknown)';
 
     console.log('[SellerOrderList] action (dummy)', action, orderNo);
-    if (action === 'detail') {
-      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/preview?page=seller/order/detail&orderNo=' + encodeURIComponent(orderNo);
-      return;
-    }
+	if (action === 'detail') {
+	  window.location.href = (document.body.getAttribute('data-context-path') || '') + '/seller/order?action=detail&orderNo=' + encodeURIComponent(orderNo);
+	  return;
+	}
     if (action === 'shipStart') {
       alert('배송 시작 처리(더미)\n\n주문번호: ' + orderNo);
       return;
