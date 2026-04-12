@@ -29,6 +29,11 @@ public class ShortsDTO {
     public int getProductPrice() {return productPrice;}
 	public void setProductPrice(int productPrice) {this.productPrice = productPrice;}
 	
+	private int wishCount;
+
+    public int getWishCount() { return wishCount; }
+    public void setWishCount(int wishCount) { this.wishCount = wishCount; }
+	
 	
 	public int getProductOriginPrice() {
 		return productOriginPrice;

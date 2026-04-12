@@ -27,7 +27,6 @@ import com.ondam.seller.controller.SellerFindIdController;
 import com.ondam.seller.controller.SellerResetPwController;
 import com.ondam.seller.controller.SellerResetPwFormController;
 import com.ondam.seller.controller.SellerSignupController;
-import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.AddressDeleteController;
 import com.ondam.user.controller.AddressFormController;
@@ -82,7 +81,6 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/main", new MainController());
         handlerMapping.put("/category", new CategoryController());
         handlerMapping.put("/shorts", new ShortsController());
-        handlerMapping.put("/shorts/api", new ShortsApiController());
         handlerMapping.put("/group", new FamilyGroupController());
         handlerMapping.put("/wallet", new WalletController());
         handlerMapping.put("/preview", new PreviewController());
@@ -133,7 +131,11 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/auth/reset-password", new SellerResetPwController());
         handlerMapping.put("/seller/auth/reset-password-form", new SellerResetPwFormController());
         handlerMapping.put("/userCoupon", new UserCouponController());
-
+        
+        handlerMapping.put("/seller/shorts/list", new com.ondam.seller.controller.SellerShortsListController());
+        handlerMapping.put("/seller/shorts/form", new com.ondam.seller.controller.SellerShortsFormController());
+        handlerMapping.put("/seller/shorts/api", new com.ondam.shorts.controller.ShortsGeneratorController());
+        
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 

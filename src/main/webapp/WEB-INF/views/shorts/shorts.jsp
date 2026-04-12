@@ -21,7 +21,6 @@
 
 <div class="shorts-wrapper">
         <c:choose>
-            <%-- 1. 리스트가 비어있지 않은 경우: 영상 반복 출력 --%>
             <c:when test="${not empty shortsList}">
                 <c:forEach var="shorts" items="${shortsList}" varStatus="status">
                     <section class="shorts-container" data-index="${status.index}">
@@ -40,9 +39,12 @@
                                     <span class="material-icons">shopping_bag</span>
                                     <span>구매하기</span>
                             </button>
-                            <button class="action-btn" onclick="toggleLike(this, ${shorts.shortsNo})">
-                                <span class="material-icons">favorite_border</span>
-                                <span>찜</span>
+                            <button class="action-btn" onclick="toggleLike(this, ${shorts.productNo})">
+                                <c:set var="isLiked" value="${not empty wishSet and wishSet.contains(shorts.productNo)}" />
+					                <span class="material-icons ${isLiked ? 'liked' : ''}">
+					                    ${isLiked ? 'favorite' : 'favorite_border'}
+					                </span>
+					                <span>찜</span>
                             </button>
                             <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
                                 <span class="material-icons">volunteer_activism</span>
@@ -60,7 +62,7 @@
                         </aside>
                         
                         <div class="bottom-info-wrapper">
-                            <section class="shorts-product-card" onclick="location.href='${pageContext.request.contextPath}/product/detail?no=${shorts.productNo}'">
+                            <section class="shorts-product-card" onclick="location.href='${pageContext.request.contextPath}/product?action=detail&productNo=${shorts.productNo}'">
                                 <div class="card-image">
                                         <img src="${pageContext.request.contextPath}/uploads/products/${shorts.imgFile}" 
                                              onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'" alt="상품 이미지">
@@ -85,7 +87,6 @@
                 </c:forEach>
             </c:when>
 
-            <%-- 2. 리스트가 비어있는 경우: 안내 문구 노출 --%>
             <c:otherwise>
                 <div class="no-shorts-container">
                     <article class="no-shorts-card">
@@ -114,13 +115,13 @@
         <div class="modal-options">
 			<div class="option-row">
 			    <label>사이즈</label>
-			    <select name="optionSize"> <!-- name 속성 확인 -->
+			    <select name="optionSize"> 
 			        <option value="">사이즈를 선택하세요</option>
 			    </select>
 			</div>
 			<div class="option-row">
 			    <label>색상</label>
-			    <select name="optionColor"> <!-- name 속성 확인 -->
+			    <select name="optionColor"> 
 			        <option value="">색상을 선택하세요</option>
 			    </select>
 			</div>
@@ -161,17 +162,18 @@
         <button class="buy-now-btn" onclick="buyNow()">바로 구매하기</button>
     </div>
 </div>
-  </div> <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
-  				<script src="${pageContext.request.contextPath}/js/shorts.js"></script>
-  		<form id="joreugiForm" method="post" action="${pageContext.request.contextPath}/poke" style="display: none;">
-		    <input type="hidden" name="action" value="send">
-		    
-		    <input type="hidden" name="productNo" id="joreugiProductNo" value="">
-		    <input type="hidden" name="productOptionNo" id="joreugiOptionNo" value="1"> <input type="hidden" name="pokeQuantity" id="joreugiQuantity" value="1">
-		    
-		    <input type="hidden" name="receiverNo" value="2"> 
-		    <input type="hidden" name="familyNo" value="1">
-		    <input type="hidden" name="pokeMsg" value="쇼츠 보고 반했어! 이거 사줘❤️">
-		</form>
+  </div> 
+  <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
+  <script src="${pageContext.request.contextPath}/js/shorts.js"></script>
+  
+  <form id="joreugiForm" method="post" action="${pageContext.request.contextPath}/poke" style="display: none;">
+      <input type="hidden" name="action" value="send">
+      <input type="hidden" name="productNo" id="joreugiProductNo" value="">
+      <input type="hidden" name="productOptionNo" id="joreugiOptionNo" value="1"> 
+      <input type="hidden" name="pokeQuantity" id="joreugiQuantity" value="1">
+      <input type="hidden" name="receiverNo" value="2"> 
+      <input type="hidden" name="familyNo" value="1">
+      <input type="hidden" name="pokeMsg" value="쇼츠 보고 반했어! 이거 사줘❤️">
+  </form>
 </body>
 </html>
