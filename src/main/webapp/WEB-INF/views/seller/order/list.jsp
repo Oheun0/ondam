@@ -38,16 +38,15 @@
         <section class="seller-order-summary" aria-label="요약">
           <div class="seller-order-summary-grid">
             <div class="seller-order-summary-card">
-              <div class="seller-order-summary-label">오늘 주문</div>
-              <div class="seller-order-summary-value">12<span class="seller-order-summary-unit">건</span></div>
+              <div class="seller-order-summary-label">전체 주문</div> <div class="seller-order-summary-value">${totalOrderCount}<span class="seller-order-summary-unit">건</span></div>
             </div>
             <div class="seller-order-summary-card">
               <div class="seller-order-summary-label">배송중</div>
-              <div class="seller-order-summary-value">5<span class="seller-order-summary-unit">건</span></div>
+              <div class="seller-order-summary-value">${shippingCount}<span class="seller-order-summary-unit">건</span></div>
             </div>
             <div class="seller-order-summary-card">
               <div class="seller-order-summary-label">취소</div>
-              <div class="seller-order-summary-value">1<span class="seller-order-summary-unit">건</span></div>
+              <div class="seller-order-summary-value">${cancelCount}<span class="seller-order-summary-unit">건</span></div>
             </div>
           </div>
         </section>
@@ -175,12 +174,16 @@
 		  </c:forEach>
 		</section>
 
-        <div class="seller-order-pagination" aria-label="페이지네이션(더미)">
-          <button type="button" class="seller-order-page-btn" data-page="prev">이전</button>
-          <button type="button" class="seller-order-page-btn active" data-page="1">1</button>
-          <button type="button" class="seller-order-page-btn" data-page="2">2</button>
-          <button type="button" class="seller-order-page-btn" data-page="3">3</button>
-          <button type="button" class="seller-order-page-btn" data-page="next">다음</button>
+        <div class="seller-order-pagination">
+          <c:if test="${startPage > 1}">
+            <button type="button" class="seller-order-page-btn" data-page="${startPage - 1}">이전</button>
+          </c:if>
+          <c:forEach var="i" begin="${startPage}" end="${endPage}">
+            <button type="button" class="seller-order-page-btn ${i == currentPage ? 'active' : ''}" data-page="${i}">${i}</button>
+          </c:forEach>
+          <c:if test="${endPage < totalPage}">
+            <button type="button" class="seller-order-page-btn" data-page="${endPage + 1}">다음</button>
+          </c:if>
         </div>
       </main>
 
@@ -189,18 +192,22 @@
   </div>
 
   <script>
-    // 레이아웃 공통(더미) 동작: 헤더 버튼들
     (function () {
       var notifyBtn = document.getElementById('sellerHeaderNotifyBtn');
       var logoutBtn = document.getElementById('sellerHeaderLogoutBtn');
+      
       if (notifyBtn) {
         notifyBtn.addEventListener('click', function () {
-          alert('알림 기능은 아직 준비 중이에요.');
+          alert('알림 기능은 다음 업데이트에 추가될 예정입니다.');
         });
       }
       if (logoutBtn) {
         logoutBtn.addEventListener('click', function () {
-          alert('로그아웃은 아직 연동되지 않았어요. (더미)');
+          if (confirm('정말 로그아웃 하시겠습니까?')) {
+        	  //추후 로그아웃 경로에 맞추기
+            var contextPath = document.body.getAttribute('data-context-path') || '';
+            window.location.href = contextPath + '/seller/auth?action=logout'; 
+          }
         });
       }
     })();

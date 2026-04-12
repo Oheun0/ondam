@@ -21,7 +21,7 @@
   var root = $('orderDetailRoot');
   if (!root) return;
 
-  var orderType = root.getAttribute('data-order-type'); // gift | poke | normal
+  var orderType = root.getAttribute('data-order-type');
   var wallet = root.getAttribute('data-wallet') === 'true';
 
   // 조건 카드 노출
@@ -33,7 +33,6 @@
   var applyStatusBtn = $('odApplyStatusBtn');
   var historyList = $('odHistoryList');
 
-  // 💡 [진짜 백엔드 연동] 상태 변경 버튼 클릭 이벤트
   if (applyStatusBtn) {
     applyStatusBtn.addEventListener('click', function () {
       clearError('odStatusError');
@@ -49,7 +48,6 @@
 
       if (confirm('정말로 배송 상태를 변경하시겠습니까?')) {
         var contextPath = document.body.getAttribute('data-context-path') || '';
-        // 컨트롤러(SellerOrderController)의 updateStatus 로직으로 이동!
         var targetUrl = contextPath + "/seller/order?action=updateStatus&orderNo=" + orderNo + "&status=" + selectedStatus;
         
         window.location.href = targetUrl;
@@ -57,9 +55,6 @@
     });
   }
 
-  // --- 아래는 아직 백엔드 연결 안 된 송장/취소 더미 기능들 --- //
-
-  // 송장 저장(더미)
   var carrierEl = $('odCarrier');
   var trackingEl = $('odTracking');
   
@@ -78,28 +73,48 @@
 
   function saveInvoice() {
     if (!validateInvoice()) return;
-    alert('송장이 저장되었습니다. (더미)\n\n' + (carrierEl.value) + ' / ' + trackingEl.value.trim());
+
+    var orderNo = root.getAttribute('data-order-no');
+    var carrier = carrierEl.value;
+    var tracking = trackingEl.value.trim();
+
+    if (confirm('송장 정보를 저장하시겠습니까?\n(' + carrier + ' : ' + tracking + ')')) {
+        var contextPath = document.body.getAttribute('data-context-path') || '';
+        var targetUrl = contextPath + "/seller/order?action=updateInvoice&orderNo=" + orderNo + "&carrier=" + encodeURIComponent(carrier) + "&tracking=" + encodeURIComponent(tracking);
+        
+        window.location.href = targetUrl;
+    }
   }
 
   var saveInvoiceBtn = $('odSaveInvoiceBtn');
-  var saveInvoiceBtn2 = $('odSaveInvoiceBtn2');
+  var saveInvoiceBtn2 = $('odSaveInvoiceBtn2'); // 하단에 있는 두 번째 송장 저장 버튼
   if (saveInvoiceBtn) saveInvoiceBtn.addEventListener('click', saveInvoice);
   if (saveInvoiceBtn2) saveInvoiceBtn2.addEventListener('click', saveInvoice);
 
-  // 하단 버튼(더미)
-  var saveStatusBtn = $('odSaveStatusBtn');
-  if (saveStatusBtn) {
-    saveStatusBtn.addEventListener('click', function () {
-      alert('배송 상태 저장(더미) — 실제 저장은 위쪽 [상태 변경] 버튼을 이용해 주세요.');
-    });
-  }
+  //하단 배송 상태 저장 버튼
+    var saveStatusBtn = $('odSaveStatusBtn');
+    if (saveStatusBtn) {
+      saveStatusBtn.addEventListener('click', function () {
+        var topBtn = $('odApplyStatusBtn');
+        if (topBtn) {
+            topBtn.click(); 
+        }
+      });
+    }
 
-  var cancelBtn = $('odCancelBtn');
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', function () {
-      alert('주문 취소는 아직 준비 중입니다.');
-    });
-  }
+  //취소 버튼
+    var cancelBtn = $('odCancelBtn');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', function () {
+        var orderNo = root.getAttribute('data-order-no');
+        
+        if (confirm('정말로 이 주문을 취소하시겠습니까?\n(취소 후에는 복구할 수 없습니다.)')) {
+          var contextPath = document.body.getAttribute('data-context-path') || '';
+          var targetUrl = contextPath + "/seller/order?action=updateStatus&orderNo=" + orderNo + "&status=cancel";
+          window.location.href = targetUrl;
+        }
+      });
+    }
 
   if (nextStatusEl) nextStatusEl.addEventListener('change', function () { clearError('odStatusError'); clearError('odFormError'); });
   if (carrierEl) carrierEl.addEventListener('change', function () { clearError('odCarrierError'); clearError('odFormError'); });

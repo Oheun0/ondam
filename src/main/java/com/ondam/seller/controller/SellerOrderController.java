@@ -30,10 +30,35 @@ public class SellerOrderController implements Controller {
         int vendorNo = loginUser.getVendorNo();
 
         switch (action) {
-            case "list":
-                Vector<SellerOrderListDTO> orderList = sellerOrderDAO.getSellerOrderList(vendorNo);
-                request.setAttribute("orderList", orderList);
-                return "seller/order/list";
+        case "list":
+            int currentPage = 1;
+            String pageStr = request.getParameter("page");
+            if (pageStr != null) {
+                currentPage = Integer.parseInt(pageStr);
+            }
+            int pageSize = 10; 
+            int startRow = (currentPage - 1) * pageSize; 
+            int totalOrderCount = sellerOrderDAO.getTotalOrderCount(vendorNo);
+            int shippingCount = sellerOrderDAO.getOrderCountByState(vendorNo, 2);
+            int cancelCount = sellerOrderDAO.getOrderCountByState(vendorNo, 4);
+
+            Vector<SellerOrderListDTO> orderList = sellerOrderDAO.getSellerOrderList(vendorNo, startRow, pageSize);
+            int totalPage = (int) Math.ceil((double) totalOrderCount / pageSize);
+            int pageBlock = 5; 
+            int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
+            int endPage = startPage + pageBlock - 1;
+            if (endPage > totalPage) endPage = totalPage;
+            
+            request.setAttribute("orderList", orderList);
+            request.setAttribute("totalOrderCount", totalOrderCount);
+            request.setAttribute("shippingCount", shippingCount);
+            request.setAttribute("cancelCount", cancelCount);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("totalPage", totalPage);
+            request.setAttribute("startPage", startPage);
+            request.setAttribute("endPage", endPage);
+            
+            return "seller/order/list";
                 
             case "detail":
                 String orderNoStr = request.getParameter("orderNo");
@@ -68,6 +93,25 @@ public class SellerOrderController implements Controller {
                 sellerOrderDAO.updateDeliveryState(vendorNo, targetOrderNo, newState);
                 
                 return "redirect:/seller/order?action=detail&orderNo=" + targetOrderNo;
+                
+            case "updateStatusFromList":
+                String listOrderNoStr = request.getParameter("orderNo");
+                String listStatusParam = request.getParameter("status");
+                
+                if (listOrderNoStr == null || listStatusParam == null) {
+                    return "redirect:/seller/order?action=list";
+                }
+                
+                int listOrderNo = Integer.parseInt(listOrderNoStr);
+                int listNewState = 0;
+                
+                switch(listStatusParam) {
+                    case "ready": listNewState = 1; break;
+                    case "shipping": listNewState = 2; break;
+                    case "done": listNewState = 3; break;
+                }
+                sellerOrderDAO.updateDeliveryState(vendorNo, listOrderNo, listNewState);
+                return "redirect:/seller/order?action=list";
                 
             default:
                 return "redirect:/seller/order?action=list";

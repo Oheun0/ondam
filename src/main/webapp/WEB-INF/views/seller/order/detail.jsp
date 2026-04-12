@@ -148,17 +148,17 @@
               <label class="seller-order-detail-label" for="odCarrier">택배사</label>
               <select id="odCarrier" class="seller-order-detail-control">
                 <option value="">택배사를 선택해 주세요</option>
-                <option value="CJ">CJ대한통운</option>
-                <option value="LOTTE">롯데택배</option>
-                <option value="HANJIN">한진택배</option>
-                <option value="POST">우체국택배</option>
+                <option value="CJ" ${detail.courier == 'CJ' ? 'selected' : ''}>CJ대한통운</option>
+                <option value="LOTTE" ${detail.courier == 'LOTTE' ? 'selected' : ''}>롯데택배</option>
+                <option value="HANJIN" ${detail.courier == 'HANJIN' ? 'selected' : ''}>한진택배</option>
+                <option value="POST" ${detail.courier == 'POST' ? 'selected' : ''}>우체국택배</option>
               </select>
               <p class="seller-order-detail-error hidden" id="odCarrierError" aria-live="polite"></p>
             </div>
 
             <div class="seller-order-detail-field">
               <label class="seller-order-detail-label" for="odTracking">송장번호</label>
-              <input id="odTracking" class="seller-order-detail-control" type="text" placeholder="송장번호를 입력해 주세요">
+              <input id="odTracking" class="seller-order-detail-control" type="text" value="${detail.trackingNo}" placeholder="송장번호를 입력해 주세요">
               <p class="seller-order-detail-error hidden" id="odTrackingError" aria-live="polite"></p>
             </div>
 
