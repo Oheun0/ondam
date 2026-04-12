@@ -48,10 +48,21 @@ public class PokeController implements Controller {
 
 	// 1. 받은 조르기 목록
 	private String list(HttpServletRequest request, HttpServletResponse response) {
-		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
-		Vector<PokeDTO> receivedList = pokeService.getReceivedPokeList(loginUser.getUserNo());
-		request.setAttribute("receivedList", receivedList);
-		return "poke/list";
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+
+	    String fromNoParam = request.getParameter("fromNo");
+
+	    Vector<PokeDTO> receivedList;
+	    if (fromNoParam != null) {
+	        int fromNo = Integer.parseInt(fromNoParam);
+	        receivedList = pokeService.getPokesFromSender(loginUser.getUserNo(), fromNo);
+	        request.setAttribute("fromNo", fromNo);
+	    } else {
+	        receivedList = pokeService.getReceivedPokeList(loginUser.getUserNo());
+	    }
+
+	    request.setAttribute("receivedList", receivedList);
+	    return "poke/poke-list";
 	}
 
 	// 2. 보낸 조르기 목록

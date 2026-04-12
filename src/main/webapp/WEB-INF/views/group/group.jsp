@@ -52,7 +52,8 @@
 										   class="member-btn member-btn--gift">
 										    <span class="material-symbols-outlined member-btn-gift-icon" aria-hidden="true">featured_seasonal_and_gifts</span>
 										    선물하기
-										</a> <a href="#" class="member-btn">찜 목록 보기</a>
+										</a> <a href="${pageContext.request.contextPath}/wish?action=list&targetUserNo=${m.userNo}" 
+   class="member-btn">찜 목록 보기</a>
 									</div>
 								</div>
 							</article>
@@ -77,7 +78,8 @@
 										   class="member-btn member-btn--gift">
 										    <span class="material-symbols-outlined member-btn-gift-icon" aria-hidden="true">featured_seasonal_and_gifts</span>
 										    선물하기
-										</a> <a href="#" class="member-btn">찜 목록 보기</a>
+										</a> <a href="${pageContext.request.contextPath}/wish?action=list&targetUserNo=${m.userNo}" 
+   class="member-btn">찜 목록 보기</a>
 									</div>
 								</div>
 							</article>
