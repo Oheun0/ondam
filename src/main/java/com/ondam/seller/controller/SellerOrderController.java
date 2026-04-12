@@ -47,6 +47,28 @@ public class SellerOrderController implements Controller {
                 
                 return "seller/order/detail";
                 
+            case "updateStatus":
+                String orderNoParam = request.getParameter("orderNo");
+                String statusParam = request.getParameter("status");
+                
+                if (orderNoParam == null || statusParam == null) {
+                    return "redirect:/seller/order?action=list";
+                }
+                
+                int targetOrderNo = Integer.parseInt(orderNoParam);
+                int newState = 0;
+                
+                switch(statusParam) {
+                    case "paid": newState = 0; break;
+                    case "ready": newState = 1; break;
+                    case "shipping": newState = 2; break;
+                    case "done": newState = 3; break;
+                    case "cancel": newState = 4; break;
+                }
+                sellerOrderDAO.updateDeliveryState(vendorNo, targetOrderNo, newState);
+                
+                return "redirect:/seller/order?action=detail&orderNo=" + targetOrderNo;
+                
             default:
                 return "redirect:/seller/order?action=list";
         }

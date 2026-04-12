@@ -103,9 +103,9 @@ public class SellerOrderDAO {
                        + "o.receiverName, o.receiverTel, o.deliveryAddr, o.deliveryContent, "
                        + "op.orderItemNo, op.snapProductName, op.snapOptionSize, op.snapOptionColor, "
                        + "op.orderQuantity, op.snapProductPrice, "
-                       + "(SELECT imgFile FROM product_image pi WHERE pi.productNo = op.productNo ORDER BY pi.imgOrder ASC LIMIT 1) AS productImage "
+                       + "(SELECT imgFile FROM productimage pi WHERE pi.productNo = op.productNo ORDER BY pi.imgOrder ASC LIMIT 1) AS productImage "
                        + "FROM orders o "
-                       + "JOIN orders_product op ON o.orderNo = op.orderNo "
+                       + "JOIN ordersproduct op ON o.orderNo = op.orderNo "
                        + "JOIN product p ON op.productNo = p.productNo "
                        + "WHERE p.vendorNo = ? AND o.orderNo = ?";
 
@@ -148,5 +148,39 @@ public class SellerOrderDAO {
             pool.freeConnection(con, pstmt, rs);
         }
         return detail;
+    }
+    
+    //배송 상태 변경하기 (Update)
+    public boolean updateDeliveryState(int vendorNo, int orderNo, int newState) {
+        boolean result = false;
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = pool.getConnection();
+            
+            // 핵심: 특정 주문의 deliveryState를 바꾸되, 해당 상품이 내 업체(vendorNo)의 것인지 확인!
+            String sql = "UPDATE orders o "
+                       + "JOIN ordersproduct op ON o.orderNo = op.orderNo "
+                       + "JOIN product p ON op.productNo = p.productNo "
+                       + "SET o.deliveryState = ?, op.deliveryState = ? "
+                       + "WHERE p.vendorNo = ? AND o.orderNo = ?";
+            
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, newState);  // 부모(orders) 테이블 상태 변경
+            pstmt.setInt(2, newState);  // 자식(ordersproduct) 테이블 상태 변경
+            pstmt.setInt(3, vendorNo);  // 내 업체가 맞는지 확인
+            pstmt.setInt(4, orderNo);   // 바꿀 주문 번호
+            
+            int count = pstmt.executeUpdate();
+            if (count > 0) {
+                result = true; // 성공하면 true 반환!
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt);
+        }
+        return result;
     }
 }
