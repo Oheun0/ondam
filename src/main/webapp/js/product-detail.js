@@ -621,6 +621,12 @@ document.addEventListener("DOMContentLoaded", function () {
 				      var optKey = selectedColor + "__" + sz;
 				      var stock = OPTION_STOCK_MAP[optKey] !== undefined ? OPTION_STOCK_MAP[optKey] : 9999;
 				      detailOptionSheet.setAttribute("data-option-stock", stock);
+					  
+					  var optionNo = OPTION_NO_MAP[optKey];
+					      var hiddenOptionNoEl = document.getElementById("hiddenOptionNo");
+					      if (hiddenOptionNoEl && optionNo) {
+					          hiddenOptionNoEl.value = optionNo;
+					      }
 
 				      // 재고 0이면 버튼 비활성화
 				      if (stock === 0) {
@@ -684,6 +690,12 @@ document.addEventListener("DOMContentLoaded", function () {
       minusQtyBtn.disabled = atMin;
       minusQtyBtn.setAttribute("aria-disabled", atMin ? "true" : "false");
     }
+	
+	var hiddenQuantityEl = document.getElementById("hiddenQuantity");
+	    if (hiddenQuantityEl) {
+	        hiddenQuantityEl.value = quantity;
+	    }
+		
     syncSheetOrderSummary();
   }
 

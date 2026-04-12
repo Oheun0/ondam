@@ -192,10 +192,20 @@ public class OrderPaymentController implements Controller {
 		request.setAttribute("totalProductDiscount", totalProductDiscount);
 
 		// ── 5. 배송지, 쿠폰, 결제수단 (handleCartBuy와 동일) ──
-		List<UserAddressDTO> addressList = userAddressService.getAddressListByUser(loginUser.getUserNo());
+		
+		String isGift        = request.getParameter("isGift");
+		String receiverNoStr = request.getParameter("receiverNo");
+
+		int addressUserNo = loginUser.getUserNo(); // 기본: 내 배송지
+
+		if ("true".equals(isGift) && receiverNoStr != null && !receiverNoStr.isEmpty()) {
+		    addressUserNo = Integer.parseInt(receiverNoStr);
+		}
+		
+		List<UserAddressDTO> addressList = userAddressService.getAddressListByUser(addressUserNo);
 		request.setAttribute("addressList", addressList);
 
-		UserAddressDTO defaultAddress = userAddressService.getDefaultAddress(loginUser.getUserNo());
+		UserAddressDTO defaultAddress    = userAddressService.getDefaultAddress(addressUserNo);
 		request.setAttribute("defaultAddress", defaultAddress);
 
 		int orderAmount = salePrice * quantity;
@@ -218,6 +228,8 @@ public class OrderPaymentController implements Controller {
 		request.setAttribute("directProductNo", productNo);
 		request.setAttribute("directOptionNo", optionNo);
 		request.setAttribute("directQuantity", quantity);
+		request.setAttribute("isGift",     request.getParameter("isGift"));
+		request.setAttribute("receiverNo", request.getParameter("receiverNo"));
 
 		return "order/order-payment";
 	}
@@ -422,8 +434,22 @@ public class OrderPaymentController implements Controller {
 			notiDto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 			notificationService.createNotification(notiDto);
 
-			// ── 12. 주문 완료 → order-detail ─────────────────
-			return "redirect:/order/order-detail?orderNo=" + orderNo;
+			// ── 12. 선물 여부 분기 ─────────────────────────────
+			String isGift        = request.getParameter("isGift");
+			String receiverNoStr = request.getParameter("receiverNo");
+
+			System.out.println("[handleSubmit] isGift=" + isGift);
+			System.out.println("[handleSubmit] receiverNo=" + receiverNoStr);
+
+			if ("true".equals(isGift) && receiverNoStr != null && !receiverNoStr.isEmpty()) {
+			    System.out.println("[handleSubmit] → 선물 분기 진입");
+			    return "redirect:/gift?action=sendProc"
+			         + "&orderNo="    + orderNo
+			         + "&receiverNo=" + receiverNoStr;
+			} else {
+			    System.out.println("[handleSubmit] → 일반 결제 분기");
+			    return "redirect:/order/order-detail?orderNo=" + orderNo;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -13,14 +13,14 @@ public class GiftChatService {
 
     // 선물카드 이미지 목록 (8장)
     private static final String[] GIFT_CARD_IMAGES = {
-        "gift_card_01.png",
-        "gift_card_02.png",
-        "gift_card_03.png",
-        "gift_card_04.png",
-        "gift_card_05.png",
-        "gift_card_06.png",
-        "gift_card_07.png",
-        "gift_card_08.png"
+        "gift-card1.png",
+        "gift-card2.png",
+        "gift-card3.png",
+        "gift-card4.png",
+        "gift-card5.png",
+        "gift-card6.png",
+        "gift-card7.png",
+        "gift-card8.png"
     };
 
     // 감사카드 이미지 목록 (2장)

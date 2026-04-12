@@ -70,7 +70,16 @@
         	      "${opt.optionColor}__${opt.optionSize}": ${opt.productOptionNo}${st.last ? '' : ','}
         	    </c:forEach>
         	  };
+        const OPTION_STOCK_MAP = {
+                <c:forEach var="opt" items="${optionList}" varStatus="st">
+                    "${opt.optionColor}__${opt.optionSize}": ${opt.optionStock}${st.last ? '' : ','}
+                </c:forEach>
+            };
       </script>
+      
+      <input type="hidden" id="hiddenProductNo" value="${product.productNo}">
+		<input type="hidden" id="hiddenOptionNo"  value="">
+		<input type="hidden" id="hiddenQuantity"  value="1">
 
       <div class="detail-action-grid">
         <button type="button" class="detail-action-item" id="sheetWishlistBtn"
