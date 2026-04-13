@@ -51,30 +51,38 @@
   var historyList = $('odHistoryList');
 
   if (applyStatusBtn) {
-    applyStatusBtn.addEventListener('click', function () {
-      clearError('odStatusError');
-      clearError('odFormError');
+      applyStatusBtn.addEventListener('click', function () {
+        clearError('odStatusError');
+        clearError('odFormError');
 
-      var orderNo = root.getAttribute('data-order-no');
-      var selectedStatus = nextStatusEl ? nextStatusEl.value : '';
+        var root = document.getElementById('orderDetailRoot');
+        var orderNo = root.getAttribute('data-order-no');
+        var selectedStatus = nextStatusEl ? nextStatusEl.value : '';
 
-      if (!selectedStatus) {
-        showError('odStatusError', '변경할 배송 상태를 선택해 주세요.');
-        return;
-      }
-      if (!orderItemNo) {
-        showError('odFormError', 'orderItemNo가 없어 상태 변경을 진행할 수 없습니다.');
-        return;
-      }
+        if (!selectedStatus) {
+          showError('odStatusError', '변경할 배송 상태를 선택해 주세요.');
+          return;
+        }
 
-      if (confirm('정말로 배송 상태를 변경하시겠습니까?')) {
-        var contextPath = document.body.getAttribute('data-context-path') || '';
-        var targetUrl = contextPath + "/seller/order?action=updateStatus&orderNo=" + orderNo + "&status=" + selectedStatus;
-        
-        window.location.href = targetUrl;
-      }
-    });
-  }
+        var checkedBoxes = document.querySelectorAll('.item-checkbox:checked');
+        if (checkedBoxes.length === 0) {
+          showError('odFormError', '상태를 변경할 상품을 하나 이상 체크해 주세요.');
+          return;
+        }
+        var itemNos = [];
+        checkedBoxes.forEach(function(box) {
+            itemNos.push(box.value);
+        });
+        var itemNosString = itemNos.join(',');
+
+        if (confirm('선택한 ' + checkedBoxes.length + '개 상품의 배송 상태를 변경하시겠습니까?')) {
+          var contextPath = document.body.getAttribute('data-context-path') || '';
+          var targetUrl = contextPath + "/seller/order?action=updateItemStatus&orderNo=" + orderNo + "&status=" + selectedStatus + "&itemNos=" + itemNosString;
+          
+          window.location.href = targetUrl;
+        }
+      });
+    }
 
   var carrierEl = $('odCarrier');
   var trackingEl = $('odTracking');
@@ -93,19 +101,33 @@
   }
 
   function saveInvoice() {
-    if (!validateInvoice()) return;
+      if (!validateInvoice()) return;
+      var checkedBoxes = document.querySelectorAll('.item-checkbox:checked');
+      if (checkedBoxes.length === 0) {
+        showError('odFormError', '송장을 저장할 상품을 하나 이상 체크해 주세요.');
+        return;
+      }
 
-    var orderNo = root.getAttribute('data-order-no');
-    var carrier = carrierEl.value;
-    var tracking = trackingEl.value.trim();
+      var orderNo = root.getAttribute('data-order-no');
+      var carrier = carrierEl.value;
+      var tracking = trackingEl.value.trim();
+      var itemNos = [];
+      checkedBoxes.forEach(function(box) {
+          itemNos.push(box.value);
+      });
+      var itemNosString = itemNos.join(',');
 
-    if (confirm('송장 정보를 저장하시겠습니까?\n(' + carrier + ' : ' + tracking + ')')) {
-        var contextPath = document.body.getAttribute('data-context-path') || '';
-        var targetUrl = contextPath + "/seller/order?action=updateInvoice&orderNo=" + orderNo + "&carrier=" + encodeURIComponent(carrier) + "&tracking=" + encodeURIComponent(tracking);
-        
-        window.location.href = targetUrl;
+      if (confirm('선택한 ' + checkedBoxes.length + '개 상품에 송장 정보를 일괄 저장하시겠습니까?\n(' + carrier + ' : ' + tracking + ')')) {
+          var contextPath = document.body.getAttribute('data-context-path') || '';
+          var targetUrl = contextPath + "/seller/order?action=updateItemInvoice" 
+                        + "&orderNo=" + orderNo 
+                        + "&carrier=" + encodeURIComponent(carrier) 
+                        + "&tracking=" + encodeURIComponent(tracking)
+                        + "&itemNos=" + itemNosString;
+          
+          window.location.href = targetUrl;
+      }
     }
-  }
 
   var saveInvoiceBtn = $('odSaveInvoiceBtn');
   var saveInvoiceBtn2 = $('odSaveInvoiceBtn2'); // 하단에 있는 두 번째 송장 저장 버튼
@@ -141,3 +163,47 @@
   if (carrierEl) carrierEl.addEventListener('change', function () { clearError('odCarrierError'); clearError('odFormError'); });
   if (trackingEl) trackingEl.addEventListener('input', function () { clearError('odTrackingError'); clearError('odFormError'); });
 })();
+
+document.addEventListener('DOMContentLoaded', function() {
+    const checkAll = document.getElementById('checkAll');
+    const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+    const courierSelect = document.getElementById('odCarrier');
+    const trackingInput = document.getElementById('odTracking');
+
+    // 전체 선택 / 해제 로직
+    if (checkAll) {
+        checkAll.addEventListener('change', function() {
+            itemCheckboxes.forEach(cb => {
+                cb.checked = this.checked;
+            });
+            syncDeliveryInfo(); // 상태 업데이트
+        });
+    }
+
+    //개별 체크박스 변경 시 감시
+    itemCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            // 전체 선택 박스 상태 동기화
+            checkAll.checked = [...itemCheckboxes].every(c => c.checked);
+            syncDeliveryInfo();
+        });
+    });
+
+    // 💡 핵심 로직: 체크된 상품 수에 따라 입력창 채우기
+    function syncDeliveryInfo() {
+        const checked = document.querySelectorAll('.item-checkbox:checked');
+
+        if (checked.length === 1) {
+            // 1개만 선택된 경우: 해당 상품의 정보를 가져와서 채움
+            const courier = checked[0].getAttribute('data-courier') || "";
+            const tracking = checked[0].getAttribute('data-tracking') || "";
+            
+            courierSelect.value = courier;
+            trackingInput.value = tracking;
+        } else {
+            // 0개이거나 2개 이상 선택된 경우: 초기화
+            courierSelect.value = "";
+            trackingInput.value = "";
+        }
+    }
+});

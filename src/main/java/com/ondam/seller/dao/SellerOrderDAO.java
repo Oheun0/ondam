@@ -159,6 +159,7 @@ public class SellerOrderDAO {
                     + "o.receiverName, o.receiverTel, o.deliveryAddr, o.deliveryContent, "
                     + "op.orderItemNo, op.snapProductName, op.snapOptionSize, op.snapOptionColor, "
                     + "op.orderQuantity, op.snapProductPrice, op.courier, op.trackingNo, "
+                    + "op.deliveryState AS itemDeliveryState, "
                     + "(SELECT imgFile FROM productimage pi WHERE pi.productNo = op.productNo ORDER BY pi.imgOrder ASC LIMIT 1) AS productImage "
                     + "FROM orders o "
                     + "JOIN ordersproduct op ON o.orderNo = op.orderNo "
@@ -171,7 +172,6 @@ public class SellerOrderDAO {
             rs = pstmt.executeQuery();
 
             while(rs.next()) {
-                // 첫 번째 행에서 부모 정보 세팅
                 if (detail == null) {
                     detail = new SellerOrderDetailDTO();
                     detail.setOrderNo(rs.getInt("orderNo"));
@@ -197,6 +197,9 @@ public class SellerOrderDAO {
                 item.setQuantity(rs.getInt("orderQuantity"));
                 item.setPrice(rs.getInt("snapProductPrice"));
                 item.setProductImage(rs.getString("productImage"));
+                item.setDeliveryState(rs.getInt("itemDeliveryState"));
+                item.setCourier(rs.getString("courier"));
+                item.setTrackingNo(rs.getString("trackingNo"));
                 
                 itemList.add(item);
             }
@@ -272,5 +275,85 @@ public class SellerOrderDAO {
         return result;
     }
     
+ // 개별 상품 상태 변경
+    public boolean updateItemDeliveryState(int vendorNo, int orderNo, int newState, String itemNosStr) {
+        boolean result = false;
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = pool.getConnection();
+            String[] itemNosArray = itemNosStr.split(",");
+
+            StringBuilder placeholders = new StringBuilder();
+            for (int i = 0; i < itemNosArray.length; i++) {
+                placeholders.append("?");
+                if (i < itemNosArray.length - 1) placeholders.append(",");
+            }
+            String sql = "UPDATE orders o "
+                    + "JOIN ordersproduct op ON o.orderNo = op.orderNo "
+                    + "JOIN product p ON op.productNo = p.productNo "
+                    + "SET op.deliveryState = ?, o.deliveryState = ? " 
+                    + "WHERE p.vendorNo = ? AND op.orderNo = ? AND op.orderItemNo IN (" + placeholders.toString() + ")";
+         
+         pstmt = con.prepareStatement(sql);
+            
+         pstmt.setInt(1, newState);
+         pstmt.setInt(2, newState);
+         pstmt.setInt(3, vendorNo);
+         pstmt.setInt(4, orderNo);
+         for (int i = 0; i < itemNosArray.length; i++) {
+             pstmt.setInt(5 + i, Integer.parseInt(itemNosArray[i].trim()));
+         }
+         
+         	int count = pstmt.executeUpdate();        
+            if (count > 0) result = true;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt);
+        }
+        return result;
+    }
     
+ //개별/일괄 상품 송장 정보 업데이트
+    public boolean updateItemInvoice(int vendorNo, int orderNo, String carrier, String trackingNo, String itemNosStr) {
+        boolean result = false;
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = pool.getConnection();
+            String[] itemNosArray = itemNosStr.split(",");
+
+            StringBuilder placeholders = new StringBuilder();
+            for (int i = 0; i < itemNosArray.length; i++) {
+                placeholders.append("?");
+                if (i < itemNosArray.length - 1) placeholders.append(",");
+            }
+            String sql = "UPDATE ordersproduct op "
+                       + "JOIN product p ON op.productNo = p.productNo "
+                       + "SET op.courier = ?, op.trackingNo = ? "
+                       + "WHERE p.vendorNo = ? AND op.orderNo = ? AND op.orderItemNo IN (" + placeholders.toString() + ")";
+            
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, carrier);
+            pstmt.setString(2, trackingNo);
+            pstmt.setInt(3, vendorNo);
+            pstmt.setInt(4, orderNo);
+            
+            for (int i = 0; i < itemNosArray.length; i++) {
+                pstmt.setInt(5 + i, Integer.parseInt(itemNosArray[i].trim()));
+            }
+            
+            int count = pstmt.executeUpdate();
+            if (count > 0) result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt);
+        }
+        return result;
+    }
 }
