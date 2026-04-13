@@ -2,7 +2,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     var contextPath = document.body.getAttribute('data-context-path') || '';
     var orderListSection = document.querySelector('.seller-order-list');
-    
     if (orderListSection) {
         orderListSection.addEventListener('click', function(e) {
             var btn = e.target.closest('.seller-order-btn');
@@ -31,35 +30,35 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-	
-	// 탭 필터링 기능
-	    var tabs = document.querySelectorAll('.seller-order-tab');
-	    var cards = document.querySelectorAll('.seller-order-card');
+    var tabs = document.querySelectorAll('.seller-order-tab');
+    var cards = document.querySelectorAll('.seller-order-card');
 
-	    if (tabs.length > 0) {
-	        tabs.forEach(function(tab) {
-	            tab.addEventListener('click', function() {
-	                tabs.forEach(function(t) { t.classList.remove('active'); });
-	                this.classList.add('active');
-	                var targetStatus = this.getAttribute('data-status');
-	                cards.forEach(function(card) {
-	                    if (targetStatus === 'all' || card.getAttribute('data-status') === targetStatus) {
-	                        card.style.display = '';
-	                    } else {
-	                        card.style.display = 'none';
-	                    }
-	                });
-	            });
-	        });
-	    }
-});
-
-    var pageBtns = document.querySelectorAll('.seller-order-page-btn');
-    pageBtns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var page = this.getAttribute('data-page');
-            if (page) {
-                window.location.href = contextPath + "/seller/order?action=list&page=" + page;
-            }
+    if (tabs.length > 0) {
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                tabs.forEach(function(t) { t.classList.remove('active'); });
+                this.classList.add('active');
+                var targetStatus = this.getAttribute('data-status');
+                cards.forEach(function(card) {
+                    if (targetStatus === 'all' || card.getAttribute('data-status') === targetStatus) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
         });
-    });
+    }
+    var pageBtns = document.querySelectorAll('.seller-order-page-btn');
+    if (pageBtns.length > 0) {
+        pageBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var page = this.getAttribute('data-page');
+                if (page) {
+                    window.location.href = contextPath + "/seller/order?action=list&page=" + page;
+                }
+            });
+        });
+    }
+
+});
