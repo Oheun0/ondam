@@ -34,7 +34,7 @@ public class SellerLoginController implements Controller {
 
             if (loginSeller != null) {
                 HttpSession session = request.getSession();
-                session.setAttribute("loginUser", loginSeller);
+                session.setAttribute("loginSeller", loginSeller);
                 
                 // 로그인 성공 시, 연결된 Vendor(업체) 이름 가져오기
                 String vendorName = vendorDAO.getVendorName(loginSeller.getVendorNo());

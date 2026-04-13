@@ -16,13 +16,13 @@ public class SellerDashboardController implements Controller {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession();
-        SellerDTO loginUser = (SellerDTO) session.getAttribute("loginUser");
+        SellerDTO loginSeller = (SellerDTO) session.getAttribute("loginSeller");
 
-        if (loginUser == null) {
+        if (loginSeller == null) {
             return "redirect:/seller/auth";
         }
 
-        int vendorNo = loginUser.getVendorNo();
+        int vendorNo = loginSeller.getVendorNo();
         Map<String, Integer> stats = sellerService.getDashboardStats(vendorNo);
         request.setAttribute("stats", stats);
         return "seller/dashboard"; 

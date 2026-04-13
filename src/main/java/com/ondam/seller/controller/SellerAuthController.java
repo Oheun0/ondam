@@ -47,7 +47,7 @@ public class SellerAuthController implements Controller {
 
                         // 세션에 통합 정보 저장 (이후 모든 페이지에서 접근 가능)
                         HttpSession session = request.getSession();
-                        session.setAttribute("loginUser", loginSeller);
+                        session.setAttribute("loginSeller", loginSeller);
                         
                         if (vendorName != null) {
                             session.setAttribute("vendorName", vendorName);
