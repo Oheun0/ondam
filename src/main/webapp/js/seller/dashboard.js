@@ -13,27 +13,29 @@
 	      'open-settlement': ctx + '/preview?page=seller/settlement/list'
 	    };
 
-		var targetUrl = urlMap[action];
+  var urlMap = {
+    'orders-today': ctx + '/seller/order?action=list',
+    'ship-ready':   ctx + '/seller/order?action=list&status=ready',
+    'inquiries':    ctx + '/seller/inquiry?action=list',
+    'reviews-new':  ctx + '/seller/review?action=list',
+    'new-product':  ctx + '/seller/product?action=writeForm',
+    'new-shorts':   ctx + '/seller/shorts?action=form',
+    'open-orders':  ctx + '/seller/order?action=list',
+    'new-coupon':   ctx + '/seller/coupon?action=form'
+  };
 
-		    if (targetUrl) {
-		      window.location.href = targetUrl; // 진짜 페이지로 이동!
-		    } else {
-		      console.log('[SellerDashboard] No URL mapped for:', action);
-		      alert('해당 기능은 아직 준비 중이에요.');
-		    }
-		  }
+  document.body.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action]');
+    if (!el) return; // 없으면 무시
 
-		  document.addEventListener('click', function (e) {
-		    var target = e.target;
-		    if (!target) return;
+    var action = el.getAttribute('data-action');
+    var targetUrl = urlMap[action];
 
-		    var el = target.closest('[data-action]');
-		    if (!el) return;
-
-		    var action = el.getAttribute('data-action');
-		    if (!action) return;
-		    
-		    onAction(action);
-		  });
-		})();
-
+    if (targetUrl) {
+      window.location.href = targetUrl;
+    } else {
+      console.log('[SellerDashboard] No URL mapped for:', action);
+      alert('해당 기능은 아직 준비 중이에요.');
+    }
+  });
+});
