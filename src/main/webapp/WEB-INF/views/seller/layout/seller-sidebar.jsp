@@ -12,7 +12,7 @@
   </div>
 
   <nav class="seller-sidebar__nav" aria-label="판매자 메뉴">
-    <a class="seller-nav-item <%= "dashboard".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/dashboard">
+    <a class="seller-nav-item <%= "dashboard".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/seller/dashboard">
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">space_dashboard</span>
       <span class="seller-nav-label">대시보드</span>
     </a>
@@ -40,7 +40,7 @@
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">bar_chart</span>
       <span class="seller-nav-label">정산 · 매출</span>
     </a>
-    <a class="seller-nav-item <%= "setting".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/settings">
+    <a class="seller-nav-item <%= "setting".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/seller/settings">
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">settings</span>
       <span class="seller-nav-label">설정</span>
     </a>

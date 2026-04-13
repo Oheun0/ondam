@@ -43,6 +43,195 @@
   color:var(--seller-muted);
   line-height:1.5;
 }
+.seller-settings-section-sub--gap-below{
+  margin-bottom:15px;
+}
+
+.seller-settings-flash{
+  margin:0 0 14px;
+  padding:12px 14px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:900;
+  line-height:1.45;
+}
+.seller-settings-flash--ok{
+  border:1px solid rgba(34,197,94,0.35);
+  background: rgba(220,252,231,0.65);
+  color:#166534;
+}
+.seller-settings-flash--err{
+  border:1px solid rgba(239,68,68,0.35);
+  background: rgba(254,226,226,0.65);
+  color:#991b1b;
+}
+
+/* 프로필 사진 영역: 카드형 박스 없이 한 줄 텍스트만 */
+.seller-settings-profile-msg{
+  margin:5px 0 0;
+  padding:0;
+  border:none;
+  background:none;
+  border-radius:0;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.45;
+}
+.seller-settings-profile-msg--ok{
+  color:#15803d;
+}
+.seller-settings-profile-msg--err{
+  color:#b91c1c;
+}
+
+.seller-settings-logo-form-hidden{
+  position:absolute;
+  width:0;
+  height:0;
+  overflow:hidden;
+  opacity:0;
+  pointer-events:none;
+}
+
+.seller-settings-profile-panel{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:0 16px 16px;
+  flex-wrap:wrap;
+}
+.seller-settings-profile-panel .seller-settings-profile-actions{
+  flex:1;
+  min-width:min(100%, 280px);
+}
+.seller-settings-profile-avatar-wrap{
+  position:relative;
+  width:96px;
+  height:96px;
+  flex-shrink:0;
+  border-radius:24px;
+  border:1px solid var(--seller-border);
+  background: rgba(238,241,246,0.55);
+  overflow:hidden;
+}
+.seller-settings-profile-avatar{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  pointer-events:none;
+}
+.seller-settings-profile-avatar--visible{
+  opacity:1;
+  pointer-events:auto;
+}
+.seller-settings-profile-placeholder{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: rgba(107,114,128,0.85);
+}
+.seller-settings-profile-placeholder.is-hidden{display:none}
+.seller-settings-profile-placeholder .material-icons-outlined{font-size:48px}
+.seller-settings-profile-actions{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:8px;
+  min-width:0;
+}
+.seller-settings-profile-toolbar{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  min-width:0;
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:2px;
+}
+.seller-settings-profile-toolbar__pick{
+  flex-shrink:0;
+  white-space:nowrap;
+}
+.seller-settings-profile-filename{
+  flex:1 1 auto;
+  min-width:160px;
+  height:46px;
+  cursor:default;
+  color:#374151;
+  background: rgba(248,250,252,0.9);
+}
+.seller-settings-profile-toolbar__save{
+  flex-shrink:0;
+  white-space:nowrap;
+}
+.seller-settings-profile-hint{
+  margin:0;
+  font-size:12px;
+  font-weight:800;
+  color:var(--seller-muted);
+  line-height:1.4;
+}
+.seller-settings-file-input-hidden{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+/* 우편번호 + 찾기 (판매자 회원가입과 동일 패턴) */
+.seller-settings-zip-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.seller-settings-zip-row .seller-settings-input--zip{
+  flex:0 0 16.666%;
+  width:16.666%;
+  max-width:16.666%;
+  min-width:0;
+  box-sizing:border-box;
+}
+.seller-settings-mini-btn{
+  flex-shrink:0;
+  height:46px;
+  padding:0 14px;
+  border-radius:14px;
+  border:1px solid var(--seller-border);
+  background:#fff;
+  font-family:inherit;
+  font-size:15px;
+  font-weight:1000;
+  color:#374151;
+  cursor:pointer;
+  box-shadow: 0 4px 14px rgba(17,24,39,0.06);
+  white-space:nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.seller-settings-mini-btn:hover{border-color: rgba(76,101,175,0.35)}
+.seller-settings-mini-btn:active{transform: translateY(1px)}
+.seller-settings-mini-btn:focus-visible{
+  outline:3px solid rgba(76,101,175,0.35);
+  outline-offset:2px;
+}
+.seller-settings-mini-btn:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  pointer-events:none;
+}
 
 .seller-settings-grid{
   padding:14px 16px 16px;
@@ -50,7 +239,13 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap:12px;
 }
-.seller-settings-grid--addr{grid-template-columns: 1fr 1.2fr 1.2fr;}
+/* 출고/반품: 우편번호·주소·상세 × 2 — 한 줄에 하나씩 세로 나열 */
+.seller-settings-grid--addr{
+  grid-template-columns: 1fr;
+}
+.seller-settings-grid--addr .seller-settings-field--span2{
+  grid-column: 1 / -1;
+}
 .seller-settings-grid--msg{grid-template-columns: 1fr;}
 .seller-settings-field--full{grid-column: 1 / -1;}
 .seller-settings-field--span2{grid-column: span 2;}
@@ -161,14 +356,36 @@
   bottom:14px;
   z-index:2;
   display:flex;
-  justify-content:flex-end;
-  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
   padding:12px 12px;
   border-radius:18px;
   border:1px solid var(--seller-border);
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(8px);
   box-shadow: 0 10px 26px rgba(17,24,39,0.08);
+}
+.seller-settings-form-actions__left{
+  flex:1 1 auto;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  min-height:46px;
+}
+.seller-settings-form-actions__msg{
+  margin:0;
+}
+.seller-settings-form-actions__msg.seller-settings-profile-msg{
+  margin:0;
+}
+.seller-settings-form-actions__btns{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+  min-height:46px;
 }
 .seller-settings-btn{
   height:46px;
@@ -185,6 +402,15 @@
 }
 .seller-settings-btn:hover{border-color: rgba(76,101,175,0.35)}
 .seller-settings-btn:active{transform: translateY(1px)}
+.seller-settings-btn--secondary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-color: rgba(76,101,175,0.28);
+  background: rgba(76,101,175,0.08);
+  color:#374151;
+}
+.seller-settings-btn--secondary:hover{border-color: rgba(76,101,175,0.45)}
 .seller-settings-btn--primary{
   border-color: rgba(76,101,175,0.38);
   background: var(--seller-primary);
@@ -195,7 +421,7 @@
 
 @media (max-width: 1160px){
   .seller-settings-grid{grid-template-columns: repeat(2, minmax(0, 1fr));}
-  .seller-settings-grid--addr{grid-template-columns: 1fr 1fr;}
+  .seller-settings-grid--addr{grid-template-columns: 1fr;}
   .seller-settings-field--span2{grid-column: 1 / -1;}
   .seller-settings-form-actions{position:static}
 }

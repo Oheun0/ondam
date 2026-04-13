@@ -33,6 +33,12 @@ public class SellerService {
 	
 	// SellerService.java 에 추가
 	public SellerDTO login(String sellerId, String sellerPwd) {
+	    if (sellerId != null) {
+	        sellerId = sellerId.trim();
+	    }
+	    if (sellerPwd != null) {
+	        sellerPwd = sellerPwd.trim();
+	    }
 	    return dao.loginSeller(sellerId, sellerPwd);
 	}
 	
@@ -68,8 +74,9 @@ public class SellerService {
 	    // 2) 찾아온 업체 번호로 DB에 저장된 이메일 조회
 	    String dbEmail = vendorDao.getEmailByVendorNo(vendorNo);
 	    
-	    // 3) DB 이메일과 사용자가 입력한 이메일이 완벽히 일치하는지 비교
-	    if (dbEmail != null && dbEmail.equals(inputEmail)) {
+	    // 3) DB 이메일과 사용자가 입력한 이메일 비교 (대소문자 무시)
+	    if (dbEmail != null && inputEmail != null
+	    		&& dbEmail.trim().equalsIgnoreCase(inputEmail.trim())) {
 	        return true;
 	    }
 	    

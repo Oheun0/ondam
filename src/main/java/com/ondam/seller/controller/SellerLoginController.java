@@ -42,7 +42,7 @@ public class SellerLoginController implements Controller {
                     session.setAttribute("vendorName", vendorName); // 화면 표출용 업체명
                 }
                 
-                return "redirect:/dashboard";
+                return "redirect:/seller/dashboard";
             } else {
                 request.setAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다."); // "오류" 대신 "loginError" 권장
                 return "seller/auth/login";

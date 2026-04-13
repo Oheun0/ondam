@@ -67,7 +67,7 @@
               >
               <p class="check-message error seller-auth-error hidden" id="sellerCodeError" aria-live="polite"></p>
               <p class="seller-auth-helper seller-auth-helper--code" id="sellerCodeHelper">
-                더미 코드: <strong>123456</strong> (실제 발송/검증은 아직 연동되지 않았어요)
+                가입 이메일로 전송된 6자리 숫자를 입력해 주세요. (유효 시간 10분)
               </p>
             </div>
           </div>

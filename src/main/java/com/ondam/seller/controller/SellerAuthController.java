@@ -11,6 +11,11 @@ import jakarta.servlet.http.HttpSession;
 
 public class SellerAuthController implements Controller {
 
+    /** 로그인 유지 미체크 시(브라우저 닫기 전까지) 세션 유효 시간 */
+    private static final int SESSION_DEFAULT_SECONDS = 30 * 60;
+    /** 로그인 상태 유지 체크 시(예: 7일) */
+    private static final int SESSION_REMEMBER_SECONDS = 7 * 24 * 60 * 60;
+
     private final SellerService sellerService = new SellerService();
     private final VendorDAO vendorDAO = new VendorDAO();
 
@@ -31,9 +36,15 @@ public class SellerAuthController implements Controller {
                     // 폼에서 전송된 아이디와 비밀번호 가져오기
                     String sellerId = request.getParameter("sellerId");
                     String sellerPw = request.getParameter("sellerPw");
+                    if (sellerId != null) {
+                        sellerId = sellerId.trim();
+                    }
+                    if (sellerPw != null) {
+                        sellerPw = sellerPw.trim();
+                    }
 
                     // 입력값 검증 (빈 칸 제출 시)
-                    if (sellerId == null || sellerId.trim().isEmpty() || sellerPw == null || sellerPw.trim().isEmpty()) {
+                    if (sellerId == null || sellerId.isEmpty() || sellerPw == null || sellerPw.isEmpty()) {
                         request.setAttribute("loginError", "아이디와 비밀번호를 모두 입력해주세요.");
                         return "seller/auth/login"; // 다시 로그인 화면으로 포워딩
                     }
@@ -47,15 +58,16 @@ public class SellerAuthController implements Controller {
 
                         // 세션에 통합 정보 저장 (이후 모든 페이지에서 접근 가능)
                         HttpSession session = request.getSession();
+                        boolean remember = "on".equalsIgnoreCase(request.getParameter("sellerRemember"));
+                        session.setMaxInactiveInterval(remember ? SESSION_REMEMBER_SECONDS : SESSION_DEFAULT_SECONDS);
+
                         session.setAttribute("loginSeller", loginSeller);
                         
                         if (vendorName != null) {
                             session.setAttribute("vendorName", vendorName);
                         }
 
-                        // 성공 후 판매자 대시보드(메인 페이지)로 리다이렉트
-                        // (프로젝트 상황에 맞춰 이동할 경로를 적어주세요. 예: /main)
-                        return "redirect:/dashboard"; 
+                        return "redirect:/seller/dashboard";
                     } else {
                         // 로그인 실패 (DB에 정보가 없거나 비밀번호가 틀림)
                     	HttpSession session = request.getSession();
