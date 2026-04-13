@@ -3,6 +3,7 @@ package com.ondam.seller.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.Vector;
 
 import com.ondam.common.DBConnectionMgr;
@@ -29,25 +30,7 @@ public class VendorDAO {
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				VendorDTO dto = new VendorDTO();
-				dto.setVendorNo(rs.getInt("vendorNo"));
-				dto.setVendorName(rs.getString("vendorName"));
-				dto.setBizType(rs.getInt("bizType"));
-				dto.setBizRegNo(rs.getString("bizRegNo"));
-				dto.setRepName(rs.getString("repName"));
-				dto.setBizAddr(rs.getString("bizAddr"));
-				dto.setBizTel(rs.getString("bizTel"));
-				dto.setContactEmail(rs.getString("contactEmail"));
-				dto.setBizRegImg(rs.getString("bizRegImg"));
-				dto.setMailOrderImg(rs.getString("mailOrderImg"));
-				dto.setSealCertImg(rs.getString("sealCertImg"));
-				dto.setCorpRegImg(rs.getString("corpRegImg"));
-				dto.setLogoImg(rs.getString("logoImg"));
-				dto.setBizDescription(rs.getString("bizDescription"));
-				dto.setReviewStatus(rs.getInt("reviewStatus"));
-				dto.setRejectReason(rs.getString("rejectReason"));
-				dto.setApplyDate(rs.getString("applyDate"));
-				vlist.addElement(dto);
+				vlist.addElement(mapVendorRow(rs));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,6 +38,122 @@ public class VendorDAO {
 			pool.freeConnection(con, pstmt, rs);
 		}
 		return vlist;
+	}
+
+	/** 업체 번호로 vendor 한 건 (설정 화면 등) */
+	public VendorDTO getVendorByVendorNo(int vendorNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT * FROM vendor WHERE vendorNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, vendorNo);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return mapVendorRow(rs);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return null;
+	}
+
+	private static Integer getIntegerOrNull(ResultSet rs, String column) throws Exception {
+		Object o = rs.getObject(column);
+		if (o == null) {
+			return null;
+		}
+		if (o instanceof Number) {
+			return Integer.valueOf(((Number) o).intValue());
+		}
+		return null;
+	}
+
+	private static VendorDTO mapVendorRow(ResultSet rs) throws Exception {
+		VendorDTO dto = new VendorDTO();
+		dto.setVendorNo(rs.getInt("vendorNo"));
+		dto.setVendorName(rs.getString("vendorName"));
+		dto.setBizType(rs.getInt("bizType"));
+		dto.setBizRegNo(rs.getString("bizRegNo"));
+		dto.setRepName(rs.getString("repName"));
+		dto.setBizAddr(rs.getString("bizAddr"));
+		dto.setBizReturnAddr(rs.getString("bizReturnAddr"));
+		dto.setBizTel(rs.getString("bizTel"));
+		dto.setContactEmail(rs.getString("contactEmail"));
+		dto.setBizRegImg(rs.getString("bizRegImg"));
+		dto.setMailOrderImg(rs.getString("mailOrderImg"));
+		dto.setSealCertImg(rs.getString("sealCertImg"));
+		dto.setCorpRegImg(rs.getString("corpRegImg"));
+		dto.setLogoImg(rs.getString("logoImg"));
+		dto.setBizDescription(rs.getString("bizDescription"));
+		dto.setReviewStatus(rs.getInt("reviewStatus"));
+		dto.setRejectReason(rs.getString("rejectReason"));
+		dto.setApplyDate(rs.getString("applyDate"));
+		dto.setReturnExchangeGuide(rs.getString("return_exchange_guide"));
+		dto.setShipFee(getIntegerOrNull(rs, "ship_fee"));
+		dto.setFreeShipMin(getIntegerOrNull(rs, "free_ship_min"));
+		dto.setPrepDays(rs.getString("prep_days"));
+		dto.setDefaultCourier(rs.getString("default_courier"));
+		dto.setIslandExtra(getIntegerOrNull(rs, "island_extra"));
+		dto.setShipNotice(rs.getString("ship_notice"));
+		dto.setDelayNotice(rs.getString("delay_notice"));
+		dto.setGiftNotice(rs.getString("gift_notice"));
+		dto.setExchangeNotice(rs.getString("exchange_notice"));
+		return dto;
+	}
+
+	/**
+	 * 판매자 설정 화면에서 수정 가능한 컬럼만 갱신 (인증·이미지·심사 필드는 유지).
+	 */
+	public boolean updateSellerSettings(VendorDTO dto, int vendorNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = pool.getConnection();
+			String sql = "UPDATE vendor SET vendorName = ?, bizRegNo = ?, bizTel = ?, contactEmail = ?, "
+					+ "bizAddr = ?, bizReturnAddr = ?, bizDescription = ?, return_exchange_guide = ?, "
+					+ "ship_fee = ?, free_ship_min = ?, prep_days = ?, default_courier = ?, island_extra = ?, "
+					+ "ship_notice = ?, delay_notice = ?, gift_notice = ?, exchange_notice = ? "
+					+ "WHERE vendorNo = ?";
+			pstmt = con.prepareStatement(sql);
+			int i = 1;
+			pstmt.setString(i++, dto.getVendorName());
+			pstmt.setString(i++, dto.getBizRegNo());
+			pstmt.setString(i++, dto.getBizTel());
+			pstmt.setString(i++, dto.getContactEmail());
+			pstmt.setString(i++, dto.getBizAddr());
+			pstmt.setString(i++, dto.getBizReturnAddr());
+			pstmt.setString(i++, dto.getBizDescription());
+			pstmt.setString(i++, dto.getReturnExchangeGuide());
+			setNullableInt(pstmt, i++, dto.getShipFee());
+			setNullableInt(pstmt, i++, dto.getFreeShipMin());
+			pstmt.setString(i++, dto.getPrepDays());
+			pstmt.setString(i++, dto.getDefaultCourier());
+			setNullableInt(pstmt, i++, dto.getIslandExtra());
+			pstmt.setString(i++, dto.getShipNotice());
+			pstmt.setString(i++, dto.getDelayNotice());
+			pstmt.setString(i++, dto.getGiftNotice());
+			pstmt.setString(i++, dto.getExchangeNotice());
+			pstmt.setInt(i++, vendorNo);
+			return pstmt.executeUpdate() > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, null);
+		}
+		return false;
+	}
+
+	private static void setNullableInt(PreparedStatement pstmt, int index, Integer value) throws Exception {
+		if (value == null) {
+			pstmt.setNull(index, Types.INTEGER);
+		} else {
+			pstmt.setInt(index, value.intValue());
+		}
 	}
 
 	// Insert
@@ -191,10 +290,10 @@ public class VendorDAO {
 	        pstmt.setInt(2, dto.getBizType());
 	        pstmt.setString(3, dto.getBizRegNo());
 	        pstmt.setString(4, dto.getRepName());
-	        pstmt.setString(5, dto.getBizTel());
-	        pstmt.setString(6, dto.getContactEmail());
-	        pstmt.setString(7, dto.getBizAddr()); // 출고지 주소 (가공해서 저장)
-	        pstmt.setString(8, dto.getBizReturnAddr()); // 반품지 주소 (가공해서 저장)
+	        pstmt.setString(5, dto.getBizAddr());
+	        pstmt.setString(6, dto.getBizReturnAddr());
+	        pstmt.setString(7, dto.getBizTel());
+	        pstmt.setString(8, dto.getContactEmail());
 	        
 	        pstmt.executeUpdate();
 	        rs = pstmt.getGeneratedKeys();
@@ -230,6 +329,47 @@ public class VendorDAO {
 	        pool.freeConnection(con, pstmt, rs);
 	    }
 	    return email;
+	}
+
+	/** 업체 번호로 스토어 로고(파일명) 조회 — DB에는 파일명만 저장 */
+	public String getLogoImgByVendorNo(int vendorNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String logo = null;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT logoImg FROM vendor WHERE vendorNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, vendorNo);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				logo = rs.getString("logoImg");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return logo;
+	}
+
+	public boolean updateLogoImg(int vendorNo, String logoFileName) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = pool.getConnection();
+			String sql = "UPDATE vendor SET logoImg = ? WHERE vendorNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, logoFileName);
+			pstmt.setInt(2, vendorNo);
+			return pstmt.executeUpdate() > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, null);
+		}
+		return false;
 	}
 }
 

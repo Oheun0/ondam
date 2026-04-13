@@ -192,28 +192,6 @@
       <jsp:include page="/WEB-INF/views/seller/layout/seller-footer.jsp" />
     </div>
   </div>
-
-  <script>
-    (function () {
-      var notifyBtn = document.getElementById('sellerHeaderNotifyBtn');
-      var logoutBtn = document.getElementById('sellerHeaderLogoutBtn');
-      
-      if (notifyBtn) {
-        notifyBtn.addEventListener('click', function () {
-          alert('알림 기능은 다음 업데이트에 추가될 예정입니다.');
-        });
-      }
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', function () {
-          if (confirm('정말 로그아웃 하시겠습니까?')) {
-        	  //추후 로그아웃 경로에 맞추기
-            var contextPath = document.body.getAttribute('data-context-path') || '';
-            window.location.href = contextPath + '/seller/auth?action=logout'; 
-          }
-        });
-      }
-    })();
-  </script>
   <script src="${pageContext.request.contextPath}/js/seller/order-list.js"></script>
 </body>
 </html>

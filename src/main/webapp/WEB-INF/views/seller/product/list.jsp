@@ -2,8 +2,6 @@
 <%
   request.setAttribute("sellerActiveMenu", "product");
   request.setAttribute("sellerPageTitle", "상품 관리");
-  String sellerName = (String) request.getAttribute("sellerName");
-  if (sellerName == null) sellerName = "온담스토어";
 %>
 <!doctype html>
 <html lang="ko">
@@ -282,23 +280,6 @@
     </div>
   </div>
 
-  <script>
-    // 레이아웃 공통(더미) 동작: 헤더 버튼들
-    (function () {
-      var notifyBtn = document.getElementById('sellerHeaderNotifyBtn');
-      var logoutBtn = document.getElementById('sellerHeaderLogoutBtn');
-      if (notifyBtn) {
-        notifyBtn.addEventListener('click', function () {
-          alert('알림 기능은 아직 준비 중이에요.');
-        });
-      }
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', function () {
-          alert('로그아웃은 아직 연동되지 않았어요. (더미)');
-        });
-      }
-    })();
-  </script>
   <script src="${pageContext.request.contextPath}/js/seller/product-list.js"></script>
 </body>
 </html>

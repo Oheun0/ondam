@@ -7,10 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
     'ship-ready':   ctx + '/seller/order?action=list&status=ready',
     'inquiries':    ctx + '/seller/inquiry?action=list',
     'reviews-new':  ctx + '/seller/review?action=list',
-    'new-product':  ctx + '/seller/product?action=writeForm',
+    'new-product':  ctx + '/seller/product?action=writeForm', 
     'new-shorts':   ctx + '/seller/shorts?action=form',
     'open-orders':  ctx + '/seller/order?action=list',
-    'new-coupon':   ctx + '/seller/coupon?action=form'
+    'new-coupon':   ctx + '/seller/coupon?action=form',
+    'open-settlement': ctx + '/preview?page=seller/settlement/list' 
   };
 
   document.body.addEventListener('click', function (e) {

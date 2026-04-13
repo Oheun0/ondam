@@ -52,9 +52,9 @@
           <span class="material-icons-outlined" aria-hidden="true">receipt_long</span>
           <span>주문 확인하기</span>
         </button>
-        <button type="button" class="seller-quick__btn" data-action="new-coupon">
-          <span class="material-icons-outlined" aria-hidden="true">confirmation_number</span>
-          <span>쿠폰 등록하기</span>
+        <button type="button" class="seller-quick__btn" data-action="open-settlement">
+          <span class="material-icons-outlined" aria-hidden="true">bar_chart</span>
+          <span>매출 확인하기</span>
         </button>
       </div>
     </section>
