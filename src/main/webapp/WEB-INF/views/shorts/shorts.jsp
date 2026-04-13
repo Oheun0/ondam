@@ -12,16 +12,26 @@
     <title>온담 - 영상보기</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/shorts.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/poke.css"> 
 </head>
-<body>
+
+<body data-context-path="${pageContext.request.contextPath}">
+
+<div id="option-toast" class="option-toast hidden" role="alert" aria-live="assertive" aria-hidden="true" 
+     style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:9999; 
+            background:rgba(0,0,0,0.8); color:#fff; padding:10px 20px; border-radius:20px; 
+            display:flex; align-items:center; gap:8px; transition: opacity 0.3s ease;">
+  <span class="material-icons option-toast__icon" aria-hidden="true" style="color:#ff5252;">error</span>
+  <span class="option-toast__text">먼저 색상과 사이즈를 골라주세요</span>
+</div>
+
 <div class="app-shell">
 
 <div class="shorts-wrapper">
         <c:choose>
-            <%-- 1. 리스트가 비어있지 않은 경우: 영상 반복 출력 --%>
             <c:when test="${not empty shortsList}">
                 <c:forEach var="shorts" items="${shortsList}" varStatus="status">
                     <section class="shorts-container" data-index="${status.index}">
@@ -40,15 +50,20 @@
                                     <span class="material-icons">shopping_bag</span>
                                     <span>구매하기</span>
                             </button>
-                            <button class="action-btn" onclick="toggleLike(this, ${shorts.shortsNo})">
-                                <span class="material-icons">favorite_border</span>
-                                <span>찜</span>
+                            <button class="action-btn" onclick="toggleLike(this, ${shorts.productNo})">
+                                <c:set var="isLiked" value="${not empty wishSet and wishSet.contains(shorts.productNo)}" />
+                                    <span class="material-icons ${isLiked ? 'liked' : ''}">
+                                        ${isLiked ? 'favorite' : 'favorite_border'}
+                                    </span>
+                                    <span>찜</span>
                             </button>
-                            <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
+                            
+                            <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.productName}', '${shorts.productPrice}', '${shorts.imgFile}');">
                                 <span class="material-icons">volunteer_activism</span>
                                 <span>조르기</span>
                             </button>
-                            <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.shortsTitle}');">
+                            
+                            <button class="action-btn" onclick="event.stopPropagation(); openPurchaseModal('${shorts.productNo}', '${shorts.productName}', '${shorts.productPrice}', '${shorts.imgFile}');">
                                 <span class="material-icons">card_giftcard</span>
                                 <span>선물하기</span>
                             </button>
@@ -60,7 +75,7 @@
                         </aside>
                         
                         <div class="bottom-info-wrapper">
-                            <section class="shorts-product-card" onclick="location.href='${pageContext.request.contextPath}/product/detail?no=${shorts.productNo}'">
+                            <section class="shorts-product-card" onclick="location.href='${pageContext.request.contextPath}/product?action=detail&productNo=${shorts.productNo}'">
                                 <div class="card-image">
                                         <img src="${pageContext.request.contextPath}/uploads/products/${shorts.imgFile}" 
                                              onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'" alt="상품 이미지">
@@ -85,7 +100,6 @@
                 </c:forEach>
             </c:when>
 
-            <%-- 2. 리스트가 비어있는 경우: 안내 문구 노출 --%>
             <c:otherwise>
                 <div class="no-shorts-container">
                     <article class="no-shorts-card">
@@ -101,8 +115,9 @@
         </c:choose>
     </div>
     
-    <jsp:include page="../layout/bottomNav.jsp" />  				
-  	<div id="purchaseModalOverlay" class="purchase-modal-overlay" onclick="closePurchaseModal()">
+    <jsp:include page="../layout/bottomNav.jsp" />                  
+    
+    <div id="purchaseModalOverlay" class="purchase-modal-overlay" onclick="closePurchaseModal()">
     <div class="purchase-modal" onclick="event.stopPropagation();">
         <div class="modal-header">
             <h3 id="modalProductName">상품이름</h3>
@@ -112,19 +127,19 @@
         </div>
         
         <div class="modal-options">
-			<div class="option-row">
-			    <label>사이즈</label>
-			    <select name="optionSize"> <!-- name 속성 확인 -->
-			        <option value="">사이즈를 선택하세요</option>
-			    </select>
-			</div>
-			<div class="option-row">
-			    <label>색상</label>
-			    <select name="optionColor"> <!-- name 속성 확인 -->
-			        <option value="">색상을 선택하세요</option>
-			    </select>
-			</div>
-		</div>
+            <div class="option-row">
+                <label>사이즈</label>
+                <select name="optionSize"> 
+                    <option value="">사이즈를 선택하세요</option>
+                </select>
+            </div>
+            <div class="option-row">
+                <label>색상</label>
+                <select name="optionColor"> 
+                    <option value="">색상을 선택하세요</option>
+                </select>
+            </div>
+        </div>
             <div class="option-row">
                 <label>개수</label>
                 <div class="qty-control">
@@ -140,11 +155,11 @@
         
         
         <div class="modal-actions">
-		    <button class="modal-icon-btn" onclick="submitJoreugi()">
-		        <span class="material-icons">volunteer_activism</span>
-		        <span>조르기</span>
+            <button class="modal-icon-btn" onclick="openPokeFromShorts()">
+                <span class="material-icons">volunteer_activism</span>
+                <span>조르기</span>
             </button>
-            <button class="modal-icon-btn" onclick="openGift()">
+            <button class="modal-icon-btn" onclick="openGiftFromShorts()">
                 <span class="material-icons">card_giftcard</span>
                 <span>선물</span>
             </button>
@@ -161,17 +176,21 @@
         <button class="buy-now-btn" onclick="buyNow()">바로 구매하기</button>
     </div>
 </div>
-  </div> <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
-  				<script src="${pageContext.request.contextPath}/js/shorts.js"></script>
-  		<form id="joreugiForm" method="post" action="${pageContext.request.contextPath}/poke" style="display: none;">
-		    <input type="hidden" name="action" value="send">
-		    
-		    <input type="hidden" name="productNo" id="joreugiProductNo" value="">
-		    <input type="hidden" name="productOptionNo" id="joreugiOptionNo" value="1"> <input type="hidden" name="pokeQuantity" id="joreugiQuantity" value="1">
-		    
-		    <input type="hidden" name="receiverNo" value="2"> 
-		    <input type="hidden" name="familyNo" value="1">
-		    <input type="hidden" name="pokeMsg" value="쇼츠 보고 반했어! 이거 사줘❤️">
-		</form>
+</div> 
+
+<jsp:include page="/WEB-INF/views/poke/poke-modal.jsp" />
+<jsp:include page="/WEB-INF/views/gift/gift-modal.jsp" />
+
+<div id="success-toast" class="option-toast hidden" role="alert" aria-live="assertive" aria-hidden="true" 
+     style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:9999; 
+            background:rgba(76, 175, 80, 0.9); color:#fff; padding:10px 20px; border-radius:20px; 
+            display:flex; align-items:center; gap:8px; transition: opacity 0.3s ease;">
+  <span class="material-icons option-toast__icon" aria-hidden="true" style="color:#fff;">check_circle</span>
+  <span class="option-toast__text" id="success-toast-text">성공</span>
+</div>
+
+<script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
+<script src="${pageContext.request.contextPath}/js/shorts.js"></script>
+  
 </body>
 </html>

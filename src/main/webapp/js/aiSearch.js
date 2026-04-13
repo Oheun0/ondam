@@ -9,18 +9,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // -----------------------------------------------------
     // ✨ [추가] 뒤로가기 시 기존 검색 결과 복구 로직
     // -----------------------------------------------------
-    const savedProducts = sessionStorage.getItem('aiSearchResults');
-    const savedImage = sessionStorage.getItem('aiSearchImage');
+	const navEntries = performance.getEntriesByType('navigation');
+	    const isBackForward = navEntries.length > 0 && navEntries[0].type === 'back_forward';
 
-    if (savedProducts && savedImage) {
-        // 저장된 이미지 복구
-        if (previewImg) previewImg.src = savedImage;
-        if (previewBox) previewBox.style.display = 'block';
-        
-        // 저장된 검색 결과 복구
-        renderResults(JSON.parse(savedProducts));
-    }
-    // -----------------------------------------------------
+	    const savedProducts = sessionStorage.getItem('aiSearchResults');
+	    const savedImage = sessionStorage.getItem('aiSearchImage');
+
+	    // 오직 '뒤로가기'로 왔을 때만 복구하고, 그 외(직접 진입)에는 삭제
+	    if (isBackForward && savedProducts && savedImage) {
+	        if (previewImg) previewImg.src = savedImage;
+	        if (previewBox) previewBox.style.display = 'block';
+	        renderResults(JSON.parse(savedProducts));
+	    } else {
+	        // 직접 메뉴를 눌러 들어왔거나 새로고침 시에는 저장된 내역을 비움
+	        sessionStorage.removeItem('aiSearchResults');
+	        sessionStorage.removeItem('aiSearchImage');
+	    }
 
     if (uploadZone && fileInp) {
         uploadZone.addEventListener('click', function() {

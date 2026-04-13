@@ -1,12 +1,23 @@
 package com.ondam.poke.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
+import com.ondam.cart.dto.CartItemDTO;
 import com.ondam.common.controller.Controller;
+import com.ondam.group.dto.FamilyMemberDTO;
+import com.ondam.group.service.FamilyMemberService;
 import com.ondam.notification.dto.NotificationDTO;
 import com.ondam.notification.service.NotificationService;
 import com.ondam.poke.dto.PokeDTO;
 import com.ondam.poke.service.PokeService;
+import com.ondam.product.dto.ProductDTO;
+import com.ondam.product.dto.ProductImageDTO;
+import com.ondam.product.dto.ProductOptionDTO;
+import com.ondam.product.service.ProductImageService;
+import com.ondam.product.service.ProductOptionService;
+import com.ondam.product.service.ProductService;
 import com.ondam.user.dto.UserDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +52,8 @@ public class PokeController implements Controller {
 			return cancel(request, response);
 		case "detail":
 			return detail(request, response);
+		case "giftOrder":
+		    return giftOrder(request, response);
 		default:
 			return "redirect:/poke";
 		}
@@ -48,10 +61,47 @@ public class PokeController implements Controller {
 
 	// 1. 받은 조르기 목록
 	private String list(HttpServletRequest request, HttpServletResponse response) {
-		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
-		Vector<PokeDTO> receivedList = pokeService.getReceivedPokeList(loginUser.getUserNo());
-		request.setAttribute("receivedList", receivedList);
-		return "poke/list";
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+
+	    String fromNoParam = request.getParameter("fromNo");
+	    String pokeNoParam  = request.getParameter("pokeNo");
+
+	    // pokeNo로 진입 시 → 해당 poke의 senderNo를 fromNo로 사용
+	    if (fromNoParam == null && pokeNoParam != null && !pokeNoParam.trim().isEmpty()) {
+	        PokeDTO poke = pokeService.getPokeById(Integer.parseInt(pokeNoParam));
+	        if (poke != null && poke.getReceiverNo() == loginUser.getUserNo()) {
+	            fromNoParam = String.valueOf(poke.getSenderNo());  // senderNo로 필터
+	        }
+	    }
+
+	    Vector<PokeDTO> receivedList;
+	    if (fromNoParam != null && !fromNoParam.trim().isEmpty()) {
+	        int fromNo = Integer.parseInt(fromNoParam);
+	        receivedList = pokeService.getPokesFromSender(loginUser.getUserNo(), fromNo);
+	        request.setAttribute("fromNo", fromNo);
+	    } else {
+	        receivedList = pokeService.getReceivedPokeList(loginUser.getUserNo());
+	    }
+
+	    // 상품 정보 Map
+	    ProductService productService = new ProductService();
+	    Map<Integer, ProductDTO> productMap = new HashMap<>();
+	    Map<Integer, String> imageMap = new HashMap<>();
+
+	    for (PokeDTO poke : receivedList) {
+	        int pNo = poke.getProductNo();
+	        if (!productMap.containsKey(pNo)) {
+	            ProductDTO product = productService.getProductById(pNo);
+	            if (product != null) productMap.put(pNo, product);
+	            String img = productService.getProductImage(pNo);
+	            imageMap.put(pNo, img != null ? img : "");
+	        }
+	    }
+
+	    request.setAttribute("receivedList", receivedList);
+	    request.setAttribute("productMap", productMap);
+	    request.setAttribute("imageMap", imageMap);
+	    return "poke/poke-list";
 	}
 
 	// 2. 보낸 조르기 목록
@@ -68,13 +118,12 @@ public class PokeController implements Controller {
 
 		String productNoParam = request.getParameter("productNo");
 		String receiverNoParam = request.getParameter("receiverNo");
-		String familyNoParam = request.getParameter("familyNo");
-		String pokeMsg = request.getParameter("pokeMsg");
+		String pokeMsg = request.getParameter("pokeMsg"); // shorts.js에서 보낸 메시지
 		String productOptionNoParam = request.getParameter("productOptionNo");
 		String pokeQuantityParam = request.getParameter("pokeQuantity");
 
-		// 필수값 검증
-		if (productNoParam == null || receiverNoParam == null || familyNoParam == null) {
+		// 필수값 검증 (familyNo는 뺐습니다)
+		if (productNoParam == null || receiverNoParam == null) {
 			return "redirect:/product";
 		}
 
@@ -84,11 +133,24 @@ public class PokeController implements Controller {
 			return "redirect:/product?action=detail&productNo=" + productNoParam;
 		}
 
+        //  서버에서 로그인 유저의 가족 번호를 찾기
+        FamilyMemberService familyMemberService = new FamilyMemberService();
+        FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+        
+        if (myMember == null) {
+            // 가족 그룹이 없으면 에러 (외래키 제약조건 위반을 사전에 방지)
+            System.out.println("가족 그룹이 없는 유저의 조르기 시도입니다.");
+            return "redirect:/product"; 
+        }
+        
+        // 가족 번호 획득
+        int familyNo = myMember.getFamilyNo(); 
+
 		PokeDTO dto = new PokeDTO();
 		dto.setProductNo(Integer.parseInt(productNoParam));
 		dto.setSenderNo(loginUser.getUserNo());
 		dto.setReceiverNo(receiverNo);
-		dto.setFamilyNo(Integer.parseInt(familyNoParam));
+		dto.setFamilyNo(familyNo); // 서버가 찾은 번호.
 		dto.setPokeMsg(pokeMsg != null ? pokeMsg : "");
 		dto.setSendState(0); // 대기중
 		dto.setSendDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
@@ -116,7 +178,7 @@ public class PokeController implements Controller {
 			notificationService.createNotification(noti);
 		}
 
-		return "redirect:/poke";
+		return "redirect:/main";
 	}
 
 	// 4. 수락 / 거절 (receiverNo가 처리)
@@ -195,5 +257,62 @@ public class PokeController implements Controller {
 
 	    request.setAttribute("poke", poke);
 	    return "poke/detail"; // sendState에 따라 수락/거절 or 결과 표시
+	}
+	
+	private String giftOrder(HttpServletRequest request, HttpServletResponse response) {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    String[] pokeNos = request.getParameterValues("pokeNo");
+	    if (pokeNos == null || pokeNos.length == 0) return "redirect:/poke";
+
+	    ProductService productService = new ProductService();
+	    ProductOptionService optionService = new ProductOptionService();
+	    ProductImageService imageService = new ProductImageService();
+
+	    Vector<CartItemDTO> orderItems = new Vector<>();
+	    int receiverNo = -1;
+
+	    for (String pokeNoStr : pokeNos) {
+	        PokeDTO poke = pokeService.getPokeById(Integer.parseInt(pokeNoStr));
+	        if (poke == null || poke.getReceiverNo() != loginUser.getUserNo()) continue;
+	        if (poke.getSendState() != 0) continue;
+
+	        if (receiverNo == -1) receiverNo = poke.getSenderNo();
+
+	        ProductDTO product = productService.getProductById(poke.getProductNo());
+	        ProductOptionDTO option = optionService.getProductOptionByNo(poke.getProductOptionNo());
+	        ProductImageDTO image = imageService.getProductImageById(poke.getProductNo());
+	        if (product == null) continue;
+
+	        CartItemDTO item = new CartItemDTO();
+	        item.setProductNo(poke.getProductNo());
+	        item.setProductOptionNo(poke.getProductOptionNo());
+	        item.setProductName(product.getProductName());
+	        item.setProductOriginPrice(product.getProductOriginPrice());
+	        item.setCartQuantity(poke.getPokeQuantity());
+	        if (image != null) item.setProductImg(image.getImgFile());
+	        if (option != null) {
+	            item.setOptionColor(option.getOptionColor());
+	            item.setOptionSize(option.getOptionSize());
+	            item.setProductPrice(product.getProductPrice() + option.getOptionAddPrice());
+	        } else {
+	            item.setProductPrice(product.getProductPrice());
+	            item.setOptionColor("기본");
+	            item.setOptionSize("N/A");
+	        }
+	        orderItems.add(item);
+	    }
+
+	    if (orderItems.isEmpty() || receiverNo == -1) return "redirect:/poke";
+
+	    request.getSession().setAttribute("pokeOrderItems",    orderItems);
+	    request.getSession().setAttribute("pokeOrderReceiver", receiverNo);
+	    request.getSession().setAttribute("pendingPokeNos",    String.join(",", pokeNos));
+
+	    return "redirect:/payment?buyType=poke&isGift=true&receiverNo=" + receiverNo;
+	}
+	
+	// null, 공백 검증
+	private boolean isEmpty(String val) {
+	    return val == null || val.trim().isEmpty();
 	}
 }

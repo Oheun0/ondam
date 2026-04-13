@@ -14,7 +14,7 @@
           <c:forEach var="m" items="${pokeMemberList}">
             <button type="button" class="poke-person-btn"
                     data-user-no="${m.userNo}"
-                    data-name="${m.userName}">
+                    data-family-no="${m.familyNo}" data-name="${m.userName}">
               ${m.userName}님에게 조르기
             </button>
           </c:forEach>
@@ -28,6 +28,14 @@
       </c:choose>
     </div>
 
+    <%-- 조르기 메시지 입력 --%>
+    <div class="poke-msg-wrap" style="padding: 0 16px 12px;">
+      <textarea id="pokeMsgInput"
+                placeholder="전하고 싶은 말을 입력하세요 (선택)"
+                maxlength="100"
+                style="width:100%; resize:none; border:1px solid #ddd; border-radius:8px; padding:10px; font-size:0.9rem; height:72px;"></textarea>
+    </div>
+
     <div class="poke-modal-bottom">
       <button type="button" class="poke-bottom-btn cancel" id="closePokeModalBtn">
         취소
@@ -36,6 +44,16 @@
         조르기
       </button>
     </div>
+
+    <%-- 숨겨진 폼 --%>
+    <form id="pokeForm" method="post" action="${pageContext.request.contextPath}/poke?action=send" style="display:none;">
+      <input type="hidden" name="productNo"       id="pokeProductNo">
+      <input type="hidden" name="receiverNo"      id="pokeReceiverNo">
+      <input type="hidden" name="familyNo"        id="pokeFamilyNo">
+      <input type="hidden" name="productOptionNo" id="pokeProductOptionNo">
+      <input type="hidden" name="pokeQuantity"    id="pokeQuantity">
+      <input type="hidden" name="pokeMsg"         id="pokeMsgHidden">
+    </form>
 
   </div>
 </div>

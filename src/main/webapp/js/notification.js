@@ -60,17 +60,22 @@ document.addEventListener("DOMContentLoaded", function () {
 			            location.href = contextPath + "/group";
 			            break;
 			        case 1: // 조르기
-			            location.href = contextPath + "/poke?action=detail&pokeNo=" + data.refNo;
+			            location.href = contextPath + "/poke?action=list&pokeNo=" + data.refNo;
 			            break;
 			        case 2: // 주문/배송
 						location.href = contextPath + "/order/order-detail?orderNo=" + data.refNo;
+						break;
 			        case 3: // 쿠폰
 					case 4: // 배송지 수정
 				        location.href = contextPath + "/profile-address";
 					        break;
 					case 5: // 함께 지갑
 						location.href = contextPath + "/wallet";
-					case 6: // 기타
+						break;
+					case 6: // 선물
+						location.href = contextPath + "/gift";
+					    break;
+					case 7: // 기타
 			        default:
 			            location.reload();
 			            break;

@@ -498,7 +498,9 @@
 				  buyType:         (document.querySelector('input[name="buyType"]') || {}).value || "",
 				  directProductNo: (document.querySelector('input[name="directProductNo"]') || {}).value || "",
 				  directOptionNo:  (document.querySelector('input[name="directOptionNo"]') || {}).value || "",
-				  directQuantity:  (document.querySelector('input[name="directQuantity"]') || {}).value || ""
+				  directQuantity:  (document.querySelector('input[name="directQuantity"]') || {}).value || "",
+				  isGift:     (document.querySelector('input[name="isGift"]') || {}).value || "",
+				      receiverNo: (document.querySelector('input[name="receiverNo"]') || {}).value || ""
 			  };
 
 		      // cartItemNo 배열도 같이 전송 (hidden input 여러 개)

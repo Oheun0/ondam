@@ -2,6 +2,7 @@ package com.ondam.seller.controller;
 
 import com.ondam.common.controller.Controller;
 import com.ondam.seller.dto.SellerDTO;
+import com.ondam.seller.service.SellerService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

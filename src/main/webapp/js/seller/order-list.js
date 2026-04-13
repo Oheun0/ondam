@@ -1,71 +1,64 @@
-/* global document, alert, console, window */
-(function () {
-  function setActiveTab(tab) {
+/* global document, window, confirm */
+document.addEventListener('DOMContentLoaded', function() {
+    var contextPath = document.body.getAttribute('data-context-path') || '';
+    var orderListSection = document.querySelector('.seller-order-list');
+    if (orderListSection) {
+        orderListSection.addEventListener('click', function(e) {
+            var btn = e.target.closest('.seller-order-btn');
+            if (!btn) return;
+            var action = btn.getAttribute('data-action');
+            var card = btn.closest('.seller-order-card');
+            var orderNo = card.getAttribute('data-order-no');
+
+            if (action === 'detail') {
+                window.location.href = contextPath + "/seller/order?action=detail&orderNo=" + orderNo;
+            } 
+            else if (action === 'ready') {
+                if(confirm(orderNo + '번 주문을 [배송 준비 중] 상태로 변경하시겠습니까?')) {
+                    window.location.href = contextPath + "/seller/order?action=updateStatusFromList&orderNo=" + orderNo + "&status=ready";
+                }
+            } 
+            else if (action === 'shipStart') {
+                if(confirm(orderNo + '번 주문을 [배송 중] 상태로 변경하시겠습니까?')) {
+                    window.location.href = contextPath + "/seller/order?action=updateStatusFromList&orderNo=" + orderNo + "&status=shipping";
+                }
+            } 
+            else if (action === 'shipDone') {
+                if(confirm(orderNo + '번 주문을 [배송 완료] 상태로 변경하시겠습니까?')) {
+                    window.location.href = contextPath + "/seller/order?action=updateStatusFromList&orderNo=" + orderNo + "&status=done";
+                }
+            }
+        });
+    }
     var tabs = document.querySelectorAll('.seller-order-tab');
-    tabs.forEach(function (t) {
-      t.classList.remove('active');
-      t.removeAttribute('aria-current');
-    });
-    tab.classList.add('active');
-    tab.setAttribute('aria-current', 'true');
-  }
-
-  function filterByStatus(status) {
     var cards = document.querySelectorAll('.seller-order-card');
-    cards.forEach(function (c) {
-      var s = c.getAttribute('data-status');
-      var show = (status === 'all') || (s === status);
-      c.classList.toggle('hidden', !show);
-    });
-    console.log('[SellerOrderList] tab filter (dummy)', status);
-  }
 
-  document.addEventListener('click', function (e) {
-    var t = e.target;
-    if (!t) return;
-
-    var tab = t.closest('.seller-order-tab');
-    if (tab) {
-      var status = tab.getAttribute('data-status') || 'all';
-      setActiveTab(tab);
-      filterByStatus(status);
-      return;
+    if (tabs.length > 0) {
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                tabs.forEach(function(t) { t.classList.remove('active'); });
+                this.classList.add('active');
+                var targetStatus = this.getAttribute('data-status');
+                cards.forEach(function(card) {
+                    if (targetStatus === 'all' || card.getAttribute('data-status') === targetStatus) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    }
+    var pageBtns = document.querySelectorAll('.seller-order-page-btn');
+    if (pageBtns.length > 0) {
+        pageBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var page = this.getAttribute('data-page');
+                if (page) {
+                    window.location.href = contextPath + "/seller/order?action=list&page=" + page;
+                }
+            });
+        });
     }
 
-    var pageBtn = t.closest('.seller-order-page-btn');
-    if (pageBtn) {
-      var p = pageBtn.getAttribute('data-page');
-      console.log('[SellerOrderList] pagination (dummy)', p);
-      alert('페이지네이션은 더미 동작입니다. (선택: ' + p + ')');
-      return;
-    }
-
-    var btn = t.closest('[data-action]');
-    if (!btn) return;
-    var action = btn.getAttribute('data-action');
-    var card = btn.closest('.seller-order-card');
-    var orderNo = card ? card.getAttribute('data-order-no') : '(unknown)';
-
-    console.log('[SellerOrderList] action (dummy)', action, orderNo);
-    if (action === 'detail') {
-      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/preview?page=seller/order/detail&orderNo=' + encodeURIComponent(orderNo);
-      return;
-    }
-    if (action === 'shipStart') {
-      alert('배송 시작 처리(더미)\n\n주문번호: ' + orderNo);
-      return;
-    }
-    if (action === 'shipDone') {
-      alert('배송 완료 처리(더미)\n\n주문번호: ' + orderNo);
-      return;
-    }
-    if (action === 'ready') {
-      alert('준비 처리(더미)\n\n주문번호: ' + orderNo);
-      return;
-    }
-  });
-
-  // 초기: 전체 표시
-  filterByStatus('all');
-})();
-
+});

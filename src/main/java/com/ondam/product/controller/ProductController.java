@@ -35,13 +35,29 @@ public class ProductController implements Controller {
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String action = request.getParameter("action");
-		
-		if ("getOptions".equals(action)) {
+	    String action = request.getParameter("action");
+	    
+	    if ("getOptions".equals(action)) {
 	        getOptionsJson(request, response);
-	        return null; // 페이지 이동을 하지 않음 (중요)
+	        return null;
 	    }
-		
+
+	    // [추가] 찜하기 비동기 처리
+	    if ("toggleWish".equals(action)) {
+	        response.setContentType("application/json;charset=UTF-8");
+	        HttpSession session = request.getSession();
+	        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+	        if (loginUser == null) {
+	            response.getWriter().write("{\"status\":\"error\",\"message\":\"로그인이 필요합니다.\"}");
+	            return null;
+	        }
+	        int productNo = Integer.parseInt(request.getParameter("productNo"));
+	        // wishService를 사용하여 정합성 있게 처리
+	        boolean isWished = wishService.toggleWish(loginUser.getUserNo(), productNo);
+	        String msg = isWished ? "찜 목록에 추가되었습니다." : "찜이 해제되었습니다.";
+	        response.getWriter().write("{\"status\":\"success\",\"message\":\"" + msg + "\"}");
+	        return null;
+	    }
 		if (action == null)
 			action = "list";
 
@@ -167,9 +183,11 @@ public class ProductController implements Controller {
 	        if (myMember != null) {
 	            Vector<FamilyMemberDTO> memberList = familyMemberService
 	                    .getFamilyMembersByFamilyNo(myMember.getFamilyNo());
-	            // 본인 제외
 	            memberList.removeIf(m -> m.getUserNo() == loginUser.getUserNo());
 	            request.setAttribute("pokeMemberList", memberList);
+	            request.setAttribute("familyNo", myMember.getFamilyNo());
+	        } else {
+	            request.setAttribute("familyNo", 0);
 	        }
 	    }
 

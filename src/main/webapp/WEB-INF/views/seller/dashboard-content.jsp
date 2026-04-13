@@ -16,19 +16,19 @@
       <div class="seller-summary__grid">
         <article class="seller-summary__item" data-action="orders-today">
           <div class="seller-summary__label">오늘 주문</div>
-          <div class="seller-summary__value">12<span class="seller-summary__unit">건</span></div>
+          <div class="seller-summary__value">${empty stats.todayOrderCount ? '0' : stats.todayOrderCount}<span class="seller-summary__unit">건</span></div>
         </article>
         <article class="seller-summary__item" data-action="ship-ready">
           <div class="seller-summary__label">배송 준비</div>
-          <div class="seller-summary__value">5<span class="seller-summary__unit">건</span></div>
+          <div class="seller-summary__value">${empty stats.shipReadyCount ? '0' : stats.shipReadyCount}<span class="seller-summary__unit">건</span></div>
         </article>
         <article class="seller-summary__item" data-action="inquiries">
           <div class="seller-summary__label">문의</div>
-          <div class="seller-summary__value">3<span class="seller-summary__unit">건</span></div>
+          <div class="seller-summary__value">${empty stats.inquiryCount ? '0' : stats.inquiryCount}<span class="seller-summary__unit">건</span></div>
         </article>
         <article class="seller-summary__item" data-action="reviews-new">
           <div class="seller-summary__label">신규 리뷰</div>
-          <div class="seller-summary__value">4<span class="seller-summary__unit">개</span></div>
+          <div class="seller-summary__value">${empty stats.reviewCount ? '0' : stats.reviewCount}<span class="seller-summary__unit">개</span></div>
         </article>
       </div>
     </section>

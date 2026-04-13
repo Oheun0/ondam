@@ -66,8 +66,8 @@ public class SellerAuthController implements Controller {
                         if (vendorName != null) {
                             session.setAttribute("vendorName", vendorName);
                         }
-
                         return "redirect:/seller/dashboard";
+
                     } else {
                         // 로그인 실패 (DB에 정보가 없거나 비밀번호가 틀림)
                     	HttpSession session = request.getSession();
