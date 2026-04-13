@@ -10,7 +10,7 @@
 	      'new-product':  ctx + '/seller/product?action=form',
 	      'new-shorts':   ctx + '/seller/shorts?action=form',
 	      'open-orders':  ctx + '/seller/order?action=list',
-	      'new-coupon':   ctx + '/seller/coupon?action=form'
+	      'open-settlement': ctx + '/preview?page=seller/settlement/list'
 	    };
 
 		var targetUrl = urlMap[action];
