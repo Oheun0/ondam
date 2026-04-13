@@ -97,18 +97,18 @@
                       </c:if>
 
                       <%-- 가격 --%>
-                      <div class="cart-item__bottom">
-                        <div class="cart-item__price-block">
-                          <c:if test="${product.productOriginPrice > product.productPrice}">
-                            <span class="cart-item__price-original">
-                              <fmt:formatNumber value="${product.productOriginPrice}" pattern="#,###"/>원
-                            </span>
-                          </c:if>
-                          <span class="cart-item__price-sale">
-                            <fmt:formatNumber value="${product.productPrice}" pattern="#,###"/>원
-                          </span>
-                        </div>
-                      </div>
+						<div class="cart-item__bottom">
+						  <div class="cart-item__price-block">
+						    <c:if test="${product.productOriginPrice > product.productPrice}">
+						      <span class="cart-item__price-original">
+						        <fmt:formatNumber value="${product.productOriginPrice * poke.pokeQuantity}" pattern="#,###"/>원
+						      </span>
+						    </c:if>
+						    <span class="cart-item__price-sale">
+						      <fmt:formatNumber value="${product.productPrice * poke.pokeQuantity}" pattern="#,###"/>원
+						    </span>
+						  </div>
+						</div>
 
                       <%-- 상태 배지 --%>
                       <c:choose>
