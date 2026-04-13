@@ -6,6 +6,8 @@ import java.util.Vector;
 
 import com.ondam.cart.dto.CartItemDTO;
 import com.ondam.common.controller.Controller;
+import com.ondam.group.dto.FamilyMemberDTO;
+import com.ondam.group.service.FamilyMemberService;
 import com.ondam.notification.dto.NotificationDTO;
 import com.ondam.notification.service.NotificationService;
 import com.ondam.poke.dto.PokeDTO;
@@ -116,15 +118,14 @@ public class PokeController implements Controller {
 
 		String productNoParam = request.getParameter("productNo");
 		String receiverNoParam = request.getParameter("receiverNo");
-		String familyNoParam = request.getParameter("familyNo");
-		String pokeMsg = request.getParameter("pokeMsg");
+		String pokeMsg = request.getParameter("pokeMsg"); // shorts.js에서 보낸 메시지
 		String productOptionNoParam = request.getParameter("productOptionNo");
 		String pokeQuantityParam = request.getParameter("pokeQuantity");
 
-		// 필수값 검증
-		if (isEmpty(productNoParam) || isEmpty(receiverNoParam)) {
-	        return "redirect:/product";
-	    }
+		// 필수값 검증 (familyNo는 뺐습니다)
+		if (productNoParam == null || receiverNoParam == null) {
+			return "redirect:/product";
+		}
 
 		// 자기 자신에게 조르기 방지
 		int receiverNo = Integer.parseInt(receiverNoParam);
@@ -132,11 +133,24 @@ public class PokeController implements Controller {
 			return "redirect:/product?action=detail&productNo=" + productNoParam;
 		}
 
+        //  서버에서 로그인 유저의 가족 번호를 찾기
+        FamilyMemberService familyMemberService = new FamilyMemberService();
+        FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+        
+        if (myMember == null) {
+            // 가족 그룹이 없으면 에러 (외래키 제약조건 위반을 사전에 방지)
+            System.out.println("가족 그룹이 없는 유저의 조르기 시도입니다.");
+            return "redirect:/product"; 
+        }
+        
+        // 가족 번호 획득
+        int familyNo = myMember.getFamilyNo(); 
+
 		PokeDTO dto = new PokeDTO();
 		dto.setProductNo(Integer.parseInt(productNoParam));
 		dto.setSenderNo(loginUser.getUserNo());
 		dto.setReceiverNo(receiverNo);
-		dto.setFamilyNo(isEmpty(familyNoParam) ? 0 : Integer.parseInt(familyNoParam));
+		dto.setFamilyNo(familyNo); // 서버가 찾은 번호.
 		dto.setPokeMsg(pokeMsg != null ? pokeMsg : "");
 		dto.setSendState(0); // 대기중
 		dto.setSendDate(new java.sql.Timestamp(System.currentTimeMillis()).toString());
@@ -145,8 +159,8 @@ public class PokeController implements Controller {
 		int productOptionNo = (productOptionNoParam != null && !productOptionNoParam.isEmpty()) ? Integer.parseInt(productOptionNoParam) : 0;
 		int pokeQuantity = (pokeQuantityParam != null && !pokeQuantityParam.isEmpty()) ? Integer.parseInt(pokeQuantityParam) : 1; // 수량 기본값 1
 		
-		dto.setProductOptionNo(isEmpty(productOptionNoParam) ? 0 : Integer.parseInt(productOptionNoParam));
-	    dto.setPokeQuantity(isEmpty(pokeQuantityParam) ? 1 : Integer.parseInt(pokeQuantityParam));
+		dto.setProductOptionNo(productOptionNo);
+		dto.setPokeQuantity(pokeQuantity);
 		
 		// pokeNo 받아오기
 		int newPokeNo = pokeService.createPokeAndGetNo(dto);

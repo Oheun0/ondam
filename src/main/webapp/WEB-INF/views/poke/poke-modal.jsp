@@ -14,7 +14,7 @@
           <c:forEach var="m" items="${pokeMemberList}">
             <button type="button" class="poke-person-btn"
                     data-user-no="${m.userNo}"
-                    data-name="${m.userName}">
+                    data-family-no="${m.familyNo}" data-name="${m.userName}">
               ${m.userName}님에게 조르기
             </button>
           </c:forEach>

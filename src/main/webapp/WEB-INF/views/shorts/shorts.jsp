@@ -189,16 +189,6 @@
   <span class="option-toast__text" id="success-toast-text">성공</span>
 </div>
 
-<form id="joreugiForm" method="post" action="${pageContext.request.contextPath}/poke" style="display: none;">
-    <input type="hidden" name="action" value="send">
-    <input type="hidden" name="productNo" id="joreugiProductNo" value="">
-    <input type="hidden" name="productOptionNo" id="joreugiOptionNo" value=""> 
-    <input type="hidden" name="pokeQuantity" id="joreugiQuantity" value="1">
-    <input type="hidden" name="receiverNo" id="joreugiReceiverNo" value=""> 
-    <input type="hidden" name="familyNo" id="joreugiFamilyNo" value="1">
-    <input type="hidden" name="pokeMsg" value="쇼츠 보고 반했어! 이거 사줘❤️">
-</form>
-
 <script src="${pageContext.request.contextPath}/js/ondam-nav.js"></script>
 <script src="${pageContext.request.contextPath}/js/shorts.js"></script>
   

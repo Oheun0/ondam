@@ -58,41 +58,57 @@ document.addEventListener("DOMContentLoaded", function() {
 	// === 3. 조르기 확정 버튼 이벤트 (shorts.js 내부) ===
     var confirmPokeBtn = document.getElementById("confirmPokeBtn");
     if(confirmPokeBtn) {
-        confirmPokeBtn.addEventListener("click", function() {
+        confirmPokeBtn.addEventListener("click", function(e) {
+            e.preventDefault(); // 혹시 모를 기본 submit 동작 방지
+            
             var activeBtn = document.querySelector(".poke-person-btn.active");
             if (!activeBtn) {
-                // alert 대신 에러 토스트 띄우기 (문구는 필요시 변경)
                 document.querySelector("#option-toast .option-toast__text").innerText = "조를 대상을 선택해주세요.";
                 showOptionErrorToast();
                 return;
             }
             
+            // 1. 받는 사람 번호와 수량 가져오기
             var receiverNo = activeBtn.getAttribute("data-user-no");
+            var qty = document.getElementById('buyQty').innerText;
+            var ctx = document.body.getAttribute("data-context-path") || "/ondam";
             
-            // 폼에 값 세팅
-            document.getElementById('joreugiReceiverNo').value = receiverNo;
-            document.getElementById('joreugiProductNo').value = currentProductNo;
-            document.getElementById('joreugiOptionNo').value = selectedOptionNo;
-            document.getElementById('joreugiQuantity').value = document.getElementById('buyQty').innerText;
+            // 2. 모달의 textarea에서 사용자가 직접 입력한 메시지 가져오기
+            var customMsg = "";
+            var msgInputEl = document.getElementById("pokeMsgInput");
+            if (msgInputEl && msgInputEl.value.trim() !== "") {
+                customMsg = msgInputEl.value.trim();
+            } else {
+                customMsg = "쇼츠 보고 반했어! 이거 사줘❤️"; // 빈칸일 때 기본 문구
+            }
 
-            // 💡 핵심 해결: 폼을 submit() 하지 않고 AJAX(Fetch)로 뒷단에서 몰래 보냅니다.
-            var form = document.getElementById('joreugiForm');
-            var formData = new URLSearchParams(new FormData(form));
+            // 3. 더 이상 hidden 폼(joreugiForm, pokeForm 등)을 찾지 않고 직접 데이터 조립
+            // (familyNo는 백엔드 PokeController에서 직접 처리하므로 뺐습니다)
+            var params = new URLSearchParams();
+            params.append('action', 'send');
+            params.append('productNo', currentProductNo);
+            params.append('productOptionNo', selectedOptionNo);
+            params.append('pokeQuantity', qty);
+            params.append('receiverNo', receiverNo);
+            params.append('pokeMsg', customMsg); // 입력한 메시지 추가
 
-			// getAttribute('action')을 써서 진짜 URL 문자열을 가져오도록 수정
-            fetch(form.getAttribute('action'), {
+            // 4. fetch로 백엔드 전송
+            fetch(ctx + '/poke', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: formData.toString()
+                body: params.toString()
             })
             .then(function(response) {
-                // 전송 성공 시 화면 이동 없이 모달만 닫기
+                // 전송 성공 시 모달 닫기
                 var dim = document.getElementById("pokeModalDim");
                 var modal = document.getElementById("pokeModal");
                 if (dim) dim.classList.add("hidden");
                 if (modal) modal.classList.add("hidden");
 
-                // alert 대신 예쁜 성공 토스트 띄우기
+                // 💡 다음 조르기를 위해 입력했던 메시지 칸 비워주기
+                if (msgInputEl) msgInputEl.value = "";
+
+                // 성공 토스트 띄우기
                 showSuccessToast("조르기 요청이 전송되었습니다❤️");
             })
             .catch(function(err) {
