@@ -30,7 +30,6 @@ import com.ondam.seller.controller.SellerResetPwController;
 import com.ondam.seller.controller.SellerResetPwFormController;
 import com.ondam.seller.controller.SellerSignupController;
 import com.ondam.shipment.controller.SellerShipmentController;
-import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.AddressDeleteController;
 import com.ondam.user.controller.AddressFormController;

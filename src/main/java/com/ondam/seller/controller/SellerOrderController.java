@@ -94,6 +94,29 @@ public class SellerOrderController implements Controller {
                 
                 return "redirect:/seller/order?action=detail&orderNo=" + targetOrderNo;
                 
+            case "updateItemStatus":
+                String itemOrderNoParam = request.getParameter("orderNo");
+                String itemStatusParam = request.getParameter("status");
+                String itemNosStr = request.getParameter("itemNos");
+                                
+                if (itemOrderNoParam == null || itemStatusParam == null || itemNosStr == null || itemNosStr.isEmpty()) {
+                    return "redirect:/seller/order?action=list";
+                }
+                
+                int itemOrderNo = Integer.parseInt(itemOrderNoParam);
+                int itemNewState = 0;
+                
+                switch(itemStatusParam) {
+                    case "paid": itemNewState = 0; break;
+                    case "ready": itemNewState = 1; break;
+                    case "shipping": itemNewState = 2; break;
+                    case "done": itemNewState = 3; break;
+                    case "cancel": itemNewState = 4; break;
+                }
+                sellerOrderDAO.updateItemDeliveryState(vendorNo, itemOrderNo, itemNewState, itemNosStr);
+                
+                return "redirect:/seller/order?action=detail&orderNo=" + itemOrderNo;
+                
             case "updateStatusFromList":
                 String listOrderNoStr = request.getParameter("orderNo");
                 String listStatusParam = request.getParameter("status");
@@ -124,6 +147,21 @@ public class SellerOrderController implements Controller {
                 sellerOrderDAO.updateInvoice(vendorNo, invOrderNo, carrier, tracking);
                 return "redirect:/seller/order?action=detail&orderNo=" + invOrderNo;
                 
+                
+            case "updateItemInvoice":
+                String invOrderNoStr = request.getParameter("orderNo");
+                String invCarrier = request.getParameter("carrier");
+                String invTracking = request.getParameter("tracking");
+                String invItemNos = request.getParameter("itemNos"); // "21,22"
+
+                if (invOrderNoStr == null || invCarrier == null || invTracking == null || invItemNos == null) {
+                    return "redirect:/seller/order?action=list";
+                }
+
+                int invOrderNo = Integer.parseInt(invOrderNoStr);
+                sellerOrderDAO.updateItemInvoice(vendorNo, invOrderNo, invCarrier, invTracking, invItemNos);
+
+                return "redirect:/seller/order?action=detail&orderNo=" + invOrderNo;
             default:
                 return "redirect:/seller/order?action=list";
         }
