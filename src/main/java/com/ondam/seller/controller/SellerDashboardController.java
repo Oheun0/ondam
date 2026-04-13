@@ -37,7 +37,6 @@ public class SellerDashboardController implements Controller {
         } else {
             displayName = "판매자";
         }
-        
         request.setAttribute("sellerName", displayName);
         request.setAttribute("sellerPageTitle", "대시보드");
         request.setAttribute("sellerActiveMenu", "dashboard");

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.body.addEventListener('click', function (e) {
     var el = e.target.closest('[data-action]');
-    if (!el) return; // 없으면 무시
+    if (!el) return;
 
     var action = el.getAttribute('data-action');
     var targetUrl = urlMap[action];
