@@ -745,4 +745,31 @@ public class ProductDAO {
 		}
 		return vlist;
 	}
+	
+	public Vector<ProductDTO> getProductsByVendor(int vendorNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<ProductDTO> vlist = new Vector<>();
+	    
+	    try {
+	        con = pool.getConnection();
+	        // 상태가 삭제(-1 등)가 아닌 정상 노출/숨김(1, 0 등) 상품만 가져온다고 가정
+	        String sql = "SELECT * FROM product WHERE vendorNo = ? AND productState >= 0 ORDER BY productNo DESC";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, vendorNo);
+	        rs = pstmt.executeQuery();
+	        
+	        while (rs.next()) {
+	            ProductDTO dto = new ProductDTO();
+	            mapResultSetToDTO(rs, dto); // 기존에 작성하신 매핑 메서드 재활용
+	            vlist.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vlist;
+	}
 }

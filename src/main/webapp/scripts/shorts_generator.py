@@ -1,13 +1,18 @@
 import os
 import argparse
+import shutil
 from PIL import Image
 
-# 1. Pillow compatibility patch
 if not hasattr(Image, 'ANTIALIAS'):
     Image.ANTIALIAS = getattr(Image, 'LANCZOS', getattr(Image.Resampling, 'LANCZOS', 1))
 
-# 2. ImageMagick Path (Please check your installed version)
-os.environ["IMAGEMAGICK_BINARY"] = r"C:\Program Files\ImageMagick-7.1.2-Q16-HDRI\magick.exe"
+magick_path = shutil.which("magick") or shutil.which("convert")
+if magick_path:
+    os.environ["IMAGEMAGICK_BINARY"] = magick_path
+elif os.name == 'nt':
+    os.environ["IMAGEMAGICK_BINARY"] = r"C:\Program Files\ImageMagick-7.1.2-Q16-HDRI\magick.exe"
+else:
+    os.environ["IMAGEMAGICK_BINARY"] = "/usr/bin/convert"
 
 from moviepy.editor import (
     ImageClip,
@@ -18,27 +23,20 @@ from moviepy.editor import (
 )
 
 def create_shorts(image_paths, product_name, output_path, font_path, audio_path=None):
-    # --- 1. Settings (Fixed 10s) ---
     target_resolution = (1080, 1920)
     zoom_rate = 0.03
     total_duration = 10.0  
     clips = []
 
-    image_paths = image_paths[:3]
-    
-    # Check if files exist
-    valid_image_paths = []
-    for img in image_paths:
-        if os.path.exists(img):
-            valid_image_paths.append(img)
-        else:
-            print(f"[Warning] Image not found: {img}")
+    # [요구사항 반영] 유효한 이미지만 필터링 후 최대 3장까지 자름
+    valid_image_paths = [img for img in image_paths if os.path.exists(img)]
+    valid_image_paths = valid_image_paths[:3] 
     
     if not valid_image_paths:
         print("[Error] No valid images found to process.")
         return False
         
-    # --- 2. Calculate duration per image ---
+    # 이미지가 1장이면 10초, 2장이면 5초씩 동적 분배
     duration_per_image = total_duration / len(valid_image_paths)
     
     for img_path in valid_image_paths:
@@ -52,13 +50,12 @@ def create_shorts(image_paths, product_name, output_path, font_path, audio_path=
         )
         clips.append(final_clip)
 
-    # 3. Concatenate clips
     base_video = concatenate_videoclips(clips, method="compose")
 
-    # 4. Create Subtitle (Product Name)
-    actual_font = font_path if os.path.exists(font_path) else 'Arial'
+    actual_font = font_path if os.path.exists(font_path) else ('Arial' if os.name == 'nt' else 'Liberation-Sans')
     
     try:
+        # 전달받은 쇼츠 제목(product_name 변수명 유지)을 자막으로 렌더링
         txt_clip = TextClip(
             product_name,
             fontsize=80,
@@ -68,7 +65,7 @@ def create_shorts(image_paths, product_name, output_path, font_path, audio_path=
             stroke_width=3
         )
     except Exception as e:
-        print(f"[Error] TextClip creation failed: {e}")
+        print(f"[Error] TextClip creation failed. Check ImageMagick installation: {e}")
         return False
 
     txt_clip = (txt_clip.set_position(('center', 0.6), relative=True)
@@ -76,40 +73,44 @@ def create_shorts(image_paths, product_name, output_path, font_path, audio_path=
                         .crossfadein(0.5)
                         .crossfadeout(0.5))
 
-    # 5. Composite video and text
     final_video = CompositeVideoClip([base_video, txt_clip])
 
-    # 6. Audio (Optional)
     if audio_path and os.path.exists(audio_path):
         audio = AudioFileClip(audio_path).subclip(0, final_video.duration)
         final_video = final_video.set_audio(audio)
 
-    # --- 7. Create directory and Thumbnail ---
     output_dir = os.path.dirname(output_path)
-    if output_dir and not os.path.exists(output_dir):
+    if output_dir:
         os.makedirs(output_dir, exist_ok=True)
 
-    # Thumbnail extraction (RGBA to RGB)
     thumb_path = output_path.replace(".mp4", "_thumb.jpg")
-    frame = final_video.get_frame(0.0) 
-    img = Image.fromarray(frame)
-    if img.mode in ("RGBA", "P"): 
-        img = img.convert("RGB")
-    img.save(thumb_path)
-    print(f"[Info] Thumbnail generated: {thumb_path}")
+    try:
+        frame = final_video.get_frame(0.0) 
+        img = Image.fromarray(frame)
+        if img.mode in ("RGBA", "P"): 
+            img = img.convert("RGB")
+        img.save(thumb_path, optimize=True, quality=85)
+        print(f"[Info] Thumbnail generated: {thumb_path}")
+    except Exception as e:
+        print(f"[Warning] Failed to generate thumbnail: {e}")
 
-    # 8. Rendering
     print(f"[Info] Starting video rendering: {output_path}")
-    final_video.write_videofile(
-        output_path,
-        fps=30,
-        codec="libx264",
-        audio_codec="aac",
-        threads=4,
-        preset="ultrafast",
-        logger=None
-    )
-    final_video.close()
+    try:
+        final_video.write_videofile(
+            output_path,
+            fps=30,
+            codec="libx264",
+            audio_codec="aac",
+            threads=4,
+            preset="ultrafast",
+            logger=None
+        )
+    except Exception as e:
+        print(f"[Error] Render failed: {e}")
+        return False
+    finally:
+        final_video.close()
+        
     return True
 
 if __name__ == "__main__":
