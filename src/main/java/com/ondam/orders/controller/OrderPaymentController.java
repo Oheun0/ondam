@@ -54,6 +54,7 @@ public class OrderPaymentController implements Controller {
 		}
 		UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
+		String buyType   = request.getParameter("buyType");
 		String productNo = request.getParameter("productNo");
 
 		String action = request.getParameter("action");
@@ -61,12 +62,12 @@ public class OrderPaymentController implements Controller {
 			return handleSubmit(request, loginUser);
 		}
 
-		if (productNo != null && !productNo.trim().isEmpty()) {
-			// 케이스 1: 바로 구매
-			return handleDirectBuy(request, loginUser);
+		if ("poke".equals(buyType)) {
+		    return handlePokeBuy(request, loginUser);
+		} else if (productNo != null && !productNo.trim().isEmpty()) {
+		    return handleDirectBuy(request, loginUser);
 		} else {
-			// 케이스 2: 장바구니에서 구매
-			return handleCartBuy(request, loginUser);
+		    return handleCartBuy(request, loginUser);
 		}
 	}
 
@@ -230,6 +231,7 @@ public class OrderPaymentController implements Controller {
 		request.setAttribute("directQuantity", quantity);
 		request.setAttribute("isGift",     request.getParameter("isGift"));
 		request.setAttribute("receiverNo", request.getParameter("receiverNo"));
+		request.setAttribute("pokeNo", request.getParameter("pokeNo"));
 
 		return "order/order-payment";
 	}
@@ -294,6 +296,10 @@ public class OrderPaymentController implements Controller {
 				}
 				selectedItems.add(item);
 
+			} else if ("poke".equals(buyType)) {
+			    // 세션에서 꺼내기
+			    selectedItems = (Vector<CartItemDTO>) request.getSession().getAttribute("pokeOrderItems");
+			    if (selectedItems == null || selectedItems.isEmpty()) return "redirect:/poke";
 			} else {
 				// 장바구니 구매
 				if (cartItemNos == null || cartItemNos.length == 0)
@@ -437,17 +443,24 @@ public class OrderPaymentController implements Controller {
 			// ── 12. 선물 여부 분기 ─────────────────────────────
 			String isGift        = request.getParameter("isGift");
 			String receiverNoStr = request.getParameter("receiverNo");
-
-			System.out.println("[handleSubmit] isGift=" + isGift);
-			System.out.println("[handleSubmit] receiverNo=" + receiverNoStr);
+			String pokeNoStr     = request.getParameter("pokeNo");
 
 			if ("true".equals(isGift) && receiverNoStr != null && !receiverNoStr.isEmpty()) {
-			    System.out.println("[handleSubmit] → 선물 분기 진입");
-			    return "redirect:/gift?action=sendProc"
-			         + "&orderNo="    + orderNo
-			         + "&receiverNo=" + receiverNoStr;
+				
+				if ("poke".equals(buyType)) {
+			        request.getSession().removeAttribute("pokeOrderItems");
+			        request.getSession().removeAttribute("pokeOrderReceiver");
+			    }
+				
+			    String redirect = "redirect:/gift?action=sendProc"
+			                    + "&orderNo="    + orderNo
+			                    + "&receiverNo=" + receiverNoStr;
+			    // pokeNo 있으면 같이 전달
+			    if (pokeNoStr != null && !pokeNoStr.isEmpty()) {
+			        redirect += "&pokeNo=" + pokeNoStr;
+			    }
+			    return redirect;
 			} else {
-			    System.out.println("[handleSubmit] → 일반 결제 분기");
 			    return "redirect:/order/order-detail?orderNo=" + orderNo;
 			}
 
@@ -455,5 +468,51 @@ public class OrderPaymentController implements Controller {
 			e.printStackTrace();
 			return "redirect:/cart";
 		}
+	}
+	
+	private String handlePokeBuy(HttpServletRequest request, UserDTO loginUser) {
+	    Vector<CartItemDTO> orderItems = (Vector<CartItemDTO>)
+	        request.getSession().getAttribute("pokeOrderItems");
+	    Integer receiverNo = (Integer) request.getSession().getAttribute("pokeOrderReceiver");
+
+	    if (orderItems == null || orderItems.isEmpty()) return "redirect:/poke";
+
+	    int totalProductPrice = 0, totalProductDiscount = 0;
+	    for (CartItemDTO item : orderItems) {
+	        int origin = item.getProductOriginPrice();
+	        int sale   = item.getProductPrice();
+	        int qty    = item.getCartQuantity();
+	        totalProductPrice    += (origin > 0 ? origin : sale) * qty;
+	        totalProductDiscount += (origin > 0 ? (origin - sale) * qty : 0);
+	    }
+
+	    List<UserAddressDTO> addressList = userAddressService.getAddressListByUser(receiverNo);
+	    UserAddressDTO defaultAddress    = userAddressService.getDefaultAddress(receiverNo);
+	    int orderAmount = orderItems.stream().mapToInt(i -> i.getProductPrice() * i.getCartQuantity()).sum();
+	    List<UserCouponDTO> availableCoupons = userCouponService.getAvailableCoupons(loginUser.getUserNo(), orderAmount);
+
+	    FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
+	    int familyNo = (myMember != null) ? myMember.getFamilyNo() : 0;
+	    int walletBalance = 0;
+	    if (familyNo > 0) {
+	        WalletDTO wallet = walletService.getWalletByFamilyNo(familyNo);
+	        if (wallet != null) walletBalance = wallet.getBalance();
+	    }
+
+	    request.setAttribute("orderItems",          orderItems);
+	    request.setAttribute("orderItemCount",       orderItems.size());
+	    request.setAttribute("totalProductPrice",    totalProductPrice);
+	    request.setAttribute("totalProductDiscount", totalProductDiscount);
+	    request.setAttribute("addressList",          addressList);
+	    request.setAttribute("defaultAddress",       defaultAddress);
+	    request.setAttribute("availableCoupons",     availableCoupons);
+	    request.setAttribute("preferPayment",        loginUser.getPreferPayment());
+	    request.setAttribute("familyNo",             familyNo);
+	    request.setAttribute("walletBalance",        walletBalance);
+	    request.setAttribute("buyType",              "poke");
+	    request.setAttribute("isGift",               "true");
+	    request.setAttribute("receiverNo",           receiverNo);
+
+	    return "order/order-payment";
 	}
 }

@@ -59,6 +59,7 @@
 				<input type="hidden" name="directQuantity" value="${directQuantity}">
 				<input type="hidden" name="isGift"     value="${isGift}">
 				<input type="hidden" name="receiverNo" value="${receiverNo}">
+				<input type="hidden" name="pokeNo" value="${pokeNo}">
 		</section>
 
         <c:choose>

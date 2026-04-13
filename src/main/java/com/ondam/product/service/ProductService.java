@@ -95,4 +95,8 @@ public class ProductService {
 	        String[] colors, String season, String[] features) {
 	    return dao.searchProductsWithFilter(keyword, sort, colors, season, features);
 	}
+	
+	public String getProductImage(int productNo) {
+	    return dao.getProductImage(productNo);
+	}
 }

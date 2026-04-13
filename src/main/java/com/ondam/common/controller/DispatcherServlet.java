@@ -126,14 +126,12 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/inquiry", new InquiryController());
         handlerMapping.put("/search", new SearchController());
         handlerMapping.put("/aiSearch", new AiSearchController());
-        
         handlerMapping.put("/seller/auth", new SellerAuthController());
         handlerMapping.put("/seller/auth/signup", new SellerSignupController());
         handlerMapping.put("/seller/auth/find-id", new SellerFindIdController());
         handlerMapping.put("/seller/auth/reset-password", new SellerResetPwController());
         handlerMapping.put("/seller/auth/reset-password-form", new SellerResetPwFormController());
         handlerMapping.put("/userCoupon", new UserCouponController());
-
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) 

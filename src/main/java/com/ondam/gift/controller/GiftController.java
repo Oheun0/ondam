@@ -11,6 +11,7 @@ import com.ondam.gift.service.GiftService;
 import com.ondam.notification.dto.NotificationDTO;
 import com.ondam.notification.service.NotificationService;
 import com.ondam.orders.service.OrdersService;
+import com.ondam.poke.service.PokeService;
 import com.ondam.user.dao.UserAddressDAO;
 import com.ondam.user.dao.UserDAO;
 import com.ondam.user.dto.UserAddressDTO;
@@ -161,12 +162,9 @@ public class GiftController implements Controller {
     // giftChat INSERT 추가됨
     // -------------------------
     private String handleSendGift(HttpServletRequest request, int senderNo) {
-        System.out.println("[handleSendGift] 진입");
-        System.out.println("orderNo="    + request.getParameter("orderNo"));
-        System.out.println("receiverNo=" + request.getParameter("receiverNo"));
-
         String orderNoStr    = request.getParameter("orderNo");
         String receiverNoStr = request.getParameter("receiverNo");
+        String pokeNoStr     = request.getParameter("pokeNo");
 
         // receiverNo 없으면 처리 불가
         if (orderNoStr == null || receiverNoStr == null) {
@@ -191,6 +189,24 @@ public class GiftController implements Controller {
         GiftDTO insertedGift = giftService.getGiftInfoByOrder(orderNo);
         if (insertedGift != null) {
             giftChatService.createGiftCard(insertedGift.getGiftNo(), senderNo, receiverNo);
+        }
+        
+        
+        PokeService pokeService = new PokeService();
+        
+     // 조르기에서 온 선물이면 sendState 수락됨(1)으로 업데이트
+        if (pokeNoStr != null && !pokeNoStr.isEmpty()) {
+            pokeService.updateSendState(Integer.parseInt(pokeNoStr), 1);
+        }
+        
+        String pendingPokeNos = (String) request.getSession().getAttribute("pendingPokeNos");
+        if (pendingPokeNos != null && !pendingPokeNos.isEmpty()) {
+            for (String pNo : pendingPokeNos.split(",")) {
+                if (!pNo.trim().isEmpty()) {
+                    pokeService.removePoke(Integer.parseInt(pNo.trim()));
+                }
+            }
+            request.getSession().removeAttribute("pendingPokeNos");
         }
 
         // ── 3. 받는 사람에게 알림 발송 ──

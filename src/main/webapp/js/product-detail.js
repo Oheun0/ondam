@@ -319,6 +319,13 @@ document.addEventListener("DOMContentLoaded", function () {
         showOptionErrorToast();
         return;
       }
+
+      // 폼에 현재 선택된 옵션 값 세팅
+      document.getElementById("pokeProductNo").value       = document.getElementById("hiddenProductNo").value;
+      document.getElementById("pokeProductOptionNo").value = document.getElementById("hiddenOptionNo").value;
+      document.getElementById("pokeQuantity").value        = document.getElementById("hiddenQuantity").value;
+      document.getElementById("pokeFamilyNo").value        = document.getElementById("hiddenFamilyNo").value;
+
       openPokeModal();
     });
   }
@@ -806,4 +813,20 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+  
+  var confirmPokeBtn = document.getElementById("confirmPokeBtn");
+    if (confirmPokeBtn) {
+      confirmPokeBtn.addEventListener("click", function () {
+        var selected = document.querySelector(".poke-person-btn.active");
+        if (!selected) {
+          alert("조르기를 보낼 사람을 선택해주세요.");
+          return;
+        }
+
+        document.getElementById("pokeReceiverNo").value = selected.dataset.userNo;
+        document.getElementById("pokeMsgHidden").value  = document.getElementById("pokeMsgInput").value;
+
+        document.getElementById("pokeForm").submit();
+      });
+    }
 });

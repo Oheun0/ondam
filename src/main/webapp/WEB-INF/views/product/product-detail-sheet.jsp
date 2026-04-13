@@ -80,6 +80,7 @@
       <input type="hidden" id="hiddenProductNo" value="${product.productNo}">
 		<input type="hidden" id="hiddenOptionNo"  value="">
 		<input type="hidden" id="hiddenQuantity"  value="1">
+		<input type="hidden" id="hiddenFamilyNo"  value="${familyNo}">
 
       <div class="detail-action-grid">
         <button type="button" class="detail-action-item" id="sheetWishlistBtn"
