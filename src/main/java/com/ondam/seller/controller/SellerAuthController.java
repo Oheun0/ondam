@@ -47,7 +47,7 @@ public class SellerAuthController implements Controller {
 
                         // 세션에 통합 정보 저장 (이후 모든 페이지에서 접근 가능)
                         HttpSession session = request.getSession();
-                        session.setAttribute("loginSeller", loginSeller);
+                        session.setAttribute("loginUser", loginSeller);
                         
                         if (vendorName != null) {
                             session.setAttribute("vendorName", vendorName);
@@ -55,7 +55,7 @@ public class SellerAuthController implements Controller {
 
                         // 성공 후 판매자 대시보드(메인 페이지)로 리다이렉트
                         // (프로젝트 상황에 맞춰 이동할 경로를 적어주세요. 예: /main)
-                        return "redirect:/dashboard"; 
+                        return "redirect:/seller/dashboard"; 
                     } else {
                         // 로그인 실패 (DB에 정보가 없거나 비밀번호가 틀림)
                     	HttpSession session = request.getSession();

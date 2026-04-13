@@ -23,10 +23,14 @@ import com.ondam.product.controller.SearchController;
 import com.ondam.review.controller.ReviewController;
 import com.ondam.review.controller.ReviewImageController;
 import com.ondam.seller.controller.SellerAuthController;
+import com.ondam.seller.controller.SellerDashboardController;
 import com.ondam.seller.controller.SellerFindIdController;
+import com.ondam.seller.controller.SellerOrderController;
 import com.ondam.seller.controller.SellerResetPwController;
 import com.ondam.seller.controller.SellerResetPwFormController;
 import com.ondam.seller.controller.SellerSignupController;
+import com.ondam.shipment.controller.SellerShipmentController;
+import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.AddressDeleteController;
 import com.ondam.user.controller.AddressFormController;
@@ -124,20 +128,19 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/inquiry", new InquiryController());
         handlerMapping.put("/search", new SearchController());
         handlerMapping.put("/aiSearch", new AiSearchController());
-        
         handlerMapping.put("/seller/auth", new SellerAuthController());
         handlerMapping.put("/seller/auth/signup", new SellerSignupController());
         handlerMapping.put("/seller/auth/find-id", new SellerFindIdController());
         handlerMapping.put("/seller/auth/reset-password", new SellerResetPwController());
         handlerMapping.put("/seller/auth/reset-password-form", new SellerResetPwFormController());
+        handlerMapping.put("/seller/shipment", new SellerShipmentController());
         handlerMapping.put("/userCoupon", new UserCouponController());
-        
         handlerMapping.put("/seller/shorts/list", new com.ondam.seller.controller.SellerShortsListController());
         handlerMapping.put("/seller/shorts/form", new com.ondam.seller.controller.SellerShortsFormController());
         handlerMapping.put("/seller/shorts/api", new com.ondam.shorts.controller.ShortsGeneratorController());
-        
+        handlerMapping.put("/seller/dashboard", new SellerDashboardController());
+        handlerMapping.put("/seller/order", new SellerOrderController());
     }
-
     protected void service(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
