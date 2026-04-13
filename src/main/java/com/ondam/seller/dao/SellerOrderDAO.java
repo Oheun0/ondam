@@ -198,6 +198,8 @@ public class SellerOrderDAO {
                 item.setPrice(rs.getInt("snapProductPrice"));
                 item.setProductImage(rs.getString("productImage"));
                 item.setDeliveryState(rs.getInt("itemDeliveryState"));
+                item.setCourier(rs.getString("courier"));
+                item.setTrackingNo(rs.getString("trackingNo"));
                 
                 itemList.add(item);
             }

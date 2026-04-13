@@ -135,8 +135,8 @@ public class SellerOrderController implements Controller {
                 }
                 sellerOrderDAO.updateDeliveryState(vendorNo, listOrderNo, listNewState);
                 return "redirect:/seller/order?action=list";
-                
-            case "updateInvoice":
+
+            case "updateInvoice": { 
                 String invOrderNoStr = request.getParameter("orderNo");
                 String carrier = request.getParameter("carrier");
                 String tracking = request.getParameter("tracking");
@@ -146,13 +146,13 @@ public class SellerOrderController implements Controller {
                 int invOrderNo = Integer.parseInt(invOrderNoStr);
                 sellerOrderDAO.updateInvoice(vendorNo, invOrderNo, carrier, tracking);
                 return "redirect:/seller/order?action=detail&orderNo=" + invOrderNo;
-                
-                
-            case "updateItemInvoice":
+            } 
+
+            case "updateItemInvoice": {
                 String invOrderNoStr = request.getParameter("orderNo");
                 String invCarrier = request.getParameter("carrier");
                 String invTracking = request.getParameter("tracking");
-                String invItemNos = request.getParameter("itemNos"); // "21,22"
+                String invItemNos = request.getParameter("itemNos");
 
                 if (invOrderNoStr == null || invCarrier == null || invTracking == null || invItemNos == null) {
                     return "redirect:/seller/order?action=list";
@@ -162,6 +162,8 @@ public class SellerOrderController implements Controller {
                 sellerOrderDAO.updateItemInvoice(vendorNo, invOrderNo, invCarrier, invTracking, invItemNos);
 
                 return "redirect:/seller/order?action=detail&orderNo=" + invOrderNo;
+            }
+            
             default:
                 return "redirect:/seller/order?action=list";
         }

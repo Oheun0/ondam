@@ -9,6 +9,8 @@ public class SellerOrderItemDTO {
     private int price;
     private String productImage;
     private int deliveryState;
+    private String courier;
+    private String trackingNo;
 
     public SellerOrderItemDTO() {}
 
@@ -60,4 +62,19 @@ public class SellerOrderItemDTO {
     public void setDeliveryState(int deliveryState) {
         this.deliveryState = deliveryState;
     }
+	public String getCourier() {
+		return courier;
+	}
+
+	public void setCourier(String courier) {
+		this.courier = courier;
+	}
+
+	public String getTrackingNo() {
+		return trackingNo;
+	}
+
+	public void setTrackingNo(String trackingNo) {
+		this.trackingNo = trackingNo;
+	}
 }
