@@ -1,7 +1,6 @@
 package com.ondam.shorts.controller;
 
 import java.io.IOException;
-
 import com.ondam.common.controller.Controller;
 import com.ondam.seller.dto.SellerDTO;
 import com.ondam.shorts.service.ShortsService;
@@ -17,7 +16,7 @@ import jakarta.servlet.http.Part;
     maxFileSize = 1024 * 1024 * 60,       
     maxRequestSize = 1024 * 1024 * 65     
 )
-public class ShortsApiController implements Controller {
+public class ShortsGeneratorController implements Controller {
 
     private final ShortsService shortsService = new ShortsService();
 
@@ -56,7 +55,16 @@ public class ShortsApiController implements Controller {
             String resultMsg = "";
             switch (action.trim()) {
                 case "generate":
-                    resultMsg = shortsService.requestGenerateShorts(vendorNo, productNo, realPath);
+                    // [해결] 에러 발생 원인: title과 content를 받아서 넘기도록 파라미터 개수 동기화
+                    String genTitle = request.getParameter("shortsTitle");
+                    String genContent = request.getParameter("shortsContent");
+                    
+                    if(genTitle == null || genTitle.trim().isEmpty()) {
+                        sendJson(response, "error", "쇼츠 제목을 입력해주세요.");
+                        return null;
+                    }
+                    
+                    resultMsg = shortsService.requestGenerateShorts(vendorNo, productNo, genTitle, genContent, realPath);
                     if ("success".equals(resultMsg)) sendJson(response, "success", "숏폼 생성이 시작되었습니다.");
                     else sendJson(response, "error", resultMsg);
                     break;
@@ -72,16 +80,13 @@ public class ShortsApiController implements Controller {
                     if ("success".equals(resultMsg)) sendJson(response, "success", "영상 공개 상태가 변경되었습니다.");
                     else sendJson(response, "error", resultMsg);
                     break;
-                    
+
                 case "upload":
                     Part videoPart = request.getPart("videoFile");
                     String title = request.getParameter("shortsTitle");
                     String content = request.getParameter("shortsContent");
-                    
-                    // [추가] 프론트에서 캡처해서 보낸 썸네일 문자열(Base64) 받기
                     String thumbnailBase64 = request.getParameter("thumbnailBase64");
                     
-                    // 서비스로 넘겨주기
                     resultMsg = shortsService.uploadManualShorts(vendorNo, productNo, title, content, videoPart, thumbnailBase64, realPath);
                     if ("success".equals(resultMsg)) sendJson(response, "success", "수동 영상 업로드가 완료되었습니다.");
                     else sendJson(response, "error", resultMsg);
@@ -96,7 +101,6 @@ public class ShortsApiController implements Controller {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJson(response, "error", "서버 내부 오류가 발생했습니다: " + e.getMessage());
         }
-
         return null;
     }
 
