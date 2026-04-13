@@ -56,6 +56,14 @@
     </div>
 
     <jsp:include page="/WEB-INF/views/product/product-detail-sheet.jsp" />
+    <div class="detail-image-lightbox hidden" id="detailImageLightbox" role="dialog" aria-modal="true" aria-label="이미지 확대 보기">
+      <button type="button" class="detail-image-lightbox-close" id="detailImageLightboxClose" aria-label="이미지 확대 닫기">
+        <span class="material-icons-outlined" aria-hidden="true">close</span>
+      </button>
+      <div class="detail-image-lightbox-body">
+        <div class="detail-image-lightbox-scroll" id="detailImageLightboxScroll" aria-label="확대 이미지 슬라이드"></div>
+      </div>
+    </div>
     <jsp:include page="/WEB-INF/views/poke/poke-modal.jsp" />
     <jsp:include page="/WEB-INF/views/gift/gift-modal.jsp" />
     <jsp:include page="/WEB-INF/views/product/share-modal.jsp" />

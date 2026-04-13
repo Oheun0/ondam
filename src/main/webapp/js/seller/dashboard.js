@@ -7,7 +7,7 @@
 	      'ship-ready':   ctx + '/seller/order?action=list&status=ready',
 	      'inquiries':    ctx + '/seller/inquiry?action=list',
 	      'reviews-new':  ctx + '/seller/review?action=list',
-	      'new-product':  ctx + '/seller/product?action=form',
+	      'new-product':  ctx + '/seller/product/form',
 	      'new-shorts':   ctx + '/seller/shorts?action=form',
 	      'open-orders':  ctx + '/seller/order?action=list',
 	      'open-settlement': ctx + '/preview?page=seller/settlement/list'

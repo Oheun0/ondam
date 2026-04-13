@@ -5,9 +5,13 @@ public class ProductDTO {
     private int productNo;
     private int vendorNo;
     private int categoryNo;
+    private int situationNo;
     private String productName;
     private String productBrand;
     private String productEx;
+    private String easyOneLine;
+    private String easyFor;
+    private String easyComfort;
     private int productGender;
     private int productPrice;
     private int productOriginPrice;
@@ -22,16 +26,20 @@ public class ProductDTO {
 
     public ProductDTO() {}
 
-    public ProductDTO(int productNo, int vendorNo, int categoryNo, String productName, String productBrand,
-                      String productEx, int productGender, int productPrice, int productOriginPrice, String productMaterial,
+    public ProductDTO(int productNo, int vendorNo, int categoryNo, int situationNo, String productName, String productBrand,
+                      String productEx, String easyOneLine, String easyFor, String easyComfort, int productGender, int productPrice, int productOriginPrice, String productMaterial,
                       String productPattern, String productFit, String productThickness, 
                       String productDate, int wishCount, int saleCount, int productState) {
         this.productNo = productNo;
         this.vendorNo = vendorNo;
         this.categoryNo = categoryNo;
+        this.situationNo = situationNo;
         this.productName = productName;
         this.productBrand = productBrand;
         this.productEx = productEx;
+        this.easyOneLine = easyOneLine;
+        this.easyFor = easyFor;
+        this.easyComfort = easyComfort;
         this.productGender = productGender;
         this.productPrice = productPrice;
         this.productOriginPrice = productOriginPrice;
@@ -54,6 +62,9 @@ public class ProductDTO {
     public int getCategoryNo() { return categoryNo; }
     public void setCategoryNo(int categoryNo) { this.categoryNo = categoryNo; }
 
+    public int getSituationNo() { return situationNo; }
+    public void setSituationNo(int situationNo) { this.situationNo = situationNo; }
+
     public String getProductName() { return productName; }
     public void setProductName(String productName) { this.productName = productName; }
 
@@ -62,6 +73,15 @@ public class ProductDTO {
 
     public String getProductEx() { return productEx; }
     public void setProductEx(String productEx) { this.productEx = productEx; }
+    
+    public String getEasyOneLine() { return easyOneLine; }
+    public void setEasyOneLine(String easyOneLine) { this.easyOneLine = easyOneLine; }
+    
+    public String getEasyFor() { return easyFor; }
+    public void setEasyFor(String easyFor) { this.easyFor = easyFor; }
+    
+    public String getEasyComfort() { return easyComfort; }
+    public void setEasyComfort(String easyComfort) { this.easyComfort = easyComfort; }
 
     public int getProductGender() { return productGender; }
     public void setProductGender(int productGender) { this.productGender = productGender; }

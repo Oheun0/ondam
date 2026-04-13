@@ -457,6 +457,15 @@ select.seller-product-control{
   gap:8px;
 }
 
+/* 새 상품 등록: 브랜드명 입력은 짧게 */
+.seller-product-grid--brand-row{
+  grid-template-columns: 1fr 2fr;
+}
+.seller-product-field--brand .seller-product-control{
+  width:100%;
+  max-width:none;
+}
+
 .chip-wrap{
   display:flex;
   flex-wrap:wrap;
@@ -786,6 +795,21 @@ select.seller-product-control{
   border-radius:16px;
   object-fit:cover;
   border:1px solid var(--seller-border);
+}
+.seller-product-thumb-preview-meta{
+  flex:1;
+  min-width:0;
+}
+.seller-product-thumb-preview-title{
+  font-weight:1000;
+  font-size:15px;
+  color:#111827;
+}
+.seller-product-thumb-preview-sub{
+  margin-top:6px;
+  font-size:13px;
+  font-weight:800;
+  color: var(--seller-muted);
 }
 
 .seller-product-detail-thumbs{

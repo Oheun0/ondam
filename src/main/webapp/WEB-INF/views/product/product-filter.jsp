@@ -84,10 +84,12 @@
 
   <div class="product-selected-filters">
     <div class="product-selected-scroll" id="selectedFilterArea">
-      <button type="button" class="selected-chip selected-category-chip" data-type="category">
-        ${empty currentCategoryName ? '반팔' : currentCategoryName}
-        <span class="material-icons">close</span>
-      </button>
+      <c:if test="${not empty currentCategoryName}">
+        <button type="button" class="selected-chip selected-category-chip" data-type="category">
+          ${currentCategoryName}
+          <span class="material-icons">close</span>
+        </button>
+      </c:if>
     </div>
     <button type="button" class="reset-btn" id="resetBtn">초기화</button>
   </div>

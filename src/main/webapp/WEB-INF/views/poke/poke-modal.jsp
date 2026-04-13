@@ -29,11 +29,12 @@
     </div>
 
     <%-- 조르기 메시지 입력 --%>
-    <div class="poke-msg-wrap" style="padding: 0 16px 12px;">
+    <div class="poke-msg-wrap">
       <textarea id="pokeMsgInput"
+                class="poke-msg-input"
                 placeholder="전하고 싶은 말을 입력하세요 (선택)"
                 maxlength="100"
-                style="width:100%; resize:none; border:1px solid #ddd; border-radius:8px; padding:10px; font-size:0.9rem; height:72px;"></textarea>
+                ></textarea>
     </div>
 
     <div class="poke-modal-bottom">

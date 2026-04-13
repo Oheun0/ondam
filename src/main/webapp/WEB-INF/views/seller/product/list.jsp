@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
   request.setAttribute("sellerActiveMenu", "product");
   request.setAttribute("sellerPageTitle", "상품 관리");
@@ -39,100 +40,115 @@
           </div>
         </header>
 
+        <c:if test="${param.save == 'ok'}">
+          <p class="seller-settings-profile-msg seller-settings-profile-msg--ok" role="status">상품이 등록되었습니다.</p>
+        </c:if>
+        <c:if test="${param.save == 'temp'}">
+          <p class="seller-settings-profile-msg seller-settings-profile-msg--ok" role="status">상품이 임시 저장되었습니다.</p>
+        </c:if>
+        <c:if test="${param.save == 'fail'}">
+          <p class="seller-settings-profile-msg seller-settings-profile-msg--err" role="alert">상품 등록에 실패했습니다.</p>
+        </c:if>
+        <c:if test="${param.save == 'updated'}">
+          <p class="seller-settings-profile-msg seller-settings-profile-msg--ok" role="status">상품 정보가 수정되었습니다.</p>
+        </c:if>
+
         <section class="seller-product-summary" aria-label="요약">
           <div class="seller-product-summary-grid">
             <div class="seller-product-summary-card">
               <div class="seller-product-summary-label">전체 상품</div>
-              <div class="seller-product-summary-value">24<span class="seller-product-summary-unit">개</span></div>
+              <div class="seller-product-summary-value"><c:out value="${productTotal}" /><span class="seller-product-summary-unit">개</span></div>
             </div>
             <div class="seller-product-summary-card">
               <div class="seller-product-summary-label">판매중</div>
-              <div class="seller-product-summary-value">18<span class="seller-product-summary-unit">개</span></div>
+              <div class="seller-product-summary-value"><c:out value="${productSelling}" /><span class="seller-product-summary-unit">개</span></div>
             </div>
             <div class="seller-product-summary-card">
               <div class="seller-product-summary-label">품절 임박</div>
-              <div class="seller-product-summary-value">3<span class="seller-product-summary-unit">개</span></div>
+              <div class="seller-product-summary-value">-<span class="seller-product-summary-unit">개</span></div>
             </div>
             <div class="seller-product-summary-card">
               <div class="seller-product-summary-label">숨김</div>
-              <div class="seller-product-summary-value">2<span class="seller-product-summary-unit">개</span></div>
+              <div class="seller-product-summary-value"><c:out value="${productHidden}" /><span class="seller-product-summary-unit">개</span></div>
             </div>
           </div>
         </section>
 
         <section class="seller-product-toolbar seller-card" aria-label="검색 및 필터">
+          <form id="sellerProductFilterForm" method="get" action="${pageContext.request.contextPath}/seller/product">
           <div class="seller-product-filters">
             <div class="seller-product-filter">
               <label class="seller-product-filter-label" for="sellerProductQuery">검색</label>
               <div class="seller-product-input-wrap">
                 <span class="material-icons-outlined" aria-hidden="true">search</span>
-                <input id="sellerProductQuery" class="seller-product-input" type="text" placeholder="상품명으로 검색해 주세요" />
+                <input id="sellerProductQuery" name="query" class="seller-product-input" type="text" value="${filterQuery}" placeholder="상품명으로 검색해 주세요" />
               </div>
             </div>
 
             <div class="seller-product-filter">
               <label class="seller-product-filter-label" for="sellerProductCategory">종류 카테고리</label>
-              <select id="sellerProductCategory" class="seller-product-select">
-                <option value="all">종류 카테고리</option>
+              <select id="sellerProductCategory" name="category" class="seller-product-select">
+                <option value="all" <c:if test="${filterCategory == 'all'}">selected</c:if>>종류 카테고리</option>
                 <optgroup label="윗옷">
-                  <option value="5">반팔</option>
-                  <option value="6">긴팔</option>
-                  <option value="7">니트</option>
-                  <option value="8">셔츠</option>
-                  <option value="9">조끼</option>
+                  <option value="5" <c:if test="${filterCategory == '5'}">selected</c:if>>반팔</option>
+                  <option value="6" <c:if test="${filterCategory == '6'}">selected</c:if>>긴팔</option>
+                  <option value="7" <c:if test="${filterCategory == '7'}">selected</c:if>>니트</option>
+                  <option value="8" <c:if test="${filterCategory == '8'}">selected</c:if>>셔츠</option>
+                  <option value="9" <c:if test="${filterCategory == '9'}">selected</c:if>>조끼</option>
                 </optgroup>
                 <optgroup label="아랫옷">
-                  <option value="10">긴바지</option>
-                  <option value="11">반바지</option>
-                  <option value="12">치마</option>
+                  <option value="10" <c:if test="${filterCategory == '10'}">selected</c:if>>긴바지</option>
+                  <option value="11" <c:if test="${filterCategory == '11'}">selected</c:if>>반바지</option>
+                  <option value="12" <c:if test="${filterCategory == '12'}">selected</c:if>>치마</option>
                 </optgroup>
                 <optgroup label="겉옷">
-                  <option value="13">가디건</option>
-                  <option value="14">점퍼</option>
-                  <option value="15">코트</option>
-                  <option value="16">바람막이</option>
+                  <option value="13" <c:if test="${filterCategory == '13'}">selected</c:if>>가디건</option>
+                  <option value="14" <c:if test="${filterCategory == '14'}">selected</c:if>>점퍼</option>
+                  <option value="15" <c:if test="${filterCategory == '15'}">selected</c:if>>코트</option>
+                  <option value="16" <c:if test="${filterCategory == '16'}">selected</c:if>>바람막이</option>
                 </optgroup>
                 <optgroup label="한 벌 옷">
-                  <option value="17">원피스</option>
-                  <option value="18">세트 옷</option>
+                  <option value="17" <c:if test="${filterCategory == '17'}">selected</c:if>>원피스</option>
+                  <option value="18" <c:if test="${filterCategory == '18'}">selected</c:if>>세트 옷</option>
                 </optgroup>
               </select>
             </div>
 
             <div class="seller-product-filter">
               <label class="seller-product-filter-label" for="sellerProductSale">판매 상태</label>
-              <select id="sellerProductSale" class="seller-product-select">
-                <option value="all">전체 상태</option>
-                <option value="selling">판매중</option>
-                <option value="soldout">품절</option>
-                <option value="hidden">숨김</option>
+              <select id="sellerProductSale" name="sale" class="seller-product-select">
+                <option value="all" <c:if test="${filterSale == 'all'}">selected</c:if>>전체 상태</option>
+                <option value="selling" <c:if test="${filterSale == 'selling'}">selected</c:if>>판매중</option>
+                <option value="soldout" <c:if test="${filterSale == 'soldout'}">selected</c:if>>품절</option>
+                <option value="hidden" <c:if test="${filterSale == 'hidden'}">selected</c:if>>숨김</option>
               </select>
             </div>
 
             <div class="seller-product-filter">
               <label class="seller-product-filter-label" for="sellerProductStock">재고 상태</label>
-              <select id="sellerProductStock" class="seller-product-select">
-                <option value="all">전체 재고</option>
-                <option value="in">재고 있음</option>
-                <option value="low">품절 임박</option>
-                <option value="out">품절</option>
+              <select id="sellerProductStock" name="stock" class="seller-product-select">
+                <option value="all" <c:if test="${filterStock == 'all'}">selected</c:if>>전체 재고</option>
+                <option value="in" <c:if test="${filterStock == 'in'}">selected</c:if>>재고 있음</option>
+                <option value="low" <c:if test="${filterStock == 'low'}">selected</c:if>>품절 임박</option>
+                <option value="out" <c:if test="${filterStock == 'out'}">selected</c:if>>품절</option>
               </select>
             </div>
 
             <div class="seller-product-filter seller-product-filter--btn">
-              <button type="button" class="seller-secondary-btn" id="sellerProductApplyBtn">필터 적용</button>
+              <button type="submit" class="seller-secondary-btn" id="sellerProductApplyBtn">필터 적용</button>
             </div>
           </div>
+          </form>
         </section>
 
-        <section class="seller-card seller-product-table-wrap" aria-label="상품 목록">
+        <section class="seller-card seller-product-table-wrap" aria-label="상품 목록" <c:if test="${productTotal == 0}">hidden</c:if>>
           <div class="seller-product-table-head">
             <div class="seller-product-table-title">
               <h3 class="seller-product-h3">상품 목록</h3>
               <p class="seller-product-h3-sub">썸네일/가격/재고/쇼츠 연결 상태를 빠르게 확인하세요</p>
             </div>
             <div class="seller-product-table-meta">
-              <span class="seller-product-meta-pill">총 5건 (더미)</span>
+              <span class="seller-product-meta-pill">총 <c:out value="${productTotal}" />건</span>
             </div>
           </div>
 
@@ -144,7 +160,7 @@
                   <th scope="col">상품명</th>
                   <th scope="col">카테고리</th>
                   <th scope="col">가격</th>
-                  <th scope="col">할인</th>
+                  <th scope="col">할인가</th>
                   <th scope="col">재고</th>
                   <th scope="col">판매 상태</th>
                   <th scope="col">쇼츠 연결</th>
@@ -152,105 +168,46 @@
                 </tr>
               </thead>
               <tbody>
-                <tr data-product-id="P-1001">
-                  <td>
-                    <img class="seller-product-thumb" src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="상품 썸네일" />
-                  </td>
-                  <td class="seller-product-name-cell">
-                    <div class="seller-product-name">부드러운 라운드 니트 가디건</div>
-                    <div class="seller-product-subline">상품ID: P-1001 · 노출: 사용자 상품목록/상세</div>
-                  </td>
-                  <td>아우터</td>
-                  <td><strong>39,000원</strong></td>
-                  <td>10%</td>
-                  <td>24개</td>
-                  <td><span class="seller-product-badge seller-product-badge--selling">판매중</span></td>
-                  <td>1개</td>
-                  <td class="seller-product-row-actions">
-                    <button type="button" class="seller-mini-btn" data-action="edit">수정</button>
-                    <button type="button" class="seller-mini-btn" data-action="hide">숨김</button>
-                  </td>
-                </tr>
-
-                <tr data-product-id="P-1002">
-                  <td>
-                    <img class="seller-product-thumb" src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="상품 썸네일" />
-                  </td>
-                  <td class="seller-product-name-cell">
-                    <div class="seller-product-name">편안한 봄 니트 조끼</div>
-                    <div class="seller-product-subline">상품ID: P-1002 · 추천/검색 노출 최적화: 태그 점검</div>
-                  </td>
-                  <td>상의</td>
-                  <td><strong>29,000원</strong></td>
-                  <td>없음</td>
-                  <td>3개</td>
-                  <td><span class="seller-product-badge seller-product-badge--low">품절 임박</span></td>
-                  <td>0개</td>
-                  <td class="seller-product-row-actions">
-                    <button type="button" class="seller-mini-btn" data-action="edit">수정</button>
-                    <button type="button" class="seller-mini-btn seller-mini-btn--warn" data-action="soldout">품절</button>
-                  </td>
-                </tr>
-
-                <tr data-product-id="P-1003">
-                  <td>
-                    <img class="seller-product-thumb" src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="상품 썸네일" />
-                  </td>
-                  <td class="seller-product-name-cell">
-                    <div class="seller-product-name">가벼운 데일리 셔츠</div>
-                    <div class="seller-product-subline">상품ID: P-1003 · 쇼츠 2개 연결(노출 증가)</div>
-                  </td>
-                  <td>상의</td>
-                  <td><strong>35,000원</strong></td>
-                  <td>15%</td>
-                  <td>0개</td>
-                  <td><span class="seller-product-badge seller-product-badge--soldout">품절</span></td>
-                  <td>2개</td>
-                  <td class="seller-product-row-actions">
-                    <button type="button" class="seller-mini-btn" data-action="edit">수정</button>
-                    <button type="button" class="seller-mini-btn seller-mini-btn--primary" data-action="reopen">재등록</button>
-                  </td>
-                </tr>
-
-                <tr data-product-id="P-1004">
-                  <td>
-                    <img class="seller-product-thumb" src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="상품 썸네일" />
-                  </td>
-                  <td class="seller-product-name-cell">
-                    <div class="seller-product-name">가볍게 입는 데일리 팬츠</div>
-                    <div class="seller-product-subline">상품ID: P-1004 · 옵션/사이즈 재고 동기화 필요(더미)</div>
-                  </td>
-                  <td>하의</td>
-                  <td><strong>42,000원</strong></td>
-                  <td>없음</td>
-                  <td>18개</td>
-                  <td><span class="seller-product-badge seller-product-badge--hidden">숨김</span></td>
-                  <td>0개</td>
-                  <td class="seller-product-row-actions">
-                    <button type="button" class="seller-mini-btn" data-action="edit">수정</button>
-                    <button type="button" class="seller-mini-btn seller-mini-btn--primary" data-action="show">판매중</button>
-                  </td>
-                </tr>
-
-                <tr data-product-id="P-1005">
-                  <td>
-                    <img class="seller-product-thumb" src="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" alt="상품 썸네일" />
-                  </td>
-                  <td class="seller-product-name-cell">
-                    <div class="seller-product-name">봄날 산책 원피스 세트</div>
-                    <div class="seller-product-subline">상품ID: P-1005 · 선물 주문 비중 높음(더미)</div>
-                  </td>
-                  <td>원피스/세트</td>
-                  <td><strong>59,000원</strong></td>
-                  <td>5%</td>
-                  <td>9개</td>
-                  <td><span class="seller-product-badge seller-product-badge--selling">판매중</span></td>
-                  <td>1개</td>
-                  <td class="seller-product-row-actions">
-                    <button type="button" class="seller-mini-btn" data-action="edit">수정</button>
-                    <button type="button" class="seller-mini-btn" data-action="hide">숨김</button>
-                  </td>
-                </tr>
+                <c:forEach var="row" items="${productRows}">
+                  <c:set var="p" value="${row.product}" />
+                  <c:set var="thumbUrl" value="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" />
+                  <c:if test="${not empty row.thumb}">
+                    <c:set var="thumbUrl" value="${pageContext.request.contextPath}/uploads/products/${row.thumb}" />
+                  </c:if>
+                  <tr data-product-id="P-${p.productNo}" data-product-no="${p.productNo}">
+                    <td>
+                      <img class="seller-product-thumb"
+                        src="${thumbUrl}"
+                        alt="상품 썸네일" />
+                    </td>
+                    <td class="seller-product-name-cell">
+                      <div class="seller-product-name"><c:out value="${p.productName}" /></div>
+                      <div class="seller-product-subline">상품No: <c:out value="${p.productNo}" /></div>
+                    </td>
+                    <td><c:out value="${row.categoryName}" /></td>
+                    <td><strong><c:out value="${p.productPrice}" />원</strong></td>
+                    <td>
+                      <c:choose>
+                        <c:when test="${p.productOriginPrice > p.productPrice}">
+                          <c:out value="${p.productPrice}" />원
+                        </c:when>
+                        <c:otherwise>-</c:otherwise>
+                      </c:choose>
+                    </td>
+                    <td><c:out value="${row.stock}" />개</td>
+                    <td>
+                      <c:choose>
+                        <c:when test="${p.productState == 1}"><span class="seller-product-badge seller-product-badge--selling">판매중</span></c:when>
+                        <c:when test="${p.productState == 2}"><span class="seller-product-badge seller-product-badge--soldout">품절</span></c:when>
+                        <c:otherwise><span class="seller-product-badge seller-product-badge--hidden">숨김</span></c:otherwise>
+                      </c:choose>
+                    </td>
+                    <td>-</td>
+                    <td class="seller-product-row-actions">
+                      <button type="button" class="seller-mini-btn" data-action="edit" data-product-no="${p.productNo}">수정</button>
+                    </td>
+                  </tr>
+                </c:forEach>
               </tbody>
             </table>
           </div>
@@ -264,7 +221,7 @@
           </div>
         </section>
 
-        <section class="seller-card seller-product-empty" aria-label="빈 상태(더미)" hidden>
+        <section class="seller-card seller-product-empty" aria-label="빈 상태(더미)" <c:if test="${productTotal != 0}">hidden</c:if>>
           <div class="seller-product-empty-inner">
             <div class="seller-product-empty-icon" aria-hidden="true">
               <span class="material-icons-outlined">inventory_2</span>

@@ -170,11 +170,14 @@ document.addEventListener("DOMContentLoaded", function () {
   function renderSelectedChips() {
     if (!selectedFilterArea) return;
 
-    let html = `
-      <button type="button" class="selected-chip selected-category-chip" data-type="category">
-        ${currentCategory}
-      </button>
-    `;
+    let html = "";
+    if (currentCategory && currentCategory.trim() !== "") {
+      html += `
+        <button type="button" class="selected-chip selected-category-chip" data-type="category">
+          ${currentCategory}
+        </button>
+      `;
+    }
 
 
     colorInputs.forEach((input) => {

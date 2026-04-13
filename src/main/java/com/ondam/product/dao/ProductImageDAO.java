@@ -53,7 +53,7 @@ public class ProductImageDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT ProductImage (productNo, imgFile, imgType, imgOrder) VALUES (?, ?, ?, ?)";
+			sql = "INSERT INTO productimage (productNo, imgFile, imgType, imgOrder) VALUES (?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getProductNo());
 			pstmt.setString(2, dto.getImgFile());
@@ -77,7 +77,7 @@ public class ProductImageDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE ProductImage SET productNo = ?, imgFile = ?, imgType = ?, imgOrder = ? WHERE productImgNo = ?";
+			sql = "UPDATE productimage SET productNo = ?, imgFile = ?, imgType = ?, imgOrder = ? WHERE productImgNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getProductNo());
 			pstmt.setString(2, dto.getImgFile());
@@ -102,7 +102,7 @@ public class ProductImageDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "DELETE FROM ProductImage WHERE productImgNo = ?";
+			sql = "DELETE FROM productimage WHERE productImgNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, productImgNo);
 			if (pstmt.executeUpdate() > 0)
@@ -113,6 +113,43 @@ public class ProductImageDAO {
 			pool.freeConnection(con, pstmt);
 		}
 		return flag;
+	}
+
+	public boolean deleteByProductNo(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = pool.getConnection();
+			String sql = "DELETE FROM productimage WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			pstmt.executeUpdate();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return false;
+	}
+
+	public boolean deleteByProductNoAndType(int productNo, int imgType) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = pool.getConnection();
+			String sql = "DELETE FROM productimage WHERE productNo = ? AND imgType = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			pstmt.setInt(2, imgType);
+			pstmt.executeUpdate();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return false;
 	}
 
 	// 특정 상품의 이미지 목록 (imgOrder 순)
@@ -151,7 +188,7 @@ public class ProductImageDAO {
 	    ProductImageDTO dto = null;
 	    try {
 	        con = pool.getConnection();
-	        String sql = "SELECT * FROM productImage WHERE productNo = ? ORDER BY imgOrder ASC LIMIT 1";
+	        String sql = "SELECT * FROM productimage WHERE productNo = ? ORDER BY imgOrder ASC LIMIT 1";
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setInt(1, productNo);
 	        rs = pstmt.executeQuery();
@@ -179,7 +216,7 @@ public class ProductImageDAO {
 	    String imgFile = null;
 	    try {
 	        con = pool.getConnection();
-	        String sql = "SELECT imgFile FROM productImage WHERE productNo = ? ORDER BY imgOrder ASC LIMIT 1";
+	        String sql = "SELECT imgFile FROM productimage WHERE productNo = ? ORDER BY imgOrder ASC LIMIT 1";
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setInt(1, productNo);
 	        rs = pstmt.executeQuery();

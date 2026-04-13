@@ -29,6 +29,15 @@
 
   var form = $('sellerProductForm');
   if (!form) return;
+  var generateEasyDescBtn = $('generateEasyDescBtn');
+  var editSituationNo = $('editSituationNo');
+  var editCategoryNo = $('editCategoryNo');
+  if (editSituationNo && $('situationCategory')) {
+    $('situationCategory').value = editSituationNo.value;
+  }
+  if (editCategoryNo && $('typeCategory')) {
+    $('typeCategory').value = editCategoryNo.value;
+  }
 
   var priceEl = $('price');
   var rateEl = $('discountRate');
@@ -56,55 +65,153 @@
   if (saleEl) saleEl.addEventListener('input', updatePricePreview);
   updatePricePreview();
 
-  // 이미지 더미
+  // 이미지 업로드
   var thumbAddBtn = $('thumbAddBtn');
   var thumbRemoveBtn = $('thumbRemoveBtn');
   var thumbPreview = $('thumbPreview');
   var thumbPreviewImg = $('thumbPreviewImg');
   var thumbBox = $('thumbBox');
+  var thumbImageInput = $('thumbImageInput');
+  var detailImageInput = $('detailImageInput');
+  var detailThumbs = $('detailThumbs');
+  var detailFiles = [];
 
   function setThumb(on) {
     if (on) {
-      if (thumbPreviewImg) {
-        thumbPreviewImg.src = (document.body.getAttribute('data-context-path') || '') + '/images/category/type-top-knit.jpg';
+      if (thumbPreviewImg && thumbImageInput && thumbImageInput.files && thumbImageInput.files[0]) {
+        thumbPreviewImg.src = URL.createObjectURL(thumbImageInput.files[0]);
       }
       show(thumbPreview);
       clearError('thumbError');
     } else {
+      if (thumbImageInput) thumbImageInput.value = '';
       if (thumbPreviewImg) thumbPreviewImg.removeAttribute('src');
       hide(thumbPreview);
     }
   }
 
-  function addDetailThumb() {
-    var wrap = $('detailThumbs');
+  function renderDetailThumbs() {
+    var wrap = detailThumbs;
     if (!wrap) return;
-    var idx = wrap.children.length + 1;
+    wrap.innerHTML = '';
+    detailFiles.forEach(function (file, index) {
+      var idx = index + 1;
+      var imgUrl = URL.createObjectURL(file);
+      var name = (file && file.name) ? file.name : '상세 이미지';
+      var safeName = name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      var isFirst = index === 0;
+      var isLast = index === detailFiles.length - 1;
+      var upDisabled = isFirst ? 'disabled' : '';
+      var downDisabled = isLast ? 'disabled' : '';
+      var sub = isFirst ? '첫 이미지는 상세 상단에 우선 노출돼요' : '상세 이미지 ' + idx;
+      var subSafe = sub.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  
+      var row = document.createElement('div');
+      row.className = 'seller-product-detail-thumb';
+      row.setAttribute('data-idx', String(idx));
+      row.setAttribute('data-file-idx', String(index));
+      row.setAttribute('data-image-url', imgUrl);
+      row.innerHTML =
+        '<img alt="상세 이미지 미리보기" src="' + imgUrl + '">' +
+        '<div class="seller-product-detail-thumb-meta">' +
+        '  <div class="seller-product-detail-thumb-title">' + safeName + '</div>' +
+        '  <div class="seller-product-detail-thumb-sub">' + subSafe + '</div>' +
+        '</div>' +
+        '<div class="seller-product-detail-thumb-actions">' +
+        '  <button type="button" class="seller-mini-btn" data-detail-action="up" ' + upDisabled + '>위</button>' +
+        '  <button type="button" class="seller-mini-btn" data-detail-action="down" ' + downDisabled + '>아래</button>' +
+        '  <button type="button" class="seller-mini-btn seller-mini-btn--warn" data-detail-action="remove">삭제</button>' +
+        '</div>';
+      wrap.appendChild(row);
+    });
+  }
 
-    var row = document.createElement('div');
-    row.className = 'seller-product-detail-thumb';
-    row.setAttribute('data-idx', String(idx));
-    row.innerHTML =
-      '<img alt="상세 이미지 미리보기" src="' + (document.body.getAttribute('data-context-path') || '') + '/images/category/type-top-knit.jpg">' +
-      '<div class="seller-product-detail-thumb-meta">' +
-      '  <div class="seller-product-detail-thumb-title">상세 이미지 ' + idx + '</div>' +
-      '  <div class="seller-product-detail-thumb-sub">정렬/삭제는 더미 동작</div>' +
-      '</div>' +
-      '<div class="seller-product-detail-thumb-actions">' +
-      '  <button type="button" class="seller-mini-btn" data-detail-action="up">위</button>' +
-      '  <button type="button" class="seller-mini-btn" data-detail-action="down">아래</button>' +
-      '  <button type="button" class="seller-mini-btn seller-mini-btn--warn" data-detail-action="remove">삭제</button>' +
-      '</div>';
-    wrap.appendChild(row);
+  function syncDetailInputFiles() {
+    if (!detailImageInput) return;
+    try {
+      var dt = new DataTransfer();
+      detailFiles.forEach(function (f) { dt.items.add(f); });
+      detailImageInput.files = dt.files;
+    } catch (e) {
+      // input.files 재할당이 막힌 환경에서는 원본 선택 파일을 그대로 제출
+      console.warn('detailImageInput sync fallback:', e);
+    }
+  }
+
+  function addDetailFiles(fileList) {
+    if (!fileList || !fileList.length) return;
+    Array.prototype.forEach.call(fileList, function (file) {
+      if (file && file.type && file.type.indexOf('image/') === 0) {
+        detailFiles.push(file);
+      }
+    });
+    syncDetailInputFiles();
+    renderDetailThumbs();
+  }
+
+  function moveDetailFile(from, to) {
+    if (from === to || from < 0 || to < 0 || from >= detailFiles.length || to >= detailFiles.length) return;
+    var file = detailFiles.splice(from, 1)[0];
+    detailFiles.splice(to, 0, file);
+    syncDetailInputFiles();
+    renderDetailThumbs();
+  }
+
+  function removeDetailFile(index) {
+    if (index < 0 || index >= detailFiles.length) return;
+    detailFiles.splice(index, 1);
+    syncDetailInputFiles();
+    renderDetailThumbs();
+  }
+
+  function addDetailThumb() {
+    if (detailImageInput) detailImageInput.click();
+  }
+
+  if (detailImageInput) {
+    detailImageInput.addEventListener('change', function () {
+      addDetailFiles(detailImageInput.files);
+    });
+  }
+
+  function revokeRowPreviewUrl(row) {
+    if (!row) return;
+    var url = row.getAttribute('data-image-url');
+    if (url) {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  function clearAllDetailPreviewUrls() {
+    if (!detailThumbs) return;
+    var rows = detailThumbs.querySelectorAll('.seller-product-detail-thumb');
+    rows.forEach(function (row) { revokeRowPreviewUrl(row); });
   }
 
   var detailAddBtn = $('detailAddBtn');
   var detailBox = $('detailBox');
-  if (detailAddBtn) detailAddBtn.addEventListener('click', function (e) { e.preventDefault(); addDetailThumb(); });
-  if (detailBox) detailBox.addEventListener('click', function () { addDetailThumb(); });
+  if (detailBox) detailBox.addEventListener('click', function (e) {
+    if (e.target && e.target.closest('[data-detail-action]')) return;
+    addDetailThumb();
+  });
 
-  if (thumbAddBtn) thumbAddBtn.addEventListener('click', function (e) { e.preventDefault(); setThumb(true); });
-  if (thumbBox) thumbBox.addEventListener('click', function () { setThumb(true); });
+  if (thumbAddBtn) thumbAddBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (thumbImageInput) thumbImageInput.click();
+  });
+  if (detailAddBtn) detailAddBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    addDetailThumb();
+  });
+  if (thumbBox) thumbBox.addEventListener('click', function (e) {
+    if (e.target && e.target.closest('#thumbAddBtn')) return;
+    if (thumbImageInput) thumbImageInput.click();
+  });
+  if (thumbImageInput) thumbImageInput.addEventListener('change', function () {
+    if (thumbImageInput.files && thumbImageInput.files[0]) setThumb(true);
+  });
   if (thumbRemoveBtn) thumbRemoveBtn.addEventListener('click', function (e) { e.preventDefault(); setThumb(false); });
 
   document.addEventListener('click', function (e) {
@@ -118,16 +225,18 @@
     var wrap = $('detailThumbs');
     if (!wrap) return;
 
+    var fileIdx = Number(row.getAttribute('data-file-idx'));
     if (action === 'remove') {
-      wrap.removeChild(row);
+      revokeRowPreviewUrl(row);
+      removeDetailFile(fileIdx);
       return;
     }
     if (action === 'up' && row.previousElementSibling) {
-      wrap.insertBefore(row, row.previousElementSibling);
+      moveDetailFile(fileIdx, fileIdx - 1);
       return;
     }
     if (action === 'down' && row.nextElementSibling) {
-      wrap.insertBefore(row.nextElementSibling, row);
+      moveDetailFile(fileIdx, fileIdx + 1);
     }
   });
 
@@ -273,8 +382,7 @@
     if (!name) { showError('productNameError', '상품명을 입력해 주세요.'); ok = false; }
     if (!situationCat || !typeCat) { showError('categoryError', '카테고리를 선택해 주세요.'); ok = false; }
     if (!price || price <= 0) { showError('priceError', '판매가를 입력해 주세요.'); ok = false; }
-    if (!hasThumb()) { showError('thumbError', '대표 이미지를 등록해 주세요.'); ok = false; }
-    if (optionCount() === 0) { showError('optionError', '옵션 또는 재고 정보를 입력해 주세요.'); ok = false; }
+    // 이미지는 현재 더미 UI라서 필수에서 제외
 
     if (!ok) {
       showError('formError', '필수 항목을 확인해 주세요.');
@@ -326,35 +434,167 @@
 
   updateFeatureHint();
 
-  if (tempBtn) {
-    tempBtn.addEventListener('click', function () {
-      console.log('[SellerProductForm] temp save (dummy)', {
-        season: getSelectedSeason(),
-        features: getSelectedFeatures(),
-      });
-      alert('임시 저장(더미) — 실제 저장은 아직 연동되지 않았어요.');
+  if (generateEasyDescBtn) {
+    generateEasyDescBtn.addEventListener('click', function () {
+      var productNameEl = $('productName');
+      var brandNameEl = $('brandName');
+      var situationCategoryEl = $('situationCategory');
+      var typeCategoryEl = $('typeCategory');
+      var saleStatusEl = $('saleStatus');
+      var productGenderEl = document.querySelector('input[name="productGender"]:checked');
+      var priceInputEl = $('price');
+      var salePriceInputEl = $('salePrice');
+      var seasonEl = document.querySelector('input[name="productSeason"]:checked');
+      var productExEl = $('productEx');
+      var easyOneLineEl = $('easyOneLine');
+      var easyForEl = $('easyFor');
+      var easyComfortEl = $('easyComfort');
+      var fitEl = $('productFit');
+      var thicknessEl = $('productThickness');
+      var materialEl = $('productMaterial');
+      var patternEl = $('productPattern');
+
+      var payload = {
+        brandName: brandNameEl ? brandNameEl.value.trim() : '',
+        productName: productNameEl ? productNameEl.value.trim() : '',
+        situationCategory: situationCategoryEl ? situationCategoryEl.value : '',
+        typeCategory: typeCategoryEl ? typeCategoryEl.value : '',
+        saleStatus: saleStatusEl ? saleStatusEl.value : '',
+        productGender: productGenderEl ? productGenderEl.value : '',
+        price: priceInputEl ? onlyNumberText(priceInputEl.value) : '',
+        salePrice: salePriceInputEl ? onlyNumberText(salePriceInputEl.value) : '',
+        productEx: productExEl ? productExEl.value.trim() : '',
+        productMaterial: materialEl ? materialEl.value.trim() : '',
+        productPattern: patternEl ? patternEl.value.trim() : '',
+        productFit: fitEl ? fitEl.value.trim() : '',
+        productThickness: thicknessEl ? thicknessEl.value.trim() : '',
+        productSeason: seasonEl ? seasonEl.value : ''
+      };
+
+      var requiredKeys = [
+        'brandName', 'productName', 'situationCategory', 'typeCategory',
+        'saleStatus', 'productGender', 'price', 'productEx',
+        'productMaterial', 'productPattern', 'productFit', 'productThickness', 'productSeason'
+      ];
+      var missing = requiredKeys.some(function (k) { return !payload[k]; });
+      if (missing) {
+        alert('위의 상품 정보를 모두 입력한 후 설명 자동 생성을 실행해 주세요.');
+        return;
+      }
+
+      generateEasyDescBtn.disabled = true;
+      var originalHtml = generateEasyDescBtn.innerHTML;
+      generateEasyDescBtn.textContent = '생성 중...';
+
+      var formData = new URLSearchParams();
+      Object.keys(payload).forEach(function (k) { formData.append(k, payload[k]); });
+
+      fetch((document.body.getAttribute('data-context-path') || '') + '/seller/product/generate-easy-desc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+        body: formData.toString()
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data || !data.ok) {
+            alert((data && data.message) ? data.message : '설명 자동 생성에 실패했어요.');
+            return;
+          }
+          if (easyOneLineEl) easyOneLineEl.value = data.easyOneLine || '';
+          if (easyForEl) easyForEl.value = data.easyFor || '';
+          if (easyComfortEl) easyComfortEl.value = data.easyComfort || '';
+        })
+        .catch(function () {
+          alert('설명 자동 생성 중 오류가 발생했어요.');
+        })
+        .finally(function () {
+          generateEasyDescBtn.disabled = false;
+          generateEasyDescBtn.innerHTML = originalHtml;
+        });
     });
   }
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!validateRequired()) return;
-
-    console.log('[SellerProductForm] submit (dummy)', {
-      brandName: ($('brandName') && $('brandName').value) || '',
-      productName: ($('productName') && $('productName').value) || '',
-      situationCategory: ($('situationCategory') && $('situationCategory').value) || '',
-      typeCategory: ($('typeCategory') && $('typeCategory').value) || '',
-      saleStatus: ($('saleStatus') && $('saleStatus').value) || '',
-      price: ($('price') && $('price').value) || '',
-      discountRate: ($('discountRate') && $('discountRate').value) || '',
-      salePrice: ($('salePrice') && $('salePrice').value) || '',
-      season: getSelectedSeason(),
-      features: getSelectedFeatures(),
-      optionRows: optionCount(),
+  if (tempBtn) {
+    tempBtn.addEventListener('click', function () {
+      var saveModeEl = $('saveMode');
+      if (saveModeEl) saveModeEl.value = 'temp';
+      if (!validateRequired()) return;
+      form.requestSubmit();
     });
+  }
 
-    alert('등록하기(더미) — 콘솔에 입력값 요약을 남겼어요.');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', function () {
+      var saveModeEl = $('saveMode');
+      if (saveModeEl) saveModeEl.value = 'submit';
+    });
+  }
+
+  function clearOptionHiddenInputs() {
+    var olds = form.querySelectorAll('input[data-option-hidden="true"]');
+    olds.forEach(function (el) { el.remove(); });
+  }
+
+  function appendOptionHidden(name, value) {
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    input.setAttribute('data-option-hidden', 'true');
+    form.appendChild(input);
+  }
+
+  function serializeOptionsForSubmit() {
+    clearOptionHiddenInputs();
+    if (!optionBody) return 0;
+    var rows = optionBody.querySelectorAll('tr:not(.seller-product-option-empty)');
+    var count = 0;
+    rows.forEach(function (tr) {
+      var tds = tr.querySelectorAll('td');
+      if (!tds || tds.length < 4) return;
+      var color = (tds[0].textContent || '').trim();
+      var size = (tds[1].textContent || '').trim();
+      var stockInput = tr.querySelector('input[data-opt="stock"]');
+      var soldoutInput = tr.querySelector('input[data-opt="soldout"]');
+      var stock = Number(onlyNumberText(stockInput ? stockInput.value : '0'));
+      if (soldoutInput && soldoutInput.checked) stock = 0;
+      if (!color || !size) return;
+      appendOptionHidden('optionColor', color);
+      appendOptionHidden('optionSize', size);
+      appendOptionHidden('optionStock', String(stock));
+      count++;
+    });
+    return count;
+  }
+
+  form.addEventListener('submit', function (e) {
+    var saveModeEl = $('saveMode');
+    var mode = saveModeEl ? saveModeEl.value : 'submit';
+    if (!validateRequired()) {
+      e.preventDefault();
+      return;
+    }
+    var optionRows = serializeOptionsForSubmit();
+    if (mode !== 'temp' && optionRows === 0) {
+      e.preventDefault();
+      showError('optionError', '옵션 또는 재고 정보를 입력해 주세요.');
+      showError('formError', '등록하기에는 최소 1개 옵션이 필요해요.');
+      return;
+    }
+    if (mode !== 'temp' && !hasThumb()) {
+      e.preventDefault();
+      showError('thumbError', '대표 이미지를 등록해 주세요.');
+      showError('formError', '등록하기에는 대표 이미지가 필요해요.');
+      return;
+    }
+    if (saveModeEl) saveModeEl.value = 'submit';
+  });
+
+  window.addEventListener('beforeunload', function () {
+    clearAllDetailPreviewUrls();
+    if (thumbPreviewImg && thumbPreviewImg.src && thumbPreviewImg.src.indexOf('blob:') === 0) {
+      URL.revokeObjectURL(thumbPreviewImg.src);
+    }
   });
 
   // 입력 시 에러 제거

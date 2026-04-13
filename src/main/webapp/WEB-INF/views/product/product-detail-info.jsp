@@ -80,36 +80,33 @@
   </section>
 
   <!-- AI 추천 가이드 — 현재 하드코딩 유지 (추후 AI API 연동 예정) -->
+  <c:if test="${not empty product.easyOneLine or not empty product.easyFor or not empty product.easyComfort}">
   <section class="detail-guide-card">
     <h2 class="detail-section-title detail-section-title--with-icon">
       <span class="material-symbols-outlined detail-section-title-icon" aria-hidden="true">Thumb_Up</span>
       이런 점이 좋아요
     </h2>
-    <p class="detail-guide-summary">${product.productEx}</p>
 
+    <c:if test="${not empty product.easyOneLine}">
     <div class="detail-guide-block">
-      <h3>소재</h3>
-      <ul><li>${product.productMaterial}</li></ul>
+      <h3>한 줄 요약</h3>
+      <ul><li><c:out value="${product.easyOneLine}" /></li></ul>
     </div>
-    <c:if test="${not empty product.productFit}">
-      <div class="detail-guide-block">
-        <h3>핏</h3>
-        <ul><li>${product.productFit}</li></ul>
-      </div>
     </c:if>
-    <c:if test="${not empty product.productThickness}">
-      <div class="detail-guide-block">
-        <h3>두께감</h3>
-        <ul><li>${product.productThickness}</li></ul>
-      </div>
+    <c:if test="${not empty product.easyFor}">
+    <div class="detail-guide-block">
+      <h3>이런 분께 좋아요</h3>
+      <ul><li><c:out value="${product.easyFor}" /></li></ul>
+    </div>
     </c:if>
-    <c:if test="${not empty product.productPattern}">
-      <div class="detail-guide-block">
-        <h3>패턴</h3>
-        <ul><li>${product.productPattern}</li></ul>
-      </div>
+    <c:if test="${not empty product.easyComfort}">
+    <div class="detail-guide-block">
+      <h3>입기 편한 점</h3>
+      <ul><li><c:out value="${product.easyComfort}" /></li></ul>
+    </div>
     </c:if>
   </section>
+  </c:if>
 
   <!-- 사이즈 추천 — 하드코딩 유지 (추후 로직 구현 예정) -->
   <section class="detail-size-recommend-card">
@@ -155,8 +152,20 @@
           <p>${product.productEx}</p>
         </div>
         <div class="detail-info-block">
-          <h3>소재 / 세탁</h3>
-          <p>${product.productMaterial}</p>
+          <h3>소재 / 두께감</h3>
+          <p>
+            소재: <c:out value="${empty product.productMaterial ? '-' : product.productMaterial}" />
+            <br />
+            두께감: <c:out value="${empty product.productThickness ? '-' : product.productThickness}" />
+          </p>
+        </div>
+        <div class="detail-info-block">
+          <h3>패턴 / 핏</h3>
+          <p>
+            패턴: <c:out value="${empty product.productPattern ? '-' : product.productPattern}" />
+            <br />
+            핏: <c:out value="${empty product.productFit ? '-' : product.productFit}" />
+          </p>
         </div>
         <div class="detail-info-block">
           <h3>배송 안내</h3>
