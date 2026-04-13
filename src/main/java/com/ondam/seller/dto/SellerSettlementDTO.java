@@ -9,6 +9,10 @@ public class SellerSettlementDTO {
     private int actualAmount;
     private int settleState;
     private String createdAt;
+    private int refundAmount;
+    private int cardAmount;
+    private int bankAmount;
+    private int walletAmount;
 
     public int getSettlementNo() { return settlementNo; }
     public void setSettlementNo(int settlementNo) { this.settlementNo = settlementNo; }
@@ -33,4 +37,16 @@ public class SellerSettlementDTO {
 
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    
+    public int getRefundAmount() { return refundAmount; }
+    public void setRefundAmount(int refundAmount) { this.refundAmount = refundAmount; }
+    
+    public int getCardAmount() { return cardAmount; }
+    public void setCardAmount(int cardAmount) { this.cardAmount = cardAmount; }
+
+    public int getBankAmount() { return bankAmount; }
+    public void setBankAmount(int bankAmount) { this.bankAmount = bankAmount; }
+
+    public int getWalletAmount() { return walletAmount; }
+    public void setWalletAmount(int walletAmount) { this.walletAmount = walletAmount; }
 }

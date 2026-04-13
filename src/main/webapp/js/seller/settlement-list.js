@@ -34,51 +34,67 @@
         return;
       }
       setDateRange(start, end);
-      console.log('[Settlement] preset change (dummy)', preset.value);
-    });
-  }
-  // initial default: this month
-  if (preset) {
-    preset.value = 'month';
-    var now0 = new Date();
-    setDateRange(new Date(now0.getFullYear(), now0.getMonth(), 1), new Date(now0.getFullYear(), now0.getMonth() + 1, 0));
-  }
+	  if ($('settlementSearchBtn')) {
+	            $('settlementSearchBtn').click();
+	        }
+	      });
+	    }
+		//시작일과 종료일이 비어있을 때만 이번 달을 세팅함
+		var sInput = $('startDate');
+		var eInput = $('endDate');
 
-  // Filter / search (dummy)
+		if (preset && (!sInput.value || !eInput.value)) {
+		    preset.value = 'month';
+		    var now0 = new Date();
+		    setDateRange(
+		        new Date(now0.getFullYear(), now0.getMonth(), 1), 
+		        new Date(now0.getFullYear(), now0.getMonth() + 1, 0)
+		    );
+		}
+
+  // Filter / search
   var searchBtn = $('settlementSearchBtn');
   if (searchBtn) {
     searchBtn.addEventListener('click', function () {
-      var payload = {
-        preset: preset ? preset.value : '',
-        startDate: $('startDate') ? $('startDate').value : '',
-        endDate: $('endDate') ? $('endDate').value : '',
-        status: $('settleStatus') ? $('settleStatus').value : '',
-        payMethod: $('payMethod') ? $('payMethod').value : '',
-      };
-      console.log('[Settlement] search (dummy)', payload);
-      alert('조회는 더미 동작입니다.\n\n' +
-        '기간: ' + payload.startDate + ' ~ ' + payload.endDate + '\n' +
-        '정산 상태: ' + payload.status + '\n' +
-        '결제수단: ' + payload.payMethod
-      );
+      var s = $('startDate').value;
+      var e = $('endDate').value;
+      var status = $('settleStatus').value;
+      var contextPath = document.body.getAttribute('data-context-path') || '';
+      location.href = contextPath + "/seller/settlement/list?startDate=" + s + "&endDate=" + e + "&settleStatus=" + status;
     });
   }
 
-  // Download (dummy)
+  // Download
   var downloadBtn = $('settlementDownloadBtn');
   if (downloadBtn) {
     downloadBtn.addEventListener('click', function () {
-      console.log('[Settlement] download (dummy)');
-      alert('정산 내역 다운로드는 아직 연동되지 않았어요. (더미)');
+      var s = $('startDate').value;
+      var e = $('endDate').value;
+      var contextPath = document.body.getAttribute('data-context-path') || '';
+      
+      // 다운로드용 서블릿/컨트롤러 주소로 연결
+      if(confirm('현재 조건으로 정산 내역을 다운로드하시겠습니까?')) {
+          location.href = contextPath + "/seller/settlement/download?startDate=" + s + "&endDate=" + e;
+      }
     });
   }
 
-  // Pagination (dummy)
+  // Pagination
   document.addEventListener('click', function (e) {
     var pageBtn = e.target.closest('.seller-settlement-page-btn');
     if (!pageBtn) return;
+
     var p = pageBtn.getAttribute('data-page');
-    alert('페이지네이션은 더미 동작입니다. (선택: ' + p + ')');
+    if (!p) return;
+
+    // 현재 필터 조건을 유지하면서 페이지 번호만 바꿔서 이동
+    var s = $('startDate').value;
+    var eDate = $('endDate').value;
+    var status = $('settleStatus').value;
+    var contextPath = document.body.getAttribute('data-context-path') || '';
+
+    location.href = contextPath + "/seller/settlement/list?startDate=" + s + 
+                    "&endDate=" + eDate + "&settleStatus=" + status + "&page=" + p;
   });
 
   // Detail modal

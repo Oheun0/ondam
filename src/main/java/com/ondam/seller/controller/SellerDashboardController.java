@@ -18,36 +18,44 @@ import java.util.Vector;
 public class SellerDashboardController implements Controller {
     private final SellerService sellerService = new SellerService();
 
-	@Override
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		HttpSession session = request.getSession(false);
-		if (session == null || session.getAttribute("loginSeller") == null) {
-			return "redirect:/seller/auth";
-		}
+    @Override
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // 1. 세션 및 로그인 상태 체크
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("loginSeller") == null) {
+            return "redirect:/seller/auth";
+        }
+        SellerDTO loginSeller = (SellerDTO) session.getAttribute("loginSeller");
+        String vendorName = (String) session.getAttribute("vendorName");
+        String displayName = null;
+        
+        // 2. 표시할 이름 결정
+        if (vendorName != null && !vendorName.isBlank()) {
+            displayName = vendorName.trim();
+        } else if (loginSeller != null && loginSeller.getSellerName() != null && !loginSeller.getSellerName().isBlank()) {
+            displayName = loginSeller.getSellerName().trim();
+        } else {
+            displayName = "판매자";
+        }
 
-		SellerDTO seller = (SellerDTO) session.getAttribute("loginSeller");
-		String vendorName = (String) session.getAttribute("vendorName");
-		String displayName = null;
-		if (vendorName != null && !vendorName.isBlank()) {
-			displayName = vendorName.trim();
-		} else if (seller != null && seller.getSellerName() != null && !seller.getSellerName().isBlank()) {
-			displayName = seller.getSellerName().trim();
-		} else {
-			displayName = "판매자";
-		}
-		request.setAttribute("sellerName", displayName);
-		request.setAttribute("sellerPageTitle", "대시보드");
-		request.setAttribute("sellerActiveMenu", "dashboard");
-		request.setAttribute("sellerContentPage", "/WEB-INF/views/seller/dashboard-content.jsp");
-		request.setAttribute("sellerExtraCss", "/css/seller/seller-dashboard.css");
-		request.setAttribute("sellerExtraJs", "/js/seller/dashboard.js");
+        // 3. 뷰(View) 속성 세팅
+        request.setAttribute("sellerName", displayName);
+        request.setAttribute("sellerPageTitle", "대시보드");
+        request.setAttribute("sellerActiveMenu", "dashboard");
+        request.setAttribute("sellerContentPage", "/WEB-INF/views/seller/dashboard-content.jsp");
+        request.setAttribute("sellerExtraCss", "/css/seller/seller-dashboard.css");
+        request.setAttribute("sellerExtraJs", "/js/seller/dashboard.js");
 
-        int vendorNo = seller.getVendorNo();
+        // 4. 데이터 조회 및 세팅
+        int vendorNo = loginSeller.getVendorNo();
         Map<String, Integer> stats = sellerService.getDashboardStats(vendorNo);
+        
         SellerOrderDAO sellerOrderDAO = new SellerOrderDAO();
         Vector<SellerOrderListDTO> recentOrders = sellerOrderDAO.getSellerOrderList(vendorNo, 0, 5);
+        
         request.setAttribute("stats", stats);
         request.setAttribute("recentOrders", recentOrders);
+        
         return "seller/dashboard";
     }
 }
