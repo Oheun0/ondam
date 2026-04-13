@@ -16,7 +16,9 @@ import com.ondam.product.dto.ProductOptionDTO;
 import com.ondam.product.service.ProductImageService;
 import com.ondam.product.service.ProductOptionService;
 import com.ondam.product.service.ProductService;
+import com.ondam.user.dao.UserDAO;
 import com.ondam.user.dto.UserDTO;
+import com.ondam.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +27,7 @@ import jakarta.servlet.http.HttpSession;
 public class PokeController implements Controller {
 
 	private PokeService pokeService = new PokeService();
+	private UserService userService = new UserService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -46,8 +49,10 @@ public class PokeController implements Controller {
 			return send(request, response);
 		case "respond":
 			return respond(request, response);
-		case "cancel":
-			return cancel(request, response);
+		case "delete":
+		    return deleteByUser(request, response);
+		case "deleteSelected":
+		    return deleteSelected(request, response);
 		case "detail":
 			return detail(request, response);
 		case "giftOrder":
@@ -104,10 +109,33 @@ public class PokeController implements Controller {
 
 	// 2. 보낸 조르기 목록
 	private String sent(HttpServletRequest request, HttpServletResponse response) {
-		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
-		Vector<PokeDTO> sentList = pokeService.getSentPokeList(loginUser.getUserNo());
-		request.setAttribute("sentList", sentList);
-		return "poke/sent";
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    Vector<PokeDTO> sentList = pokeService.getSentPokeList(loginUser.getUserNo());
+
+	    ProductService productService = new ProductService();
+	    Map<Integer, ProductDTO> productMap = new HashMap<>();
+	    Map<Integer, String> imageMap = new HashMap<>();
+	    Map<Integer, String> receiverNameMap = new HashMap<>();
+
+	    for (PokeDTO poke : sentList) {
+	        int pNo = poke.getProductNo();
+	        if (!productMap.containsKey(pNo)) {
+	            ProductDTO product = productService.getProductById(pNo);
+	            if (product != null) productMap.put(pNo, product);
+	            String img = productService.getProductImage(pNo);
+	            imageMap.put(pNo, img != null ? img : "");
+	        }
+	        int rNo = poke.getReceiverNo();
+	        if (!receiverNameMap.containsKey(rNo)) {
+	            receiverNameMap.put(rNo, userService.getUserName(rNo));
+	        }
+	    }
+
+	    request.setAttribute("sentList", sentList);
+	    request.setAttribute("productMap", productMap);
+	    request.setAttribute("imageMap", imageMap);
+	    request.setAttribute("receiverNameMap", receiverNameMap);
+	    return "poke/poke-sent";
 	}
 
 	// 3. 조르기 보내기 (상품 상세 페이지 폼에서 POST)
@@ -201,27 +229,47 @@ public class PokeController implements Controller {
 		return "redirect:/poke";
 	}
 
-	// 5. 조르기 취소 (senderNo가 삭제)
-	private String cancel(HttpServletRequest request, HttpServletResponse response) {
-		UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	// 조르기 삭제
+	private String deleteByUser(HttpServletRequest request, HttpServletResponse response) {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    String pokeNoParam = request.getParameter("pokeNo");
+	    String from = request.getParameter("from"); // "list" or "sent"
+	    if (pokeNoParam == null) return "redirect:/poke";
 
-		String pokeNoParam = request.getParameter("pokeNo");
-		if (pokeNoParam == null)
-			return "redirect:/poke";
+	    int pokeNo = Integer.parseInt(pokeNoParam);
+	    PokeDTO poke = pokeService.getPokeById(pokeNo);
+	    if (poke == null) return "redirect:/poke";
 
-		int pokeNo = Integer.parseInt(pokeNoParam);
-		PokeDTO poke = pokeService.getPokeById(pokeNo);
+	    // 발신자 또는 수신자만 삭제 가능
+	    boolean isSender   = poke.getSenderNo()   == loginUser.getUserNo();
+	    boolean isReceiver = poke.getReceiverNo() == loginUser.getUserNo();
+	    if (!isSender && !isReceiver) return "redirect:/poke";
 
-		if (poke == null)
-			return "redirect:/poke";
+	    pokeService.removePoke(pokeNo);
+	    return "sent".equals(from) ? "redirect:/poke?action=sent" : "redirect:/poke";
+	}
+	
+	// 선택된 것 삭제
+	private String deleteSelected(HttpServletRequest request, HttpServletResponse response) {
+	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+	    String[] pokeNos = request.getParameterValues("pokeNo");
+	    String from = request.getParameter("from"); // "list" or "sent"
 
-		// 본인이 senderNo인지 권한 체크
-		if (poke.getSenderNo() != loginUser.getUserNo()) {
-			return "redirect:/poke";
-		}
-
-		pokeService.removePoke(pokeNo);
-		return "redirect:/poke?action=sent";
+	    if (pokeNos != null) {
+	        for (String pokeNoStr : pokeNos) {
+	            try {
+	                int pokeNo = Integer.parseInt(pokeNoStr);
+	                PokeDTO poke = pokeService.getPokeById(pokeNo);
+	                if (poke == null) continue;
+	                boolean isSender   = poke.getSenderNo()   == loginUser.getUserNo();
+	                boolean isReceiver = poke.getReceiverNo() == loginUser.getUserNo();
+	                if (isSender || isReceiver) {
+	                    pokeService.removePoke(pokeNo);
+	                }
+	            } catch (NumberFormatException e) { /* skip */ }
+	        }
+	    }
+	    return "sent".equals(from) ? "redirect:/poke?action=sent" : "redirect:/poke";
 	}
 	
 	// 6. 알림 클릭 → 조르기 상세 (수락/거절 or 결과)

@@ -48,11 +48,14 @@
       <div id="pokeListFilledWrap">
 
         <div class="cart-toolbar poke-list-toolbar">
-          <label class="cart-toolbar__select-all">
-            <input type="checkbox" class="cart-toolbar__checkbox" id="pokeSelectAll" checked aria-label="전체 선택"/>
-            <span>전체 선택</span>
-          </label>
-        </div>
+		  <label class="cart-toolbar__select-all">
+		    <input type="checkbox" class="cart-toolbar__checkbox" id="pokeSelectAll" checked aria-label="전체 선택"/>
+		    <span>전체 선택</span>
+		  </label>
+		  <div class="cart-toolbar__actions">
+		    <button type="button" class="cart-toolbar__link-btn" id="pokeRemoveSelectedBtn">선택 삭제</button>
+		  </div>
+		</div>
 
         <main class="cart-main poke-list-main" id="pokeMainList">
           <section class="cart-brand-group">

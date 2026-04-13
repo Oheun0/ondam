@@ -35,21 +35,25 @@
 
                 <!-- 나 -->
 					<c:forEach var="m" items="${memberList}">
-						<c:if test="${m.userNo == myMember.userNo}">
-							<article class="group-member-card">
-								<div class="member-thumb-wrap">
-									<img
-										src="${pageContext.request.contextPath}/images/profile/default-profile.png"
-										alt="${m.userName} 프로필" class="member-thumb">
-								</div>
-								<div class="member-content">
-									<div class="member-name-row">
-										<span class="member-me-badge">나</span> <strong
-											class="member-name">${m.userName}</strong>
-									</div>
-								</div>
-							</article>
-						</c:if>
+					<c:if test="${m.userNo == myMember.userNo}">
+					<article class="group-member-card">
+					    <div class="member-thumb-wrap">
+					        <img src="${pageContext.request.contextPath}/images/profile/default-profile.png"
+					             alt="${m.userName} 프로필" class="member-thumb">
+					    </div>
+					    <div class="member-content">
+					        <div class="member-name-row">
+					            <span class="member-me-badge">나</span>
+					            <strong class="member-name">${m.userName}</strong>
+					        </div>
+					        <%-- 나에게는 선물하기/찜 대신 내가 보낸 조르기 확인 버튼 --%>
+					        <div class="member-btn-row">
+					            <a href="${pageContext.request.contextPath}/poke?action=sent"
+					               class="member-btn">조르기 목록 보기</a>
+					        </div>
+					    </div>
+					</article>
+					</c:if>
 					</c:forEach>
 				
 				<%-- 2. 나를 제외한 다른 멤버들 --%>
