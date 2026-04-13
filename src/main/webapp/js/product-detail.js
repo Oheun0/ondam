@@ -1,3 +1,29 @@
+var successToastActive = false;
+var successToastDismissTimer = null;
+
+function showSuccessToast(message) {
+  var el = document.getElementById("success-toast");
+  if (!el || successToastActive) return;
+
+  document.getElementById("success-toast-text").innerText = message;
+  successToastActive = true;
+
+  el.style.setProperty("display", "flex", "important"); // !important 덮어씀
+  el.style.opacity = "1";
+  el.style.visibility = "visible";
+  el.setAttribute("aria-hidden", "false");
+
+  clearTimeout(successToastDismissTimer);
+  successToastDismissTimer = setTimeout(function () {
+    el.style.opacity = "0";
+    setTimeout(function () {
+      el.style.setProperty("display", "none", "important");
+      el.setAttribute("aria-hidden", "true");
+      successToastActive = false;
+    }, 300);
+  }, 2000);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const openCartSheetBtn = document.getElementById("openCartSheetBtn");
   const openBuySheetBtn = document.getElementById("openBuySheetBtn");
@@ -869,18 +895,31 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   
   var confirmPokeBtn = document.getElementById("confirmPokeBtn");
-    if (confirmPokeBtn) {
-      confirmPokeBtn.addEventListener("click", function () {
-        var selected = document.querySelector(".poke-person-btn.active");
-        if (!selected) {
-          alert("조르기를 보낼 사람을 선택해주세요.");
-          return;
-        }
+  if (confirmPokeBtn) {
+    confirmPokeBtn.addEventListener("click", function () {
+      var selected = document.querySelector(".poke-person-btn.active");
+      if (!selected) {
+        alert("조르기를 보낼 사람을 선택해주세요.");
+        return;
+      }
 
-        document.getElementById("pokeReceiverNo").value = selected.dataset.userNo;
-        document.getElementById("pokeMsgHidden").value  = document.getElementById("pokeMsgInput").value;
+      document.getElementById("pokeReceiverNo").value = selected.dataset.userNo;
+      document.getElementById("pokeMsgHidden").value  = document.getElementById("pokeMsgInput").value;
 
-        document.getElementById("pokeForm").submit();
+      var form = document.getElementById("pokeForm");
+      var formData = new URLSearchParams(new FormData(form));
+
+      fetch(form.getAttribute("action"), {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
+      })
+      .then(function (response) {
+        closePokeModal();
+        showSuccessToast("조르기 요청이 전송되었습니다❤️");
+      })
+      .catch(function (err) {
+        console.error("조르기 전송 에러:", err);
       });
     }
 
@@ -889,4 +928,5 @@ document.addEventListener("DOMContentLoaded", function () {
       closeImageLightbox();
     }
   });
+
 });

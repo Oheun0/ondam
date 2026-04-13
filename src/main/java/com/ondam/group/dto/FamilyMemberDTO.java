@@ -7,16 +7,22 @@ public class FamilyMemberDTO {
     private int userNo;
     private int familyAuth;
     private String userName;
+    
+    private String userProfileImg;
+    
+    public String getUserProfileImg() { return userProfileImg; }
+    public void setUserProfileImg(String userProfileImg) { this.userProfileImg = userProfileImg; }
 
     public FamilyMemberDTO() {}
 
     public FamilyMemberDTO(int familyMemberNo, int familyNo, int userNo,
-                           int familyAuth, String userName) {
+                           int familyAuth, String userName, String userProfileImg) {
         this.familyMemberNo = familyMemberNo;
         this.familyNo = familyNo;
         this.userNo = userNo;
         this.familyAuth = familyAuth;
         this.userName = userName;
+        this.userProfileImg = userProfileImg;
     }
 
     public int getFamilyMemberNo() {

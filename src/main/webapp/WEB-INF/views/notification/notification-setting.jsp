@@ -47,6 +47,7 @@
 			<c:set var="en4" value="${empty settingMap[4] ? 1 : settingMap[4]}"/>
 			<c:set var="en5" value="${empty settingMap[5] ? 1 : settingMap[5]}"/>
 			<c:set var="en6" value="${empty settingMap[6] ? 1 : settingMap[6]}"/>
+			<c:set var="en7" value="${empty settingMap[7] ? 1 : settingMap[7]}"/>
 				<section class="ns-card" aria-label="알림 목록">
 					<!-- 0: 내 사람 -->
 					<button type="button"
@@ -137,13 +138,28 @@
 						<span class="ns-switch" aria-hidden="true"><span
 							class="ns-switch__thumb"></span></span>
 					</button>
-
-					<!-- 6: 기타 -->
+					
+					<!-- 6: 선물 -->
 					<button type="button"
 				        class="ns-row ${en6 == 1 ? 'is-on' : ''}"
 				        data-ns-key="6"
 				        role="switch"
 				        aria-checked="${en6 == 1 ? 'true' : 'false'}"
+				        aria-label="선물 알림">
+						<div class="ns-left">
+							<p class="ns-title">선물 알림</p>
+							<p class="ns-desc">선물이 오면 알려드려요</p>
+						</div>
+						<span class="ns-switch" aria-hidden="true"><span
+							class="ns-switch__thumb"></span></span>
+					</button>
+
+					<!-- 7: 기타 -->
+					<button type="button"
+				        class="ns-row ${en7 == 1 ? 'is-on' : ''}"
+				        data-ns-key="7"
+				        role="switch"
+				        aria-checked="${en7 == 1 ? 'true' : 'false'}"
 				        aria-label="기타 알림">
 						<div class="ns-left">
 							<p class="ns-title">기타 알림</p>
@@ -161,4 +177,3 @@
 		src="${pageContext.request.contextPath}/js/notification-setting.js"></script>
 </body>
 </html>
-
