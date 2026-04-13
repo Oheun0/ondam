@@ -16,6 +16,7 @@ import java.util.Vector;
  * 판매자 대시보드 — 로그인 세션 필요
  */
 public class SellerDashboardController implements Controller {
+    private final SellerService sellerService = new SellerService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -41,11 +42,7 @@ public class SellerDashboardController implements Controller {
 		request.setAttribute("sellerExtraCss", "/css/seller/seller-dashboard.css");
 		request.setAttribute("sellerExtraJs", "/js/seller/dashboard.js");
 
-        if (loginSeller == null) {
-            return "redirect:/seller/auth";
-        }
-
-        int vendorNo = loginSeller.getVendorNo();
+        int vendorNo = seller.getVendorNo();
         Map<String, Integer> stats = sellerService.getDashboardStats(vendorNo);
         SellerOrderDAO sellerOrderDAO = new SellerOrderDAO();
         Vector<SellerOrderListDTO> recentOrders = sellerOrderDAO.getSellerOrderList(vendorNo, 0, 5);
