@@ -144,7 +144,6 @@ public class SellerOrderDAO {
         return resultList;
     }
     
- // 주문 상세 내역 가져오기
     public SellerOrderDetailDTO getSellerOrderDetail(int vendorNo, int orderNo) {
         SellerOrderDetailDTO detail = null;
         java.util.List<com.ondam.seller.dto.SellerOrderItemDTO> itemList = new java.util.ArrayList<>();

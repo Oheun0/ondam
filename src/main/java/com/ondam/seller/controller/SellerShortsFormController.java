@@ -19,7 +19,7 @@ public class SellerShortsFormController implements Controller {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
         HttpSession session = request.getSession();
-        SellerDTO loginSeller = (SellerDTO) session.getAttribute("loginUser");
+        SellerDTO loginSeller = (SellerDTO) session.getAttribute("loginSeller");
 
         // [핵심] 로그인 세션 검증
         if (loginSeller == null) {

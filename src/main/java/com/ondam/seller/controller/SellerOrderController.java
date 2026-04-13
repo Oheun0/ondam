@@ -21,13 +21,13 @@ public class SellerOrderController implements Controller {
         if (action == null) action = "list";
 
         HttpSession session = request.getSession();
-        SellerDTO loginUser = (SellerDTO) session.getAttribute("loginUser");
+        SellerDTO loginSeller = (SellerDTO) session.getAttribute("loginSeller");
 
-        if (loginUser == null) {
+        if (loginSeller == null) {
             return "redirect:/seller/auth";
         }
 
-        int vendorNo = loginUser.getVendorNo();
+        int vendorNo = loginSeller.getVendorNo();
 
         switch (action) {
         case "list":
