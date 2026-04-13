@@ -418,14 +418,13 @@
   gap:10px;
 }
 .seller-order-detail-item{
-  display:grid;
-  grid-template-columns: 72px 1fr 120px;
-  gap:12px;
-  align-items:center;
-  padding:10px 10px;
-  border-radius:18px;
-  border:1px solid rgba(15,23,42,0.08);
-  background:#fff;
+  display: flex;         /* Grid에서 Flex로 변경 */
+  align-items: center;   /* 세로 가운데 정렬 */
+  gap: 16px;            /* 요소 간 간격 확대 */
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(15,23,42,0.08);
+  background: #fff;
   box-shadow: 0 4px 14px rgba(17,24,39,0.06);
 }
 .seller-order-detail-item-name{
@@ -440,10 +439,25 @@
   color: var(--seller-muted);
 }
 .seller-order-detail-item-price{
+	flex-shrink: 0;
   text-align:right;
   font-weight:1000;
   font-size:15px;
   color:#111827;
+  min-width: 90px;
+}
+
+.seller-order-detail-item-check {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.seller-order-detail-item-meta {
+  flex-grow: 1;          /* 이 영역이 가운데서 모든 공간을 차지함 */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .seller-order-detail-current{
@@ -647,8 +661,16 @@ select.seller-order-detail-control{
   .seller-order-side{align-items:flex-start}
   .seller-order-actions{justify-content:flex-start}
   .seller-order-detail-summary-grid{grid-template-columns: 1fr;}
-  .seller-order-detail-item{grid-template-columns: 72px 1fr;}
-  .seller-order-detail-item-price{text-align:left}
+  .seller-order-detail-item{
+  grid-template-columns: 72px 1fr;
+  flex-wrap: wrap;
+  }
+  .seller-order-detail-item-price{
+  width: 100%;
+    text-align: left;
+    margin-top: 8px;
+    padding-left: 108px;
+    }
   .seller-order-detail-status-row{flex-direction:column; align-items:stretch}
   .seller-order-detail-ship-grid{grid-template-columns: 1fr;}
   .seller-order-detail-actions{position:static; justify-content:flex-start}

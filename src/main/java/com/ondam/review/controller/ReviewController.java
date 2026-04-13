@@ -58,7 +58,7 @@ public class ReviewController implements Controller {
         UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
         if (loginUser == null) return "redirect:/login";
 
-        String relativePath = "/upload/review";
+        String relativePath = "/uploads/reviews";
         String savePath = request.getServletContext().getRealPath(relativePath);
         java.io.File uploadDir = new java.io.File(savePath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
@@ -131,8 +131,16 @@ public class ReviewController implements Controller {
             dto.setReviewContent(request.getParameter("reviewContent"));
             dto.setIsBodyPublic(Integer.parseInt(request.getParameter("isBodyPublic")));
             //삭제할 사진 번호
+            String relativePath = "/uploads/reviews"; 
+            String savePath = request.getServletContext().getRealPath(relativePath);
+            java.io.File uploadDir = new java.io.File(savePath);
+            
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs(); 
+            }
+
+            // 삭제할 사진 처리
             String deleteImgNos = request.getParameter("deleteImgNos");
-            String savePath = request.getServletContext().getRealPath("/upload/review");
             if (deleteImgNos != null && !deleteImgNos.trim().isEmpty()) {
                 String[] nos = deleteImgNos.split(",");
                 for (String no : nos) {
@@ -142,7 +150,7 @@ public class ReviewController implements Controller {
             }
             boolean result = reviewService.editMyReview(dto);
             if (result) {
-                int order = reviewService.getNextImgOrder(dto.getReviewNo()); // 다음 순번 가져오기
+                int order = reviewService.getNextImgOrder(dto.getReviewNo());
 
                 for (jakarta.servlet.http.Part part : request.getParts()) {
                     if ("reviewPhotos".equals(part.getName()) && part.getSize() > 0) {

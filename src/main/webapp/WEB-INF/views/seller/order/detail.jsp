@@ -62,10 +62,38 @@
             </div>
             <div class="seller-order-detail-kv">
               <div class="seller-order-detail-k">현재 상태</div>
-              <div class="seller-order-detail-v">
-                <span class="seller-order-badge seller-order-badge--${statusData}" id="odStatusBadge">
-                  ${detail.deliveryState == 0 ? '결제완료' : detail.deliveryState == 1 ? '배송 준비 중' : detail.deliveryState == 2 ? '배송 중' : detail.deliveryState == 3 ? '배송 완료' : '취소'}
-                </span>
+              <div class="seller-order-detail-v" style="display: flex; gap: 4px; flex-wrap: wrap;">
+                
+                <c:set var="hasPaid" value="false" />
+                <c:set var="hasReady" value="false" />
+                <c:set var="hasShipping" value="false" />
+                <c:set var="hasDone" value="false" />
+                <c:set var="hasCancel" value="false" />
+
+                <c:forEach var="item" items="${detail.itemList}">
+                    <c:if test="${item.deliveryState == 0}"><c:set var="hasPaid" value="true" /></c:if>
+                    <c:if test="${item.deliveryState == 1}"><c:set var="hasReady" value="true" /></c:if>
+                    <c:if test="${item.deliveryState == 2}"><c:set var="hasShipping" value="true" /></c:if>
+                    <c:if test="${item.deliveryState == 3}"><c:set var="hasDone" value="true" /></c:if>
+                    <c:if test="${item.deliveryState == 4}"><c:set var="hasCancel" value="true" /></c:if>
+                </c:forEach>
+
+                <c:if test="${hasPaid}">
+                    <span class="seller-order-badge seller-order-badge--paid">결제완료</span>
+                </c:if>
+                <c:if test="${hasReady}">
+                    <span class="seller-order-badge seller-order-badge--ready">상품준비중</span>
+                </c:if>
+                <c:if test="${hasShipping}">
+                    <span class="seller-order-badge seller-order-badge--shipping">배송중</span>
+                </c:if>
+                <c:if test="${hasDone}">
+                    <span class="seller-order-badge seller-order-badge--done">배송완료</span>
+                </c:if>
+                <c:if test="${hasCancel}">
+                    <span class="seller-order-badge seller-order-badge--cancel">부분취소</span>
+                </c:if>
+
               </div>
             </div>
             <div class="seller-order-detail-kv">
@@ -88,13 +116,25 @@
         </section>
 
         <section class="seller-card seller-order-detail-section" aria-label="주문 상품">
-          <header class="seller-order-detail-section-head">
-            <h3 class="seller-order-detail-section-title">주문 상품</h3>
-          </header>
-
-          <div class="seller-order-detail-items">
-            <c:forEach var="item" items="${detail.itemList}">
-              <div class="seller-order-detail-item">
+		  <header class="seller-order-detail-section-head" style="display:flex; justify-content:space-between; align-items:center;">
+		    <h3 class="seller-order-detail-section-title">주문 상품</h3>
+		    <div style="font-size: 0.9rem; color: var(--color-gray-600); display: flex; align-items: center; gap: 4px;">
+		      <input type="checkbox" id="checkAll" style="cursor:pointer;"> 
+		      <label for="checkAll" style="cursor:pointer;">전체 선택</label>
+		    </div>
+		  </header>
+		
+		  <div class="seller-order-detail-items">
+		    <c:forEach var="item" items="${detail.itemList}">
+		      <div class="seller-order-detail-item">
+		        <div class="seller-order-detail-item-check">
+		          <input type="checkbox" class="item-checkbox" 
+		                 value="${item.orderItemNo}" 
+		                 id="chk_${item.orderItemNo}"
+		                 data-courier="${item.courier}" 
+		                 data-tracking="${item.trackingNo}">
+		        </div>
+                
                 <img class="seller-order-thumb" 
 				     src="${pageContext.request.contextPath}/uploads/products/${item.productImage}" 
 				     alt="상품 이미지" 
@@ -103,6 +143,9 @@
                   <div class="seller-order-detail-item-name">${item.productName}</div>
                   <div class="seller-order-detail-item-sub">옵션: ${empty item.optionColor ? '기본' : item.optionColor} / ${empty item.optionSize ? 'FREE' : item.optionSize}</div>
                   <div class="seller-order-detail-item-sub">수량: ${item.quantity}개</div>
+                  <div class="seller-order-detail-item-sub" style="color:var(--color-primary); font-weight:bold;">
+                    상태: ${item.deliveryState == 0 ? '결제완료' : item.deliveryState == 1 ? '준비중' : item.deliveryState == 2 ? '배송중' : item.deliveryState == 3 ? '완료' : '취소'}
+                  </div>
                 </div>
                 <div class="seller-order-detail-item-price"><fmt:formatNumber value="${item.price}" pattern="#,###"/>원</div>
               </div>
@@ -110,36 +153,26 @@
           </div>
         </section>
 
-        <section class="seller-card seller-order-detail-section" aria-label="배송 상태 처리">
-          <header class="seller-order-detail-section-head seller-order-detail-section-head--row">
-            <div>
-              <h3 class="seller-order-detail-section-title">배송 상태 처리</h3>
-              <p class="seller-order-detail-section-sub">현재 상태를 확인하고 필요 시 변경해 주세요</p>
-            </div>
-            <div class="seller-order-detail-current">
-              <span class="seller-order-detail-current-k">현재</span>
-              <span class="seller-order-badge seller-order-badge--${statusData}" id="odCurrentBadge">
-                ${detail.deliveryState == 0 ? '결제완료' : detail.deliveryState == 1 ? '준비중' : detail.deliveryState == 2 ? '배송중' : detail.deliveryState == 3 ? '완료' : '취소'}
-              </span>
-            </div>
+        <section class="seller-card seller-order-detail-section" aria-label="선택 상품 상태 변경">
+          <header class="seller-order-detail-section-head">
+            <h3 class="seller-order-detail-section-title">선택 상품 상태 변경</h3>
+            <p class="seller-order-detail-section-sub">위 목록에서 체크한 상품들의 배송 상태를 한 번에 변경합니다.</p>
           </header>
 
           <div class="seller-order-detail-status-row">
             <div class="seller-order-detail-field">
-              <label class="seller-order-detail-label" for="odNextStatus">상태 변경</label>
+              <label class="seller-order-detail-label" for="odNextStatus">변경할 상태</label>
               <select id="odNextStatus" class="seller-order-detail-control">
-                <option value="">변경할 상태를 선택해 주세요</option>
-
-                <option value="paid" ${statusData == 'paid' ? 'selected' : ''}>결제완료</option>
-                <option value="ready" ${statusData == 'ready' ? 'selected' : ''}>배송 준비 중</option>
-                <option value="shipping" ${statusData == 'shipping' ? 'selected' : ''}>배송 중</option>
-                <option value="done" ${statusData == 'done' ? 'selected' : ''}>배송 완료</option>
-                <option value="cancel" ${statusData == 'cancel' ? 'selected' : ''}>취소</option>
-
+                <option value="" selected>변경할 상태를 선택해 주세요</option>
+                <option value="paid">결제완료</option>
+                <option value="ready">배송 준비 중</option>
+                <option value="shipping">배송 중</option>
+                <option value="done">배송 완료</option>
+                <option value="cancel">취소</option>
               </select>
               <p class="seller-order-detail-error hidden" id="odStatusError" aria-live="polite"></p>
             </div>
-            <button type="button" class="seller-order-btn seller-order-btn--primary" id="odApplyStatusBtn">상태 변경</button>
+            <button type="button" class="seller-order-btn seller-order-btn--primary" id="odApplyStatusBtn">상태 변경 적용</button>
           </div>
         </section>
 
