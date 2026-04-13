@@ -20,7 +20,8 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/cart.css">
 </head>
 <body data-context-path="${pageContext.request.contextPath}"
-      data-login-user="${not empty sessionScope.loginUser ? 'true' : ''}">
+      data-login-user="${not empty sessionScope.loginUser ? 'true' : ''}"
+      data-kakao-js-key="${initParam.kakaoJavascriptKey}">
   <div id="option-toast" class="option-toast hidden" role="alert" aria-live="assertive" aria-hidden="true">
     <span class="material-icons option-toast__icon" aria-hidden="true">error</span>
     <span class="option-toast__text">먼저 색상과 사이즈를 골라주세요</span>
@@ -71,5 +72,6 @@
 
   <script src="${pageContext.request.contextPath}/js/product-detail.js"></script>
   <script src="${pageContext.request.contextPath}/js/gift-modal.js"></script>
+  <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
 </body>
 </html>

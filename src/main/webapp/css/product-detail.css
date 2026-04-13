@@ -1632,6 +1632,24 @@ a.detail-review-more-btn {
   flex-shrink: 0;
 }
 
+.option-toast.option-toast--error {
+  background: #ffeeeb;
+}
+
+.option-toast.option-toast--error .option-toast__icon,
+.option-toast.option-toast--error .option-toast__text {
+  color: #d84c33;
+}
+
+.option-toast.option-toast--success {
+  background: #e7f8ea;
+}
+
+.option-toast.option-toast--success .option-toast__icon,
+.option-toast.option-toast--success .option-toast__text {
+  color: #2f9e44;
+}
+
 @media (max-width: 420px) {
   .detail-product-name {
     font-size: 20px;

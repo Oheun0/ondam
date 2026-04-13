@@ -1,5 +1,51 @@
 (function () {
     var confirmBtn = document.getElementById('confirmGiftBtn');
+    var toastTimer = null;
+    var toastFallbackTimer = null;
+
+    function showErrorToast(message) {
+        var el = document.getElementById('option-toast');
+        if (!el) return;
+        var textEl = el.querySelector('.option-toast__text');
+        var iconEl = el.querySelector('.option-toast__icon');
+        if (textEl) textEl.textContent = message || '';
+        if (iconEl) iconEl.textContent = 'error';
+        el.classList.remove('option-toast--success');
+        el.classList.add('option-toast--error');
+        clearTimeout(toastTimer);
+        clearTimeout(toastFallbackTimer);
+
+        el.classList.remove('hidden', 'option-toast--hiding', 'option-toast--show');
+        el.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                el.classList.add('option-toast--show');
+            });
+        });
+
+        toastTimer = setTimeout(function () {
+            el.classList.remove('option-toast--show');
+            el.classList.add('option-toast--hiding');
+
+            var done = false;
+            function cleanup() {
+                if (done) return;
+                done = true;
+                el.removeEventListener('transitionend', onEnd);
+                clearTimeout(toastFallbackTimer);
+                el.classList.add('hidden');
+                el.classList.remove('option-toast--hiding');
+                el.setAttribute('aria-hidden', 'true');
+            }
+            function onEnd(e) {
+                if (e.target !== el) return;
+                if (e.propertyName !== 'opacity' && e.propertyName !== 'transform') return;
+                cleanup();
+            }
+            el.addEventListener('transitionend', onEnd);
+            toastFallbackTimer = setTimeout(cleanup, 400);
+        }, 1800);
+    }
 
     if (confirmBtn) {
         confirmBtn.addEventListener('click', function () {
@@ -11,7 +57,7 @@
 			    console.log('hiddenQuantity:', document.getElementById('hiddenQuantity') ? document.getElementById('hiddenQuantity').value : 'null');
 				
             if (!selectedBtn) {
-                alert('선물 받을 사람을 선택해주세요.');
+                showErrorToast('선물 받을 사람을 선택해주세요.');
                 return;
             }
 
@@ -27,13 +73,13 @@
             var quantity  = quantityEl  ? quantityEl.value  : '1';
 
             if (!productNo) {
-                alert('상품 정보를 불러올 수 없어요. 다시 시도해주세요.');
+                showErrorToast('상품 정보를 불러올 수 없어요. 다시 시도해주세요.');
                 return;
             }
 
             // optionNo가 없으면 옵션 미선택 상태
             if (!optionNo || optionNo === '0') {
-                alert('색상과 사이즈를 먼저 선택해주세요.');
+                showErrorToast('색상과 사이즈를 먼저 선택해주세요.');
                 return;
             }
 
