@@ -29,6 +29,7 @@ import com.ondam.seller.controller.SellerOrderController;
 import com.ondam.seller.controller.SellerResetPwController;
 import com.ondam.seller.controller.SellerResetPwFormController;
 import com.ondam.seller.controller.SellerSignupController;
+import com.ondam.shipment.controller.SellerShipmentController;
 import com.ondam.shorts.controller.ShortsApiController;
 import com.ondam.shorts.controller.ShortsController;
 import com.ondam.user.controller.AddressDeleteController;
@@ -134,6 +135,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/auth/find-id", new SellerFindIdController());
         handlerMapping.put("/seller/auth/reset-password", new SellerResetPwController());
         handlerMapping.put("/seller/auth/reset-password-form", new SellerResetPwFormController());
+        handlerMapping.put("/seller/shipment", new SellerShipmentController());
         handlerMapping.put("/userCoupon", new UserCouponController());
         handlerMapping.put("/seller/dashboard", new SellerDashboardController());
         handlerMapping.put("/seller/order", new SellerOrderController());
