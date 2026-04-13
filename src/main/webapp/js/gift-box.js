@@ -66,10 +66,16 @@
         var addr = this.getAttribute("data-address");
         var detail = this.getAttribute("data-detail");
         var zip = this.getAttribute("data-zipcode");
+		var addressName = this.getAttribute("data-address-name");
 
         // A. 화면상의 주소 정보 업데이트
         var targetBox = document.getElementById("display-address-" + currentGiftNo);
         if (targetBox) {
+			var labelEl = targetBox.querySelector(".gift-address-label");
+			      if (labelEl) {
+			        labelEl.textContent = "선택된 배송지 : " + addressName;
+			      }
+			
           var textEl = targetBox.querySelector(".gift-address-text");
           if (textEl) {
             textEl.innerHTML = name + " · " + tel + "<br>(" + zip + ") " + addr + " " + (detail || "");

@@ -1,8 +1,9 @@
 /**
- * 조르기 목록(표시용)
+ * 조르기 목록
  * - 뒤로가기
  * - 전체 선택 ↔ 개별 선택 동기화
  * - 하단 버튼 카운트 표시(선택된 개수)
+ * - 선물하기 버튼 → order 페이지 이동
  */
 (function () {
   "use strict";
@@ -43,6 +44,9 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    var contextPath = document.body.dataset.contextPath || '';
+
+    // ── 뒤로가기 ──────────────────────────────────────
     var backBtn = qs("#pokeListBackBtn");
     if (backBtn) {
       backBtn.addEventListener("click", function () {
@@ -50,6 +54,7 @@
       });
     }
 
+    // ── 전체 선택 ──────────────────────────────────────
     var selectAll = qs("#pokeSelectAll");
     if (selectAll) {
       selectAll.addEventListener("change", function () {
@@ -60,6 +65,7 @@
       });
     }
 
+    // ── 개별 선택 ──────────────────────────────────────
     qsa("#pokeMainList .cart-item__checkbox").forEach(function (cb) {
       cb.addEventListener("change", function () {
         syncSelectAllState();
@@ -67,16 +73,44 @@
       });
     });
 
-    var giftBtn = qs("#pokeGiftSubmitBtn");
-    if (giftBtn) {
-      giftBtn.addEventListener("click", function (e) {
-        // 표시용: 동작 없음
-        e.preventDefault();
-      });
-    }
+    // ── 선물하기 버튼 ───────────────────────────────────
+	var giftBtn = qs("#pokeGiftSubmitBtn");
+	if (giftBtn) {
+	  giftBtn.addEventListener("click", function (e) {
+	    e.preventDefault();
 
+	    var checkedPokeNos = [];
+	    qsa("#pokeMainList .poke-item").forEach(function (article) {
+	      var checkbox = article.querySelector(".cart-item__checkbox");
+	      if (checkbox && checkbox.checked) {
+	        checkedPokeNos.push(article.dataset.pokeId);
+	      }
+	    });
+
+	    if (checkedPokeNos.length === 0) {
+	      alert('선물할 상품을 선택해주세요.');
+	      return;
+	    }
+
+	    var form = document.createElement('form');
+	    form.method = 'POST';
+	    form.action = contextPath + '/poke?action=giftOrder';
+
+	    checkedPokeNos.forEach(function (pokeNo) {
+	      var input = document.createElement('input');
+	      input.type  = 'hidden';
+	      input.name  = 'pokeNo';
+	      input.value = pokeNo;
+	      form.appendChild(input);
+	    });
+
+	    document.body.appendChild(form);
+	    form.submit();
+	  });
+	}
+
+    // ── 초기화 ─────────────────────────────────────────
     syncSelectAllState();
     syncCount();
   });
 })();
-

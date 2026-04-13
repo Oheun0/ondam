@@ -290,4 +290,20 @@ public class OrdersDAO {
 		}
 		return orderNos;
 	}
+	
+	// 선물 수령자 번호 update
+	public boolean updateGiftReceiverNo(int orderNo, int receiverNo) {
+	    Connection con = null; PreparedStatement pstmt = null;
+	    boolean flag = false;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "UPDATE Orders SET giftReceiverNo = ? WHERE orderNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, receiverNo);
+	        pstmt.setInt(2, orderNo);
+	        if (pstmt.executeUpdate() > 0) flag = true;
+	    } catch (Exception e) { e.printStackTrace(); }
+	    finally { pool.freeConnection(con, pstmt); }
+	    return flag;
+	}
 }

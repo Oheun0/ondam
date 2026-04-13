@@ -57,66 +57,80 @@
 				<input type="hidden" name="directProductNo" value="${directProductNo}">
 				<input type="hidden" name="directOptionNo" value="${directOptionNo}">
 				<input type="hidden" name="directQuantity" value="${directQuantity}">
+				<input type="hidden" name="isGift"     value="${isGift}">
+				<input type="hidden" name="receiverNo" value="${receiverNo}">
+				<input type="hidden" name="pokeNo" value="${pokeNo}">
 		</section>
 
-        <section class="op-card op-ship-card" aria-label="배송지">
-		  <div class="op-card-head">
-		    <div class="op-card-head__left">
-		      <h2 class="op-card-title">배송지</h2>
-		      <c:if test="${defaultAddress.isDefault == 1}">
-		        <span class="op-badge op-badge--muted" aria-label="기본배송지">기본배송지</span>
-		      </c:if>
-		    </div>
-		    <button type="button" class="op-link-btn" aria-label="배송지 변경하기">배송지 변경하기</button>
-		  </div>
-		
-		  <c:choose>
-		    <c:when test="${defaultAddress != null}">
-		      <div class="op-ship-info">
-		        <p class="op-ship-who">
-		          <span class="op-strong">${defaultAddress.receiverName}</span>
-		          <span class="op-ship-sep" aria-hidden="true">|</span>
-		          <span class="op-strong">${defaultAddress.receiverTel}</span>
-		        </p>
-		        <p class="op-ship-addr">
-		          (${defaultAddress.userZipcode})
-		          ${defaultAddress.userAddress}
-		          <c:if test="${not empty defaultAddress.userDetailAddress}">
-		            , ${defaultAddress.userDetailAddress}
-		          </c:if>
-		        </p>
-		      </div>
-		    </c:when>
-		    <c:otherwise>
-		      <div class="op-ship-info">
-		        <p class="op-ship-addr">등록된 배송지가 없습니다.</p>
-		      </div>
-		    </c:otherwise>
-		  </c:choose>
-
-          <!-- 배송 요청사항: 입력창(읽기 전용) 클릭 → 오버레이 선택창 (페이지 안 밀림) -->
-          <div class="op-ship-request">
-            <button type="button"
-                    class="op-select-field"
-                    id="opDeliveryFieldBtn"
-                    aria-haspopup="listbox"
-                    aria-expanded="false"
-                    aria-controls="opDeliveryPanel">
-              <span class="op-select-field__text" id="opDeliveryFieldText">배송 시 요청사항을 선택해주세요</span>
-              <span class="material-icons op-select-field__chev" aria-hidden="true">expand_more</span>
-            </button>
-            <div class="op-custom-wrap hidden" id="opDeliveryCustomWrap">
-              <label class="sr-only" for="opDeliveryCustomInput">요청사항 직접 입력</label>
-              <input type="text"
-                     id="opDeliveryCustomInput"
-                     class="op-custom-input"
-                     placeholder="원하시는 요청사항을 적어주세요"
-                     maxlength="60"
-                     autocomplete="off"/>
-              <p class="op-custom-hint">최대 20자까지 입력할 수 있어요</p> <!-- db에따라 변경해주세요 -->
-            </div>
-          </div>
-        </section>
+        <c:choose>
+	    <c:when test="${param.isGift eq 'true'}">
+	        <%-- 선물하기: 배송지 섹션 숨기고 hidden input만 --%>
+	        <input type="hidden" name="receiverName"    value="선물수령">
+	        <input type="hidden" name="receiverTel"     value="00000000000">
+	        <input type="hidden" name="deliveryAddr"    value="선물함 배송지 입력 예정">
+	        <input type="hidden" name="deliveryContent" value="">
+	    </c:when>
+	    <c:otherwise>
+	        <%-- 일반 결제: 기존 배송지 섹션 그대로 --%>
+	        <section class="op-card op-ship-card" aria-label="배송지">
+	          <div class="op-card-head">
+	            <div class="op-card-head__left">
+	              <h2 class="op-card-title">배송지</h2>
+	              <c:if test="${defaultAddress.isDefault == 1}">
+	                <span class="op-badge op-badge--muted" aria-label="기본배송지">기본배송지</span>
+	              </c:if>
+	            </div>
+	            <button type="button" class="op-link-btn" aria-label="배송지 변경하기">배송지 변경하기</button>
+	          </div>
+	
+	          <c:choose>
+	            <c:when test="${defaultAddress != null}">
+	              <div class="op-ship-info">
+	                <p class="op-ship-who">
+	                  <span class="op-strong">${defaultAddress.receiverName}</span>
+	                  <span class="op-ship-sep" aria-hidden="true">|</span>
+	                  <span class="op-strong">${defaultAddress.receiverTel}</span>
+	                </p>
+	                <p class="op-ship-addr">
+	                  (${defaultAddress.userZipcode})
+	                  ${defaultAddress.userAddress}
+	                  <c:if test="${not empty defaultAddress.userDetailAddress}">
+	                    , ${defaultAddress.userDetailAddress}
+	                  </c:if>
+	                </p>
+	              </div>
+	            </c:when>
+	            <c:otherwise>
+	              <div class="op-ship-info">
+	                <p class="op-ship-addr">등록된 배송지가 없습니다.</p>
+	              </div>
+	            </c:otherwise>
+	          </c:choose>
+	
+	          <div class="op-ship-request">
+	            <button type="button"
+	                    class="op-select-field"
+	                    id="opDeliveryFieldBtn"
+	                    aria-haspopup="listbox"
+	                    aria-expanded="false"
+	                    aria-controls="opDeliveryPanel">
+	              <span class="op-select-field__text" id="opDeliveryFieldText">배송 시 요청사항을 선택해주세요</span>
+	              <span class="material-icons op-select-field__chev" aria-hidden="true">expand_more</span>
+	            </button>
+	            <div class="op-custom-wrap hidden" id="opDeliveryCustomWrap">
+	              <label class="sr-only" for="opDeliveryCustomInput">요청사항 직접 입력</label>
+	              <input type="text"
+	                     id="opDeliveryCustomInput"
+	                     class="op-custom-input"
+	                     placeholder="원하시는 요청사항을 적어주세요"
+	                     maxlength="60"
+	                     autocomplete="off"/>
+	              <p class="op-custom-hint">최대 20자까지 입력할 수 있어요</p>
+	            </div>
+	          </div>
+	        </section>
+	    </c:otherwise>
+	</c:choose>
 
         <!-- 쿠폰 적용 -->
         <section class="op-card op-accordion" aria-label="쿠폰 적용하기">

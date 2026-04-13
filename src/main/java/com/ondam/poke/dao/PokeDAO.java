@@ -276,4 +276,28 @@ public class PokeDAO {
 		}
 		return newPokeNo;
 	}
+	
+	// 특정 sender가 나(receiver)에게 보낸 조르기 목록
+	public Vector<PokeDTO> getBySenderAndReceiver(int receiverNo, int senderNo) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<PokeDTO> vlist = new Vector<>();
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM poke WHERE receiverNo = ? AND senderNo = ? ORDER BY sendDate DESC";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, receiverNo);
+	        pstmt.setInt(2, senderNo);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            vlist.add(mapResultSetToDTO(rs));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vlist;
+	}
 }
