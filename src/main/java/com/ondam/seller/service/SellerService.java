@@ -32,6 +32,12 @@ public class SellerService {
 	}
 	
 	public SellerDTO login(String sellerId, String sellerPwd) {
+	    if (sellerId != null) {
+	        sellerId = sellerId.trim();
+	    }
+	    if (sellerPwd != null) {
+	        sellerPwd = sellerPwd.trim();
+	    }
 	    return dao.loginSeller(sellerId, sellerPwd);
 	}
 
@@ -53,7 +59,10 @@ public class SellerService {
 	        return false;
 	    }
 	    String dbEmail = vendorDao.getEmailByVendorNo(vendorNo);
-	    if (dbEmail != null && dbEmail.equals(inputEmail)) {
+	    
+	    // 3) DB 이메일과 사용자가 입력한 이메일 비교 (대소문자 무시)
+	    if (dbEmail != null && inputEmail != null
+	    		&& dbEmail.trim().equalsIgnoreCase(inputEmail.trim())) {
 	        return true;
 	    }
 	    

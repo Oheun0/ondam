@@ -46,8 +46,8 @@
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">bar_chart</span>
       <span class="seller-nav-label">정산 · 매출</span>
     </a>
-    
-    <a class="seller-nav-item <%= "setting".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/settings">
+    <a class="seller-nav-item <%= "setting".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/seller/settings">
+
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">settings</span>
       <span class="seller-nav-label">설정</span>
     </a>
