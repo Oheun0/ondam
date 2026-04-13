@@ -1,6 +1,22 @@
 @charset "UTF-8";
 
 /* ===== Dim (상품 상세 등 모바일 열과 동일 가로 — 전체 뷰포트 X) ===== */
+.poke-delete-btn {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #999;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 3px 10px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.poke-delete-btn:hover {
+  background: #f5f5f5;
+  color: #e53935;
+  border-color: #e53935;
+}
+
 .poke-modal-dim {
   position: fixed;
   top: 0;
