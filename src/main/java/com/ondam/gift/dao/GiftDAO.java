@@ -202,6 +202,26 @@ public class GiftDAO {
 		finally { pool.freeConnection(con, pstmt); }
 		return flag;
 	}
+	
+	// 나 ↔ 상대방 사이의 선물 내역 (시간순)
+	public Vector<GiftDTO> getGiftsBetween(int myNo, int otherNo) {
+	    Connection con = null; PreparedStatement pstmt = null; ResultSet rs = null;
+	    Vector<GiftDTO> vlist = new Vector<>();
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT * FROM gift "
+	                   + "WHERE (senderNo = ? AND receiverNo = ?) "
+	                   + "   OR (senderNo = ? AND receiverNo = ?) "
+	                   + "ORDER BY sentAt ASC";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, myNo);  pstmt.setInt(2, otherNo);
+	        pstmt.setInt(3, otherNo); pstmt.setInt(4, myNo);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) vlist.add(extractDTO(rs));
+	    } catch (Exception e) { e.printStackTrace(); }
+	    finally { pool.freeConnection(con, pstmt, rs); }
+	    return vlist;
+	}
 
 	// [유틸리티] 중복되는 코드를 줄이기 위해 ResultSet에서 DTO를 뽑아내는 메서드
 	private GiftDTO extractDTO(ResultSet rs) throws Exception {

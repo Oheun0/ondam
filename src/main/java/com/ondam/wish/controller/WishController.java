@@ -30,10 +30,19 @@ public class WishController implements Controller {
         int userNo = loginUser.getUserNo();
 
         if ("list".equals(action)) {
-        	String sort = request.getParameter("sort");
-        	String part = request.getParameter("part");
-        	if (sort == null) sort = "담은순";
-        	Vector<WishDTO> wishList = wishService.getMyWishList(userNo, sort, part);
+            // ── targetUserNo 분기 (내 사람 찜 목록 보기) ──
+            String targetUserNoParam = request.getParameter("targetUserNo");
+            int targetUserNo = (targetUserNoParam != null)
+                ? Integer.parseInt(targetUserNoParam)
+                : userNo;
+            boolean isHelperMode = (targetUserNo != userNo);
+
+            String sort = request.getParameter("sort");
+            String part = request.getParameter("part");
+            if (sort == null) sort = "담은순";
+
+            // targetUserNo 기준으로 찜 목록 조회
+            Vector<WishDTO> wishList = wishService.getMyWishList(targetUserNo, sort, part);
 
             Set<Integer> wishSet = new HashSet<>();
             Map<Integer, String> thumbnailMap = new HashMap<>();
@@ -43,11 +52,13 @@ public class WishController implements Controller {
                     thumbnailMap.put(w.getProductNo(), w.getProductImg());
             }
 
-            request.setAttribute("productList",  wishList);   // product-grid.jsp용
-            request.setAttribute("wishSet",       wishSet);   // 찜 버튼 is-active용
-            request.setAttribute("thumbnailMap",  thumbnailMap); // 썸네일용
-            request.setAttribute("currentSort", sort); // 현재 정렬 상태
-            request.setAttribute("currentPart", part); // 필터
+            request.setAttribute("productList",   wishList);
+            request.setAttribute("wishSet",        wishSet);
+            request.setAttribute("thumbnailMap",   thumbnailMap);
+            request.setAttribute("currentSort",    sort);
+            request.setAttribute("currentPart",    part);
+            request.setAttribute("isHelperMode",   isHelperMode);
+            request.setAttribute("targetUserNo",   targetUserNo);
             return "/product/favorite/favorite-list";
 
         } else if ("toggle".equals(action)) {

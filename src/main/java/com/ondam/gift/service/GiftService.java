@@ -128,4 +128,17 @@ public class GiftService {
 	public boolean removeGift(int giftNo) {
 		return dao.deleteGift(giftNo);
 	}
+	
+	// gift-chat.jsp 채팅 목록 구성용 Service
+	public Vector<GiftDTO> getGiftsBetween(int myNo, int otherNo) {
+	    Vector<GiftDTO> list = dao.getGiftsBetween(myNo, otherNo);
+	    for (GiftDTO gift : list) {
+	        gift.setSenderName(userDao.getUserName(gift.getSenderNo()));
+	        gift.setReceiverName(userDao.getUserName(gift.getReceiverNo()));
+	        int productNo = ordersProductDao.getOrderProductNo(gift.getOrderNo());
+	        gift.setProductName(productDao.getProductName(productNo));
+	        gift.setProductImg(productDao.getProductImage(productNo));
+	    }
+	    return list;
+	}
 }

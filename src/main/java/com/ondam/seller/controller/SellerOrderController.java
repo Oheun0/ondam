@@ -113,6 +113,17 @@ public class SellerOrderController implements Controller {
                 sellerOrderDAO.updateDeliveryState(vendorNo, listOrderNo, listNewState);
                 return "redirect:/seller/order?action=list";
                 
+            case "updateInvoice":
+                String invOrderNoStr = request.getParameter("orderNo");
+                String carrier = request.getParameter("carrier");
+                String tracking = request.getParameter("tracking");
+                if (invOrderNoStr == null || carrier == null || tracking == null) {
+                    return "redirect:/seller/order?action=list";
+                }
+                int invOrderNo = Integer.parseInt(invOrderNoStr);
+                sellerOrderDAO.updateInvoice(vendorNo, invOrderNo, carrier, tracking);
+                return "redirect:/seller/order?action=detail&orderNo=" + invOrderNo;
+                
             default:
                 return "redirect:/seller/order?action=list";
         }
