@@ -184,6 +184,81 @@ a.detail-icon-btn.detail-icon-btn--link {
   height: 100%;
   object-fit: cover;
   display: block;
+  cursor: zoom-in;
+}
+
+.detail-image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.detail-image-lightbox-body {
+  width: 100%;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-image-lightbox-scroll {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.detail-image-lightbox-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.detail-image-lightbox-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-image-lightbox-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.detail-image-lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.detail-image-lightbox-close .material-icons-outlined {
+  font-size: 28px;
 }
 
 .detail-image-badges {
@@ -1555,6 +1630,24 @@ a.detail-review-more-btn {
   color: #d84c33;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.option-toast.option-toast--error {
+  background: #ffeeeb;
+}
+
+.option-toast.option-toast--error .option-toast__icon,
+.option-toast.option-toast--error .option-toast__text {
+  color: #d84c33;
+}
+
+.option-toast.option-toast--success {
+  background: #e7f8ea;
+}
+
+.option-toast.option-toast--success .option-toast__icon,
+.option-toast.option-toast--success .option-toast__text {
+  color: #2f9e44;
 }
 
 @media (max-width: 420px) {

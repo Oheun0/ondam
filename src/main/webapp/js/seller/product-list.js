@@ -1,31 +1,11 @@
-/* global document, console, alert */
+/* global document, console, window */
 (function () {
-  function getValue(id) {
-    var el = document.getElementById(id);
-    return el ? el.value : '';
-  }
-
-  function logSearch(context) {
-    var payload = {
-      query: getValue('sellerProductQuery'),
-      category: getValue('sellerProductCategory'),
-      sale: getValue('sellerProductSale'),
-      stock: getValue('sellerProductStock'),
-      context: context || 'apply',
-    };
-    console.log('[SellerProductList] filter/search', payload);
-    alert('검색/필터는 더미 동작입니다.\n\n' +
-      '검색어: ' + payload.query + '\n' +
-      '카테고리: ' + payload.category + '\n' +
-      '판매 상태: ' + payload.sale + '\n' +
-      '재고 상태: ' + payload.stock
-    );
-  }
+  var filterForm = document.getElementById('sellerProductFilterForm');
 
   var applyBtn = document.getElementById('sellerProductApplyBtn');
-  if (applyBtn) {
+  if (applyBtn && filterForm) {
     applyBtn.addEventListener('click', function () {
-      logSearch('apply');
+      filterForm.requestSubmit();
     });
   }
 
@@ -33,7 +13,7 @@
   if (newBtn) {
     newBtn.addEventListener('click', function () {
       console.log('[SellerProductList] go to product form');
-      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/preview?page=seller/product/form';
+      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/seller/product/form';
     });
   }
 
@@ -57,7 +37,6 @@
     if (pageBtn) {
       var page = pageBtn.getAttribute('data-page');
       console.log('[SellerProductList] pagination', page);
-      alert('페이지네이션은 더미 동작입니다. (선택: ' + page + ')');
       return;
     }
 
@@ -66,13 +45,20 @@
 
     var action = actionBtn.getAttribute('data-action');
     if (!action) return;
+    var row = actionBtn.closest('tr[data-product-id]');
 
     if (action === 'new-product') {
-      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/preview?page=seller/product/form';
+      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/seller/product/form';
+      return;
+    }
+    if (action === 'edit') {
+      var editProductNo = actionBtn.getAttribute('data-product-no');
+      if (!editProductNo && row) editProductNo = row.getAttribute('data-product-no');
+      if (!editProductNo) return;
+      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/seller/product/edit?productNo=' + encodeURIComponent(editProductNo);
       return;
     }
 
-    var row = actionBtn.closest('tr[data-product-id]');
     var productId = row ? row.getAttribute('data-product-id') : '(unknown)';
 
     console.log('[SellerProductList] action', action, 'productId=', productId);
@@ -89,11 +75,11 @@
   });
 
   var queryEl = document.getElementById('sellerProductQuery');
-  if (queryEl) {
+  if (queryEl && filterForm) {
     queryEl.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
         e.preventDefault();
-        logSearch('enter');
+        filterForm.requestSubmit();
       }
     });
   }

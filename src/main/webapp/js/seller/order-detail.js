@@ -167,6 +167,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const checkAll = document.getElementById('checkAll');
     const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+    const itemCards = document.querySelectorAll('.seller-order-detail-item');
     const courierSelect = document.getElementById('odCarrier');
     const trackingInput = document.getElementById('odTracking');
 
@@ -186,6 +187,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // 전체 선택 박스 상태 동기화
             checkAll.checked = [...itemCheckboxes].every(c => c.checked);
             syncDeliveryInfo();
+        });
+    });
+
+    // 카드 클릭 시 체크박스 토글 (체크박스 직접 클릭은 기존 동작 유지)
+    itemCards.forEach(card => {
+        card.addEventListener('click', function (e) {
+            if (e.target.closest('input, button, a, select, textarea, label')) return;
+            const checkbox = card.querySelector('.item-checkbox');
+            if (!checkbox) return;
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
         });
     });
 

@@ -37,7 +37,16 @@ public class ProfileUpdateController implements Controller {
         Part filePart = request.getPart("profileImage");
         String profileImgName = sessionUser.getUserProfileImg();
 
-        if (filePart != null && filePart.getSize() > 0) {
+        String resetProfile = request.getParameter("resetProfile");
+        if ("true".equals(resetProfile)) {
+            String uploadPath = request.getServletContext().getRealPath("/images/profile");
+            if (profileImgName != null && !profileImgName.equals("default-profile.png")) {
+                File oldFile = new File(uploadPath + File.separator + profileImgName);
+                if (oldFile.exists()) oldFile.delete();
+            }
+            profileImgName = null;
+
+        } else if (filePart != null && filePart.getSize() > 0) {
             String uploadPath = request.getServletContext().getRealPath("/images/profile");
 
             File uploadDir = new File(uploadPath);

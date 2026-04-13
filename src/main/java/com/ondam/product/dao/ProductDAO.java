@@ -3,6 +3,7 @@ package com.ondam.product.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Vector;
 
 import com.ondam.common.DBConnectionMgr;
@@ -51,22 +52,26 @@ public class ProductDAO {
 		try {
 			con = pool.getConnection();
 			// productEx 다음에 productGender 추가 (DB 순서에 맞춤)
-			sql = "INSERT Product (vendorNo, categoryNo, productName, productBrand, productEx, productGender, productPrice, productOriginPrice, productMaterial, productPattern, productFit, productThickness, productDate, productState) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			sql = "INSERT Product (vendorNo, categoryNo, situationNo, productName, productBrand, productEx, easyOneLine, easyFor, easyComfort, productGender, productPrice, productOriginPrice, productMaterial, productPattern, productFit, productThickness, productDate, productState) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getVendorNo());
 			pstmt.setInt(2, dto.getCategoryNo());
-			pstmt.setString(3, dto.getProductName());
-			pstmt.setString(4, dto.getProductBrand());
-			pstmt.setString(5, dto.getProductEx());
-			pstmt.setInt(6, dto.getProductGender());
-			pstmt.setInt(7, dto.getProductPrice());
-			pstmt.setInt(8, dto.getProductOriginPrice());
-			pstmt.setString(9, dto.getProductMaterial());
-			pstmt.setString(10, dto.getProductPattern());
-			pstmt.setString(11, dto.getProductFit());
-			pstmt.setString(12, dto.getProductThickness());
-			pstmt.setString(13, dto.getProductDate());
-			pstmt.setInt(14, dto.getProductState());
+			pstmt.setInt(3, dto.getSituationNo());
+			pstmt.setString(4, dto.getProductName());
+			pstmt.setString(5, dto.getProductBrand());
+			pstmt.setString(6, dto.getProductEx());
+			pstmt.setString(7, dto.getEasyOneLine());
+			pstmt.setString(8, dto.getEasyFor());
+			pstmt.setString(9, dto.getEasyComfort());
+			pstmt.setInt(10, dto.getProductGender());
+			pstmt.setInt(11, dto.getProductPrice());
+			pstmt.setInt(12, dto.getProductOriginPrice());
+			pstmt.setString(13, dto.getProductMaterial());
+			pstmt.setString(14, dto.getProductPattern());
+			pstmt.setString(15, dto.getProductFit());
+			pstmt.setString(16, dto.getProductThickness());
+			pstmt.setString(17, dto.getProductDate());
+			pstmt.setInt(18, dto.getProductState());
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -77,6 +82,55 @@ public class ProductDAO {
 		return flag;
 	}
 
+	/**
+	 * 판매자 상품 등록용: DB 기본값(productDate 등)을 활용하고, 생성된 productNo를 반환합니다.
+	 * (폼에 없는 필드가 많아서 최소 컬럼만 INSERT)
+	 */
+	public int insertProductAndGetNo(ProductDTO dto) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			con = pool.getConnection();
+			String sql = "INSERT INTO product (vendorNo, categoryNo, situationNo, productName, productBrand, productEx, easyOneLine, easyFor, easyComfort, productGender, "
+					+ "productPrice, productOriginPrice, productMaterial, productPattern, productFit, productThickness, productState) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			int i = 1;
+			pstmt.setInt(i++, dto.getVendorNo());
+			pstmt.setInt(i++, dto.getCategoryNo());
+			pstmt.setInt(i++, dto.getSituationNo());
+			pstmt.setString(i++, dto.getProductName());
+			pstmt.setString(i++, dto.getProductBrand());
+			pstmt.setString(i++, dto.getProductEx());
+			pstmt.setString(i++, dto.getEasyOneLine());
+			pstmt.setString(i++, dto.getEasyFor());
+			pstmt.setString(i++, dto.getEasyComfort());
+			pstmt.setInt(i++, dto.getProductGender());
+			pstmt.setInt(i++, dto.getProductPrice());
+			pstmt.setInt(i++, dto.getProductOriginPrice());
+			pstmt.setString(i++, dto.getProductMaterial());
+			pstmt.setString(i++, dto.getProductPattern());
+			pstmt.setString(i++, dto.getProductFit());
+			pstmt.setString(i++, dto.getProductThickness());
+			pstmt.setInt(i++, dto.getProductState());
+
+			int updated = pstmt.executeUpdate();
+			if (updated <= 0) {
+				return 0;
+			}
+			rs = pstmt.getGeneratedKeys();
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return 0;
+	}
+
 	// Update
 	public boolean updateProduct(ProductDTO dto, int productNo) {
 		Connection con = null;
@@ -85,22 +139,26 @@ public class ProductDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE Product SET vendorNo = ?, categoryNo = ?, productName = ?, productBrand = ?, productEx = ?, productGender = ?, productPrice = ?, productOriginPrice = ?, productMaterial = ?, productPattern = ?, productFit = ?, productThickness = ?, productState = ? WHERE productNo = ?";
+			sql = "UPDATE Product SET vendorNo = ?, categoryNo = ?, situationNo = ?, productName = ?, productBrand = ?, productEx = ?, easyOneLine = ?, easyFor = ?, easyComfort = ?, productGender = ?, productPrice = ?, productOriginPrice = ?, productMaterial = ?, productPattern = ?, productFit = ?, productThickness = ?, productState = ? WHERE productNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getVendorNo());
 			pstmt.setInt(2, dto.getCategoryNo());
-			pstmt.setString(3, dto.getProductName());
-			pstmt.setString(4, dto.getProductBrand());
-			pstmt.setString(5, dto.getProductEx());
-			pstmt.setInt(6, dto.getProductGender());
-			pstmt.setInt(7, dto.getProductPrice());
-			pstmt.setInt(8, dto.getProductOriginPrice());
-			pstmt.setString(9, dto.getProductMaterial());
-			pstmt.setString(10, dto.getProductPattern());
-			pstmt.setString(11, dto.getProductFit());
-			pstmt.setString(12, dto.getProductThickness());
-			pstmt.setInt(13, dto.getProductState());
-			pstmt.setInt(14, productNo);
+			pstmt.setInt(3, dto.getSituationNo());
+			pstmt.setString(4, dto.getProductName());
+			pstmt.setString(5, dto.getProductBrand());
+			pstmt.setString(6, dto.getProductEx());
+			pstmt.setString(7, dto.getEasyOneLine());
+			pstmt.setString(8, dto.getEasyFor());
+			pstmt.setString(9, dto.getEasyComfort());
+			pstmt.setInt(10, dto.getProductGender());
+			pstmt.setInt(11, dto.getProductPrice());
+			pstmt.setInt(12, dto.getProductOriginPrice());
+			pstmt.setString(13, dto.getProductMaterial());
+			pstmt.setString(14, dto.getProductPattern());
+			pstmt.setString(15, dto.getProductFit());
+			pstmt.setString(16, dto.getProductThickness());
+			pstmt.setInt(17, dto.getProductState());
+			pstmt.setInt(18, productNo);
 			if (pstmt.executeUpdate() > 0)
 				flag = true;
 		} catch (Exception e) {
@@ -706,9 +764,13 @@ public class ProductDAO {
 	    dto.setProductNo(rs.getInt("productNo"));
 	    dto.setVendorNo(rs.getInt("vendorNo"));
 	    dto.setCategoryNo(rs.getInt("categoryNo"));
+	    dto.setSituationNo(rs.getInt("situationNo"));
 	    dto.setProductName(rs.getString("productName"));
 	    dto.setProductBrand(rs.getString("productBrand"));
 	    dto.setProductEx(rs.getString("productEx"));
+	    dto.setEasyOneLine(rs.getString("easyOneLine"));
+	    dto.setEasyFor(rs.getString("easyFor"));
+	    dto.setEasyComfort(rs.getString("easyComfort"));
 	    dto.setProductGender(rs.getInt("productGender"));
 	    dto.setProductPrice(rs.getInt("productPrice"));
 	    dto.setProductOriginPrice(rs.getInt("productOriginPrice"));

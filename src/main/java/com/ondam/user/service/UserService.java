@@ -131,10 +131,10 @@ public class UserService {
 	                
 	                if (addressResult > 0 && hobbyResult > 0 && colorResult > 0) {
 
-	                    // 알림 설정 7개 생성 (트랜잭션 안에서 같이 처리)
+	                    // 알림 설정 8개 생성 (트랜잭션 안에서 같이 처리)
 	                    NotificationSettingDAO notiSettingDao = new NotificationSettingDAO();
 	                    int notiResult = 1;
-	                    for (int type = 0; type <= 6; type++) {
+	                    for (int type = 0; type <= 7; type++) {
 	                        NotificationSettingDTO setting = new NotificationSettingDTO();
 	                        setting.setUserNo(userNo);
 	                        setting.setNotificationType(type);

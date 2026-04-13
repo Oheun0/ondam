@@ -52,7 +52,11 @@ public class FamilyMemberDAO {
 	    Vector<FamilyMemberDTO> vlist = new Vector<>();
 	    try {
 	        con = pool.getConnection();
-	        String sql = "SELECT * FROM FamilyMember WHERE familyNo = ? ORDER BY familyAuth DESC";
+	        String sql = "SELECT fm.familyMemberNo, fm.familyNo, fm.userNo, fm.familyAuth, " +
+	                     "fm.userName, u.userProfileImg " +
+	                     "FROM FamilyMember fm " +
+	                     "JOIN User u ON fm.userNo = u.userNo " +
+	                     "WHERE fm.familyNo = ? ORDER BY fm.familyAuth DESC";
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setInt(1, familyNo);
 	        rs = pstmt.executeQuery();
@@ -63,6 +67,7 @@ public class FamilyMemberDAO {
 	            dto.setUserNo(rs.getInt("userNo"));
 	            dto.setFamilyAuth(rs.getInt("familyAuth"));
 	            dto.setUserName(rs.getString("userName"));
+	            dto.setUserProfileImg(rs.getString("userProfileImg"));
 	            vlist.addElement(dto);
 	        }
 	    } catch (Exception e) {

@@ -1,6 +1,22 @@
 @charset "UTF-8";
 
 /* ===== Dim (상품 상세 등 모바일 열과 동일 가로 — 전체 뷰포트 X) ===== */
+.poke-delete-btn {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #999;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 3px 10px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.poke-delete-btn:hover {
+  background: #f5f5f5;
+  color: #e53935;
+  border-color: #e53935;
+}
+
 .poke-modal-dim {
   position: fixed;
   top: 0;
@@ -88,6 +104,35 @@
 .poke-person-btn:active,
 .gift-person-btn:active {
   transform: scale(0.98);
+}
+
+/* ===== Message Input ===== */
+.poke-msg-wrap {
+  margin-top: 15px !important;
+  padding: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.poke-msg-input {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  resize: none;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 0.95rem;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif !important;
+  line-height: 1.45;
+  color: #222;
+  height: 84px;
+}
+
+.poke-msg-input::placeholder {
+  font-family: "Pretendard", "Noto Sans KR", sans-serif !important;
 }
 
 /* ===== Bottom Buttons ===== */
