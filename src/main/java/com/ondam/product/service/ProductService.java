@@ -99,4 +99,14 @@ public class ProductService {
 	public String getProductImage(int productNo) {
 	    return dao.getProductImage(productNo);
 	}
+	// [추가] 찜 횟수 증가
+	public boolean increaseWishCount(int productNo) {
+		return dao.increaseWishCount(productNo);
+	}
+
+	// [추가] 찜 횟수 감소
+	public boolean decreaseWishCount(int productNo) {
+		return dao.decreaseWishCount(productNo);
+	}
+	
 }
