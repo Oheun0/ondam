@@ -95,7 +95,10 @@
           <div class="seller-order-detail-items">
             <c:forEach var="item" items="${detail.itemList}">
               <div class="seller-order-detail-item">
-                <img class="seller-order-thumb" src="${pageContext.request.contextPath}/images/product/${item.productImage}" alt="상품 이미지" onerror="this.src='${pageContext.request.contextPath}/images/default_thumb.png'">
+                <img class="seller-order-thumb" 
+				     src="${pageContext.request.contextPath}/uploads/products/${item.productImage}" 
+				     alt="상품 이미지" 
+				     onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'">
                 <div class="seller-order-detail-item-meta">
                   <div class="seller-order-detail-item-name">${item.productName}</div>
                   <div class="seller-order-detail-item-sub">옵션: ${empty item.optionColor ? '기본' : item.optionColor} / ${empty item.optionSize ? 'FREE' : item.optionSize}</div>

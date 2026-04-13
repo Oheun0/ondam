@@ -113,8 +113,10 @@
 		
 		      <div class="seller-order-body">
 		        <div class="seller-order-product">
-		          <img class="seller-order-thumb" src="${pageContext.request.contextPath}/images/product/${order.repProductImage}" alt="상품 이미지" onerror="this.src='${pageContext.request.contextPath}/images/default_thumb.png'">
-		          
+		          <img class="seller-order-thumb" 
+		             src="${pageContext.request.contextPath}/uploads/products/${order.repProductImage}" 
+		             alt="상품 이미지" 
+		             onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'">
 		          <div class="seller-order-product-meta">
 		            <div class="seller-order-product-name">${order.repProductName}</div>
 		            <div class="seller-order-product-sub">총 수량: ${order.totalQuantity}개</div>
