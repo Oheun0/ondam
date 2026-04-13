@@ -218,5 +218,24 @@ public class SellerDAO {
 	    }
 	    return flag;
 	}
+
+	/** 판매자 설정 — 담당자명만 변경 */
+	public boolean updateSellerName(int sellerAccountNo, String sellerName) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = pool.getConnection();
+			String sql = "UPDATE seller SET sellerName = ? WHERE sellerAccountNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, sellerName);
+			pstmt.setInt(2, sellerAccountNo);
+			return pstmt.executeUpdate() > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return false;
+	}
 }
 

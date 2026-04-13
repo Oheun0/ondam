@@ -4,6 +4,37 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 	version="4.0">
 
+	<context-param>
+		<param-name>sellerLogoStorageDirectory</param-name>
+		<param-value>C:/Jsp/ondam/src/main/webapp/images/seller/logo</param-value>
+	</context-param>
+
+	<!--
+	  판매자 비밀번호 재설정 — Gmail SMTP (앱 비밀번호)
+	  반드시 아래 param-name 그대로 사용: mailSmtpUser, mailSmtpPassword, mailFrom
+	  Google: 보안 → 2단계 인증 → 앱 비밀번호(16자) → mailSmtpPassword에 공백 없이 입력
+	-->
+	<context-param>
+		<param-name>mailSmtpHost</param-name>
+		<param-value>smtp.gmail.com</param-value>
+	</context-param>
+	<context-param>
+		<param-name>mailSmtpPort</param-name>
+		<param-value>587</param-value>
+	</context-param>
+	<context-param>
+		<param-name>mailSmtpUser</param-name>
+		<param-value>nyoo0923@gmail.com</param-value>
+	</context-param>
+	<context-param>
+		<param-name>mailSmtpPassword</param-name>
+		<param-value>fvdwluxmulguhkwn</param-value>
+	</context-param>
+	<context-param>
+		<param-name>mailFrom</param-name>
+		<param-value>ondam@gmail.com</param-value>
+	</context-param>
+
 	<servlet>
 		<servlet-name>default</servlet-name>
 		<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>

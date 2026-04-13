@@ -1,6 +1,17 @@
 /* global document, console, alert */
-document.addEventListener("DOMContentLoaded", function () {
-  var ctx = document.body.getAttribute("data-context-path") || "";
+(function () {
+  function onAction(action) {
+    var ctx = document.body.getAttribute("data-context-path") || "";
+	var urlMap = {
+	      'orders-today': ctx + '/seller/order?action=list&filter=today',
+	      'ship-ready':   ctx + '/seller/order?action=list&status=ready',
+	      'inquiries':    ctx + '/seller/inquiry?action=list',
+	      'reviews-new':  ctx + '/seller/review?action=list',
+	      'new-product':  ctx + '/seller/product?action=form',
+	      'new-shorts':   ctx + '/seller/shorts?action=form',
+	      'open-orders':  ctx + '/seller/order?action=list',
+	      'open-settlement': ctx + '/preview?page=seller/settlement/list'
+	    };
 
   var urlMap = {
     'orders-today': ctx + '/seller/order?action=list',

@@ -37,17 +37,12 @@
       <span class="seller-nav-label">리뷰 관리</span>
     </a>
     
-    <a class="seller-nav-item <%= "coupon".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/coupon/list">
-      <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">local_activity</span>
-      <span class="seller-nav-label">쿠폰 / 이벤트</span>
-    </a>
-    
     <a class="seller-nav-item <%= "settlement".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/settlement/list">
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">bar_chart</span>
       <span class="seller-nav-label">정산 · 매출</span>
     </a>
-    
-    <a class="seller-nav-item <%= "setting".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/settings">
+    <a class="seller-nav-item <%= "setting".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/seller/settings">
+
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">settings</span>
       <span class="seller-nav-label">설정</span>
     </a>

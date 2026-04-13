@@ -1,4 +1,4 @@
-/* global document, alert, console */
+/* global document, alert */
 (function () {
   function $(id) { return document.getElementById(id); }
   function trim(v) { return (v || '').toString().trim(); }
@@ -20,11 +20,43 @@
   };
 
   var sameChk = $('sameReturnAddr');
+  var returnZipBtn = $('returnZipBtn');
 
   function setReturnDisabled(disabled) {
     Object.keys(ret).forEach(function (k) {
       if (!ret[k]) return;
       ret[k].disabled = disabled;
+    });
+    if (returnZipBtn) returnZipBtn.disabled = disabled;
+  }
+
+  function openZipSearch(zipEl, addr1El, addr2El) {
+    if (typeof daum === 'undefined' || !daum.Postcode) {
+      alert('주소 검색을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
+      return;
+    }
+    new daum.Postcode({
+      oncomplete: function (data) {
+        var fullAddr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+        zipEl.value = data.zonecode;
+        addr1El.value = fullAddr;
+        if (addr2El) addr2El.focus();
+        zipEl.dispatchEvent(new Event('input', { bubbles: true }));
+        addr1El.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    }).open();
+  }
+
+  var shipZipBtn = $('shipZipBtn');
+  if (shipZipBtn && ship.zip && ship.addr1) {
+    shipZipBtn.addEventListener('click', function () {
+      openZipSearch(ship.zip, ship.addr1, ship.addr2);
+    });
+  }
+  if (returnZipBtn && ret.zip && ret.addr1) {
+    returnZipBtn.addEventListener('click', function () {
+      if (returnZipBtn.disabled) return;
+      openZipSearch(ret.zip, ret.addr1, ret.addr2);
     });
   }
 
@@ -42,11 +74,14 @@
       } else {
         setReturnDisabled(false);
       }
-      console.log('[SellerSettings] sameReturnAddr change (dummy)', sameChk.checked);
     });
   }
 
-  // If shipping changes while checkbox is on → keep syncing
+  if (sameChk && sameChk.checked) {
+    copyShipToReturn();
+    setReturnDisabled(true);
+  }
+
   ['zip', 'addr1', 'addr2'].forEach(function (key) {
     if (!ship[key]) return;
     ship[key].addEventListener('input', function () {
@@ -94,32 +129,42 @@
       setReturnDisabled(false);
       ['errStoreName', 'errManagerName', 'errCsPhone', 'errCsEmail', 'errShipFee', 'errFreeOver']
         .forEach(function (id) { hide($(id)); });
-      alert('입력값이 초기화되었습니다. (더미)');
+      alert('입력값이 초기화되었습니다.');
+    });
+  }
+
+  var logoInput = $('sellerLogoFile');
+  var logoFileName = $('sellerLogoFileName');
+  var profilePreview = $('sellerProfilePreview');
+  var profilePlaceholder = $('sellerProfilePlaceholder');
+
+  if (logoInput && profilePreview) {
+    logoInput.addEventListener('change', function () {
+      var f = logoInput.files && logoInput.files[0];
+      if (!f) {
+        if (logoFileName) logoFileName.value = '';
+        return;
+      }
+      if (logoFileName) logoFileName.value = f.name;
+      if (!f.type || f.type.indexOf('image/') !== 0) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        profilePreview.src = ev.target.result;
+        profilePreview.classList.add('seller-settings-profile-avatar--visible');
+        if (profilePlaceholder) profilePlaceholder.classList.add('is-hidden');
+      };
+      reader.readAsDataURL(f);
     });
   }
 
   if (form) {
     form.addEventListener('submit', function (e) {
-      e.preventDefault();
       if (!validate()) {
+        e.preventDefault();
         alert('필수 입력값을 확인해 주세요.');
-        return;
+        return false;
       }
-
-      var payload = {
-        storeName: trim($('storeName') ? $('storeName').value : ''),
-        managerName: trim($('managerName') ? $('managerName').value : ''),
-        csPhone: trim($('csPhone') ? $('csPhone').value : ''),
-        csEmail: trim($('csEmail') ? $('csEmail').value : ''),
-        bizNo: trim($('bizNo') ? $('bizNo').value : ''),
-        shipFee: trim($('shipFee') ? $('shipFee').value : ''),
-        freeOver: trim($('freeOver') ? $('freeOver').value : ''),
-        courier: $('courier') ? $('courier').value : '',
-        sameReturnAddr: !!(sameChk && sameChk.checked),
-      };
-      console.log('[SellerSettings] save (dummy)', payload);
-      alert('저장되었습니다. (더미)\n\n실제 저장은 아직 연동되지 않았어요.');
+      return true;
     });
   }
 })();
-
