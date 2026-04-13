@@ -39,30 +39,47 @@
 	        }
 	      });
 	    }
-		//시작일과 종료일이 비어있을 때만 이번 달을 세팅함
+		var urlParams = new URLSearchParams(window.location.search);
+		var currentPreset = urlParams.get('periodPreset');
+		
 		var sInput = $('startDate');
 		var eInput = $('endDate');
 
-		if (preset && (!sInput.value || !eInput.value)) {
-		    preset.value = 'month';
-		    var now0 = new Date();
-		    setDateRange(
+		  if (preset) {
+		    if (currentPreset) {
+		      preset.value = currentPreset; // 선택했던 메뉴(7d, month 등) 강제 유지
+		    } else if (sInput.value && eInput.value) {
+		      preset.value = 'custom'; // URL엔 없는데 날짜만 있으면 '직접 선택'
+		    } else {
+		      preset.value = 'month'; // 처음 들어왔을 땐 '이번 달'
+		      var now0 = new Date();
+		      setDateRange(
 		        new Date(now0.getFullYear(), now0.getMonth(), 1), 
 		        new Date(now0.getFullYear(), now0.getMonth() + 1, 0)
-		    );
-		}
+		      );
+		    }
+		  }
+		  if (sInput) sInput.addEventListener('change', function() { if(preset) preset.value = 'custom'; });
+		  if (eInput) eInput.addEventListener('change', function() { if(preset) preset.value = 'custom'; });
 
   // Filter / search
   var searchBtn = $('settlementSearchBtn');
-  if (searchBtn) {
-    searchBtn.addEventListener('click', function () {
-      var s = $('startDate').value;
-      var e = $('endDate').value;
-      var status = $('settleStatus').value;
-      var contextPath = document.body.getAttribute('data-context-path') || '';
-      location.href = contextPath + "/seller/settlement/list?startDate=" + s + "&endDate=" + e + "&settleStatus=" + status;
-    });
-  }
+    if (searchBtn) {
+      searchBtn.addEventListener('click', function () {
+        var s = $('startDate').value;
+        var e = $('endDate').value;
+        var status = $('settleStatus').value;
+        var pVal = $('periodPreset').value;
+		var pay = $('payMethod').value;
+        var contextPath = document.body.getAttribute('data-context-path') || '';
+		location.href = contextPath + "/seller/settlement/list" 
+		              + "?startDate=" + encodeURIComponent(s) 
+		              + "&endDate=" + encodeURIComponent(e) 
+		              + "&settleStatus=" + encodeURIComponent(status) 
+		              + "&payMethod=" + encodeURIComponent(pay)
+		              + "&periodPreset=" + encodeURIComponent(pVal);
+      });
+    }
 
   // Download
   var downloadBtn = $('settlementDownloadBtn');
@@ -70,32 +87,41 @@
     downloadBtn.addEventListener('click', function () {
       var s = $('startDate').value;
       var e = $('endDate').value;
+      var status = $('settleStatus').value;
+      var pay = $('payMethod').value;
       var contextPath = document.body.getAttribute('data-context-path') || '';
       
-      // 다운로드용 서블릿/컨트롤러 주소로 연결
       if(confirm('현재 조건으로 정산 내역을 다운로드하시겠습니까?')) {
-          location.href = contextPath + "/seller/settlement/download?startDate=" + s + "&endDate=" + e;
+          location.href = contextPath + "/seller/settlement/download"
+                        + "?startDate=" + encodeURIComponent(s) 
+                        + "&endDate=" + encodeURIComponent(e) 
+                        + "&settleStatus=" + encodeURIComponent(status)
+                        + "&payMethod=" + encodeURIComponent(pay);
       }
     });
   }
 
   // Pagination
   document.addEventListener('click', function (e) {
-    var pageBtn = e.target.closest('.seller-settlement-page-btn');
-    if (!pageBtn) return;
+      var pageBtn = e.target.closest('.seller-settlement-page-btn');
+      if (!pageBtn) return;
 
-    var p = pageBtn.getAttribute('data-page');
-    if (!p) return;
+      var p = pageBtn.getAttribute('data-page');
+      if (!p) return;
 
-    // 현재 필터 조건을 유지하면서 페이지 번호만 바꿔서 이동
-    var s = $('startDate').value;
-    var eDate = $('endDate').value;
-    var status = $('settleStatus').value;
-    var contextPath = document.body.getAttribute('data-context-path') || '';
-
-    location.href = contextPath + "/seller/settlement/list?startDate=" + s + 
-                    "&endDate=" + eDate + "&settleStatus=" + status + "&page=" + p;
-  });
+      var s = $('startDate').value;
+      var eDate = $('endDate').value;
+      var status = $('settleStatus').value;
+      var pVal = $('periodPreset').value;
+	  var pay = $('payMethod').value;
+      var contextPath = document.body.getAttribute('data-context-path') || '';
+	  location.href = contextPath + "/seller/settlement/list" 
+	                + "?startDate=" + encodeURIComponent(s) 
+	                + "&endDate=" + encodeURIComponent(e) 
+	                + "&settleStatus=" + encodeURIComponent(status) 
+	                + "&payMethod=" + encodeURIComponent(pay)
+	                + "&periodPreset=" + encodeURIComponent(pVal);
+				    });
 
   // Detail modal
   var modal = $('settleModal');
