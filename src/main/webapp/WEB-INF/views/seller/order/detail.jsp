@@ -129,11 +129,13 @@
               <label class="seller-order-detail-label" for="odNextStatus">상태 변경</label>
               <select id="odNextStatus" class="seller-order-detail-control">
                 <option value="">변경할 상태를 선택해 주세요</option>
+
                 <option value="paid" ${statusData == 'paid' ? 'selected' : ''}>결제완료</option>
                 <option value="ready" ${statusData == 'ready' ? 'selected' : ''}>배송 준비 중</option>
                 <option value="shipping" ${statusData == 'shipping' ? 'selected' : ''}>배송 중</option>
                 <option value="done" ${statusData == 'done' ? 'selected' : ''}>배송 완료</option>
                 <option value="cancel" ${statusData == 'cancel' ? 'selected' : ''}>취소</option>
+
               </select>
               <p class="seller-order-detail-error hidden" id="odStatusError" aria-live="polite"></p>
             </div>

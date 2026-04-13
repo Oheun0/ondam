@@ -20,9 +20,26 @@
 
   var root = $('orderDetailRoot');
   if (!root) return;
+  var contextPath = document.body ? (document.body.getAttribute('data-context-path') || '') : '';
 
   var orderType = root.getAttribute('data-order-type');
   var wallet = root.getAttribute('data-wallet') === 'true';
+  var orderNo = root.getAttribute('data-order-no');
+  var orderItemNo = root.getAttribute('data-order-item-no');
+
+  function getQueryParam(name) {
+    try {
+      return new URLSearchParams(window.location.search).get(name);
+    } catch (e) {
+      return null;
+    }
+  }
+  if (!orderItemNo) {
+    orderItemNo = getQueryParam('orderItemNo');
+  }
+  if (!orderNo) {
+    orderNo = getQueryParam('orderNo');
+  }
 
   // 조건 카드 노출
   if (orderType === 'gift') show($('odGiftCard'));
@@ -43,6 +60,10 @@
 
       if (!selectedStatus) {
         showError('odStatusError', '변경할 배송 상태를 선택해 주세요.');
+        return;
+      }
+      if (!orderItemNo) {
+        showError('odFormError', 'orderItemNo가 없어 상태 변경을 진행할 수 없습니다.');
         return;
       }
 
