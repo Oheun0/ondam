@@ -17,7 +17,9 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/favorite-list.css">
 </head>
-<body class="favorite-list-page" data-context-path="${pageContext.request.contextPath}">
+<body class="favorite-list-page" 
+      data-context-path="${pageContext.request.contextPath}"
+      data-helper-mode="${isHelperMode}">
   <%
     // product-grid.jsp 빈 상태 문구를 찜 전용으로 교체하기 위한 플래그
     request.setAttribute("productEmptyVariant", "favorite");

@@ -48,4 +48,8 @@ public class PokeService {
 	public int createPokeAndGetNo(PokeDTO dto) {
 	    return dao.insertPokeAndGetNo(dto);
 	}
+	
+	public Vector<PokeDTO> getPokesFromSender(int receiverNo, int senderNo) {
+	    return dao.getBySenderAndReceiver(receiverNo, senderNo);
+	}
 }

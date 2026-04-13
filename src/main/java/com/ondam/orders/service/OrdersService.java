@@ -40,4 +40,8 @@ public class OrdersService {
 	public int createOrdersAndGetNo(OrdersDTO dto) {
 	    return dao.insertOrdersAndGetNo(dto);
 	}
+	
+	public boolean updateGiftReceiverNo(int orderNo, int receiverNo) {
+	    return dao.updateGiftReceiverNo(orderNo, receiverNo);
+	}
 }

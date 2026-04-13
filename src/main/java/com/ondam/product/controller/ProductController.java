@@ -183,9 +183,11 @@ public class ProductController implements Controller {
 	        if (myMember != null) {
 	            Vector<FamilyMemberDTO> memberList = familyMemberService
 	                    .getFamilyMembersByFamilyNo(myMember.getFamilyNo());
-	            // 본인 제외
 	            memberList.removeIf(m -> m.getUserNo() == loginUser.getUserNo());
 	            request.setAttribute("pokeMemberList", memberList);
+	            request.setAttribute("familyNo", myMember.getFamilyNo());
+	        } else {
+	            request.setAttribute("familyNo", 0);
 	        }
 	    }
 

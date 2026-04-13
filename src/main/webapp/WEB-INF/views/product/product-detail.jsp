@@ -54,5 +54,6 @@
   </div>
 
   <script src="${pageContext.request.contextPath}/js/product-detail.js"></script>
+  <script src="${pageContext.request.contextPath}/js/gift-modal.js"></script>
 </body>
 </html>

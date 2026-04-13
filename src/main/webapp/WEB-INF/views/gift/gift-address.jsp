@@ -25,7 +25,8 @@
                                 data-receiver-tel="${addr.receiverTel}"
                                 data-address="${addr.userAddress}"
                                 data-detail="${addr.userDetailAddress}"
-                                data-zipcode="${addr.userZipcode}">
+                                data-zipcode="${addr.userZipcode}"
+                                data-address-name="${addr.addressName}">
                             <span class="op-address-item__name">
                                 ${addr.addressName}
                                 <c:if test="${addr.isDefault == 1}">
