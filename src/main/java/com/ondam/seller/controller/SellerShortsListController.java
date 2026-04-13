@@ -23,6 +23,8 @@ public class SellerShortsListController implements Controller {
         
         HttpSession session = request.getSession();
         SellerDTO loginSeller = (SellerDTO) session.getAttribute("loginSeller");
+
+        // [핵심] 로그인 세션 검증: 판매자가 아니면 로그인 페이지로 리다이렉트
         if (loginSeller == null) {
             return "redirect:/seller/auth";
         }

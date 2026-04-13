@@ -26,7 +26,7 @@ public class ShortsGeneratorController implements Controller {
         response.setContentType("application/json;charset=UTF-8");
 
         HttpSession session = request.getSession();
-        SellerDTO loginSeller = (SellerDTO) session.getAttribute("loginUser");
+        SellerDTO loginSeller = (SellerDTO) session.getAttribute("loginSeller");
         
         if (loginSeller == null) {
             sendJson(response, "error", "판매자 권한이 없습니다. 다시 로그인해주세요.");
