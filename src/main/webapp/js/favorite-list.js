@@ -29,6 +29,7 @@
     var sortSelectedText = document.getElementById("favoriteSortSelectedText");
     var sortOptions = root.querySelectorAll("#favoriteSortDropdown .filter-option");
     var partChips = root.querySelectorAll(".favorite-part-chip");
+	var isHelperMode = document.body.getAttribute("data-helper-mode") === "true";
 
     var grid = root.querySelector(".product-grid");
     if (!grid) return;
@@ -43,7 +44,15 @@
       icon.classList.remove("material-icons-outlined");
       icon.classList.add("material-icons");
       icon.textContent = "favorite";
+	  
+	  if (isHelperMode) {
+	          btn.disabled = true;
+	          btn.style.pointerEvents = "none";
+	          btn.style.opacity = "0.5";
+	      }
     });
+	
+	
 
     var cards = function () {
       return Array.prototype.slice.call(grid.querySelectorAll(".product-card"));
@@ -63,6 +72,8 @@
       if (!wishBtn || !grid.contains(wishBtn)) return;
       e.preventDefault();
       e.stopPropagation();
+	  
+	  if (isHelperMode) return;
       wishBtn.classList.toggle("is-active");
       var on = wishBtn.classList.contains("is-active");
       wishBtn.setAttribute("aria-pressed", on ? "true" : "false");

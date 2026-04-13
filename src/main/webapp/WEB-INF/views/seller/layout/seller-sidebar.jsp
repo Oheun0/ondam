@@ -22,7 +22,7 @@
       <span class="seller-nav-label">상품 관리</span>
     </a>
     
-    <a class="seller-nav-item <%= "shorts".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/shorts/list">
+    <a class="seller-nav-item <%= "shorts".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/seller/shorts/list">
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">smart_display</span>
       <span class="seller-nav-label">쇼츠 관리</span>
     </a>
