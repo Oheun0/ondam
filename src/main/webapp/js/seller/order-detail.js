@@ -20,9 +20,26 @@
 
   var root = $('orderDetailRoot');
   if (!root) return;
+  var contextPath = document.body ? (document.body.getAttribute('data-context-path') || '') : '';
 
   var orderType = root.getAttribute('data-order-type'); // gift | poke | normal
   var wallet = root.getAttribute('data-wallet') === 'true';
+  var orderNo = root.getAttribute('data-order-no');
+  var orderItemNo = root.getAttribute('data-order-item-no');
+
+  function getQueryParam(name) {
+    try {
+      return new URLSearchParams(window.location.search).get(name);
+    } catch (e) {
+      return null;
+    }
+  }
+  if (!orderItemNo) {
+    orderItemNo = getQueryParam('orderItemNo');
+  }
+  if (!orderNo) {
+    orderNo = getQueryParam('orderNo');
+  }
 
   // 조건 카드 노출(더미)
   if (orderType === 'gift') show($('odGiftCard'));
@@ -38,12 +55,26 @@
 
   function mapStatusLabel(code) {
     return {
-      paid: '결제완료',
       ready: '배송 준비 중',
       shipping: '배송 중',
       done: '배송 완료',
-      cancel: '취소',
     }[code] || code;
+  }
+
+  function mapShipmentStatusCode(code) {
+    return {
+      ready: 1,
+      shipping: 2,
+      done: 3,
+    }[code] || 0;
+  }
+
+  function mapUiCodeFromShipmentStatus(status) {
+    return {
+      1: 'ready',
+      2: 'shipping',
+      3: 'done',
+    }[status] || 'ready';
   }
 
   function applyBadgeStyle(el, code) {
@@ -85,22 +116,56 @@
         showError('odStatusError', '변경할 상태를 선택해 주세요.');
         return;
       }
-
-      // 배지 변경(더미)
-      var label = mapStatusLabel(v);
-      if (badge) { setText(badge, label); applyBadgeStyle(badge, v); }
-      if (currentBadge) { setText(currentBadge, label.replace('배송 ', '')); applyBadgeStyle(currentBadge, v); }
-
-      // 이력 추가(더미)
-      if (historyList) {
-        var li = document.createElement('li');
-        li.className = 'seller-order-detail-history-item';
-        li.innerHTML = '<span class="t">' + nowText() + '</span><span class="s">' + label + '</span>';
-        historyList.appendChild(li);
+      if (!orderItemNo) {
+        showError('odFormError', 'orderItemNo가 없어 상태 변경을 진행할 수 없습니다.');
+        return;
       }
 
-      alert('상태가 변경되었습니다. (더미)\n\n' + label);
-      console.log('[SellerOrderDetail] status changed (dummy)', v);
+      var shipmentStatus = mapShipmentStatusCode(v);
+      if (!shipmentStatus) {
+        showError('odStatusError', '지원하지 않는 상태입니다.');
+        return;
+      }
+
+      var params = new URLSearchParams();
+      params.set('action', 'status');
+      params.set('orderItemNo', orderItemNo);
+      params.set('shipmentStatus', String(shipmentStatus));
+
+      fetch(contextPath + '/seller/shipment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+        body: params.toString(),
+        credentials: 'same-origin',
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (json) {
+          if (!(json && json.status === 'success')) {
+            showError('odFormError', (json && json.message) ? json.message : '배송 상태 변경에 실패했습니다.');
+            return;
+          }
+
+          var label = mapStatusLabel(v);
+          if (badge) { setText(badge, label); applyBadgeStyle(badge, v); }
+          if (currentBadge) { setText(currentBadge, label.replace('배송 ', '')); applyBadgeStyle(currentBadge, v); }
+
+          if (historyList) {
+            var li = document.createElement('li');
+            li.className = 'seller-order-detail-history-item';
+            li.innerHTML = '<span class="t">' + nowText() + '</span><span class="s">' + label + '</span>';
+            historyList.appendChild(li);
+          }
+
+          alert('배송 상태가 변경되었습니다.\n\n' + label);
+          console.log('[SellerOrderDetail] shipment status changed', {
+            orderItemNo: orderItemNo,
+            shipmentStatus: shipmentStatus,
+            label: label,
+          });
+        })
+        .catch(function () {
+          showError('odFormError', '서버 통신 중 오류가 발생했습니다.');
+        });
     });
   }
 
@@ -122,11 +187,39 @@
 
   function saveInvoice() {
     if (!validateInvoice()) return;
-    alert('송장이 저장되었습니다. (더미)\n\n' + (carrierEl.value) + ' / ' + trackingEl.value.trim());
-    console.log('[SellerOrderDetail] save invoice (dummy)', {
-      carrier: carrierEl.value,
-      tracking: trackingEl.value.trim(),
-    });
+    if (!orderItemNo) {
+      showError('odFormError', 'orderItemNo가 없어 송장 등록을 진행할 수 없습니다.');
+      return;
+    }
+
+    var params = new URLSearchParams();
+    params.set('action', 'register');
+    params.set('orderItemNo', orderItemNo);
+    params.set('carrierCode', carrierEl.value);
+    params.set('trackingNo', trackingEl.value.trim());
+
+    fetch(contextPath + '/seller/shipment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+      body: params.toString(),
+      credentials: 'same-origin',
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (json) {
+        if (json && json.status === 'success') {
+          alert('송장이 저장되었습니다.\n\n' + carrierEl.value + ' / ' + trackingEl.value.trim());
+          console.log('[SellerOrderDetail] save invoice', {
+            orderItemNo: orderItemNo,
+            carrier: carrierEl.value,
+            tracking: trackingEl.value.trim(),
+          });
+        } else {
+          showError('odFormError', (json && json.message) ? json.message : '송장 저장에 실패했습니다.');
+        }
+      })
+      .catch(function () {
+        showError('odFormError', '서버 통신 중 오류가 발생했습니다.');
+      });
   }
 
   var saveInvoiceBtn = $('odSaveInvoiceBtn');
@@ -138,8 +231,9 @@
   var saveStatusBtn = $('odSaveStatusBtn');
   if (saveStatusBtn) {
     saveStatusBtn.addEventListener('click', function () {
-      alert('배송 상태 저장(더미) — 실제 저장은 아직 연동되지 않았어요.');
-      console.log('[SellerOrderDetail] save status (dummy)');
+      if (applyStatusBtn) {
+        applyStatusBtn.click();
+      }
     });
   }
 
@@ -154,5 +248,72 @@
   if (nextStatusEl) nextStatusEl.addEventListener('change', function () { clearError('odStatusError'); clearError('odFormError'); });
   if (carrierEl) carrierEl.addEventListener('change', function () { clearError('odCarrierError'); clearError('odFormError'); });
   if (trackingEl) trackingEl.addEventListener('input', function () { clearError('odTrackingError'); clearError('odFormError'); });
+
+  function applyShipmentDataToUi(item) {
+    if (!item) return;
+
+    if (carrierEl && item.carrierCode) {
+      carrierEl.value = item.carrierCode;
+    }
+    if (trackingEl && item.trackingNo) {
+      trackingEl.value = item.trackingNo;
+    }
+
+    var uiCode = mapUiCodeFromShipmentStatus(item.shipmentStatus);
+    var label = mapStatusLabel(uiCode);
+    if (badge) { setText(badge, label); applyBadgeStyle(badge, uiCode); }
+    if (currentBadge) { setText(currentBadge, label.replace('배송 ', '')); applyBadgeStyle(currentBadge, uiCode); }
+    if (nextStatusEl) { nextStatusEl.value = uiCode; }
+  }
+
+  function fetchShipmentList() {
+    var parsedOrderNo = parseInt(orderNo, 10);
+    if (!parsedOrderNo) {
+      return;
+    }
+
+    var params = new URLSearchParams();
+    params.set('action', 'list');
+    params.set('orderNo', String(parsedOrderNo));
+
+    fetch(contextPath + '/seller/shipment?' + params.toString(), {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: { 'Accept': 'application/json' },
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (json) {
+        if (!(json && json.status === 'success' && Array.isArray(json.data))) {
+          return;
+        }
+
+        var target = null;
+        if (orderItemNo) {
+          for (var i = 0; i < json.data.length; i++) {
+            if (String(json.data[i].orderItemNo) === String(orderItemNo)) {
+              target = json.data[i];
+              break;
+            }
+          }
+        }
+        if (!target && json.data.length > 0) {
+          target = json.data[0];
+        }
+        applyShipmentDataToUi(target);
+      })
+      .catch(function () {
+        // 조회 실패 시 기존 수동 입력 UX 유지
+      });
+  }
+
+  fetchShipmentList();
+
+  if (!orderItemNo) {
+    if (saveInvoiceBtn) saveInvoiceBtn.disabled = true;
+    if (saveInvoiceBtn2) saveInvoiceBtn2.disabled = true;
+    if (applyStatusBtn) applyStatusBtn.disabled = true;
+    if (saveStatusBtn) saveStatusBtn.disabled = true;
+    showError('odFormError', '주문 연동 전 단계입니다. orderItemNo 연결 후 송장/상태 변경이 활성화됩니다.');
+  }
 })();
 

@@ -40,7 +40,8 @@
         </header>
 
         <section class="seller-card seller-order-detail-summary" id="orderDetailRoot"
-          data-order-no="20260408-0001"
+          data-order-no="${param.orderNo}"
+          data-order-item-no="${param.orderItemNo}"
           data-order-type="gift"
           data-wallet="true"
           data-status="ready"
@@ -118,11 +119,9 @@
               <label class="seller-order-detail-label" for="odNextStatus">상태 변경</label>
               <select id="odNextStatus" class="seller-order-detail-control">
                 <option value="">변경할 상태를 선택해 주세요</option>
-                <option value="paid">결제완료</option>
                 <option value="ready">배송 준비 중</option>
                 <option value="shipping">배송 중</option>
                 <option value="done">배송 완료</option>
-                <option value="cancel">취소</option>
               </select>
               <p class="seller-order-detail-error hidden" id="odStatusError" aria-live="polite"></p>
             </div>
