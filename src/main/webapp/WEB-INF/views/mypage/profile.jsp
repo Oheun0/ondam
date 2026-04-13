@@ -47,6 +47,7 @@
             </div>
 
             <form action="${pageContext.request.contextPath}/profile/update" method="post" enctype="multipart/form-data" class="edit-form">
+            <input type="hidden" id="resetProfileFlag" name="resetProfile" value="false"/>
                 
                 <!-- 프로필 이미지 -->
                 <div class="form-block">
@@ -140,6 +141,7 @@
     });
     document.querySelector('.reset-btn').addEventListener('click', function() {
         profileInput.value = '';
+        document.getElementById('resetProfileFlag').value = 'true';
         profilePreview.src = '${pageContext.request.contextPath}/images/profile/default-profile.png';
     });
 </script>

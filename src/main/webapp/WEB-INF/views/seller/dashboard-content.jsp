@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <section class="seller-dashboard">
   <header class="seller-dashboard__top">
     <div>
@@ -82,37 +83,42 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>20260408-0001</td>
-              <td>김지현</td>
-              <td><span class="seller-chip seller-chip--gift">선물</span></td>
-              <td><span class="seller-chip seller-chip--wallet">함께지갑</span></td>
-              <td><span class="seller-status seller-status--ready">배송 준비 중</span></td>
-            </tr>
-            <tr>
-              <td>20260408-0002</td>
-              <td>성연수</td>
-              <td><span class="seller-chip">일반</span></td>
-              <td><span class="seller-chip">카드</span></td>
-              <td><span class="seller-status seller-status--paid">결제 완료</span></td>
-            </tr>
-            <tr>
-              <td>20260407-0048</td>
-              <td>김가빈</td>
-              <td><span class="seller-chip seller-chip--poke">조르기</span></td>
-              <td><span class="seller-chip">카드</span></td>
-              <td><span class="seller-status seller-status--ship">배송 중</span></td>
-            </tr>
-            <tr>
-              <td>20260407-0032</td>
-              <td>박민준</td>
-              <td><span class="seller-chip">일반</span></td>
-              <td><span class="seller-chip seller-chip--wallet">함께지갑</span></td>
-              <td><span class="seller-status seller-status--done">배송 완료</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            <c:forEach var="order" items="${recentOrders}">
+        <tr>
+          <td><a href="${pageContext.request.contextPath}/seller/order?action=detail&orderNo=${order.orderNo}">${order.orderNo}</a></td>
+          <td>${order.receiverName}</td>
+          <td>
+            <c:choose>
+              <c:when test="${order.orderType == 1}"><span class="seller-chip seller-chip--gift">선물</span></c:when>
+              <c:when test="${order.orderType == 2}"><span class="seller-chip seller-chip--poke">조르기</span></c:when>
+              <c:otherwise><span class="seller-chip">일반</span></c:otherwise>
+            </c:choose>
+          </td>
+          <td>
+             <span class="seller-chip ${order.paymentMethod == 2 ? 'seller-chip--wallet' : ''}">
+               ${order.paymentMethod == 2 ? '함께지갑' : '카드'}
+             </span>
+          </td>
+          <td>
+            <c:set var="statusClass" value="${order.deliveryState == 0 ? 'paid' : order.deliveryState == 1 ? 'ready' : order.deliveryState == 2 ? 'shipping' : order.deliveryState == 3 ? 'done' : 'cancel'}" />
+            <span class="seller-status seller-status--${statusClass}">
+               <c:choose>
+                 <c:when test="${order.deliveryState == 0}">결제 완료</c:when>
+                 <c:when test="${order.deliveryState == 1}">배송 준비 중</c:when>
+                 <c:when test="${order.deliveryState == 2}">배송 중</c:when>
+                 <c:when test="${order.deliveryState == 3}">배송 완료</c:when>
+                 <c:otherwise>취소됨</c:otherwise>
+               </c:choose>
+            </span>
+          </td>
+        </tr>
+      </c:forEach>
+      <c:if test="${empty recentOrders}">
+        <tr><td colspan="5" style="text-align:center; padding: 40px 0;">최근 주문 내역이 없습니다.</td></tr>
+      </c:if>
+    </tbody>
+  </table>
+</div>
     </section>
 
     <section class="seller-card seller-ops" aria-label="운영 현황">

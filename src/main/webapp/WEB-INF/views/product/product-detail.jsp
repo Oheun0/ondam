@@ -27,6 +27,14 @@
     <span class="option-toast__text">먼저 색상과 사이즈를 골라주세요</span>
   </div>
   
+  <div id="success-toast" class="option-toast hidden" role="status" aria-live="polite" aria-hidden="true"
+	     style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:9999;
+	            background:rgba(76, 175, 80, 0.9); color:#fff; padding:10px 20px; border-radius:20px;
+	            display:flex; align-items:center; gap:8px; transition: opacity 0.3s ease;">
+	  <span class="material-icons option-toast__icon" aria-hidden="true" style="color:#fff;">check_circle</span>
+	  <span id="success-toast-text"></span>
+	</div>
+  
   <%-- 재고 부족 토스트 --%>
   <c:if test="${not empty sessionScope.errorMsg}">
     <div class="cart-error-toast" role="alert">

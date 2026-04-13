@@ -1,3 +1,29 @@
+var successToastActive = false;
+var successToastDismissTimer = null;
+
+function showSuccessToast(message) {
+  var el = document.getElementById("success-toast");
+  if (!el || successToastActive) return;
+
+  document.getElementById("success-toast-text").innerText = message;
+  successToastActive = true;
+
+  el.style.setProperty("display", "flex", "important"); // !important ??????
+  el.style.opacity = "1";
+  el.style.visibility = "visible";
+  el.setAttribute("aria-hidden", "false");
+
+  clearTimeout(successToastDismissTimer);
+  successToastDismissTimer = setTimeout(function () {
+    el.style.opacity = "0";
+    setTimeout(function () {
+      el.style.setProperty("display", "none", "important");
+      el.setAttribute("aria-hidden", "true");
+      successToastActive = false;
+    }, 300);
+  }, 2000);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const openCartSheetBtn = document.getElementById("openCartSheetBtn");
   const openBuySheetBtn = document.getElementById("openBuySheetBtn");
@@ -110,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function showOptionErrorToast() {
-    showTopToast("먼저 색상과 사이즈를 골라주세요", "error");
+    showTopToast("?? ??? ???? ?????", "error");
   }
 
   const detailCarouselSyncs = [];
@@ -256,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
       slide.className = "detail-image-lightbox-slide";
       var clone = document.createElement("img");
       clone.src = img.getAttribute("src");
-      clone.alt = img.getAttribute("alt") || ("확대 이미지 " + (idx + 1));
+      clone.alt = img.getAttribute("alt") || ("???? ????? " + (idx + 1));
       slide.appendChild(clone);
       detailImageLightboxScroll.appendChild(slide);
     });
@@ -320,12 +346,12 @@ document.addEventListener("DOMContentLoaded", function () {
   if (sheetWishlistBtn) {
       var sheetWishIcon = sheetWishlistBtn.querySelector(".detail-wish-icon");
 
-      // 초기 찜 상태 반영 (JSP에서 내려온 값)
+      // ?? ????? ?? (JSP??? ???????
       var initWished = sheetWishlistBtn.dataset.wished === "true";
       if (initWished) {
           sheetWishlistBtn.classList.add("detail-action-item--wish-on");
           sheetWishlistBtn.setAttribute("aria-pressed", "true");
-          sheetWishlistBtn.setAttribute("aria-label", "찜 해제");
+          sheetWishlistBtn.setAttribute("aria-label", "?????");
           if (sheetWishIcon) {
               sheetWishIcon.classList.replace("material-icons-outlined", "material-icons");
               sheetWishIcon.textContent = "favorite";
@@ -335,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function () {
       sheetWishlistBtn.addEventListener("click", function () {
           var ctx = document.body.getAttribute("data-context-path") || "";
 
-          // 로그인 체크
+          // ??????
           if (!document.body.dataset.loginUser) {
               window.location.href = ctx + "/login";
               return;
@@ -343,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           var on = sheetWishlistBtn.classList.toggle("detail-action-item--wish-on");
           sheetWishlistBtn.setAttribute("aria-pressed", on ? "true" : "false");
-          sheetWishlistBtn.setAttribute("aria-label", on ? "찜 해제" : "찜하기");
+          sheetWishlistBtn.setAttribute("aria-label", on ? "? ??" : "???");
           if (sheetWishIcon) {
               if (on) {
                   sheetWishIcon.classList.replace("material-icons-outlined", "material-icons");
@@ -354,12 +380,12 @@ document.addEventListener("DOMContentLoaded", function () {
               }
           }
 
-          // 서버 반영
+          // ??? ??
           fetch(ctx + "/wish?action=toggle&productNo=" + PRODUCT_NO, { method: "POST" })
               .then(function (r) { return r.json(); })
               .then(function (data) {
                   if (data.wished !== on) {
-                      // 서버 결과와 다르면 되돌리기
+                      // ??? ???? ??????????
                       sheetWishlistBtn.classList.toggle("detail-action-item--wish-on", data.wished);
                       sheetWishlistBtn.setAttribute("aria-pressed", data.wished ? "true" : "false");
                       if (sheetWishIcon) {
@@ -370,7 +396,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   }
               })
               .catch(function () {
-                  // 실패 시 원상복구
+                  // ??? ???????
                   sheetWishlistBtn.classList.toggle("detail-action-item--wish-on", !on);
               });
       });
@@ -385,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // 폼에 현재 선택된 옵션 값 세팅
+      // ??? ??? ???????? ?????
       document.getElementById("pokeProductNo").value       = document.getElementById("hiddenProductNo").value;
       document.getElementById("pokeProductOptionNo").value = document.getElementById("hiddenOptionNo").value;
       document.getElementById("pokeQuantity").value        = document.getElementById("hiddenQuantity").value;
@@ -474,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           var ctx = document.body.getAttribute("data-context-path") || "";
           var form = document.createElement("form");
-          form.method = "GET";  // 주문/결제 페이지는 GET으로 파라미터 전달
+          form.method = "GET";  // ??/?? ??????GET??? ????? ???
           form.action = ctx + "/payment";
 
           [
@@ -575,7 +601,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function shareViaKakao() {
     var kakaoKey = document.body.getAttribute("data-kakao-js-key") || "";
     if (!window.Kakao || !kakaoKey) {
-      showTopToast("카카오 공유 설정이 아직 없어요.", "error");
+      showTopToast("?????? ???????? ?????", "error");
       return;
     }
     try {
@@ -586,8 +612,8 @@ document.addEventListener("DOMContentLoaded", function () {
       window.Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
-          title: meta.title || "온담 상품",
-          description: meta.description || "온담에서 상품을 확인해보세요.",
+          title: meta.title || "??? ???",
+          description: meta.description || "?????? ??????????????.",
           imageUrl: meta.imageUrl || (window.location.origin + (document.body.getAttribute("data-context-path") || "") + "/images/logo.png"),
           link: {
             mobileWebUrl: meta.url,
@@ -596,7 +622,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         buttons: [
           {
-            title: "상품 보러가기",
+            title: "?? ????",
             link: {
               mobileWebUrl: meta.url,
               webUrl: meta.url
@@ -605,7 +631,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
       });
     } catch (e) {
-      showTopToast("카카오톡 공유를 실행하지 못했어요.", "error");
+      showTopToast("????? ??????????? ?????.", "error");
     }
   }
 
@@ -628,7 +654,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (shareCopyLinkBtn) {
     shareCopyLinkBtn.addEventListener("click", function () {
       copyShareUrlToClipboard();
-      showTopToast("링크를 복사했어요.", "success");
+      showTopToast("???????????", "success");
     });
   }
 
@@ -649,12 +675,12 @@ document.addEventListener("DOMContentLoaded", function () {
             url: meta.url,
           })
           .catch(function () {
-            /* 사용자 취소 등 */
+            /* ??????? ??*/
           });
         return;
       }
       copyShareUrlToClipboard();
-      showTopToast("공유를 지원하지 않아 링크를 복사했어요.", "success");
+      showTopToast("????????? ??? ???????????", "success");
     });
   }
 
@@ -727,7 +753,7 @@ document.addEventListener("DOMContentLoaded", function () {
           colorOptionPanel.classList.add("hidden");
           syncSheetOptionPanels();
 
-          // 사이즈 동적 렌더링
+          // ???????? ?????
           var selectedColor = this.dataset.color;
           var sizes = COLOR_SIZE_MAP[selectedColor] || [];
           var sizeList = document.getElementById("sizeOptionList");
@@ -755,7 +781,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				      sizeOptionPanel.classList.add("hidden");
 				      syncSheetOptionPanels();
 
-				      // ── 재고 세팅 추가 ──
+				      // ???? ??? ??? ??? ????
 				      var optKey = selectedColor + "__" + sz;
 				      var stock = OPTION_STOCK_MAP[optKey] !== undefined ? OPTION_STOCK_MAP[optKey] : 9999;
 				      detailOptionSheet.setAttribute("data-option-stock", stock);
@@ -766,11 +792,11 @@ document.addEventListener("DOMContentLoaded", function () {
 					          hiddenOptionNoEl.value = optionNo;
 					      }
 
-				      // 재고 0이면 버튼 비활성화
+				      // ??? 0??? ?? ?????
 				      if (stock === 0) {
 				          if (sheetBuyNowBtn) {
 				              sheetBuyNowBtn.disabled = true;
-				              sheetBuyNowBtn.textContent = "품절";
+				              sheetBuyNowBtn.textContent = "???";
 				          }
 				          if (sheetAddCartBtn) {
 				              sheetAddCartBtn.disabled = true;
@@ -778,14 +804,14 @@ document.addEventListener("DOMContentLoaded", function () {
 				      } else {
 				          if (sheetBuyNowBtn) {
 				              sheetBuyNowBtn.disabled = false;
-				              sheetBuyNowBtn.textContent = "구매하기";
+				              sheetBuyNowBtn.textContent = "?????";
 				          }
 				          if (sheetAddCartBtn) {
 				              sheetAddCartBtn.disabled = false;
 				          }
 				      }
 
-				      // 수량이 재고 초과 시 수량 재조정
+				      // ???????? ?? ????? ?????
 				      if (quantity > stock) {
 				          quantity = Math.max(1, stock);
 				          syncQtyStepper();
@@ -794,8 +820,8 @@ document.addEventListener("DOMContentLoaded", function () {
               });
           }
 
-          // 색상 바뀌면 사이즈 초기화
-          selectedSizeText.textContent = "눌러서 선택하기";
+          // ??? ??? ?????????
+          selectedSizeText.textContent = "???????????";
           selectedSizeText.classList.add("detail-selected-value--placeholder");
       });
   });
@@ -803,7 +829,7 @@ document.addEventListener("DOMContentLoaded", function () {
   syncSheetOptionPanels();
 
   function formatWon(amount) {
-    return amount.toLocaleString("ko-KR") + "원";
+    return amount.toLocaleString("ko-KR") + "?";
   }
 
   function syncSheetOrderSummary() {
@@ -815,7 +841,7 @@ document.addEventListener("DOMContentLoaded", function () {
         unit = raw;
       }
     }
-    sheetOrderCount.textContent = "총 " + quantity + "개";
+    sheetOrderCount.textContent = "?? " + quantity + "?";
     sheetOrderTotal.textContent = formatWon(unit * quantity);
   }
 
@@ -931,7 +957,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var on = !wishBtn.classList.contains("is-active");
       wishBtn.classList.toggle("is-active", on);
       wishBtn.setAttribute("aria-pressed", on ? "true" : "false");
-      wishBtn.setAttribute("aria-label", on ? "찜 해제" : "찜하기");
+      wishBtn.setAttribute("aria-label", on ? "? ??" : "???");
       var icon = wishBtn.querySelector("span.material-icons-outlined, span.material-icons");
       if (icon) {
         if (on) {
@@ -946,52 +972,54 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   
   var confirmPokeBtn = document.getElementById("confirmPokeBtn");
-    if (confirmPokeBtn) {
-      confirmPokeBtn.addEventListener("click", function () {
-        var selected = document.querySelector(".poke-person-btn.active");
-        if (!selected) {
-          showTopToast("조르기를 보낼 사람을 선택해주세요.", "error");
-          return;
-        }
+  if (confirmPokeBtn) {
+    confirmPokeBtn.addEventListener("click", function () {
+      var selected = document.querySelector(".poke-person-btn.active");
+      if (!selected) {
+        showTopToast("???? ?? ??? ??????.", "error");
+        return;
+      }
 
-        document.getElementById("pokeReceiverNo").value = selected.dataset.userNo;
-        document.getElementById("pokeMsgHidden").value  = document.getElementById("pokeMsgInput").value;
-        var pokeForm = document.getElementById("pokeForm");
-        if (!pokeForm) return;
-        var formData = new FormData(pokeForm);
-        var body = new URLSearchParams();
-        formData.forEach(function (value, key) {
-          body.append(key, value == null ? "" : String(value));
-        });
+      document.getElementById("pokeReceiverNo").value = selected.dataset.userNo;
+      document.getElementById("pokeMsgHidden").value  = document.getElementById("pokeMsgInput").value;
 
-        confirmPokeBtn.disabled = true;
-        fetch(pokeForm.action, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-          body: body.toString()
-        })
-          .then(function (res) {
-            if (!res.ok) {
-              throw new Error("poke request failed");
-            }
-            closePokeModal();
-            var input = document.getElementById("pokeMsgInput");
-            if (input) input.value = "";
-            clearPokePersonSelection();
-            showTopToast("조르기 요청을 보냈어요", "success");
-          })
-          .catch(function () {
-            showTopToast("조르기 요청이 실패됐어요", "error");
-          })
-          .finally(function () {
-            confirmPokeBtn.disabled = false;
-          });
+      var pokeForm = document.getElementById("pokeForm");
+      if (!pokeForm) return;
+      var formData = new FormData(pokeForm);
+      var body = new URLSearchParams();
+      formData.forEach(function (value, key) {
+        body.append(key, value == null ? "" : String(value));
       });
-    }
+
+      confirmPokeBtn.disabled = true;
+      fetch(pokeForm.action, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+        body: body.toString()
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          throw new Error("poke request failed");
+        }
+        closePokeModal();
+        var input = document.getElementById("pokeMsgInput");
+        if (input) input.value = "";
+        clearPokePersonSelection();
+        showTopToast("??? ??? ????", "success");
+      })
+      .catch(function () {
+        showTopToast("??? ??? ?????", "error");
+      })
+      .finally(function () {
+        confirmPokeBtn.disabled = false;
+      });
+    });
+  }
 
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && detailImageLightbox && !detailImageLightbox.classList.contains("hidden")) {
       closeImageLightbox();
     }
   });
+
 });

@@ -48,11 +48,14 @@
       <div id="pokeListFilledWrap">
 
         <div class="cart-toolbar poke-list-toolbar">
-          <label class="cart-toolbar__select-all">
-            <input type="checkbox" class="cart-toolbar__checkbox" id="pokeSelectAll" checked aria-label="전체 선택"/>
-            <span>전체 선택</span>
-          </label>
-        </div>
+		  <label class="cart-toolbar__select-all">
+		    <input type="checkbox" class="cart-toolbar__checkbox" id="pokeSelectAll" checked aria-label="전체 선택"/>
+		    <span>전체 선택</span>
+		  </label>
+		  <div class="cart-toolbar__actions">
+		    <button type="button" class="cart-toolbar__link-btn" id="pokeRemoveSelectedBtn">선택 삭제</button>
+		  </div>
+		</div>
 
         <main class="cart-main poke-list-main" id="pokeMainList">
           <section class="cart-brand-group">
@@ -97,18 +100,18 @@
                       </c:if>
 
                       <%-- 가격 --%>
-                      <div class="cart-item__bottom">
-                        <div class="cart-item__price-block">
-                          <c:if test="${product.productOriginPrice > product.productPrice}">
-                            <span class="cart-item__price-original">
-                              <fmt:formatNumber value="${product.productOriginPrice}" pattern="#,###"/>원
-                            </span>
-                          </c:if>
-                          <span class="cart-item__price-sale">
-                            <fmt:formatNumber value="${product.productPrice}" pattern="#,###"/>원
-                          </span>
-                        </div>
-                      </div>
+						<div class="cart-item__bottom">
+						  <div class="cart-item__price-block">
+						    <c:if test="${product.productOriginPrice > product.productPrice}">
+						      <span class="cart-item__price-original">
+						        <fmt:formatNumber value="${product.productOriginPrice * poke.pokeQuantity}" pattern="#,###"/>원
+						      </span>
+						    </c:if>
+						    <span class="cart-item__price-sale">
+						      <fmt:formatNumber value="${product.productPrice * poke.pokeQuantity}" pattern="#,###"/>원
+						    </span>
+						  </div>
+						</div>
 
                       <%-- 상태 배지 --%>
                       <c:choose>

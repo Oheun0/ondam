@@ -108,6 +108,35 @@
 	    form.submit();
 	  });
 	}
+	
+	// ── 삭제하기 버튼 ───────────────────────────────────
+	var removeSelectedBtn = document.getElementById("pokeRemoveSelectedBtn");
+	if (removeSelectedBtn) {
+	  removeSelectedBtn.addEventListener("click", function () {
+	    var ctx = document.body.getAttribute("data-context-path") || "";
+	    var checked = Array.prototype.slice.call(
+	      document.querySelectorAll("#pokeMainList .cart-item__checkbox:checked")
+	    );
+	    if (checked.length === 0) return;
+
+	    var form = document.createElement("form");
+	    form.method = "POST";
+	    form.action = ctx + "/poke?action=deleteSelected&from=list";
+
+	    checked.forEach(function (cb) {
+	      var article = cb.closest(".poke-item");
+	      if (!article) return;
+	      var input = document.createElement("input");
+	      input.type = "hidden";
+	      input.name = "pokeNo";
+	      input.value = article.getAttribute("data-poke-id");
+	      form.appendChild(input);
+	    });
+
+	    document.body.appendChild(form);
+	    form.submit();
+	  });
+	}
 
     // ── 초기화 ─────────────────────────────────────────
     syncSelectAllState();
