@@ -69,7 +69,7 @@
 		<section class="image-search-full-section">
           <button type="button" class="image-search-full-btn" id="imageSearchEntryBtn">
             <span class="material-icons-outlined">photo_camera</span>
-            <span class="image-search-full-text">찾으시는 상품이 없나요? 이미지로 검색해보세요!</span>
+            <span class="image-search-full-text">찾으시는 상품이 없나요?<br />이미지로 검색해보세요!</span>
             <span class="material-icons">chevron_right</span>
           </button>
         </section>

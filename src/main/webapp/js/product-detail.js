@@ -40,6 +40,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const sheetAddCartBtn = document.getElementById("sheetAddCartBtn");
   const sheetBuyNowBtn = document.getElementById("sheetBuyNowBtn");
+  const detailImageLightbox = document.getElementById("detailImageLightbox");
+  const detailImageLightboxScroll = document.getElementById("detailImageLightboxScroll");
+  const detailImageLightboxClose = document.getElementById("detailImageLightboxClose");
 
   let quantity = 1;
 
@@ -230,6 +233,57 @@ document.addEventListener("DOMContentLoaded", function () {
     if (shareModalDim) shareModalDim.classList.add("hidden");
     if (shareModal) shareModal.classList.add("hidden");
     document.body.style.overflow = "";
+  }
+
+  function openImageLightbox(startIndex) {
+    if (!detailImageLightbox || !detailImageLightboxScroll) return;
+    var heroImages = Array.prototype.slice.call(document.querySelectorAll(".detail-hero-slide img"));
+    if (!heroImages.length) return;
+    detailImageLightboxScroll.innerHTML = "";
+    heroImages.forEach(function (img, idx) {
+      var slide = document.createElement("div");
+      slide.className = "detail-image-lightbox-slide";
+      var clone = document.createElement("img");
+      clone.src = img.getAttribute("src");
+      clone.alt = img.getAttribute("alt") || ("확대 이미지 " + (idx + 1));
+      slide.appendChild(clone);
+      detailImageLightboxScroll.appendChild(slide);
+    });
+    document.body.style.overflow = "hidden";
+    detailImageLightbox.classList.remove("hidden");
+    requestAnimationFrame(function () {
+      var width = detailImageLightboxScroll.offsetWidth || window.innerWidth || 1;
+      var targetLeft = Math.max(0, startIndex) * width;
+      detailImageLightboxScroll.scrollTo({ left: targetLeft, behavior: "auto" });
+    });
+  }
+
+  function closeImageLightbox() {
+    if (!detailImageLightbox || !detailImageLightboxScroll) return;
+    detailImageLightbox.classList.add("hidden");
+    detailImageLightboxScroll.innerHTML = "";
+    document.body.style.overflow = "";
+  }
+
+  document.querySelectorAll(".detail-hero-slide img").forEach(function (img, idx) {
+    img.addEventListener("click", function () {
+      openImageLightbox(idx);
+    });
+  });
+
+  if (detailImageLightboxClose) {
+    detailImageLightboxClose.addEventListener("click", function (e) {
+      e.preventDefault();
+      closeImageLightbox();
+    });
+  }
+
+  if (detailImageLightbox) {
+    detailImageLightbox.addEventListener("click", function (e) {
+      if (e.target === detailImageLightbox) {
+        closeImageLightbox();
+      }
+    });
   }
 
   if (openCartSheetBtn) {
@@ -829,4 +883,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("pokeForm").submit();
       });
     }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && detailImageLightbox && !detailImageLightbox.classList.contains("hidden")) {
+      closeImageLightbox();
+    }
+  });
 });

@@ -119,6 +119,24 @@ public class ProductOptionDAO {
 		}
 		return flag;
 	}
+
+	public boolean deleteByProductNo(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = pool.getConnection();
+			String sql = "DELETE FROM ProductOption WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			pstmt.executeUpdate();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return false;
+	}
 	
 	// 특정 상품의 옵션 목록
 	public Vector<ProductOptionDTO> getByProductNo(int productNo) {

@@ -108,6 +108,24 @@ public class ProductSeasonDAO {
 		}
 		return flag;
 	}
+
+	public boolean deleteByProductNo(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = pool.getConnection();
+			String sql = "DELETE FROM productSeason WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			pstmt.executeUpdate();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return false;
+	}
 	
 	public Vector<String> getSeasonsByProductNo(int productNo) {
         Connection con = null;

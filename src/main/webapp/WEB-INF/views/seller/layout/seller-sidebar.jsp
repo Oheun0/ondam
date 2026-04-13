@@ -17,7 +17,7 @@
       <span class="seller-nav-label">대시보드</span>
     </a>
     
-    <a class="seller-nav-item <%= "product".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/product/list">
+    <a class="seller-nav-item <%= "product".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/seller/product">
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">inventory_2</span>
       <span class="seller-nav-label">상품 관리</span>
     </a>
