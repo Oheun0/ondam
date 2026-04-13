@@ -8,7 +8,7 @@ function showSuccessToast(message) {
   document.getElementById("success-toast-text").innerText = message;
   successToastActive = true;
 
-  el.style.setProperty("display", "flex", "important"); // !important ??????
+  el.style.setProperty("display", "flex", "important"); // force overrides display
   el.style.opacity = "1";
   el.style.visibility = "visible";
   el.setAttribute("aria-hidden", "false");
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function showOptionErrorToast() {
-    showTopToast("?? ??? ???? ?????", "error");
+    showTopToast("먼저 색상과 사이즈를 골라주세요", "error");
   }
 
   const detailCarouselSyncs = [];
@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
       slide.className = "detail-image-lightbox-slide";
       var clone = document.createElement("img");
       clone.src = img.getAttribute("src");
-      clone.alt = img.getAttribute("alt") || ("???? ????? " + (idx + 1));
+      clone.alt = img.getAttribute("alt") || ("확대 이미지 " + (idx + 1));
       slide.appendChild(clone);
       detailImageLightboxScroll.appendChild(slide);
     });
@@ -346,12 +346,12 @@ document.addEventListener("DOMContentLoaded", function () {
   if (sheetWishlistBtn) {
       var sheetWishIcon = sheetWishlistBtn.querySelector(".detail-wish-icon");
 
-      // ?? ????? ?? (JSP??? ???????
+      // apply initial wish state from JSP
       var initWished = sheetWishlistBtn.dataset.wished === "true";
       if (initWished) {
           sheetWishlistBtn.classList.add("detail-action-item--wish-on");
           sheetWishlistBtn.setAttribute("aria-pressed", "true");
-          sheetWishlistBtn.setAttribute("aria-label", "?????");
+          sheetWishlistBtn.setAttribute("aria-label", "찜 해제");
           if (sheetWishIcon) {
               sheetWishIcon.classList.replace("material-icons-outlined", "material-icons");
               sheetWishIcon.textContent = "favorite";
@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function () {
       sheetWishlistBtn.addEventListener("click", function () {
           var ctx = document.body.getAttribute("data-context-path") || "";
 
-          // ??????
+          // login check
           if (!document.body.dataset.loginUser) {
               window.location.href = ctx + "/login";
               return;
@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           var on = sheetWishlistBtn.classList.toggle("detail-action-item--wish-on");
           sheetWishlistBtn.setAttribute("aria-pressed", on ? "true" : "false");
-          sheetWishlistBtn.setAttribute("aria-label", on ? "? ??" : "???");
+          sheetWishlistBtn.setAttribute("aria-label", on ? "찜 해제" : "찜하기");
           if (sheetWishIcon) {
               if (on) {
                   sheetWishIcon.classList.replace("material-icons-outlined", "material-icons");
@@ -380,12 +380,12 @@ document.addEventListener("DOMContentLoaded", function () {
               }
           }
 
-          // ??? ??
+          // persist to server
           fetch(ctx + "/wish?action=toggle&productNo=" + PRODUCT_NO, { method: "POST" })
               .then(function (r) { return r.json(); })
               .then(function (data) {
                   if (data.wished !== on) {
-                      // ??? ???? ??????????
+                      // rollback if server result differs
                       sheetWishlistBtn.classList.toggle("detail-action-item--wish-on", data.wished);
                       sheetWishlistBtn.setAttribute("aria-pressed", data.wished ? "true" : "false");
                       if (sheetWishIcon) {
@@ -396,7 +396,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   }
               })
               .catch(function () {
-                  // ??? ???????
+                  // rollback on failure
                   sheetWishlistBtn.classList.toggle("detail-action-item--wish-on", !on);
               });
       });
@@ -411,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // ??? ??? ???????? ?????
+      // set selected option values into form
       document.getElementById("pokeProductNo").value       = document.getElementById("hiddenProductNo").value;
       document.getElementById("pokeProductOptionNo").value = document.getElementById("hiddenOptionNo").value;
       document.getElementById("pokeQuantity").value        = document.getElementById("hiddenQuantity").value;
@@ -500,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           var ctx = document.body.getAttribute("data-context-path") || "";
           var form = document.createElement("form");
-          form.method = "GET";  // ??/?? ??????GET??? ????? ???
+          form.method = "GET";  // payment page uses GET parameters
           form.action = ctx + "/payment";
 
           [
@@ -601,7 +601,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function shareViaKakao() {
     var kakaoKey = document.body.getAttribute("data-kakao-js-key") || "";
     if (!window.Kakao || !kakaoKey) {
-      showTopToast("?????? ???????? ?????", "error");
+      showTopToast("카카오 공유 설정이 아직 없어요.", "error");
       return;
     }
     try {
@@ -612,8 +612,8 @@ document.addEventListener("DOMContentLoaded", function () {
       window.Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
-          title: meta.title || "??? ???",
-          description: meta.description || "?????? ??????????????.",
+          title: meta.title || "온담 상품",
+          description: meta.description || "온담에서 상품을 확인해보세요.",
           imageUrl: meta.imageUrl || (window.location.origin + (document.body.getAttribute("data-context-path") || "") + "/images/logo.png"),
           link: {
             mobileWebUrl: meta.url,
@@ -622,7 +622,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         buttons: [
           {
-            title: "?? ????",
+            title: "상품 보러가기",
             link: {
               mobileWebUrl: meta.url,
               webUrl: meta.url
@@ -631,7 +631,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
       });
     } catch (e) {
-      showTopToast("????? ??????????? ?????.", "error");
+      showTopToast("카카오톡 공유를 실행하지 못했어요.", "error");
     }
   }
 
@@ -654,7 +654,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (shareCopyLinkBtn) {
     shareCopyLinkBtn.addEventListener("click", function () {
       copyShareUrlToClipboard();
-      showTopToast("???????????", "success");
+      showTopToast("링크를 복사했어요.", "success");
     });
   }
 
@@ -675,12 +675,12 @@ document.addEventListener("DOMContentLoaded", function () {
             url: meta.url,
           })
           .catch(function () {
-            /* ??????? ??*/
+            /* user canceled */
           });
         return;
       }
       copyShareUrlToClipboard();
-      showTopToast("????????? ??? ???????????", "success");
+      showTopToast("공유를 지원하지 않아 링크를 복사했어요.", "success");
     });
   }
 
@@ -753,7 +753,7 @@ document.addEventListener("DOMContentLoaded", function () {
           colorOptionPanel.classList.add("hidden");
           syncSheetOptionPanels();
 
-          // ???????? ?????
+          // render sizes dynamically
           var selectedColor = this.dataset.color;
           var sizes = COLOR_SIZE_MAP[selectedColor] || [];
           var sizeList = document.getElementById("sizeOptionList");
@@ -781,7 +781,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				      sizeOptionPanel.classList.add("hidden");
 				      syncSheetOptionPanels();
 
-				      // ???? ??? ??? ??? ????
+				      // sync stock and option number
 				      var optKey = selectedColor + "__" + sz;
 				      var stock = OPTION_STOCK_MAP[optKey] !== undefined ? OPTION_STOCK_MAP[optKey] : 9999;
 				      detailOptionSheet.setAttribute("data-option-stock", stock);
@@ -792,11 +792,11 @@ document.addEventListener("DOMContentLoaded", function () {
 					          hiddenOptionNoEl.value = optionNo;
 					      }
 
-				      // ??? 0??? ?? ?????
+				      // disable actions if out of stock
 				      if (stock === 0) {
 				          if (sheetBuyNowBtn) {
 				              sheetBuyNowBtn.disabled = true;
-				              sheetBuyNowBtn.textContent = "???";
+				              sheetBuyNowBtn.textContent = "품절";
 				          }
 				          if (sheetAddCartBtn) {
 				              sheetAddCartBtn.disabled = true;
@@ -804,14 +804,14 @@ document.addEventListener("DOMContentLoaded", function () {
 				      } else {
 				          if (sheetBuyNowBtn) {
 				              sheetBuyNowBtn.disabled = false;
-				              sheetBuyNowBtn.textContent = "?????";
+				              sheetBuyNowBtn.textContent = "구매하기";
 				          }
 				          if (sheetAddCartBtn) {
 				              sheetAddCartBtn.disabled = false;
 				          }
 				      }
 
-				      // ???????? ?? ????? ?????
+				      // clamp quantity to available stock
 				      if (quantity > stock) {
 				          quantity = Math.max(1, stock);
 				          syncQtyStepper();
@@ -820,8 +820,8 @@ document.addEventListener("DOMContentLoaded", function () {
               });
           }
 
-          // ??? ??? ?????????
-          selectedSizeText.textContent = "???????????";
+          // reset size when color changes
+          selectedSizeText.textContent = "눌러서 선택하기";
           selectedSizeText.classList.add("detail-selected-value--placeholder");
       });
   });
@@ -829,7 +829,7 @@ document.addEventListener("DOMContentLoaded", function () {
   syncSheetOptionPanels();
 
   function formatWon(amount) {
-    return amount.toLocaleString("ko-KR") + "?";
+    return amount.toLocaleString("ko-KR") + "원";
   }
 
   function syncSheetOrderSummary() {
@@ -841,7 +841,7 @@ document.addEventListener("DOMContentLoaded", function () {
         unit = raw;
       }
     }
-    sheetOrderCount.textContent = "?? " + quantity + "?";
+    sheetOrderCount.textContent = "총 " + quantity + "개";
     sheetOrderTotal.textContent = formatWon(unit * quantity);
   }
 
@@ -957,7 +957,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var on = !wishBtn.classList.contains("is-active");
       wishBtn.classList.toggle("is-active", on);
       wishBtn.setAttribute("aria-pressed", on ? "true" : "false");
-      wishBtn.setAttribute("aria-label", on ? "? ??" : "???");
+      wishBtn.setAttribute("aria-label", on ? "찜 해제" : "찜하기");
       var icon = wishBtn.querySelector("span.material-icons-outlined, span.material-icons");
       if (icon) {
         if (on) {
@@ -976,7 +976,7 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmPokeBtn.addEventListener("click", function () {
       var selected = document.querySelector(".poke-person-btn.active");
       if (!selected) {
-        showTopToast("???? ?? ??? ??????.", "error");
+        showTopToast("조르기를 보낼 사람을 선택해주세요.", "error");
         return;
       }
 
@@ -1005,10 +1005,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var input = document.getElementById("pokeMsgInput");
         if (input) input.value = "";
         clearPokePersonSelection();
-        showTopToast("??? ??? ????", "success");
+        showTopToast("조르기 요청을 보냈어요", "success");
       })
       .catch(function () {
-        showTopToast("??? ??? ?????", "error");
+        showTopToast("조르기 요청이 실패됐어요", "error");
       })
       .finally(function () {
         confirmPokeBtn.disabled = false;
