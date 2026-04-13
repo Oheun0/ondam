@@ -8,8 +8,6 @@ import com.ondam.seller.dto.SellerSettlementDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,16 +30,17 @@ public class SellerSettlementController implements Controller {
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
         String settleStatus = request.getParameter("settleStatus");
+        String payMethod = request.getParameter("payMethod");
         
         String pageParam = request.getParameter("page");
         int currentPage = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
         int pageSize = 10;
 
-        // 3. DAO 호출 및 데이터 가져오기
+     // 3. DAO 호출 및 데이터 가져오기
         SellerSettlementDAO settlementDAO = new SellerSettlementDAO();
-        
-        int totalCount = settlementDAO.getTotalCount(vendorNo, startDate, endDate, settleStatus);
-        Vector<SellerSettlementDTO> settlementList = settlementDAO.getSettlementList(vendorNo, startDate, endDate, settleStatus, currentPage, pageSize);
+
+        int totalCount = settlementDAO.getTotalCount(vendorNo, startDate, endDate, settleStatus, payMethod);
+        Vector<SellerSettlementDTO> settlementList = settlementDAO.getSettlementList(vendorNo, startDate, endDate, settleStatus, payMethod, currentPage, pageSize);
 
         // 4. 통계 및 요약 수치 계산
         long totalGross = 0, totalPending = 0, totalDone = 0, totalRefund = 0, totalFee = 0;
@@ -97,12 +96,10 @@ public class SellerSettlementController implements Controller {
         request.setAttribute("settleStatus", settleStatus);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPage", (int)Math.ceil((double)totalCount / pageSize));
+        request.setAttribute("payMethod", payMethod);
 
-        // 최근 환불 리스트 (임시 더미)
-        List<Map<String, String>> recentRefunds = new ArrayList<>();
-        Map<String, String> ref1 = new HashMap<>();
-        ref1.put("orderNo", "20260408-0004"); ref1.put("type", "환불"); ref1.put("amount", "39000"); ref1.put("date", "2026.04.08");
-        recentRefunds.add(ref1);
+        // 최근 환불 리스트
+        List<Map<String, String>> recentRefunds = settlementDAO.getRecentRefunds(vendorNo);
         request.setAttribute("recentRefunds", recentRefunds);
 
         return "seller/settlement/list";

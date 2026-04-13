@@ -78,14 +78,14 @@
 			</div>
 
             <div class="seller-settlement-field">
-              <label class="seller-settlement-label" for="payMethod">결제수단</label>
-              <select id="payMethod" class="seller-settlement-select">
-                <option value="all">전체 결제수단</option>
-                <option value="card">카드 결제</option>
-                <option value="bank">계좌이체</option>
-                <option value="wallet">함께지갑 결제</option>
-              </select>
-            </div>
+			  <label class="seller-settlement-label" for="payMethod">결제수단</label>
+			  <select id="payMethod" name="payMethod" class="seller-settlement-select">
+			    <option value="all" ${payMethod == 'all' || empty payMethod ? 'selected' : ''}>전체 결제수단</option>
+			    <option value="card" ${payMethod == 'card' ? 'selected' : ''}>카드 결제</option>
+			    <option value="bank" ${payMethod == 'bank' ? 'selected' : ''}>계좌이체</option>
+			    <option value="wallet" ${payMethod == 'wallet' ? 'selected' : ''}>함께지갑 결제</option>
+			  </select>
+			</div>
 
             <div class="seller-settlement-field seller-settlement-field--btn">
               <button type="button" class="seller-settlement-btn seller-settlement-btn--primary" id="settlementSearchBtn">
@@ -248,10 +248,25 @@
 			      <td><fmt:formatNumber value="${item.totalAmount}" pattern="#,###"/>원</td>
 			      <td class="neg">-<fmt:formatNumber value="${item.commissionFee + item.refundAmount}" pattern="#,###"/>원</td>
 			      <td><strong><fmt:formatNumber value="${item.actualAmount}" pattern="#,###"/>원</strong></td>
-			      <td class="mix">카드/지갑 등</td> 
-			      
-			      <td>
-			        <c:choose>
+					<td class="mix">
+					  <c:choose>
+					    <c:when test="${item.cardAmount >= item.bankAmount && item.cardAmount >= item.walletAmount && item.cardAmount > 0}">
+					      카드 결제
+					    </c:when>
+					    <c:when test="${item.walletAmount >= item.cardAmount && item.walletAmount >= item.bankAmount && item.walletAmount > 0}">
+					      함께지갑
+					    </c:when>
+					    <c:when test="${item.bankAmount >= item.cardAmount && item.bankAmount >= item.walletAmount && item.bankAmount > 0}">
+					      계좌이체
+					    </c:when>
+					    <c:otherwise>
+					      -
+					    </c:otherwise>
+					  </c:choose>
+					</td> 
+					
+					<td>
+					  <c:choose>
 			          <c:when test="${item.settleState == 1}">
 			            <span class="seller-settlement-badge badge--done">정산 완료</span>
 			          </c:when>

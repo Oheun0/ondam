@@ -32,6 +32,7 @@ import com.ondam.seller.controller.SellerResetPwFormController;
 import com.ondam.seller.controller.SellerResetSendCodeController;
 import com.ondam.seller.controller.SellerSettingsController;
 import com.ondam.seller.controller.SellerSettlementController;
+import com.ondam.seller.controller.SellerSettlementDownloadController;
 import com.ondam.seller.controller.SellerSignupController;
 import com.ondam.shipment.controller.SellerShipmentController;
 import com.ondam.shorts.controller.ShortsController;
@@ -157,6 +158,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/dashboard", new SellerDashboardController());
         handlerMapping.put("/seller/order", new SellerOrderController());
         handlerMapping.put("/seller/settlement/list", new SellerSettlementController());
+        handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
     }
     protected void service(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
