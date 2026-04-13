@@ -426,6 +426,16 @@
   border: 1px solid rgba(15,23,42,0.08);
   background: #fff;
   box-shadow: 0 4px 14px rgba(17,24,39,0.06);
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.seller-order-detail-item:hover{
+  background: #f8fafc;
+  border-color: rgba(76,101,175,0.22);
+  box-shadow: 0 6px 16px rgba(17,24,39,0.09);
+}
+.seller-order-detail-item:active{
+  background: #f1f5f9;
 }
 .seller-order-detail-item-name{
   font-weight:1000;

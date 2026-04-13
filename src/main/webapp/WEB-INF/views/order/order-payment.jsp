@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <main class="order-payment-main" aria-label="주문 및 결제">
+      <main class="order-payment-main ${param.isGift eq 'true' ? 'order-payment-main--gift' : ''}" aria-label="주문 및 결제">
         <!-- 주문 상품 요약 -->
         <section class="op-card op-order-summary" aria-label="주문 상품 요약">
 		  <div class="op-order-summary__top">

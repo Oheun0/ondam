@@ -65,6 +65,11 @@
   margin-top: 12px;
 }
 
+/* 선물 결제는 배송지 카드가 빠지므로, 요약 카드 하단 간격을 별도로 보정 */
+.order-payment-main--gift .op-order-summary {
+  margin-bottom: 12px;
+}
+
 .op-card-title {
   margin: 0;
   font-size: 18px;

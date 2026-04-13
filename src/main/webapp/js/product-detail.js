@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const openShareFromSheetBtn = document.getElementById("openShareFromSheetBtn");
   const shareModalDim = document.getElementById("shareModalDim");
   const shareModal = document.getElementById("shareModal");
+  const shareKakaoBtn = document.getElementById("shareKakaoBtn");
   const shareCopyLinkBtn = document.getElementById("shareCopyLinkBtn");
   const shareMoreBtn = document.getElementById("shareMoreBtn");
 
@@ -50,21 +51,19 @@ document.addEventListener("DOMContentLoaded", function () {
   var optionToastDismissTimer = null;
   var optionToastAnimFallbackTimer = null;
 
-  function isOptionSelected() {
-    if (!selectedColorText || !selectedSizeText) return false;
-    return (
-      !selectedColorText.classList.contains("detail-selected-value--placeholder") &&
-      !selectedSizeText.classList.contains("detail-selected-value--placeholder")
-    );
-  }
-
-  function showOptionErrorToast() {
+  function showTopToast(message, type) {
     var el = document.getElementById("option-toast");
-    if (!el || optionToastActive) return;
+    if (!el) return;
+    var textEl = el.querySelector(".option-toast__text");
+    var iconEl = el.querySelector(".option-toast__icon");
 
     optionToastActive = true;
     clearTimeout(optionToastDismissTimer);
     clearTimeout(optionToastAnimFallbackTimer);
+    el.classList.remove("option-toast--success", "option-toast--error");
+    el.classList.add(type === "success" ? "option-toast--success" : "option-toast--error");
+    if (textEl) textEl.textContent = message || "";
+    if (iconEl) iconEl.textContent = type === "success" ? "check_circle" : "error";
 
     el.classList.remove("hidden", "option-toast--hiding", "option-toast--show");
     el.setAttribute("aria-hidden", "false");
@@ -99,7 +98,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
       el.addEventListener("transitionend", onTransitionEnd);
       optionToastAnimFallbackTimer = setTimeout(cleanup, 400);
-    }, 2000);
+    }, 1800);
+  }
+
+  function isOptionSelected() {
+    if (!selectedColorText || !selectedSizeText) return false;
+    return (
+      !selectedColorText.classList.contains("detail-selected-value--placeholder") &&
+      !selectedSizeText.classList.contains("detail-selected-value--placeholder")
+    );
+  }
+
+  function showOptionErrorToast() {
+    showTopToast("먼저 색상과 사이즈를 골라주세요", "error");
   }
 
   const detailCarouselSyncs = [];
@@ -544,6 +555,60 @@ document.addEventListener("DOMContentLoaded", function () {
     fallbackCopyText(url);
   }
 
+  function getShareMeta() {
+    var titleEl = document.querySelector(".detail-product-name");
+    var brandEl = document.querySelector(".detail-brand-link");
+    var priceEl = document.querySelector(".detail-sale-price");
+    var firstImg = document.querySelector(".detail-hero-slide img");
+    var imageSrc = firstImg ? firstImg.getAttribute("src") : "";
+    if (imageSrc && imageSrc.indexOf("http") !== 0) {
+      imageSrc = window.location.origin + imageSrc;
+    }
+    return {
+      title: titleEl ? titleEl.textContent.trim() : document.title,
+      description: ((brandEl ? brandEl.textContent.trim() : "") + " " + (priceEl ? priceEl.textContent.trim() : "")).trim(),
+      imageUrl: imageSrc,
+      url: window.location.href
+    };
+  }
+
+  function shareViaKakao() {
+    var kakaoKey = document.body.getAttribute("data-kakao-js-key") || "";
+    if (!window.Kakao || !kakaoKey) {
+      showTopToast("카카오 공유 설정이 아직 없어요.", "error");
+      return;
+    }
+    try {
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init(kakaoKey);
+      }
+      var meta = getShareMeta();
+      window.Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: meta.title || "온담 상품",
+          description: meta.description || "온담에서 상품을 확인해보세요.",
+          imageUrl: meta.imageUrl || (window.location.origin + (document.body.getAttribute("data-context-path") || "") + "/images/logo.png"),
+          link: {
+            mobileWebUrl: meta.url,
+            webUrl: meta.url
+          }
+        },
+        buttons: [
+          {
+            title: "상품 보러가기",
+            link: {
+              mobileWebUrl: meta.url,
+              webUrl: meta.url
+            }
+          }
+        ]
+      });
+    } catch (e) {
+      showTopToast("카카오톡 공유를 실행하지 못했어요.", "error");
+    }
+  }
+
   function fallbackCopyText(text) {
     var ta = document.createElement("textarea");
     ta.value = text;
@@ -563,21 +628,33 @@ document.addEventListener("DOMContentLoaded", function () {
   if (shareCopyLinkBtn) {
     shareCopyLinkBtn.addEventListener("click", function () {
       copyShareUrlToClipboard();
+      showTopToast("링크를 복사했어요.", "success");
+    });
+  }
+
+  if (shareKakaoBtn) {
+    shareKakaoBtn.addEventListener("click", function () {
+      shareViaKakao();
     });
   }
 
   if (shareMoreBtn) {
     shareMoreBtn.addEventListener("click", function () {
+      var meta = getShareMeta();
       if (navigator.share) {
         navigator
           .share({
-            title: document.title,
-            url: window.location.href,
+            title: meta.title || document.title,
+            text: meta.description || "",
+            url: meta.url,
           })
           .catch(function () {
             /* 사용자 취소 등 */
           });
+        return;
       }
+      copyShareUrlToClipboard();
+      showTopToast("공유를 지원하지 않아 링크를 복사했어요.", "success");
     });
   }
 
@@ -873,14 +950,42 @@ document.addEventListener("DOMContentLoaded", function () {
       confirmPokeBtn.addEventListener("click", function () {
         var selected = document.querySelector(".poke-person-btn.active");
         if (!selected) {
-          alert("조르기를 보낼 사람을 선택해주세요.");
+          showTopToast("조르기를 보낼 사람을 선택해주세요.", "error");
           return;
         }
 
         document.getElementById("pokeReceiverNo").value = selected.dataset.userNo;
         document.getElementById("pokeMsgHidden").value  = document.getElementById("pokeMsgInput").value;
+        var pokeForm = document.getElementById("pokeForm");
+        if (!pokeForm) return;
+        var formData = new FormData(pokeForm);
+        var body = new URLSearchParams();
+        formData.forEach(function (value, key) {
+          body.append(key, value == null ? "" : String(value));
+        });
 
-        document.getElementById("pokeForm").submit();
+        confirmPokeBtn.disabled = true;
+        fetch(pokeForm.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+          body: body.toString()
+        })
+          .then(function (res) {
+            if (!res.ok) {
+              throw new Error("poke request failed");
+            }
+            closePokeModal();
+            var input = document.getElementById("pokeMsgInput");
+            if (input) input.value = "";
+            clearPokePersonSelection();
+            showTopToast("조르기 요청을 보냈어요", "success");
+          })
+          .catch(function () {
+            showTopToast("조르기 요청이 실패됐어요", "error");
+          })
+          .finally(function () {
+            confirmPokeBtn.disabled = false;
+          });
       });
     }
 
