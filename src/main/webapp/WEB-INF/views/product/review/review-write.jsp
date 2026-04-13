@@ -120,7 +120,7 @@
           </div>
         </section>
 
-        <!-- 5. 사진 (추가 가능한 사진 최대 개수 3~5개??)-->
+        <!-- 5. 사진 (추가 가능한 사진 최대 개수 3~5개?)-->
         <section class="review-write-card review-write-upload-card" aria-label="사진 첨부">
   <h2 class="review-write-upload-title">
     <span class="material-icons-outlined review-write-upload-title__icon" aria-hidden="true">photo_camera</span>
@@ -139,7 +139,7 @@
     <c:if test="${not empty imageList}">
       <c:forEach var="img" items="${imageList}">
         <div class="review-write-preview-item existing-image" data-img-no="${img.reviewImgNo}">
-          <img src="${pageContext.request.contextPath}/upload/review/${img.reviewImg}" alt="기존 후기 사진">
+          <img src="${pageContext.request.contextPath}/uploads/reviews/${img.reviewImg}" alt="기존 후기 사진">
           <button type="button" class="review-write-preview-remove" aria-label="사진 삭제">
             <span class="material-icons">close</span>
           </button>
