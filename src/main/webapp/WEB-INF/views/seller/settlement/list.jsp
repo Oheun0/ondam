@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
   request.setAttribute("sellerActiveMenu", "settlement");
   request.setAttribute("sellerPageTitle", "정산 · 매출");
@@ -55,24 +57,25 @@
 
             <div class="seller-settlement-field">
               <label class="seller-settlement-label" for="startDate">시작일</label>
-              <input id="startDate" class="seller-settlement-input" type="date" />
-            </div>
+              <input id="startDate" name="startDate" class="seller-settlement-input" type="date" value="${startDate}" />
+			</div>
 
             <div class="seller-settlement-field">
               <label class="seller-settlement-label" for="endDate">종료일</label>
-              <input id="endDate" class="seller-settlement-input" type="date" />
-            </div>
+              <input id="endDate" name="endDate" class="seller-settlement-input" type="date" value="${endDate}" />
+			</div>
 
             <div class="seller-settlement-field">
-              <label class="seller-settlement-label" for="settleStatus">정산 상태</label>
-              <select id="settleStatus" class="seller-settlement-select">
-                <option value="all">전체 상태</option>
-                <option value="pending">정산 예정</option>
-                <option value="done">정산 완료</option>
-                <option value="refund">환불 포함</option>
-                <option value="cancel">취소 포함</option>
-              </select>
-            </div>
+			  <label class="seller-settlement-label" for="settleStatus">정산 상태</label>
+			  <select id="settleStatus" name="settleStatus" class="seller-settlement-select">
+			    <option value="all" ${settleStatus == 'all' ? 'selected' : ''}>전체 상태</option>
+			    <option value="pending" ${settleStatus == 'pending' ? 'selected' : ''}>정산 예정</option>
+			    <option value="done" ${settleStatus == 'done' ? 'selected' : ''}>정산 완료</option>
+			
+			    <option value="refund" ${settleStatus == 'refund' ? 'selected' : ''}>환불 포함</option>
+			    <option value="cancel" ${settleStatus == 'cancel' ? 'selected' : ''}>취소 포함</option>
+			  </select>
+			</div>
 
             <div class="seller-settlement-field">
               <label class="seller-settlement-label" for="payMethod">결제수단</label>
@@ -98,25 +101,27 @@
           <div class="seller-settlement-summary-grid">
             <div class="seller-settlement-kpi">
               <div class="label">총 매출</div>
-              <div class="value">1,820,000<span class="unit">원</span></div>
+              <div class="value"><fmt:formatNumber value="${totalGross}" pattern="#,###"/><span class="unit">원</span></div>
             </div>
             <div class="seller-settlement-kpi">
               <div class="label">정산 예정</div>
-              <div class="value">420,000<span class="unit">원</span></div>
+              <div class="value"><fmt:formatNumber value="${totalPending}" pattern="#,###"/><span class="unit">원</span></div>
             </div>
             <div class="seller-settlement-kpi">
               <div class="label">정산 완료</div>
-              <div class="value">1,180,000<span class="unit">원</span></div>
+              <div class="value"><fmt:formatNumber value="${totalDone}" pattern="#,###"/><span class="unit">원</span></div>
             </div>
-            <div class="seller-settlement-kpi kpi--danger">
-              <div class="label">환불/취소</div>
-              <div class="value">220,000<span class="unit">원</span></div>
-            </div>
+		            <div class="seller-settlement-kpi kpi--danger">
+		      <div class="label">수수료 및 차감액</div>
+		      <div class="value">
+			        <fmt:formatNumber value="${totalRefund + totalFee}" pattern="#,###"/>
+			        <span class="unit">원</span>
+			      </div>
+		      </div>
           </div>
         </section>
 
         <div class="seller-settlement-grid">
-          <!-- 결제수단 비중 -->
           <section class="seller-card seller-settlement-methods" aria-label="결제수단 비중">
             <header class="seller-settlement-section-head">
               <div>
@@ -129,17 +134,17 @@
               <div class="seller-settlement-method">
                 <div class="top">
                   <div class="name">카드 결제</div>
-                  <div class="amount">980,000원 <span class="pct">(54%)</span></div>
+                  <div class="amount"><fmt:formatNumber value="${payStats.cardAmt}" pattern="#,###"/>원 <span class="pct">(${payStats.cardPct}%)</span></div>
                 </div>
-                <div class="bar" aria-hidden="true"><span class="fill" style="width:54%"></span></div>
+                <div class="bar" aria-hidden="true"><span class="fill" style="width:${payStats.cardPct}%"></span></div>
               </div>
 
               <div class="seller-settlement-method">
                 <div class="top">
                   <div class="name">계좌이체</div>
-                  <div class="amount">240,000원 <span class="pct">(13%)</span></div>
+                  <div class="amount"><fmt:formatNumber value="${payStats.bankAmt}" pattern="#,###"/>원 <span class="pct">(${payStats.bankPct}%)</span></div>
                 </div>
-                <div class="bar" aria-hidden="true"><span class="fill fill--bank" style="width:13%"></span></div>
+                <div class="bar" aria-hidden="true"><span class="fill fill--bank" style="width:${payStats.bankPct}%"></span></div>
               </div>
 
               <div class="seller-settlement-method method--wallet">
@@ -147,15 +152,14 @@
                   <div class="name">
                     함께지갑 결제 <span class="tag">온담 포인트</span>
                   </div>
-                  <div class="amount">600,000원 <span class="pct">(33%)</span></div>
+                  <div class="amount"><fmt:formatNumber value="${payStats.walletAmt}" pattern="#,###"/>원 <span class="pct">(${payStats.walletPct}%)</span></div>
                 </div>
-                <div class="bar" aria-hidden="true"><span class="fill fill--wallet" style="width:33%"></span></div>
+                <div class="bar" aria-hidden="true"><span class="fill fill--wallet" style="width:${payStats.walletPct}%"></span></div>
                 <p class="hint">함께지갑 결제 비중은 온담의 핵심 지표예요.</p>
               </div>
             </div>
           </section>
 
-          <!-- 환불/취소 -->
           <section class="seller-card seller-settlement-refund" aria-label="환불 및 취소 현황">
             <header class="seller-settlement-section-head">
               <div>
@@ -164,22 +168,7 @@
               </div>
             </header>
 
-            <div class="seller-settlement-refund-kpis">
-              <div class="mini">
-                <div class="k">환불</div>
-                <div class="v">3건</div>
-              </div>
-              <div class="mini">
-                <div class="k">취소</div>
-                <div class="v">2건</div>
-              </div>
-              <div class="mini mini--sum">
-                <div class="k">합계</div>
-                <div class="v">220,000원</div>
-              </div>
-            </div>
-
-            <div class="seller-settlement-mini-table-wrap">
+            <div class="seller-settlement-mini-table-wrap" style="margin-top: 16px;">
               <table class="seller-settlement-mini-table">
                 <thead>
                 <tr>
@@ -191,27 +180,24 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>20260408-0004</td>
-                  <td><span class="seller-settlement-pill pill--refund">환불</span></td>
-                  <td>39,000원</td>
-                  <td>완료</td>
-                  <td>2026.04.08</td>
-                </tr>
-                <tr>
-                  <td>20260407-0011</td>
-                  <td><span class="seller-settlement-pill pill--cancel">취소</span></td>
-                  <td>29,000원</td>
-                  <td>완료</td>
-                  <td>2026.04.07</td>
-                </tr>
-                <tr>
-                  <td>20260406-0021</td>
-                  <td><span class="seller-settlement-pill pill--refund">환불</span></td>
-                  <td>152,000원</td>
-                  <td>완료</td>
-                  <td>2026.04.06</td>
-                </tr>
+                <c:forEach var="ref" items="${recentRefunds}">
+                  <tr>
+                    <td>${ref.orderNo}</td>
+                    <td>
+                      <c:choose>
+                        <c:when test="${ref.type == '환불'}"><span class="seller-settlement-pill pill--refund">환불</span></c:when>
+                        <c:otherwise><span class="seller-settlement-pill pill--cancel">취소</span></c:otherwise>
+                      </c:choose>
+                    </td>
+                    <td><fmt:formatNumber value="${ref.amount}" pattern="#,###"/>원</td>
+                    <td>완료</td>
+                    <td>${ref.date}</td>
+                  </tr>
+                </c:forEach>
+                
+                <c:if test="${empty recentRefunds}">
+                  <tr><td colspan="5" style="text-align:center; padding:20px;">최근 내역이 없습니다.</td></tr>
+                </c:if>
                 </tbody>
               </table>
             </div>
@@ -243,100 +229,55 @@
               </tr>
               </thead>
               <tbody>
-              <tr data-settle-id="ST202604-01"
-                  data-period="2026.04.01 ~ 2026.04.07"
-                  data-gross="820,000"
-                  data-refund="-39,000"
-                  data-target="781,000"
-                  data-card="451,000"
-                  data-bank="0"
-                  data-wallet="369,000"
-                  data-status="done"
-                  data-date="2026.04.08">
-                <td class="mono">ST202604-01</td>
-                <td>2026.04.01 ~ 2026.04.07</td>
-                <td>820,000원</td>
-                <td class="neg">-39,000원</td>
-                <td><strong>781,000원</strong></td>
-                <td class="mix">카드 55% / 함께지갑 45%</td>
-                <td><span class="seller-settlement-badge badge--done">정산 완료</span></td>
-                <td>2026.04.08</td>
-                <td><button type="button" class="seller-settlement-mini-btn" data-action="view">보기</button></td>
-              </tr>
-
-              <tr data-settle-id="ST202604-02"
-                  data-period="2026.04.08 ~ 2026.04.14"
-                  data-gross="1,000,000"
-                  data-refund="-181,000"
-                  data-target="819,000"
-                  data-card="530,000"
-                  data-bank="140,000"
-                  data-wallet="330,000"
-                  data-status="pending"
-                  data-date="-">
-                <td class="mono">ST202604-02</td>
-                <td>2026.04.08 ~ 2026.04.14</td>
-                <td>1,000,000원</td>
-                <td class="neg">-181,000원</td>
-                <td><strong>819,000원</strong></td>
-                <td class="mix">카드 53% / 계좌 14% / 함께지갑 33%</td>
-                <td><span class="seller-settlement-badge badge--pending">정산 예정</span></td>
-                <td>-</td>
-                <td><button type="button" class="seller-settlement-mini-btn" data-action="view">보기</button></td>
-              </tr>
-
-              <tr data-settle-id="ST202603-04"
-                  data-period="2026.03.22 ~ 2026.03.31"
-                  data-gross="640,000"
-                  data-refund="-0"
-                  data-target="640,000"
-                  data-card="420,000"
-                  data-bank="50,000"
-                  data-wallet="170,000"
-                  data-status="done"
-                  data-date="2026.04.01">
-                <td class="mono">ST202603-04</td>
-                <td>2026.03.22 ~ 2026.03.31</td>
-                <td>640,000원</td>
-                <td>0원</td>
-                <td><strong>640,000원</strong></td>
-                <td class="mix">카드 66% / 계좌 8% / 함께지갑 26%</td>
-                <td><span class="seller-settlement-badge badge--done">정산 완료</span></td>
-                <td>2026.04.01</td>
-                <td><button type="button" class="seller-settlement-mini-btn" data-action="view">보기</button></td>
-              </tr>
-
-              <tr data-settle-id="ST202603-03"
-                  data-period="2026.03.15 ~ 2026.03.21"
-                  data-gross="390,000"
-                  data-refund="-58,000"
-                  data-target="332,000"
-                  data-card="210,000"
-                  data-bank="0"
-                  data-wallet="180,000"
-                  data-status="refund"
-                  data-date="2026.03.22">
-                <td class="mono">ST202603-03</td>
-                <td>2026.03.15 ~ 2026.03.21</td>
-                <td>390,000원</td>
-                <td class="neg">-58,000원</td>
-                <td><strong>332,000원</strong></td>
-                <td class="mix">카드 54% / 함께지갑 46%</td>
-                <td><span class="seller-settlement-badge badge--warn">환불 포함</span></td>
-                <td>2026.03.22</td>
-                <td><button type="button" class="seller-settlement-mini-btn" data-action="view">보기</button></td>
-              </tr>
+              <c:forEach var="item" items="${settlementList}">
+			    <tr data-settle-id="ST${item.settlementNo}"
+			        data-period="${item.createdAt} 기준"
+			        data-gross="${item.totalAmount}"
+			        <%-- 💡 수수료 + 환불액을 더해서 '차감액'으로 모달에 전달 --%>
+			        data-refund="${item.commissionFee + item.refundAmount}"
+			        data-target="${item.actualAmount}"
+			        <%-- 💡 결제수단별 금액 (DTO에 해당 필드가 있다면 연결, 없다면 우선 0) --%>
+			        data-card="${item.cardAmount}" 
+			        data-bank="${item.bankAmount}"
+			        data-wallet="${item.walletAmount}"
+			        data-status="${item.settleState == 1 ? 'done' : 'pending'}"
+			        data-date="${item.settleDate}">
+			        
+			      <td class="mono">ST${item.settlementNo}</td>
+			      <td>${item.createdAt}</td>
+			      <td><fmt:formatNumber value="${item.totalAmount}" pattern="#,###"/>원</td>
+			      <td class="neg">-<fmt:formatNumber value="${item.commissionFee + item.refundAmount}" pattern="#,###"/>원</td>
+			      <td><strong><fmt:formatNumber value="${item.actualAmount}" pattern="#,###"/>원</strong></td>
+			      <td class="mix">카드/지갑 등</td> 
+			      
+			      <td>
+			        <c:choose>
+			          <c:when test="${item.settleState == 1}">
+			            <span class="seller-settlement-badge badge--done">정산 완료</span>
+			          </c:when>
+			          <c:otherwise>
+			            <span class="seller-settlement-badge badge--pending">정산 예정</span>
+			          </c:otherwise>
+			        </c:choose>
+			      </td>
+			      <td>${item.settleDate}</td>
+			      <td><button type="button" class="seller-settlement-mini-btn" data-action="view">보기</button></td>
+			    </tr>
+			</c:forEach>
+              <c:if test="${empty settlementList}">
+                <tr><td colspan="9" style="text-align:center; padding: 40px 0;">정산 내역이 없습니다.</td></tr>
+              </c:if>
               </tbody>
             </table>
           </div>
 
-          <div class="seller-settlement-pagination" aria-label="페이지네이션(더미)">
-            <button type="button" class="seller-settlement-page-btn" data-page="prev">이전</button>
-            <button type="button" class="seller-settlement-page-btn active" data-page="1">1</button>
-            <button type="button" class="seller-settlement-page-btn" data-page="2">2</button>
-            <button type="button" class="seller-settlement-page-btn" data-page="3">3</button>
-            <button type="button" class="seller-settlement-page-btn" data-page="next">다음</button>
-          </div>
+          <div class="seller-settlement-pagination">
+			  <c:forEach var="i" begin="1" end="${totalPage}">
+			    <button type="button" 
+			            class="seller-settlement-page-btn ${i == currentPage ? 'active' : ''}" 
+			            data-page="${i}">${i}</button>
+			  </c:forEach>
+			</div>
         </section>
 
         <section class="seller-card seller-settlement-empty" aria-label="빈 상태(더미)" hidden>
@@ -379,9 +320,9 @@
                 <div class="v" id="dGross">-</div>
               </div>
               <div class="box">
-                <div class="k">환불/취소</div>
-                <div class="v neg" id="dRefund">-</div>
-              </div>
+               <div class="k">수수료 및 차감액</div> 
+			    <div class="v neg" id="dRefund">-</div>
+			  </div>
               <div class="box box--strong">
                 <div class="k">최종 정산 금액</div>
                 <div class="v" id="dTarget">-</div>
@@ -406,8 +347,8 @@
                 <span class="label">함께지갑</span>
                 <span class="value" id="dWallet">-</span>
               </div>
-              <p class="hint">상세 모달은 더미 UI이며 실제 정산 계산은 연동되지 않았어요.</p>
-            </section>
+              <p class="hint">위 금액은 결제 시점의 수단별 합계입니다.</p>
+			</section>
           </div>
         </div>
       </div>
