@@ -9,4 +9,3 @@
   request.setAttribute("sellerExtraJs", "/js/seller/dashboard.js");
 %>
 <jsp:include page="/WEB-INF/views/seller/layout/seller-main-layout.jsp" />
-

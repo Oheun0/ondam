@@ -28,7 +28,7 @@
     }
   %>
 </head>
-<body class="seller-app">
+<body class="seller-app" data-context-path="${pageContext.request.contextPath}">
   <div class="seller-layout">
     <jsp:include page="/WEB-INF/views/seller/layout/seller-sidebar.jsp" />
 

@@ -76,7 +76,7 @@ public class SellerOrderDAO {
 
         try {
             con = pool.getConnection();
-            String sql = "SELECT o.orderNo, o.orderDate, o.paymentMethod, o.orderType, o.deliveryContent, o.deliveryState, "
+            String sql = "SELECT o.orderNo, o.receiverName, o.orderDate, o.paymentMethod, o.orderType, o.deliveryContent, o.deliveryState, "
                     + "op.snapProductName, op.orderQuantity, op.snapProductPrice, "
                     + "(SELECT imgFile FROM productimage pi WHERE pi.productNo = op.productNo ORDER BY pi.imgOrder ASC LIMIT 1) AS productImage "
                     + "FROM orders o "
@@ -108,6 +108,7 @@ public class SellerOrderDAO {
                 if (dto == null) {
                     dto = new SellerOrderListDTO();
                     dto.setOrderNo(orderNo);
+                    dto.setReceiverName(rs.getString("receiverName")); 
                     dto.setOrderDate(rs.getString("orderDate").substring(0, 10));
                     dto.setPaymentMethod(rs.getInt("paymentMethod"));
                     dto.setOrderType(rs.getInt("orderType"));
@@ -140,7 +141,6 @@ public class SellerOrderDAO {
             }
             resultList.add(dto);
         }
-
         return resultList;
     }
     
