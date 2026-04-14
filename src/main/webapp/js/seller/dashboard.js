@@ -4,23 +4,27 @@ document.addEventListener("DOMContentLoaded", function () {
   var urlMap = {
     'orders-today': ctx + '/seller/order?action=list&filter=today',
     'ship-ready':   ctx + '/seller/order?action=list&status=ready',
-    'inquiries':    ctx + '/seller/inquiry?action=list',
     'reviews-new':  ctx + '/seller/review?action=list',
-    'new-product':  ctx + '/seller/product?action=writeForm',
-    'new-shorts':   ctx + '/seller/shorts?action=form',
+    'new-product':  ctx + '/seller/product/form',
+    'new-shorts':   ctx + '/seller/shorts/form',
     'open-orders':  ctx + '/seller/order?action=list',
     'new-coupon':   ctx + '/seller/coupon?action=form',
     'open-settlement': ctx + '/preview?page=seller/settlement/list' 
   };
 
-  // 이벤트 위임을 통한 클릭 이벤트 처리
   document.body.addEventListener('click', function (e) {
     var el = e.target.closest('[data-action]');
     if (!el) return;
 
     var action = el.getAttribute('data-action');
-    var targetUrl = urlMap[action];
+    if (action === 'inquiries') {
+        if (typeof window.openSellerNotification === 'function') {
+            window.openSellerNotification('inquiry');
+        }
+        return; // 여기서 종료 (페이지 이동 안 함)
+    }
 
+    var targetUrl = urlMap[action];
     if (targetUrl) {
       window.location.href = targetUrl;
     } else {

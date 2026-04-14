@@ -55,7 +55,7 @@ public class SellerNotificationDAO {
             }
             rs.close(); pstmt.close();
 
-            // 2. 처리 필요 주문 가져오기 (결제완료 0, 배송준비중 1)
+            // 2. 처리 필요 주문 가져오기
             String ordSql = "SELECT o.orderNo, o.orderCode, DATE_FORMAT(o.orderDate, '%Y.%m.%d') as cDate, u.userName, " +
                             "o.orderType, o.paymentMethod, o.deliveryContent, op.snapProductName, op.orderQuantity " +
                             "FROM orders o " +
@@ -90,9 +90,10 @@ public class SellerNotificationDAO {
             }
             rs.close(); pstmt.close();
 
-            // 3. 리뷰 가져오기 (💡 [수정] imgFile -> reviewImg 로 변경)
+            // 💡 3. 리뷰 가져오기 (replyContent, replyDate 추가)
             String revSql = "SELECT r.reviewNo, DATE_FORMAT(r.createdAt, '%Y.%m.%d') as cDate, u.userName, " +
                             "r.reviewRating, r.reviewContent, op.snapProductName, " +
+                            "r.replyContent, DATE_FORMAT(r.replyDate, '%Y.%m.%d') as rDate, " +
                             "(SELECT reviewImg FROM reviewImage ri WHERE ri.reviewNo = r.reviewNo ORDER BY imgOrder ASC LIMIT 1) as rImg " +
                             "FROM review r " +
                             "JOIN ordersproduct op ON r.orderItemNo = op.orderItemNo " +
@@ -106,7 +107,14 @@ public class SellerNotificationDAO {
                 SellerNotificationDTO n = new SellerNotificationDTO();
                 n.setId("REV-" + rs.getInt("reviewNo"));
                 n.setKind("review");
-                n.setStatus("pending");
+                
+                String reply = rs.getString("replyContent");
+                boolean hasReply = (reply != null && !reply.trim().isEmpty());
+                n.setStatus(hasReply ? "done" : "pending"); // 답변 여부에 따라 상태 변경
+                n.setAnswered(hasReply);
+                n.setReplyContent(hasReply ? reply : "");
+                n.setReplyDate(rs.getString("rDate") != null ? rs.getString("rDate") : "");
+                
                 n.setDate(rs.getString("cDate"));
                 n.setProduct(rs.getString("snapProductName"));
                 n.setAuthor(rs.getString("userName"));

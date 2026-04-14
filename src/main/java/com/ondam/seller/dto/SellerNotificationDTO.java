@@ -1,32 +1,32 @@
 package com.ondam.seller.dto;
 
 public class SellerNotificationDTO {
-    // 공통 필드
-    private String id;       // 예: INQ-1, ORD-5, REV-3
-    private String kind;     // inquiry, order, review
-    private String status;   // pending, done, need
-    private String date;     // 생성일
-    private String product;  // 상품명
-    private String author;   // 작성자/주문자명
-    private String title;    // 제목 (프론트에서 보여줄 요약 텍스트)
-    private String body;     // 본문 내용
+    private String id;       
+    private String kind;     
+    private String status;   
+    private String date;     
+    private String product;  
+    private String author;   
+    private String title;    
+    private String body;     
 
-    // 문의 전용
-    private String orderNo;  // 주문 코드(orderCode)
-    private String option;   // 옵션 정보
+    private String orderNo;  
+    private String option;   
     private boolean answered;
     private String answer;
     private String answerDate;
 
-    // 주문 전용
-    private String orderType; // 일반/선물/조르기
-    private String payMethod; // 카드/함께지갑/계좌
+    private String orderType; 
+    private String payMethod; 
     private int qty;
-    private String request;   // 배송 요청사항
+    private String request;   
 
-    // 리뷰 전용
     private int rating;
-    private String image;     // 리뷰 이미지 1장
+    private String image;     
+    
+    // 💡 [추가] 리뷰 답변 전용 필드
+    private String replyContent;
+    private String replyDate;
 
     // Getters & Setters
     public String getId() { return id; }
@@ -70,4 +70,10 @@ public class SellerNotificationDTO {
     public void setRating(int rating) { this.rating = rating; }
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
+    
+    // 💡 [추가]
+    public String getReplyContent() { return replyContent; }
+    public void setReplyContent(String replyContent) { this.replyContent = replyContent; }
+    public String getReplyDate() { return replyDate; }
+    public void setReplyDate(String replyDate) { this.replyDate = replyDate; }
 }

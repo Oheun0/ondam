@@ -73,6 +73,11 @@ public class SellerNotificationController implements Controller {
                 sb.append("\"request\":\"").append(escapeJson(n.getRequest())).append("\"");
             } else if ("review".equals(n.getKind())) {
                 sb.append(",\"rating\":").append(n.getRating()).append(",");
+                // 💡 [추가]
+                sb.append("\"answered\":").append(n.isAnswered()).append(",");
+                sb.append("\"replyContent\":\"").append(escapeJson(n.getReplyContent())).append("\",");
+                sb.append("\"replyDate\":\"").append(escapeJson(n.getReplyDate())).append("\",");
+                
                 sb.append("\"images\":[");
                 if (n.getImage() != null && !n.getImage().isEmpty()) {
                     sb.append("\"").append(escapeJson(n.getImage())).append("\"");
