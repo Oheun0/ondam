@@ -18,6 +18,7 @@ public class ReviewDTO {
     private String replyContent;
     private String replyDate;
     private String userName;
+    private int reviewHelpful;
 
     public ReviewDTO() {}
 
@@ -153,4 +154,12 @@ public class ReviewDTO {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+	public int getReviewHelpful() {
+		return reviewHelpful;
+	}
+
+	public void setReviewHelpful(int reviewHelpful) {
+		this.reviewHelpful = reviewHelpful;
+	}
 }
