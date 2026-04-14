@@ -98,7 +98,12 @@ public class ReviewService {
     }
     
  // 특정 상품(productNo)에 달린 모든 리뷰 가져오기 (상품 상세 페이지용)
-    public Vector<ReviewDTO> getReviewsByProductNo(int productNo) {
-        return reviewDAO.getReviewsByProductNo(productNo);
+    public Vector<ReviewDTO> getReviewsByProductNo(int productNo, String sort) {
+        return reviewDAO.getReviewsByProductNo(productNo, sort);
+    }
+    
+ // 리뷰 '도움돼요' 증가
+    public boolean increaseReviewHelpful(int reviewNo, int userNo) {
+        return reviewDAO.increaseReviewHelpful(reviewNo, userNo);
     }
 }

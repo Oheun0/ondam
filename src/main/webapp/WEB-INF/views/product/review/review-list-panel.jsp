@@ -50,10 +50,24 @@
                         </div>
                       </div>
                     </div>
-                    <button type="button" class="detail-review-help-btn" aria-label="도움이 돼요 누르기">
-                      <span class="material-icons" aria-hidden="true">thumb_up</span>
-                      <span class="detail-review-help-count">0</span>
-                    </button>
+                    <c:choose>
+                    <c:when test="${not empty sessionScope.loginUser and sessionScope.loginUser.userNo == review.userNo}">
+                      <%--내 글일 때: 버튼 비활성화--%>
+                      <button type="button" class="detail-review-help-btn" disabled 
+                              style="opacity: 0.5; cursor: not-allowed;" 
+                              title="내가 작성한 후기입니다.">
+                        <span class="material-icons" aria-hidden="true">thumb_up</span>
+                        <span class="detail-review-help-count">${review.reviewHelpful}</span>
+                      </button>
+                    </c:when>
+                    <c:otherwise>
+                      <%--남의 글일 때--%>
+                      <button type="button" class="detail-review-help-btn" data-review-no="${review.reviewNo}" aria-label="도움이 돼요 누르기">
+                        <span class="material-icons" aria-hidden="true">thumb_up</span>
+                        <span class="detail-review-help-count">${review.reviewHelpful}</span>
+                      </button>
+                    </c:otherwise>
+                  </c:choose>
                   </div>
                   
                   <%-- 리뷰 본문 --%>

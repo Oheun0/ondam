@@ -921,14 +921,40 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.querySelectorAll(".detail-review-help-btn").forEach(function (btn) {
-    var countEl = btn.querySelector(".detail-review-help-count");
-    if (!countEl) return;
-    btn.addEventListener("click", function () {
-      var n = parseInt(countEl.textContent, 10);
-      if (Number.isNaN(n)) n = 0;
-      countEl.textContent = String(n + 1);
+      btn.addEventListener("click", function () {
+        if (this.classList.contains("active") || this.disabled) return;
+
+        var countEl = this.querySelector(".detail-review-help-count");
+        var reviewNo = this.getAttribute("data-review-no");
+        if (!countEl || !reviewNo) return;
+
+        var ctx = document.body.getAttribute("data-context-path") || "";
+        fetch(ctx + "/review?action=increaseHelpful&reviewNo=" + reviewNo)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            if (data.status === "success") {
+              var n = parseInt(countEl.textContent, 10);
+              if (Number.isNaN(n)) n = 0;
+              countEl.textContent = String(n + 1);
+              btn.classList.add("active");
+              btn.style.color = "#ff5722";
+              var icon = btn.querySelector(".material-icons");
+              if (icon) {
+                icon.style.color = "#ff5722";
+              }
+              btn.disabled = true;
+            } else {
+              alert("처리에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+            }
+          })
+          .catch(function (error) {
+            console.error("Error:", error);
+            alert("네트워크 오류가 발생했습니다.");
+          });
+      });
     });
-  });
 
   document.querySelectorAll(".detail-review-sort-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
