@@ -146,7 +146,8 @@ public class ProductOptionDAO {
 	    Vector<ProductOptionDTO> vlist = new Vector<>();
 	    try {
 	        con = pool.getConnection();
-	        String sql = "SELECT * FROM productoption WHERE productNo = ?";
+	     // 💡 [핵심 수정] 끝에 ORDER BY productOptionNo ASC 를 추가하여 무조건 등록된 번호 순서대로 가져오게 합니다!
+	        String sql = "SELECT * FROM productoption WHERE productNo = ? ORDER BY productOptionNo ASC";
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setInt(1, productNo);
 	        rs = pstmt.executeQuery();
