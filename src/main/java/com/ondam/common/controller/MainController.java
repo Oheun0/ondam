@@ -54,8 +54,11 @@ public class MainController implements Controller {
                 request.setAttribute("productList", productList);
                 request.setAttribute("thumbnailMap", thumbnailMap); 
                 
-                return "home/spring-sale"; 
-                
+                return "home/spring-sale";
+
+            case "guide":
+                return "home/guide";
+
             case "main":
             default:
                 return "home/home"; 
