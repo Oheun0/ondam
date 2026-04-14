@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import com.ondam.common.DBConnectionMgr;
@@ -27,13 +29,13 @@ public class SellerReviewDAO {
             con = pool.getConnection();
             
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT r.*, u.userName, p.productName, oi.optionColor, oi.optionSize, o.orderNo ");
+            sql.append("SELECT r.*, u.userName, p.productName, oi.snapOptionColor, oi.snapOptionSize, o.orderNo ");
             sql.append("FROM review r ");
-            sql.append("JOIN user u ON r.userNo = u.userNo ");
-            sql.append("JOIN orderitem oi ON r.orderItemNo = oi.orderItemNo ");
-            sql.append("JOIN product p ON oi.productNo = p.productNo ");
-            sql.append("JOIN orders o ON oi.orderNo = o.orderNo "); // 주문번호용
-            sql.append("WHERE p.vendorNo = ? "); // 본인 상품만 조회
+            sql.append("LEFT JOIN user u ON r.userNo = u.userNo ");
+            sql.append("LEFT JOIN ordersproduct oi ON r.orderItemNo = oi.orderItemNo "); 
+            sql.append("LEFT JOIN product p ON oi.productNo = p.productNo ");
+            sql.append("LEFT JOIN orders o ON oi.orderNo = o.orderNo ");
+            sql.append("WHERE p.vendorNo = ? ");
 
             // 필터링 조건 추가
             if (product != null && !product.equals("all") && !product.isEmpty()) {
@@ -73,21 +75,17 @@ public class SellerReviewDAO {
                 dto.setOrderNo(rs.getString("orderNo"));
                 dto.setAuthorName(rs.getString("userName"));
                 dto.setProductName(rs.getString("productName"));
-                dto.setOptionInfo(rs.getString("optionColor") + " / " + rs.getString("optionSize"));
+                dto.setOptionInfo(rs.getString("snapOptionColor") + " / " + rs.getString("snapOptionSize"));
                 dto.setReviewRating(rs.getInt("reviewRating"));
                 dto.setReviewContent(rs.getString("reviewContent"));
-                dto.setCreatedAt(rs.getString("createdAt").substring(0, 10)); // 날짜만
+                dto.setCreatedAt(rs.getString("createdAt").substring(0, 10));
                 dto.setReplyContent(rs.getString("replyContent"));
                 dto.setAnswered(rs.getString("replyContent") != null);
                 dto.setReviewImages(getReviewImages(dto.getReviewNo()));
-                
                 list.add(dto);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            pool.freeConnection(con, pstmt, rs);
-        }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally { pool.freeConnection(con, pstmt, rs); }
         return list;
     }
 
@@ -122,9 +120,9 @@ public class SellerReviewDAO {
             con = pool.getConnection();
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT COUNT(*) FROM review r ");
-            sql.append("JOIN user u ON r.userNo = u.userNo ");
-            sql.append("JOIN orderitem oi ON r.orderItemNo = oi.orderItemNo ");
-            sql.append("JOIN product p ON oi.productNo = p.productNo ");
+            sql.append("LEFT JOIN user u ON r.userNo = u.userNo ");
+            sql.append("LEFT JOIN ordersproduct oi ON r.orderItemNo = oi.orderItemNo "); 
+            sql.append("LEFT JOIN product p ON oi.productNo = p.productNo ");
             sql.append("WHERE p.vendorNo = ? ");
 
             // 필터링 조건
@@ -152,11 +150,8 @@ public class SellerReviewDAO {
 
             rs = pstmt.executeQuery();
             if (rs.next()) total = rs.getInt(1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            pool.freeConnection(con, pstmt, rs);
-        }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally { pool.freeConnection(con, pstmt, rs); }
         return total;
     }
     
@@ -168,26 +163,24 @@ public class SellerReviewDAO {
         try {
             con = pool.getConnection();
             String sql = "SELECT COUNT(*) as totalCnt, " +
-                         "IFNULL(ROUND(AVG(r.reviewRating), 1), 0) as avgRating, " +
-                         "SUM(IF(r.replyContent IS NULL, 1, 0)) as noReplyCnt, " +
-                         "SUM(IF(r.createdAt >= DATE_SUB(NOW(), INTERVAL 7 DAY), 1, 0)) as newThisWeek " +
-                         "FROM review r JOIN orderitem oi ON r.orderItemNo = oi.orderItemNo " +
-                         "JOIN product p ON oi.productNo = p.productNo " +
-                         "WHERE p.vendorNo = ?";
+                    "IFNULL(ROUND(AVG(r.reviewRating), 1), 0) as avgRating, " +
+                    "SUM(IF(r.replyContent IS NULL, 1, 0)) as noReplyCnt, " +
+                    "SUM(IF(r.createdAt >= DATE_SUB(NOW(), INTERVAL 7 DAY), 1, 0)) as newThisWeek " +
+                    "FROM review r " +
+                    "LEFT JOIN ordersproduct oi ON r.orderItemNo = oi.orderItemNo " + 
+                    "LEFT JOIN product p ON oi.productNo = p.productNo " +
+                    "WHERE p.vendorNo = ?";
             pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, vendorNo);
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 summary.put("totalCnt", rs.getInt("totalCnt"));
                 summary.put("avgRating", rs.getDouble("avgRating"));
-                summary.put("noReplyCnt", rs.getString("noReplyCnt") == null ? 0 : rs.getInt("noReplyCnt"));
-                summary.put("newThisWeek", rs.getString("newThisWeek") == null ? 0 : rs.getInt("newThisWeek"));
+                summary.put("noReplyCnt", rs.getInt("noReplyCnt"));
+                summary.put("newThisWeek", rs.getInt("newThisWeek"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            pool.freeConnection(con, pstmt, rs);
-        }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally { pool.freeConnection(con, pstmt, rs); }
         return summary;
     }
     
@@ -209,5 +202,31 @@ public class SellerReviewDAO {
             pool.freeConnection(con, pstmt);
         }
         return flag;
+    }
+    
+    public List<Map<String, Object>> getVendorProductList(int vendorNo) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            con = pool.getConnection();
+            // 판매자가 등록한 상품의 번호와 이름만 가져옵니다.
+            String sql = "SELECT productNo, productName FROM product WHERE vendorNo = ? ORDER BY productNo DESC";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, vendorNo);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("productNo", rs.getInt("productNo"));
+                map.put("productName", rs.getString("productName"));
+                list.add(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return list;
     }
 }
