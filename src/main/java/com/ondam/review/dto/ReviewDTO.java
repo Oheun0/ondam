@@ -17,6 +17,7 @@ public class ReviewDTO {
     private String productImg;
     private String replyContent;
     private String replyDate;
+    private String userName;
 
     public ReviewDTO() {}
 
@@ -144,4 +145,12 @@ public class ReviewDTO {
 	public void setReplyDate(String replyDate) {
 		this.replyDate = replyDate;
 	}
+	
+	public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

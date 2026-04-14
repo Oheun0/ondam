@@ -334,4 +334,44 @@ public class ReviewDAO {
         }
         return dto;
     }
+    
+    public Vector<ReviewDTO> getReviewsByProductNo(int productNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Vector<ReviewDTO> vlist = new Vector<>();
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT r.*, u.userName, op.snapOptionSize, op.snapOptionColor " +
+                         "FROM review r " +
+                         "JOIN user u ON r.userNo = u.userNo " +
+                         "JOIN ordersproduct op ON r.orderItemNo = op.orderItemNo " +
+                         "WHERE op.productNo = ? " +
+                         "ORDER BY r.createdAt DESC";
+                         
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productNo);
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                ReviewDTO dto = new ReviewDTO();
+                dto.setReviewNo(rs.getInt("reviewNo"));
+
+                dto.setUserName(rs.getString("userName")); 
+                dto.setReviewRating(rs.getInt("reviewRating"));
+                dto.setReviewContent(rs.getString("reviewContent"));
+                dto.setCreatedAt(rs.getString("createdAt"));
+                dto.setSnapOptionSize(rs.getString("snapOptionSize"));
+                dto.setSnapOptionColor(rs.getString("snapOptionColor"));
+                dto.setReplyContent(rs.getString("replyContent"));
+                dto.setReplyDate(rs.getString("replyDate"));
+                vlist.add(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return vlist;
+    }
 }

@@ -96,4 +96,9 @@ public class ReviewService {
     public void removeReviewImage(int imgNo, String savePath) {
         reviewImageDAO.deleteReviewImage(imgNo);
     }
+    
+ // 특정 상품(productNo)에 달린 모든 리뷰 가져오기 (상품 상세 페이지용)
+    public Vector<ReviewDTO> getReviewsByProductNo(int productNo) {
+        return reviewDAO.getReviewsByProductNo(productNo);
+    }
 }
