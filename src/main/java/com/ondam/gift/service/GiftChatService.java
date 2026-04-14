@@ -1,5 +1,7 @@
 package com.ondam.gift.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import com.ondam.gift.dao.GiftChatDAO;
@@ -21,12 +23,6 @@ public class GiftChatService {
         "gift-card6.png",
         "gift-card7.png",
         "gift-card8.png"
-    };
-
-    // 감사카드 이미지 목록 (2장)
-    private static final String[] THANKS_CARD_IMAGES = {
-        "thanks_card_01.png",
-        "thanks_card_02.png"
     };
 
     public GiftChatService() {
@@ -51,6 +47,7 @@ public class GiftChatService {
 
     // [생성] 고마움 표시하기 클릭 시 감사카드 랜덤 배정 후 INSERT
     // 이미 감사카드가 존재하면 false 반환 (중복 방지)
+    // 감사카드는 선물카드와 동일한 8종에서 고르되, 해당 선물의 원본 카드 1종은 제외
     public boolean createThanksCard(int giftNo, int senderNo, int receiverNo) {
         // 중복 방지: 이미 감사카드 보낸 경우 차단
         if (dao.existsThanksCard(giftNo)) {
@@ -58,7 +55,23 @@ public class GiftChatService {
             return false;
         }
 
-        String cardImg = THANKS_CARD_IMAGES[(int) (Math.random() * THANKS_CARD_IMAGES.length)];
+        String originalGiftCard = dao.getGiftCardImageByGiftNo(giftNo);
+
+        List<String> candidates = new ArrayList<>();
+        for (String image : GIFT_CARD_IMAGES) {
+            if (originalGiftCard == null || !originalGiftCard.equals(image)) {
+                candidates.add(image);
+            }
+        }
+
+        // 방어 로직: 원본 카드가 목록에 없거나 예외 상황이면 8종 전체에서 랜덤
+        if (candidates.isEmpty()) {
+            for (String image : GIFT_CARD_IMAGES) {
+                candidates.add(image);
+            }
+        }
+
+        String cardImg = candidates.get((int) (Math.random() * candidates.size()));
 
         GiftChatDTO dto = new GiftChatDTO();
         dto.setGiftNo(giftNo);
@@ -96,6 +109,11 @@ public class GiftChatService {
     // [조회] 감사카드 존재 여부 확인 (JSP 버튼 활성/비활성 판단용)
     public boolean hasThanksCard(int giftNo) {
         return dao.existsThanksCard(giftNo);
+    }
+
+    // [조회] 특정 선물의 선물카드 이미지(chatType=0)
+    public String getGiftCardImageByGiftNo(int giftNo) {
+        return dao.getGiftCardImageByGiftNo(giftNo);
     }
 
     // [삭제] 관리자용

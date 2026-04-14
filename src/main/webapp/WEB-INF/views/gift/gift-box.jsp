@@ -117,7 +117,7 @@
 
                             <div class="gift-bubble gift-bubble--center">
                                 <div class="gift-card">
-                                    <img src="${pageContext.request.contextPath}/images/gift/gift_card_01.png" class="gift-card-img" alt="선물 카드">
+                                    <img src="${pageContext.request.contextPath}/images/gift/${empty gift.cardImg ? 'gift-card1.png' : gift.cardImg}" class="gift-card-img" alt="선물 카드">
 
                                     <p class="gift-meta">${gift.senderName}님이 선물을 보냈어요!</p>
 
@@ -127,8 +127,11 @@
                                             onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'; this.onerror=null;">
                                         </div>
                                         <div class="gift-product-info">
-                                            <p class="gift-product-name">상품명: ${gift.productName}</p>
-                                            <p class="gift-msg" style="color:#666; font-style:italic;">"${gift.giftMsg}"</p>
+                                            <p class="gift-product-brand">${gift.productBrand}</p>
+                                            <p class="gift-product-name">${gift.productName}</p>
+                                            <c:if test="${not empty gift.giftMsg}">
+                                                <p class="gift-msg" style="color:#666; font-style:italic;">"${gift.giftMsg}"</p>
+                                            </c:if>
                                         </div>
                                     </div>
 
@@ -224,7 +227,7 @@
 
                             <div class="gift-bubble gift-bubble--center">
                                 <div class="gift-card">
-                                    <img src="${pageContext.request.contextPath}/images/gift/gift_card_02.png" class="gift-card-img" alt="선물 카드">
+                                    <img src="${pageContext.request.contextPath}/images/gift/${empty gift.cardImg ? 'gift-card1.png' : gift.cardImg}" class="gift-card-img" alt="선물 카드">
 
                                     <p class="gift-meta">${gift.receiverName}님에게 선물을 보냈어요!</p>
 
@@ -233,7 +236,8 @@
                                             <img src="${pageContext.request.contextPath}/uploads/products/${gift.productImg}" class="gift-product-thumb" alt="상품 이미지">
                                         </div>
                                         <div class="gift-product-info">
-                                            <p class="gift-product-name">상품명: ${gift.productName}</p>
+                                            <p class="gift-product-brand">${gift.productBrand}</p>
+                                            <p class="gift-product-name">${gift.productName}</p>
                                         </div>
                                     </div>
 

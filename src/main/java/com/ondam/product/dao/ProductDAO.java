@@ -285,6 +285,29 @@ public class ProductDAO {
 		return productName;
 	}
 
+	// 상품 번호를 통해 브랜드명 조회
+	public String getProductBrand(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String productBrand = null;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT productBrand FROM product WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				productBrand = rs.getString("productBrand");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return productBrand;
+	}
+
 	public int getProductPrice(int productNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
