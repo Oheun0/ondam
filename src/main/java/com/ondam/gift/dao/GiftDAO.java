@@ -115,20 +115,25 @@ public class GiftDAO {
 
 	// 6. 선물 생성 (DB의 Default 값 활용, INSERT INTO 구문 사용)
 	public boolean insertGift(GiftDTO dto) {
-		Connection con = null; PreparedStatement pstmt = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			// 상태(0)와 보낸시간(NOW())은 DB 기본값 및 함수 활용
-			String sql = "INSERT INTO gift (orderNo, senderNo, receiverNo, giftMsg) VALUES (?, ?, ?, ?)";
+			String sql = "INSERT INTO gift (orderNo, senderNo, receiverNo, giftMsg, familyNo) VALUES (?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getOrderNo());
 			pstmt.setInt(2, dto.getSenderNo());
 			pstmt.setInt(3, dto.getReceiverNo());
 			pstmt.setString(4, dto.getGiftMsg());
-			if (pstmt.executeUpdate() > 0) flag = true;
-		} catch (Exception e) { e.printStackTrace(); } 
-		finally { pool.freeConnection(con, pstmt); }
+			pstmt.setInt(5, dto.getFamilyNo());
+			if (pstmt.executeUpdate() > 0)
+				flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
 		return flag;
 	}
 
@@ -232,6 +237,7 @@ public class GiftDAO {
 		dto.setReceiverNo(rs.getInt("receiverNo"));
 		dto.setGiftMsg(rs.getString("giftMsg"));
 		dto.setGiftState(rs.getInt("giftState"));
+		dto.setFamilyNo(rs.getInt("familyNo"));
 		String sentAt = rs.getString("sentAt");
 		if (sentAt != null && sentAt.length() >= 19) {
 			dto.setSentAt(sentAt.substring(0, 19)); // "2026-04-09 14:30:00" 까지만 자름
@@ -246,5 +252,23 @@ public class GiftDAO {
 			dto.setRespondedAt(respondedAt);
 		}
 		return dto;
+	}
+	
+	public int getFamilyNoBetween(int senderNo, int receiverNo) {
+	    Connection con = null; PreparedStatement pstmt = null; ResultSet rs = null;
+	    int familyNo = 0;
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT fm1.familyNo FROM FamilyMember fm1 "
+	                   + "JOIN FamilyMember fm2 ON fm1.familyNo = fm2.familyNo "
+	                   + "WHERE fm1.userNo = ? AND fm2.userNo = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, senderNo);
+	        pstmt.setInt(2, receiverNo);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) familyNo = rs.getInt("familyNo");
+	    } catch (Exception e) { e.printStackTrace(); }
+	    finally { pool.freeConnection(con, pstmt, rs); }
+	    return familyNo;
 	}
 }

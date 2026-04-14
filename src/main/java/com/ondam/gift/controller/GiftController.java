@@ -183,6 +183,8 @@ public class GiftController implements Controller {
         dto.setSenderNo(senderNo);
         dto.setReceiverNo(receiverNo);
         dto.setGiftState(0);  // 0: 수락 대기
+        int familyNo = giftService.getFamilyNoBetween(senderNo, receiverNo);
+        dto.setFamilyNo(familyNo);
         giftService.createGift(dto);
         
      // ── 3. giftChat INSERT (선물 카드 버블) ──
