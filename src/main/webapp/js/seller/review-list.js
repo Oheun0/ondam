@@ -1,23 +1,26 @@
 /* global document, alert, console, window */
 (function () {
+  "use strict";
+
   function $(id) { return document.getElementById(id); }
   function show(el) { if (el) el.classList.remove('hidden'); }
   function hide(el) { if (el) el.classList.add('hidden'); }
   function setText(el, text) { if (el) el.textContent = text; }
 
+  // 1. 필터 적용 로직
   function applyFilters() {
-      var product = $('reviewProduct') ? $('reviewProduct').value : '';
-      var rating = $('reviewRating') ? $('reviewRating').value : '';
-      var period = $('reviewPeriod') ? $('reviewPeriod').value : '';
-      var query = $('reviewQuery') ? $('reviewQuery').value : '';
-      var contextPath = document.body.getAttribute('data-context-path') || '';
+    var product = $('reviewProduct') ? $('reviewProduct').value : '';
+    var rating = $('reviewRating') ? $('reviewRating').value : '';
+    var period = $('reviewPeriod') ? $('reviewPeriod').value : '';
+    var query = $('reviewQuery') ? $('reviewQuery').value : '';
+    var contextPath = document.body.getAttribute('data-context-path') || '';
 
-      location.href = contextPath + "/seller/review?action=list" 
-                    + "&product=" + encodeURIComponent(product) 
-                    + "&rating=" + encodeURIComponent(rating) 
-                    + "&period=" + encodeURIComponent(period) 
-                    + "&query=" + encodeURIComponent(query);
-    }
+    location.href = contextPath + "/seller/review?action=list" 
+                  + "&product=" + encodeURIComponent(product) 
+                  + "&rating=" + encodeURIComponent(rating) 
+                  + "&period=" + encodeURIComponent(period) 
+                  + "&query=" + encodeURIComponent(query);
+  }
 
   var applyBtn = $('reviewApplyBtn');
   if (applyBtn) applyBtn.addEventListener('click', applyFilters);
@@ -32,7 +35,7 @@
     });
   }
 
-  // Panel
+  // 2. 패널 제어 로직 (상세보기/답변창)
   var panel = $('reviewPanel');
   var dim = $('reviewPanelDim');
   var closeBtn = $('reviewPanelClose');
@@ -57,23 +60,23 @@
     if (e.key === 'Escape') closePanel();
   });
 
+  // 3. 카드 데이터를 패널에 채우는 함수 (핵심!)
   function fillPanelFromCard(card) {
-	var reviewId = card.getAttribute('data-review-id'); 
-	    $('reviewPanel').setAttribute('data-current-review-id', reviewId);
-		
-    var author = card.getAttribute('data-author') || '-';
-    var date = card.getAttribute('data-date') || '-';
-    var orderNo = card.getAttribute('data-order-no') || '-';
-    var option = card.getAttribute('data-option') || '-';
-    var content = card.getAttribute('data-content') || '-';
-    var rating = card.getAttribute('data-rating') || '-';
-	var reply = card.getAttribute('data-reply') || '';
+    var reviewId = card.getAttribute('data-review-id'); 
+    var author   = card.getAttribute('data-author') || '-';
+    var date     = card.getAttribute('data-date') || '-';
+    var orderNo  = card.getAttribute('data-order-no') || '-';
+    var option   = card.getAttribute('data-option') || '-';
+    var content  = card.getAttribute('data-content') || '-';
+    var rating   = card.getAttribute('data-rating') || '-';
+    var reply    = card.getAttribute('data-reply') || '';
     var answered = card.getAttribute('data-answered') === 'true';
 
-    // product name from visible card text
     var productEl = card.querySelector('.seller-review-product');
-    var product = productEl ? productEl.textContent.trim() : '-';
+    var product   = productEl ? productEl.textContent.trim() : '-';
 
+    // 상세 텍스트 세팅
+    $('reviewPanel').setAttribute('data-current-review-id', reviewId);
     setText($('reviewPanelSub'), author + ' · ' + date);
     setText($('pdAuthor'), author);
     setText($('pdDate'), date);
@@ -84,7 +87,7 @@
     setText($('pdAnswered'), answered ? '답변 완료' : '미답변');
     setText($('pdContent'), content);
 
-    // images
+    // 이미지 처리
     var pdImages = $('pdImages');
     if (pdImages) {
       pdImages.innerHTML = '';
@@ -97,116 +100,112 @@
       });
     }
 
-    // reply placeholder
-	var replyText = $('replyText');
-	    if (replyText) {
-	      // 답변이 있으면 그 내용을 보여주고, 없으면 비워둡니다.
-	      replyText.value = answered && reply !== 'null' ? reply : ''; 
-	    }
-	  }
+    // 💡 답변 수정 방지 및 UI 제어
+    var replyText   = $('replyText');
+    var submitBtn   = $('replySubmitBtn');
+    var templateBox = document.querySelector('.seller-review-reply-templates');
+    var hintText    = document.querySelector('.seller-review-panel__hint');
 
-  function markAnswered(card) {
-    if (!card) return;
-    card.setAttribute('data-answered', 'true');
-    var badge = card.querySelector('.seller-review-badge');
-    if (badge) {
-      badge.classList.remove('seller-review-badge--todo');
-      badge.classList.add('seller-review-badge--done');
-      badge.textContent = '답변 완료';
+    if (answered) {
+      if (replyText) {
+        replyText.value = (reply && reply !== 'null') ? reply : ''; 
+        replyText.readOnly = true;
+        replyText.style.backgroundColor = "#f5f5f5";
+        replyText.style.color = "#666";
+      }
+      hide(submitBtn);
+      hide(templateBox);
+      if (hintText) setText(hintText, "이미 답변이 완료된 리뷰는 수정할 수 없습니다.");
+    } else {
+      if (replyText) {
+        replyText.value = '';
+        replyText.readOnly = false;
+        replyText.style.backgroundColor = "";
+        replyText.style.color = "";
+      }
+      show(submitBtn);
+      show(templateBox);
+      if (hintText) setText(hintText, "짧고 친절하게 답변해 주세요.");
     }
   }
 
-  document.addEventListener('click', function (e) {
-      var t = e.target;
-      if (!t) return;
-
-      var pageBtn = t.closest('.seller-review-page-btn');
-      if (pageBtn) {
-        var p = pageBtn.getAttribute('data-page');
-        if (!p) return;
-        var product = $('reviewProduct') ? $('reviewProduct').value : '';
-        var rating = $('reviewRating') ? $('reviewRating').value : '';
-        var period = $('reviewPeriod') ? $('reviewPeriod').value : '';
-        var query = $('reviewQuery') ? $('reviewQuery').value : '';
-        var contextPath = document.body.getAttribute('data-context-path') || '';
-
-        location.href = contextPath + "/seller/review?action=list" 
-                      + "&product=" + encodeURIComponent(product) 
-                      + "&rating=" + encodeURIComponent(rating) 
-                      + "&period=" + encodeURIComponent(period) 
-                      + "&query=" + encodeURIComponent(query)
-                      + "&page=" + p; 
-        return;
-      }
-
-      var btn = t.closest('[data-action]');
-      if (!btn) return;
-      var action = btn.getAttribute('data-action');
-      var card = btn.closest('.seller-review-card');
-      if (!card) return;
-
-      if (action === 'detail' || action === 'reply') {
-        fillPanelFromCard(card);
-        openPanel();
-        return;
-      }
-    });
-
-  // Reply actions
-  var cancelBtn = $('replyCancelBtn');
-  if (cancelBtn) cancelBtn.addEventListener('click', function () {
-    var replyText = $('replyText');
-    if (replyText) replyText.value = '';
-    closePanel();
-  });
-
+  // 4. 클릭 이벤트 리스너 (위임 방식)
   document.addEventListener('click', function (e) {
     var t = e.target;
     if (!t) return;
-    var tpl = t.closest('.seller-review-template');
-    if (!tpl) return;
-    var msg = tpl.getAttribute('data-template') || '';
-    var replyText = $('replyText');
-    if (!replyText) return;
-    replyText.value = msg;
-    replyText.focus();
+
+    // 페이지네이션 클릭
+    var pageBtn = t.closest('.seller-review-page-btn');
+    if (pageBtn) {
+      var p = pageBtn.getAttribute('data-page');
+      if (!p) return;
+      var contextPath = document.body.getAttribute('data-context-path') || '';
+      location.href = contextPath + "/seller/review?action=list&page=" + p; 
+      return;
+    }
+
+    // 답변 달기/보기 클릭
+    var btn = t.closest('[data-action]');
+    if (!btn) return;
+    var action = btn.getAttribute('data-action');
+    var card = btn.closest('.seller-review-card');
+    if (!card) return;
+
+    if (action === 'reply' || action === 'detail') {
+      fillPanelFromCard(card);
+      openPanel();
+    }
   });
 
-  var submitBtn = $('replySubmitBtn');
-    if (submitBtn) {
-      submitBtn.addEventListener('click', function () {
-        var replyText = $('replyText');
-        var text = replyText ? replyText.value.trim() : '';
-        if (!text) {
-          alert('답변 내용을 입력해 주세요.');
-          return;
-        }
-        
-        var reviewId = $('reviewPanel').getAttribute('data-current-review-id');
-        var contextPath = document.body.getAttribute('data-context-path') || '';
+  // 5. 답변 관련 액션
+  var cancelBtn = $('replyCancelBtn');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function () {
+      closePanel();
+    });
+  }
 
-        if (confirm('이 내용으로 답변을 등록(수정)하시겠습니까?')) {
-            // 💡 JS로 몰래 POST 폼을 만들어서 컨트롤러로 쏩니다!
-            var form = document.createElement('form');
-            form.method = 'POST';
-            form.action = contextPath + '/seller/review?action=reply';
-
-            var noInput = document.createElement('input');
-            noInput.type = 'hidden';
-            noInput.name = 'reviewNo';
-            noInput.value = reviewId;
-
-            var contentInput = document.createElement('input');
-            contentInput.type = 'hidden';
-            contentInput.name = 'replyContent';
-            contentInput.value = text;
-
-            form.appendChild(noInput);
-            form.appendChild(contentInput);
-            document.body.appendChild(form);
-            form.submit(); // 컨트롤러의 case "reply": 로 날아갑니다!
-        }
-      });
+  // 템플릿 클릭 시 텍스트 채우기
+  document.addEventListener('click', function (e) {
+    var tpl = e.target.closest('.seller-review-template');
+    if (!tpl) return;
+    
+    var replyText = $('replyText');
+    if (replyText && !replyText.readOnly) {
+      replyText.value = tpl.getAttribute('data-template') || '';
+      replyText.focus();
     }
-})();
+  });
 
+  // 답변 제출
+  var submitBtn = $('replySubmitBtn');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', function () {
+      var replyText = $('replyText');
+      var text = replyText ? replyText.value.trim() : '';
+      if (!text) {
+        alert('답변 내용을 입력해 주세요.');
+        return;
+      }
+      
+      var reviewId = $('reviewPanel').getAttribute('data-current-review-id');
+      var contextPath = document.body.getAttribute('data-context-path') || '';
+
+      if (confirm('이 내용으로 답변을 등록하시겠습니까?')) {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = contextPath + '/seller/review?action=reply';
+
+        var noInput = document.createElement('input');
+        noInput.type = 'hidden'; noInput.name = 'reviewNo'; noInput.value = reviewId;
+        var contentInput = document.createElement('input');
+        contentInput.type = 'hidden'; contentInput.name = 'replyContent'; contentInput.value = text;
+
+        form.appendChild(noInput);
+        form.appendChild(contentInput);
+        document.body.appendChild(form);
+        form.submit();
+      }
+    });
+  }
+})();

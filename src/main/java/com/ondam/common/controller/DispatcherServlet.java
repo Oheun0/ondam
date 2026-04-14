@@ -30,6 +30,7 @@ import com.ondam.seller.controller.SellerProductController;
 import com.ondam.seller.controller.SellerResetPwController;
 import com.ondam.seller.controller.SellerResetPwFormController;
 import com.ondam.seller.controller.SellerResetSendCodeController;
+import com.ondam.seller.controller.SellerReviewController;
 import com.ondam.seller.controller.SellerSettingsController;
 import com.ondam.seller.controller.SellerSettlementController;
 import com.ondam.seller.controller.SellerSettlementDownloadController;
@@ -157,6 +158,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/shorts/api", new com.ondam.shorts.controller.ShortsGeneratorController());
         handlerMapping.put("/seller/dashboard", new SellerDashboardController());
         handlerMapping.put("/seller/order", new SellerOrderController());
+        handlerMapping.put("/seller/review", new SellerReviewController());
         handlerMapping.put("/seller/settlement/list", new SellerSettlementController());
         handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
     }
