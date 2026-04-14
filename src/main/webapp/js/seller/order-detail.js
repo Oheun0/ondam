@@ -64,11 +64,28 @@
             return;
           }
 
-          var checkedBoxes = document.querySelectorAll('.item-checkbox:checked');
-          if (checkedBoxes.length === 0) {
-            showError('odFormError', '상태를 변경할 상품을 하나 이상 체크해 주세요.');
-            return;
-          }
+		  var checkedBoxes = document.querySelectorAll('.item-checkbox:checked');
+		            if (checkedBoxes.length === 0) {
+		              showError('odStatusError', '상태를 변경할 상품을 하나 이상 체크해 주세요.');
+
+		              var itemCards = document.querySelectorAll('.seller-order-detail-item');
+		              itemCards.forEach(function(card) {
+		                  card.style.transition = "all 0.3s ease";
+		                  card.style.boxShadow = "0 0 15px rgba(255, 77, 79, 0.4)";
+		                  card.style.borderColor = "#ff4d4f";
+		              });
+		              if (itemCards.length > 0) {
+		                  itemCards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+		              }
+		              setTimeout(function() {
+		                  itemCards.forEach(function(card) {
+		                      card.style.boxShadow = "";
+		                      card.style.borderColor = "";
+		                  });
+		              }, 1500);
+
+		              return;
+		            }
 		var hasNoInvoice = false;
 		var itemNos = [];
 		        checkedBoxes.forEach(function(box) {
@@ -81,9 +98,14 @@
 		        });
 				
 				if (hasNoInvoice) {
-				            showError('odFormError', '결제 완료 상태인 상품은 송장번호를 먼저 저장해야 상태를 변경할 수 있습니다.');
+				            showError('odTrackingError', '송장번호를 먼저 저장해야 상태를 변경할 수 있습니다.');
+				            if (trackingEl) {
+				                trackingEl.focus();
+				                trackingEl.style.backgroundColor = "#fff2f0";
+				                setTimeout(function() { trackingEl.style.backgroundColor = ""; }, 1000);
+				            }
 				            return;
-				        }
+				          }
 						
         var itemNosString = itemNos.join(',');
 
@@ -213,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 💡 핵심 로직: 체크된 상품 수에 따라 입력창 채우기
+    //체크된 상품 수에 따라 입력창 채우기
     function syncDeliveryInfo() {
         const checked = document.querySelectorAll('.item-checkbox:checked');
 

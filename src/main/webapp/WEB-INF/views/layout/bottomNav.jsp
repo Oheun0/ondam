@@ -26,3 +26,4 @@
         <span class="nav-label">내 정보</span>
     </a>
 </nav>
+<script defer src="${pageContext.request.contextPath}/js/bottom-nav-scroll.js"></script>

@@ -61,40 +61,42 @@
             <div class="seller-review-filter">
               <label class="seller-review-filter-label" for="reviewProduct">상품</label>
               <select id="reviewProduct" class="seller-review-select">
-                <option value="all">전체 상품</option>
-                <option value="P-1001">부드러운 라운드 니트 가디건</option>
-                <option value="P-1002">편안한 봄 니트 조끼</option>
-                <option value="P-1003">가벼운 데일리 셔츠</option>
-                <option value="P-2001">산뜻한 플라워 블라우스</option>
-              </select>
+				  <option value="all" ${paramProduct == 'all' ? 'selected' : ''}>전체 상품</option>
+				  <c:forEach var="p" items="${vendorProductList}">
+				    <option value="${p.productNo}" ${paramProduct == p.productNo.toString() ? 'selected' : ''}>
+					  ${p.productName}
+					</option>
+				  </c:forEach>
+				</select>
             </div>
 
             <div class="seller-review-filter">
-              <label class="seller-review-filter-label" for="reviewRating">평점</label>
-              <select id="reviewRating" class="seller-review-select">
-                <option value="all">전체 평점</option>
-                <option value="5">5점</option>
-                <option value="4">4점</option>
-                <option value="3">3점</option>
-                <option value="2">2점 이하</option>
-              </select>
-            </div>
+			  <label class="seller-review-filter-label" for="reviewRating">평점</label>
+			  <select id="reviewRating" class="seller-review-select">
+			    <option value="all" ${paramRating == 'all' || empty paramRating ? 'selected' : ''}>전체 평점</option>
+			    <option value="5" ${paramRating == '5' ? 'selected' : ''}>5점</option>
+			    <option value="4" ${paramRating == '4' ? 'selected' : ''}>4점</option>
+			    <option value="3" ${paramRating == '3' ? 'selected' : ''}>3점</option>
+			    <option value="2" ${paramRating == '2' ? 'selected' : ''}>2점 이하</option>
+			  </select>
+			</div>
 
             <div class="seller-review-filter">
-              <label class="seller-review-filter-label" for="reviewPeriod">기간</label>
-              <select id="reviewPeriod" class="seller-review-select">
-                <option value="all">전체 기간</option>
-                <option value="7d">최근 7일</option>
-                <option value="30d">최근 30일</option>
-                <option value="3m">최근 3개월</option>
-              </select>
-            </div>
+			  <label class="seller-review-filter-label" for="reviewPeriod">기간</label>
+			  <select id="reviewPeriod" class="seller-review-select">
+			    <option value="all" ${paramPeriod == 'all' || empty paramPeriod ? 'selected' : ''}>전체 기간</option>
+			    <option value="7d" ${paramPeriod == '7d' ? 'selected' : ''}>최근 7일</option>
+			    <option value="30d" ${paramPeriod == '30d' ? 'selected' : ''}>최근 30일</option>
+			    <option value="3m" ${paramPeriod == '3m' ? 'selected' : ''}>최근 3개월</option>
+			  </select>
+			</div>
 
             <div class="seller-review-filter seller-review-filter--search">
               <label class="seller-review-filter-label" for="reviewQuery">검색</label>
               <div class="seller-review-input-wrap">
                 <span class="material-icons-outlined" aria-hidden="true">search</span>
-                <input id="reviewQuery" class="seller-review-input" type="text" placeholder="리뷰 내용 또는 작성자로 검색해 주세요" />
+                <input id="reviewQuery" class="seller-review-input" type="text" 
+     					  value="${paramQuery}" placeholder="리뷰 내용 또는 작성자로 검색해 주세요" />
               </div>
             </div>
 
@@ -169,7 +171,6 @@
                   </div>
 
                   <div class="seller-review-actions">
-                    <button type="button" class="seller-review-btn" data-action="detail">상세보기</button>
                     <button type="button" class="seller-review-btn ${review.answered ? '' : 'seller-review-btn--primary'}" data-action="reply">
                       ${review.answered ? '답변 보기' : '답변 달기'}
                     </button>
@@ -180,13 +181,13 @@
           </c:choose>
         </section>
 
-        <div class="seller-review-pagination" aria-label="페이지네이션(더미)">
-          <button type="button" class="seller-review-page-btn" data-page="prev">이전</button>
-          <button type="button" class="seller-review-page-btn active" data-page="1">1</button>
-          <button type="button" class="seller-review-page-btn" data-page="2">2</button>
-          <button type="button" class="seller-review-page-btn" data-page="3">3</button>
-          <button type="button" class="seller-review-page-btn" data-page="next">다음</button>
-        </div>
+        <div class="seller-review-pagination" aria-label="페이지네이션">
+		  <c:forEach var="i" begin="${startPage}" end="${endPage}">
+		    <button type="button" class="seller-review-page-btn ${i == currentPage ? 'active' : ''}" data-page="${i}">
+		      ${i}
+		    </button>
+		  </c:forEach>
+		</div>
 
         <section class="seller-card seller-review-empty" aria-label="빈 상태(더미)" hidden>
           <div class="seller-review-empty-inner">
