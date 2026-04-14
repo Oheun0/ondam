@@ -200,4 +200,53 @@ public class InquiryDAO {
         finally { pool.freeConnection(con, pstmt, rs); }
         return dto;
     }
+    
+ // 7. 특정 상품에 대한 문의 목록 가져오기 (상품 상세 페이지용)
+    public Vector<InquiryDTO> getInquiriesByProductNo(int productNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Vector<InquiryDTO> vlist = new Vector<>();
+
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT i.*, u.userName "
+                       + "FROM inquiry i "
+                       + "JOIN user u ON i.userNo = u.userNo "
+                       + "WHERE i.productNo = ? "
+                       + "ORDER BY i.createdAt DESC";
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productNo);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                InquiryDTO dto = new InquiryDTO();
+                dto.setInquiryNo(rs.getInt("inquiryNo"));
+                dto.setProductNo(rs.getInt("productNo"));
+                dto.setUserNo(rs.getInt("userNo"));
+                dto.setUserName(rs.getString("userName")); 
+                dto.setInquiryContent(rs.getString("inquiryContent"));
+                dto.setInquiryStatus(rs.getInt("inquiryStatus"));
+                dto.setAnswerContent(rs.getString("answerContent"));
+                dto.setIsSecret(rs.getInt("isSecret"));
+                dto.setIsNameHidden(rs.getInt("isNameHidden"));
+
+                String createdAt = rs.getString("createdAt");
+                if(createdAt != null && createdAt.length() > 10) {
+                    dto.setCreatedAt(createdAt.substring(0, 10)); 
+                }
+                String answeredAt = rs.getString("answeredAt");
+                if(answeredAt != null && answeredAt.length() > 10) {
+                    dto.setAnsweredAt(answeredAt.substring(0, 10));
+                }
+                vlist.addElement(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return vlist;
+    }
 }

@@ -18,6 +18,7 @@ public class InquiryDTO {
     private String productBrand;
     private String productName;
     private String productImage;
+    private String userName;
     
     
 	public int getInquiryNo() {
@@ -109,5 +110,11 @@ public class InquiryDTO {
 	}
     public void setIsNameHidden(int isNameHidden) { 
     	this.isNameHidden = isNameHidden;
+    }
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

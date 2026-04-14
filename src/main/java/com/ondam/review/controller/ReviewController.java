@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import com.ondam.common.ProjectWebappPaths;
 import com.ondam.common.controller.Controller;
 import com.ondam.review.dto.ReviewDTO;
 import com.ondam.review.dto.ReviewImageDTO;
@@ -30,6 +31,11 @@ public class ReviewController implements Controller {
         String action = request.getParameter("action");
         if (action == null) {
             action = "myList";
+        }
+        
+        if ("increaseHelpful".equals(action)) {
+            increaseHelpful(request, response);
+            return null;
         }
 
         switch (action) {
@@ -58,9 +64,8 @@ public class ReviewController implements Controller {
         UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
         if (loginUser == null) return "redirect:/login";
 
-        String relativePath = "/uploads/reviews";
-        String savePath = request.getServletContext().getRealPath(relativePath);
-        java.io.File uploadDir = new java.io.File(savePath);
+        File uploadDir = ProjectWebappPaths.uploadsReviewsDirectory(request.getServletContext());
+        String savePath = uploadDir.getAbsolutePath();
         if (!uploadDir.exists()) uploadDir.mkdirs();
 
         try {
@@ -131,9 +136,8 @@ public class ReviewController implements Controller {
             dto.setReviewContent(request.getParameter("reviewContent"));
             dto.setIsBodyPublic(Integer.parseInt(request.getParameter("isBodyPublic")));
             //삭제할 사진 번호
-            String relativePath = "/uploads/reviews"; 
-            String savePath = request.getServletContext().getRealPath(relativePath);
-            java.io.File uploadDir = new java.io.File(savePath);
+            File uploadDir = ProjectWebappPaths.uploadsReviewsDirectory(request.getServletContext());
+            String savePath = uploadDir.getAbsolutePath();
             
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs(); 
@@ -201,5 +205,33 @@ public class ReviewController implements Controller {
         request.setAttribute("imageList", imageList);
 
         return "product/review/review-write";
+    }
+    
+ //도움돼요 갯수 증가 처리 메서드
+    private void increaseHelpful(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
+        java.io.PrintWriter out = response.getWriter();
+        UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+        
+        if (loginUser == null) {
+            out.print("{\"status\":\"login_required\"}");
+            return;
+        }
+        
+        try {
+            int reviewNo = Integer.parseInt(request.getParameter("reviewNo"));
+            boolean isSuccess = reviewService.increaseReviewHelpful(reviewNo, loginUser.getUserNo());
+            
+            if (isSuccess) {
+                out.print("{\"status\":\"success\"}");
+            } else {
+                out.print("{\"status\":\"already_done\"}");
+            }
+        } catch (Exception e) {
+            out.print("{\"status\":\"error\"}");
+        } finally {
+            out.flush();
+            out.close();
+        }
     }
 }

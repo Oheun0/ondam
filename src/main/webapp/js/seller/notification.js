@@ -108,6 +108,7 @@
     });
   }
 
+  // 💡 [버그 1 해결] 탭 클릭 시 리스트 화면으로 강제 전환
   tabs.forEach(function (b) {
     b.addEventListener('click', function () {
       showList(); 
@@ -137,7 +138,7 @@
   }
   function statusClass(n) {
     var t = statusText(n);
-    if (t.includes('대기') || t.includes('미답변')) return 'status--pending';
+    if (t.includes('대기')) return 'status--pending';
     if (t.includes('처리')) return 'status--need';
     if (t.includes('완료')) return 'status--done';
     return '';
@@ -199,6 +200,7 @@
     if (detailEl) detailEl.innerHTML = renderDetailHtml(n);
   }
 
+  // 💡 [버그 2 해결] dashboard.js와의 충돌을 막기 위해 모든 버튼의 속성을 data-noti-action으로 변경
   function renderDetailHtml(n) {
     if (n.kind === 'inquiry') return renderInquiryDetail(n);
     if (n.kind === 'order') return renderOrderDetail(n);

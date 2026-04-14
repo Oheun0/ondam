@@ -31,4 +31,8 @@ public class InquiryService {
     public InquiryDTO getInquiryDetail(int inquiryNo) { 
     	return inquiryDao.getInquiryDetail(inquiryNo); 
     }
+    
+    public Vector<InquiryDTO> getInquiriesByProductNo(int productNo) {
+        return inquiryDao.getInquiriesByProductNo(productNo);
+    }
 }

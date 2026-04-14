@@ -32,6 +32,8 @@ public class ProductController implements Controller {
 	private SituationService situationService = new SituationService();
 	private WishService wishService = new WishService();
 	private FamilyMemberService familyMemberService = new FamilyMemberService();
+	private com.ondam.review.service.ReviewService reviewService = new com.ondam.review.service.ReviewService();
+	private com.ondam.inquiry.service.InquiryService inquiryService = new com.ondam.inquiry.service.InquiryService();
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -164,6 +166,9 @@ public class ProductController implements Controller {
 	private String detail(HttpServletRequest request, HttpServletResponse response) {
 	    int productNo = Integer.parseInt(request.getParameter("productNo"));
 
+	    String sort = request.getParameter("sort");
+	    if (sort == null || sort.isEmpty()) sort = "recent";
+	    
 	    ProductDTO product        = productService.getProductById(productNo);
 	    Vector<String> images     = productService.getProductImages(productNo);
 	    Vector<ProductOptionDTO> options = productService.getProductOptions(productNo);
@@ -201,6 +206,13 @@ public class ProductController implements Controller {
 	    request.setAttribute("colorSizeMap", colorSizeMap);
 	    request.setAttribute("optionList",   options);
 
+	    Vector<com.ondam.review.dto.ReviewDTO> reviewList = reviewService.getReviewsByProductNo(productNo, sort);
+	    request.setAttribute("currentSort", sort);
+		request.setAttribute("reviewList", reviewList);
+		
+		Vector<com.ondam.inquiry.dto.InquiryDTO> inquiryList = inquiryService.getInquiriesByProductNo(productNo);
+	    request.setAttribute("inquiryList", inquiryList);
+	    
 	    return "product/product-detail";
 	}
 	private void getOptionsJson(HttpServletRequest request, HttpServletResponse response) throws Exception {

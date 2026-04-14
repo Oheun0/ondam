@@ -77,6 +77,8 @@ public class ReviewDAO {
                 dto.setIsBodyPublic(rs.getInt("isBodyPublic"));
                 dto.setCreatedAt(rs.getString("createdAt"));
                 dto.setUpdatedAt(rs.getString("updatedAt"));
+                dto.setReplyContent(rs.getString("replyContent"));
+                dto.setReplyDate(rs.getString("replyDate"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,6 +112,8 @@ public class ReviewDAO {
                 dto.setIsBodyPublic(rs.getInt("isBodyPublic"));
                 dto.setCreatedAt(rs.getString("createdAt"));
                 dto.setUpdatedAt(rs.getString("updatedAt"));
+                dto.setReplyContent(rs.getString("replyContent"));
+                dto.setReplyDate(rs.getString("replyDate"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,6 +156,10 @@ public class ReviewDAO {
                 dto.setSnapOptionSize(rs.getString("snapOptionSize"));
                 dto.setSnapOptionColor(rs.getString("snapOptionColor"));
                 dto.setProductImg(rs.getString("productImg")); 
+                
+                dto.setReplyContent(rs.getString("replyContent"));
+                dto.setReplyDate(rs.getString("replyDate"));
+                
                 
                 vlist.addElement(dto);
             }
@@ -326,5 +334,88 @@ public class ReviewDAO {
             pool.freeConnection(con, pstmt, rs);
         }
         return dto;
+    }
+    
+    public Vector<ReviewDTO> getReviewsByProductNo(int productNo, String sortType) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Vector<ReviewDTO> vlist = new Vector<>();
+        try {
+            con = pool.getConnection();
+            String orderBy = "r.createdAt DESC";
+            if ("popular".equals(sortType)) {
+                orderBy = "r.reviewHelpful DESC, r.createdAt DESC";
+            }
+
+            String sql = "SELECT r.*, u.userName, op.snapOptionSize, op.snapOptionColor " +
+                         "FROM review r " +
+                         "JOIN user u ON r.userNo = u.userNo " +
+                         "JOIN ordersproduct op ON r.orderItemNo = op.orderItemNo " +
+                         "WHERE op.productNo = ? " +
+                         "ORDER BY " + orderBy; // 변수 대입
+                         
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productNo);
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                ReviewDTO dto = new ReviewDTO();
+                dto.setReviewNo(rs.getInt("reviewNo"));
+                dto.setUserName(rs.getString("userName")); 
+                dto.setReviewHelpful(rs.getInt("reviewHelpful"));
+                dto.setReviewRating(rs.getInt("reviewRating"));
+                dto.setReviewContent(rs.getString("reviewContent"));
+                dto.setCreatedAt(rs.getString("createdAt"));
+                dto.setSnapOptionSize(rs.getString("snapOptionSize"));
+                dto.setSnapOptionColor(rs.getString("snapOptionColor"));
+                dto.setReplyContent(rs.getString("replyContent"));
+                dto.setReplyDate(rs.getString("replyDate"));
+                vlist.add(dto);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally { pool.freeConnection(con, pstmt, rs); }
+        return vlist;
+    }
+    
+ // '도움돼요' 버튼
+    public boolean increaseReviewHelpful(int reviewNo, int userNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean flag = false;
+        
+        try {
+            con = pool.getConnection();
+            String checkSql = "SELECT * FROM reviewhelpful WHERE reviewNo = ? AND userNo = ?";
+            pstmt = con.prepareStatement(checkSql);
+            pstmt.setInt(1, reviewNo);
+            pstmt.setInt(2, userNo);
+            rs = pstmt.executeQuery();
+            
+            if (!rs.next()) {
+                pstmt.close();
+
+                String insSql = "INSERT INTO reviewhelpful (reviewNo, userNo) VALUES (?, ?)";
+                pstmt = con.prepareStatement(insSql);
+                pstmt.setInt(1, reviewNo);
+                pstmt.setInt(2, userNo);
+                pstmt.executeUpdate();
+                pstmt.close();
+                
+                String updSql = "UPDATE review SET reviewHelpful = reviewHelpful + 1 WHERE reviewNo = ?";
+                pstmt = con.prepareStatement(updSql);
+                pstmt.setInt(1, reviewNo);
+                
+                if (pstmt.executeUpdate() > 0) {
+                    flag = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return flag;
     }
 }
