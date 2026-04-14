@@ -3,6 +3,7 @@ package com.ondam.user.controller;
 import java.io.File;
 import java.util.UUID;
 
+import com.ondam.common.ProjectWebappPaths;
 import com.ondam.common.controller.Controller;
 import com.ondam.user.dao.UserDAO;
 import com.ondam.user.dto.UserDTO; // 🚩 DTO 꼭 import 해주세요!
@@ -39,23 +40,21 @@ public class ProfileUpdateController implements Controller {
 
         String resetProfile = request.getParameter("resetProfile");
         if ("true".equals(resetProfile)) {
-            String uploadPath = request.getServletContext().getRealPath("/images/profile");
+            File uploadDir = ProjectWebappPaths.profileImagesDirectory(request.getServletContext());
             if (profileImgName != null && !profileImgName.equals("default-profile.png")) {
-                File oldFile = new File(uploadPath + File.separator + profileImgName);
+                File oldFile = new File(uploadDir, profileImgName);
                 if (oldFile.exists()) oldFile.delete();
             }
             profileImgName = null;
 
         } else if (filePart != null && filePart.getSize() > 0) {
-            String uploadPath = request.getServletContext().getRealPath("/images/profile");
-
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) uploadDir.mkdir();
+            File uploadDir = ProjectWebappPaths.profileImagesDirectory(request.getServletContext());
+            if (!uploadDir.exists()) uploadDir.mkdirs();
 
             String originalFileName = filePart.getSubmittedFileName();
             String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFileName;
 
-            filePart.write(uploadPath + File.separator + uniqueFileName);
+            filePart.write(new File(uploadDir, uniqueFileName).getAbsolutePath());
 
             profileImgName = uniqueFileName;
         }
