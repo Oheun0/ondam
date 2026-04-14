@@ -218,7 +218,8 @@ public class ProductController implements Controller {
 	        json.append("\"productOptionNo\":").append(opt.getProductOptionNo()).append(","); 
 	        json.append("\"optionColor\":\"").append(opt.getOptionColor()).append("\",");
 	        json.append("\"optionSize\":\"").append(opt.getOptionSize()).append("\",");
-	        json.append("\"optionAddPrice\":").append(opt.getOptionAddPrice());
+	        json.append("\"optionAddPrice\":").append(opt.getOptionAddPrice()).append(",");
+	        json.append("\"optionStock\":").append(opt.getOptionStock());
 	        json.append("}");
 	        if (i < options.size() - 1) json.append(",");
 	    }

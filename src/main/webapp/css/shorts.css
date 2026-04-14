@@ -280,3 +280,19 @@ html, body {
     .no-shorts-card h2 { font-size: 20px; }
     .go-home-btn { min-height: 48px; }
 }
+/* 모달과 바텀 시트가 하단 네비게이션 바 위로 올라오도록 z-index를 최상위로 강제 설정 */
+.detail-sheet-dim,
+#detailSheetDim {
+    z-index: 99999 !important;
+}
+
+.detail-sheet,
+#detailOptionSheet {
+    z-index: 100000 !important;
+}
+
+/* 바텀 시트 안에 있는 장바구니/구매하기 버튼이 무조건 보이도록 설정 */
+.detail-sheet-bottom {
+    z-index: 100001 !important;
+    position: relative !important; 
+}
