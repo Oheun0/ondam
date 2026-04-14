@@ -3,6 +3,7 @@ package com.ondam.review.controller;
 import java.io.File;
 import java.util.UUID;
 
+import com.ondam.common.ProjectWebappPaths;
 import com.ondam.common.controller.Controller;
 import com.ondam.review.dto.ReviewImageDTO;
 import com.ondam.review.service.ReviewImageService;
@@ -41,10 +42,9 @@ public class ReviewImageController implements Controller {
     private String upload(HttpServletRequest request, HttpServletResponse response) throws Exception {
         int reviewNo = Integer.parseInt(request.getParameter("reviewNo"));
 
-        String relativePath = "/uploads/reviews";
-        String uploadPath = request.getServletContext().getRealPath(relativePath);
+        File uploadDir = ProjectWebappPaths.uploadsReviewsDirectory(request.getServletContext());
+        String uploadPath = uploadDir.getAbsolutePath();
         
-        File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
@@ -77,8 +77,9 @@ public class ReviewImageController implements Controller {
         ReviewImageDTO dto = reviewImageService.getReviewImage(reviewImgNo);
         
         if (dto != null && dto.getReviewImg() != null) {
-            String realPath = request.getServletContext().getRealPath("/uploads/reviews/" + dto.getReviewImg());
-            File file = new File(realPath);
+            File file = new File(
+                    ProjectWebappPaths.uploadsReviewsDirectory(request.getServletContext()),
+                    dto.getReviewImg());
             if (file.exists()) {
                 file.delete();
             }

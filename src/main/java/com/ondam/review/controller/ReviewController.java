@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import com.ondam.common.ProjectWebappPaths;
 import com.ondam.common.controller.Controller;
 import com.ondam.review.dto.ReviewDTO;
 import com.ondam.review.dto.ReviewImageDTO;
@@ -58,9 +59,8 @@ public class ReviewController implements Controller {
         UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
         if (loginUser == null) return "redirect:/login";
 
-        String relativePath = "/uploads/reviews";
-        String savePath = request.getServletContext().getRealPath(relativePath);
-        java.io.File uploadDir = new java.io.File(savePath);
+        File uploadDir = ProjectWebappPaths.uploadsReviewsDirectory(request.getServletContext());
+        String savePath = uploadDir.getAbsolutePath();
         if (!uploadDir.exists()) uploadDir.mkdirs();
 
         try {
@@ -131,9 +131,8 @@ public class ReviewController implements Controller {
             dto.setReviewContent(request.getParameter("reviewContent"));
             dto.setIsBodyPublic(Integer.parseInt(request.getParameter("isBodyPublic")));
             //삭제할 사진 번호
-            String relativePath = "/uploads/reviews"; 
-            String savePath = request.getServletContext().getRealPath(relativePath);
-            java.io.File uploadDir = new java.io.File(savePath);
+            File uploadDir = ProjectWebappPaths.uploadsReviewsDirectory(request.getServletContext());
+            String savePath = uploadDir.getAbsolutePath();
             
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs(); 

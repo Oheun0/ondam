@@ -72,7 +72,7 @@ public class ShortsService {
     }
 
     // [FIXED] AI 영상 생성 시 기존 영상 덮어쓰기 방지 검증 추가
-    public String requestGenerateShorts(int vendorNo, int productNo, String title, String content, String realPath) {
+    public String requestGenerateShorts(int vendorNo, int productNo, String title, String content, String webappRootPath) {
         ShortsDTO current = dao.getShortByProductNo(productNo);
         if (current != null) {
             if (current.getShortsState() == 0) {
@@ -84,16 +84,16 @@ public class ShortsService {
             // 상태가 -1(생성 실패)인 경우에만 통과시켜서 재시도(덮어쓰기)를 허용함
         }
         
-        generator.generateShortsAsync(vendorNo, productNo, title, content, realPath);
+        generator.generateShortsAsync(vendorNo, productNo, title, content, webappRootPath);
         return "success";
     }
 
-    public String removeShortsWithValidation(int vendorNo, int productNo, String realPath) {
+    public String removeShortsWithValidation(int vendorNo, int productNo, String webappRootPath) {
         ShortsDTO target = dao.getShortByProductNo(productNo);
         if (target == null) return "삭제할 영상이 없습니다.";
         if (target.getVendorNo() != vendorNo) return "해당 영상을 삭제할 권한이 없습니다.";
 
-        String path = realPath + "uploads" + File.separator + "shorts" + File.separator;
+        String path = webappRootPath + "uploads" + File.separator + "shorts" + File.separator;
         if (target.getVideoFile() != null && !target.getVideoFile().isEmpty()) {
             new File(path + target.getVideoFile()).delete();
         }
@@ -114,7 +114,7 @@ public class ShortsService {
     }
 
     // [FIXED] 수동 업로드 시에도 기존 영상 덮어쓰기 방지 검증 추가
-    public String uploadManualShorts(int vendorNo, int productNo, String title, String content, Part videoPart, String thumbnailBase64, String realPath) throws Exception {
+    public String uploadManualShorts(int vendorNo, int productNo, String title, String content, Part videoPart, String thumbnailBase64, String webappRootPath) throws Exception {
         
         long maxSize = 60 * 1024 * 1024; 
         if (videoPart == null || videoPart.getSize() == 0) return "업로드할 영상 파일이 없습니다.";
@@ -133,7 +133,7 @@ public class ShortsService {
             }
         }
 
-        String savePath = realPath + "uploads" + File.separator + "shorts";
+        String savePath = webappRootPath + "uploads" + File.separator + "shorts";
         File uploadDir = new File(savePath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
 
