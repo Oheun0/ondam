@@ -34,7 +34,7 @@
 						</a>
 					</div>
 					<div class="banner-slide">
-						<a href="${pageContext.request.contextPath}/ai" class="banner-slide-link" aria-label="배너 3: 옷 추천으로 이동">
+						<a href="${pageContext.request.contextPath}/ai-intro" class="banner-slide-link" aria-label="배너 3: 옷 추천으로 이동">
 							<img src="${pageContext.request.contextPath}/images/banner/banner3.png" class="banner-img" alt="온담 메인 배너 3" width="800" height="400" decoding="async">
 						</a>
 					</div>

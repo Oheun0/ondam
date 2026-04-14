@@ -133,8 +133,12 @@ document.addEventListener('DOMContentLoaded', function() {
               window.location.href = getCtx() + "/search";
               return;
           }
-          // 검색 입력 화면 → 이전 페이지(홈/카테고리)로
-          window.location.href = getCtx() + "/main";
+          // 검색 홈: 직전 화면(상품 상세 등)으로 — 히스토리 없을 때만 메인
+          if (window.history.length > 1) {
+              window.history.back();
+          } else {
+              window.location.href = getCtx() + "/main";
+          }
       });
   }
 

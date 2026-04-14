@@ -68,6 +68,9 @@ public class ProductController implements Controller {
 			return detail(request, response);
 		case "listByCategory":
 			return listByCategory(request, response);
+		case "search":
+			// 예전 링크(/product?action=search) 호환 — 검색은 SearchController(/search)로
+			return "redirect:/search";
 		default:
 			return "redirect:/product";
 		}

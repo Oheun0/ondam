@@ -17,6 +17,7 @@
 
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/seller/seller-layout.css" />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/seller/seller-product.css" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/seller/seller-shorts.css" />
 </head>
 <body class="seller-app" data-context-path="${pageContext.request.contextPath}">
@@ -69,7 +70,7 @@
 
               <div class="seller-shorts-field" style="grid-column: span 2;">
                 <label class="seller-shorts-label" for="shortsContent">쇼츠 내용</label>
-                <textarea id="shortsContent" name="shortsContent" class="seller-shorts-control" rows="3" placeholder="상품에 대한 간단한 설명을 작성해 주세요 (최대 200자)"></textarea>
+                <textarea id="shortsContent" name="shortsContent" class="seller-product-textarea" rows="4" placeholder="상품에 대한 간단한 설명을 작성해 주세요 (최대 200자)"></textarea>
               </div>
             </div>
           </section>
