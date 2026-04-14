@@ -135,6 +135,10 @@ public final class ProjectWebappPaths {
 		return new File(getWebappRoot(ctx), "uploads" + File.separator + "products");
 	}
 
+	public static File uploadsReviewsDirectory(ServletContext ctx) {
+		return new File(getWebappRoot(ctx), "uploads" + File.separator + "reviews");
+	}
+
 	/**
 	 * 컨텍스트 기준 경로(예: {@code /images/profile/a.jpg})에 해당하는 파일이
 	 * 웹앱 루트 아래에 있으면 반환. 경로 탈출({@code ..})은 차단.
