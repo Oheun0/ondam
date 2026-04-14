@@ -163,12 +163,10 @@ public class ProductController implements Controller {
 	// 2. 상품 상세 — 이미지 전체 + 옵션 목록
 	private String detail(HttpServletRequest request, HttpServletResponse response) {
 	    int productNo = Integer.parseInt(request.getParameter("productNo"));
-
-	    ProductDTO product        = productService.getProductById(productNo);
-	    Vector<String> images     = productService.getProductImages(productNo);
+	    ProductDTO product = productService.getProductById(productNo);
+	    Vector<String> images = productService.getProductImages(productNo);
 	    Vector<ProductOptionDTO> options = productService.getProductOptions(productNo);
 
-	    // 색상 중복 제거
 	    java.util.LinkedHashSet<String> colorSet = new java.util.LinkedHashSet<>();
 	    java.util.LinkedHashMap<String, java.util.List<String>> colorSizeMap = new java.util.LinkedHashMap<>();
 	    for (ProductOptionDTO opt : options) {
@@ -177,16 +175,22 @@ public class ProductController implements Controller {
 	            .computeIfAbsent(opt.getOptionColor(), k -> new java.util.ArrayList<>())
 	            .add(opt.getOptionSize());
 	    }
-	    
-	    // 조르기용 그룹 멤버 리스트 추가
-	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+
+	    boolean isWished = false;
+	    HttpSession session = request.getSession(false);
+	    UserDTO loginUser = (session != null) ? (UserDTO) session.getAttribute("loginUser") : null;
+
 	    if (loginUser != null) {
-	        FamilyMemberDTO myMember = familyMemberService
-	                .getFamilyMemberByUserNo(loginUser.getUserNo());
+	        Set<Integer> wishedNos = wishService.getWishedProductNos(loginUser.getUserNo());
+	        if (wishedNos != null && wishedNos.contains(productNo)) {
+	            isWished = true;
+	        }
+
+	        FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
 	        if (myMember != null) {
-	            Vector<FamilyMemberDTO> memberList = familyMemberService
-	                    .getFamilyMembersByFamilyNo(myMember.getFamilyNo());
+	            Vector<FamilyMemberDTO> memberList = familyMemberService.getFamilyMembersByFamilyNo(myMember.getFamilyNo());
 	            memberList.removeIf(m -> m.getUserNo() == loginUser.getUserNo());
+	            
 	            request.setAttribute("pokeMemberList", memberList);
 	            request.setAttribute("familyNo", myMember.getFamilyNo());
 	        } else {
@@ -194,12 +198,13 @@ public class ProductController implements Controller {
 	        }
 	    }
 
-	    request.setAttribute("product",      product);
-	    request.setAttribute("images",       images);
-	    request.setAttribute("options",      options);
-	    request.setAttribute("colorSet",     colorSet);
+	    request.setAttribute("product", product);
+	    request.setAttribute("images", images);
+	    request.setAttribute("options", options);
+	    request.setAttribute("colorSet", colorSet);
 	    request.setAttribute("colorSizeMap", colorSizeMap);
-	    request.setAttribute("optionList",   options);
+	    request.setAttribute("optionList", options);
+	    request.setAttribute("isWished", isWished); 
 
 	    return "product/product-detail";
 	}

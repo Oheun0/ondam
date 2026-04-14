@@ -83,11 +83,18 @@
 		<input type="hidden" id="hiddenFamilyNo"  value="${familyNo}">
 
       <div class="detail-action-grid">
-        <button type="button" class="detail-action-item" id="sheetWishlistBtn"
-                aria-pressed="false" aria-label="찜하기">
-          <span class="detail-wish-icon material-icons-outlined" aria-hidden="true">favorite_border</span>
-          <span>찜</span>
-        </button>
+        <button type="button" 
+		        class="detail-action-item ${isWished ? 'detail-action-item--wish-on' : ''}" 
+		        id="sheetWishlistBtn"
+		        data-wished="${isWished}"
+		        aria-pressed="${isWished ? 'true' : 'false'}" 
+		        aria-label="${isWished ? '찜 해제' : '찜하기'}">
+		  
+		  <span class="detail-wish-icon ${isWished ? 'material-icons' : 'material-icons-outlined'}" aria-hidden="true">
+		    ${isWished ? 'favorite' : 'favorite_border'}
+		  </span>
+		  <span>찜</span>
+		</button>
         <button type="button" class="detail-action-item" id="openPokeFromSheetBtn">
           <span class="material-icons-outlined">volunteer_activism</span>
           <span>조르기</span>

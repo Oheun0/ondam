@@ -34,8 +34,12 @@
 		<param-value>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</param-value>
 	</context-param>
 	<context-param>
+		<param-name>openaiApiKey2</param-name>
+		<param-value>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</param-value>
+	</context-param>
+	<context-param>
 		<param-name>kakaoJavascriptKey</param-name>
-		<param-value></param-value>
+		<param-value>acfdcdb558521afc9930db2ec0fc8455</param-value>
 	</context-param>
 
 	<servlet>
