@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="detail-sheet-dim hidden" id="detailSheetDim"></div>
 
@@ -15,7 +16,6 @@
   <div class="detail-sheet-stage">
     <div class="detail-sheet-scroll">
 
-      <!-- 색상 선택 -->
       <div class="detail-sheet-section">
         <button type="button" class="detail-option-toggle" id="colorToggleBtn"
                 aria-expanded="false" aria-controls="colorOptionPanel">
@@ -38,7 +38,6 @@
         </div>
       </div>
 
-      <!-- 사이즈 선택 — colorSizeMap은 JS에서 색상 선택 후 동적으로 렌더링 -->
       <div class="detail-sheet-section">
         <button type="button" class="detail-option-toggle" id="sizeToggleBtn"
                 aria-expanded="false" aria-controls="sizeOptionPanel">
@@ -56,31 +55,37 @@
         </div>
       </div>
 
-      <!-- colorSizeMap을 JS에서 쓸 수 있도록 JSON으로 내려줌 -->
       <script>
         const COLOR_SIZE_MAP = {
           <c:forEach var="entry" items="${colorSizeMap}" varStatus="st">
             "${entry.key}": [<c:forEach var="sz" items="${entry.value}" varStatus="szSt">"${sz}"${szSt.last ? '' : ','}</c:forEach>]${st.last ? '' : ','}
           </c:forEach>
         };
-        const UNIT_PRICE = ${product.productPrice};
-        const PRODUCT_NO = ${product.productNo};
+        const UNIT_PRICE = ${not empty product.productPrice ? product.productPrice : 0};
+        const PRODUCT_NO = ${not empty product.productNo ? product.productNo : 0};
+        
         const OPTION_NO_MAP = {
-        	    <c:forEach var="opt" items="${optionList}" varStatus="st">
-        	      "${opt.optionColor}__${opt.optionSize}": ${opt.productOptionNo}${st.last ? '' : ','}
-        	    </c:forEach>
-        	  };
+            <c:forEach var="opt" items="${optionList}" varStatus="st">
+              "${opt.optionColor}__${opt.optionSize}": ${opt.productOptionNo}${st.last ? '' : ','}
+            </c:forEach>
+        };
         const OPTION_STOCK_MAP = {
-                <c:forEach var="opt" items="${optionList}" varStatus="st">
-                    "${opt.optionColor}__${opt.optionSize}": ${opt.optionStock}${st.last ? '' : ','}
-                </c:forEach>
-            };
+            <c:forEach var="opt" items="${optionList}" varStatus="st">
+                "${opt.optionColor}__${opt.optionSize}": ${opt.optionStock}${st.last ? '' : ','}
+            </c:forEach>
+        };
+        // 💡 [중요] 이 부분이 추가금액을 JS로 넘겨주는 핵심입니다!
+        const OPTION_ADD_PRICE_MAP = {
+            <c:forEach var="opt" items="${optionList}" varStatus="st">
+                "${opt.optionColor}__${opt.optionSize}": ${opt.optionAddPrice}${st.last ? '' : ','}
+            </c:forEach>
+        };
       </script>
       
       <input type="hidden" id="hiddenProductNo" value="${product.productNo}">
-		<input type="hidden" id="hiddenOptionNo"  value="">
-		<input type="hidden" id="hiddenQuantity"  value="1">
-		<input type="hidden" id="hiddenFamilyNo"  value="${familyNo}">
+      <input type="hidden" id="hiddenOptionNo"  value="">
+      <input type="hidden" id="hiddenQuantity"  value="1">
+      <input type="hidden" id="hiddenFamilyNo"  value="${familyNo}">
 
       <div class="detail-action-grid">
         <button type="button" 
@@ -125,12 +130,12 @@
       </div>
 
       <div class="detail-sheet-order-divider" role="presentation" aria-hidden="true"></div>
+      
       <div class="detail-sheet-order-summary" id="detailSheetOrderSummary"
-           data-unit-price="${product.productPrice}">
+           data-unit-price="${not empty product.productPrice ? product.productPrice : 0}">
         <span class="detail-sheet-order-count" id="sheetOrderCount">총 1개</span>
         <span class="detail-sheet-order-total" id="sheetOrderTotal">
-          <fmt:formatNumber xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-            value="${product.productPrice}" pattern="#,###"/>원
+          <fmt:formatNumber value="${not empty product.productPrice ? product.productPrice : 0}" pattern="#,###"/>원
         </span>
       </div>
     </div>

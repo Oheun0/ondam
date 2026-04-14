@@ -32,7 +32,7 @@
       <span class="seller-nav-label">주문 / 배송 관리</span>
     </a>
     
-    <a class="seller-nav-item <%= "review".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/preview?page=seller/review/list">
+    <a class="seller-nav-item <%= "review".equals(active) ? "active" : "" %>" href="${pageContext.request.contextPath}/seller/review?action=list">
       <span class="material-icons-outlined seller-nav-icon" aria-hidden="true">rate_review</span>
       <span class="seller-nav-label">리뷰 관리</span>
     </a>

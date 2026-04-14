@@ -8,6 +8,11 @@
 		<param-name>sellerLogoStorageDirectory</param-name>
 		<param-value>C:/Jsp/ondam/src/main/webapp/images/seller/logo</param-value>
 	</context-param>
+	<!-- 프로필·상품 업로드가 워크스페이스 src/main/webapp 에 쌓이게 할 때(비우면 getRealPath 배포 루트 사용) -->
+	<context-param>
+		<param-name>ondam.projectWebappRoot</param-name>
+		<param-value>C:/Jsp/ondam/src/main/webapp</param-value>
+	</context-param>
 
 	<context-param>
 		<param-name>mailSmtpHost</param-name>

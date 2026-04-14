@@ -15,6 +15,8 @@ public class ReviewDTO {
     private String snapOptionSize;
     private String snapOptionColor;
     private String productImg;
+    private String replyContent;
+    private String replyDate;
 
     public ReviewDTO() {}
 
@@ -126,4 +128,20 @@ public class ReviewDTO {
     public void setProductImg(String productImg) { 
     	this.productImg = productImg; 
     	}
+
+	public String getReplyContent() {
+		return replyContent;
+	}
+
+	public void setReplyContent(String replyContent) {
+		this.replyContent = replyContent;
+	}
+
+	public String getReplyDate() {
+		return replyDate;
+	}
+
+	public void setReplyDate(String replyDate) {
+		this.replyDate = replyDate;
+	}
 }

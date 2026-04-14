@@ -757,41 +757,42 @@ document.addEventListener("DOMContentLoaded", function () {
 				      syncSheetOptionPanels();
 
 				      // sync stock and option number
-				      var optKey = selectedColor + "__" + sz;
-				      var stock = OPTION_STOCK_MAP[optKey] !== undefined ? OPTION_STOCK_MAP[optKey] : 9999;
-				      detailOptionSheet.setAttribute("data-option-stock", stock);
+					  var optKey = selectedColor + "__" + sz;
+  				      var stock = OPTION_STOCK_MAP[optKey] !== undefined ? OPTION_STOCK_MAP[optKey] : 9999;
+  				      detailOptionSheet.setAttribute("data-option-stock", stock);
+  					  
+  					  var optionNo = OPTION_NO_MAP[optKey];
+  					      var hiddenOptionNoEl = document.getElementById("hiddenOptionNo");
+  					      if (hiddenOptionNoEl && optionNo) {
+  					          hiddenOptionNoEl.value = optionNo;
+  					      }
+
+  				      // disable actions if out of stock
+  				      if (stock === 0) {
+  				          if (sheetBuyNowBtn) {
+  				              sheetBuyNowBtn.disabled = true;
+  				              sheetBuyNowBtn.textContent = "품절";
+  				          }
+  				          if (sheetAddCartBtn) {
+  				              sheetAddCartBtn.disabled = true;
+  				          }
+  				      } else {
+  				          if (sheetBuyNowBtn) {
+  				              sheetBuyNowBtn.disabled = false;
+  				              sheetBuyNowBtn.textContent = "구매하기";
+  				          }
+  				          if (sheetAddCartBtn) {
+  				              sheetAddCartBtn.disabled = false;
+  				          }
+  				      }
+
+  				      // clamp quantity to available stock
+  				      if (quantity > stock) {
+  				          quantity = Math.max(1, stock);
+  				      }
 					  
-					  var optionNo = OPTION_NO_MAP[optKey];
-					      var hiddenOptionNoEl = document.getElementById("hiddenOptionNo");
-					      if (hiddenOptionNoEl && optionNo) {
-					          hiddenOptionNoEl.value = optionNo;
-					      }
-
-				      // disable actions if out of stock
-				      if (stock === 0) {
-				          if (sheetBuyNowBtn) {
-				              sheetBuyNowBtn.disabled = true;
-				              sheetBuyNowBtn.textContent = "품절";
-				          }
-				          if (sheetAddCartBtn) {
-				              sheetAddCartBtn.disabled = true;
-				          }
-				      } else {
-				          if (sheetBuyNowBtn) {
-				              sheetBuyNowBtn.disabled = false;
-				              sheetBuyNowBtn.textContent = "구매하기";
-				          }
-				          if (sheetAddCartBtn) {
-				              sheetAddCartBtn.disabled = false;
-				          }
-				      }
-
-				      // clamp quantity to available stock
-				      if (quantity > stock) {
-				          quantity = Math.max(1, stock);
-				          syncQtyStepper();
-				      }
-				  });
+					  syncQtyStepper();
+  				  });
               });
           }
 
@@ -808,17 +809,29 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function syncSheetOrderSummary() {
-    if (!sheetOrderCount || !sheetOrderTotal) return;
-    var unit = 39000;
-    if (detailSheetOrderSummary) {
-      var raw = parseInt(detailSheetOrderSummary.getAttribute("data-unit-price"), 10);
-      if (!Number.isNaN(raw) && raw >= 0) {
-        unit = raw;
+      if (!sheetOrderCount || !sheetOrderTotal) return;
+      var unit = 39000;
+      if (detailSheetOrderSummary) {
+        var raw = parseInt(detailSheetOrderSummary.getAttribute("data-unit-price"), 10);
+        if (!Number.isNaN(raw) && raw >= 0) {
+          unit = raw;
+        }
       }
+
+      // 💡 [핵심 추가] 현재 선택된 옵션의 색상/사이즈를 확인하여 추가 금액을 가져옵니다.
+      var addPrice = 0;
+      if (selectedColorText && selectedSizeText) {
+          var optKey = selectedColorText.textContent.trim() + "__" + selectedSizeText.textContent.trim();
+          // JSP에서 넘겨준 OPTION_ADD_PRICE_MAP이 존재하고, 해당 키의 값이 있으면
+          if (typeof OPTION_ADD_PRICE_MAP !== 'undefined' && OPTION_ADD_PRICE_MAP[optKey] !== undefined) {
+              addPrice = parseInt(OPTION_ADD_PRICE_MAP[optKey], 10);
+          }
+      }
+
+      sheetOrderCount.textContent = "총 " + quantity + "개";
+      // 💡 [수식 수정] (기본가격 + 추가가격) * 수량 으로 계산!
+      sheetOrderTotal.textContent = formatWon((unit + addPrice) * quantity);
     }
-    sheetOrderCount.textContent = "총 " + quantity + "개";
-    sheetOrderTotal.textContent = formatWon(unit * quantity);
-  }
 
   function syncQtyStepper() {
     if (qtyValue) {

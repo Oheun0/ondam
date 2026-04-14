@@ -1,31 +1,389 @@
-var isGlobalMuted = false;
-var currentUnitPrice = 0;    
-var currentAddPrice = 0;     
-var currentOptions = [];     
-var selectedOptionNo = null; 
-var currentProductNo = null; 
+// === 전역 변수 ===
+window.isGlobalMuted = false;
+window.currentUnitPrice = 0;
+window.currentProductNo = null;
+window.selectedOptionNo = null;
+window.quantity = 1;
 
-document.addEventListener("DOMContentLoaded", function() {
-    // === 1. 비디오 재생/일시정지 옵저버 ===
-    var videos = document.querySelectorAll('.shorts-video');
-    var observerOptions = { 
-        root: document.querySelector('.shorts-wrapper'), 
-        rootMargin: '0px', 
-        threshold: 0.6 
+window.COLOR_SIZE_MAP = {};
+window.OPTION_NO_MAP = {};
+window.OPTION_STOCK_MAP = {};
+window.currentOptions = [];
+window.currentShareMeta = {};
+
+// === 토스트 변수 ===
+var optionToastActive = false;
+var optionToastDismissTimer = null;
+var optionToastAnimFallbackTimer = null;
+var successToastActive = false;
+var successToastDismissTimer = null;
+
+// === 바텀 시트 닫기 함수 ===
+window.closePurchaseSheet = function() {
+    document.body.style.overflow = ""; 
+    var dim = document.getElementById("detailSheetDim");
+    var sheet = document.getElementById("detailOptionSheet");
+    var colorPanel = document.getElementById("colorOptionPanel");
+    var sizePanel = document.getElementById("sizeOptionPanel");
+    
+    if (dim) dim.classList.add("hidden");
+    if (sheet) sheet.classList.add("hidden");
+    if (colorPanel) colorPanel.classList.add("hidden");
+    if (sizePanel) sizePanel.classList.add("hidden");
+    
+    var colorToggle = document.getElementById("colorToggleBtn");
+    var sizeToggle = document.getElementById("sizeToggleBtn");
+    if (colorToggle) colorToggle.setAttribute("aria-expanded", "false");
+    if (sizeToggle) sizeToggle.setAttribute("aria-expanded", "false");
+};
+
+// === 바텀 시트 열기 함수 ===
+window.openPurchaseSheet = function(productNo, productPrice) {
+    window.currentProductNo = productNo;
+    window.currentUnitPrice = parseInt(productPrice) || 0;
+    window.quantity = 1;
+    window.selectedOptionNo = null;
+
+    // 찜 상태 동기화
+    var sheetWishlistBtn = document.getElementById("sheetWishlistBtn");
+    if (sheetWishlistBtn) {
+        var sideIcon = document.querySelector('button[onclick*="toggleLike(this, ' + productNo + ')"] .material-icons');
+        var isLiked = sideIcon && sideIcon.classList.contains("liked");
+        var sheetWishIcon = sheetWishlistBtn.querySelector(".detail-wish-icon");
+
+        if (isLiked) {
+            sheetWishlistBtn.classList.add("detail-action-item--wish-on");
+            sheetWishlistBtn.setAttribute("aria-pressed", "true");
+            if (sheetWishIcon) {
+                sheetWishIcon.classList.remove("material-icons-outlined");
+                sheetWishIcon.classList.add("material-icons");
+                sheetWishIcon.textContent = "favorite";
+            }
+        } else {
+            sheetWishlistBtn.classList.remove("detail-action-item--wish-on");
+            sheetWishlistBtn.setAttribute("aria-pressed", "false");
+            if (sheetWishIcon) {
+                sheetWishIcon.classList.remove("material-icons");
+                sheetWishIcon.classList.add("material-icons-outlined");
+                sheetWishIcon.textContent = "favorite_border";
+            }
+        }
+    }
+
+    var ctx = document.body.getAttribute("data-context-path") || "/ondam";
+    
+    fetch(ctx + "/product?action=getOptions&productNo=" + productNo)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            window.currentOptions = data;
+            window.COLOR_SIZE_MAP = {};
+            window.OPTION_NO_MAP = {};
+            window.OPTION_STOCK_MAP = {};
+            
+            data.forEach(function(opt) {
+                if(!window.COLOR_SIZE_MAP[opt.optionColor]) window.COLOR_SIZE_MAP[opt.optionColor] = [];
+                if(!window.COLOR_SIZE_MAP[opt.optionColor].includes(opt.optionSize)) window.COLOR_SIZE_MAP[opt.optionColor].push(opt.optionSize);
+                
+                var key = opt.optionColor + "__" + opt.optionSize;
+                window.OPTION_NO_MAP[key] = opt.productOptionNo;
+                window.OPTION_STOCK_MAP[key] = opt.optionStock;
+            });
+
+            var selectedColorText = document.getElementById("selectedColorText");
+            var selectedSizeText = document.getElementById("selectedSizeText");
+            
+            if(selectedColorText) {
+                selectedColorText.textContent = "눌러서 선택하기";
+                selectedColorText.classList.add("detail-selected-value--placeholder");
+            }
+            if(selectedSizeText) {
+                selectedSizeText.textContent = "눌러서 선택하기";
+                selectedSizeText.classList.add("detail-selected-value--placeholder");
+            }
+            
+            var hiddenProductNoEl = document.getElementById("hiddenProductNo");
+            if (hiddenProductNoEl) hiddenProductNoEl.value = productNo;
+
+            var colorListContainer = document.querySelector("#colorOptionPanel .detail-option-list");
+            var sizeListContainer = document.getElementById("sizeOptionList");
+            
+            if (sizeListContainer) sizeListContainer.innerHTML = "";
+
+            if(colorListContainer) {
+                colorListContainer.innerHTML = "";
+                Object.keys(window.COLOR_SIZE_MAP).forEach(function(color) {
+                    var btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "detail-option-row";
+                    btn.dataset.color = color;
+                    btn.setAttribute("role", "option");
+                    btn.textContent = color;
+                    
+                    btn.addEventListener("click", function() {
+                        colorListContainer.querySelectorAll(".detail-option-row").forEach(function(b) { b.classList.remove("active"); });
+                        this.classList.add("active");
+                        
+                        if(selectedColorText) {
+                            selectedColorText.textContent = color;
+                            selectedColorText.classList.remove("detail-selected-value--placeholder");
+                        }
+                        var colorOptionPanel = document.getElementById("colorOptionPanel");
+                        if(colorOptionPanel) colorOptionPanel.classList.add("hidden");
+                        
+                        if(selectedSizeText) {
+                            selectedSizeText.textContent = "눌러서 선택하기";
+                            selectedSizeText.classList.add("detail-selected-value--placeholder");
+                        }
+                        window.selectedOptionNo = null;
+
+                        if(sizeListContainer) {
+                            sizeListContainer.innerHTML = "";
+                            window.COLOR_SIZE_MAP[color].forEach(function(sz) {
+                                var szBtn = document.createElement("button");
+                                szBtn.type = "button";
+                                szBtn.className = "detail-option-row";
+                                szBtn.textContent = sz;
+                                
+                                szBtn.addEventListener("click", function() {
+                                    sizeListContainer.querySelectorAll(".detail-option-row").forEach(function(b) { b.classList.remove("active"); });
+                                    this.classList.add("active");
+                                    if(selectedSizeText) {
+                                        selectedSizeText.textContent = sz;
+                                        selectedSizeText.classList.remove("detail-selected-value--placeholder");
+                                    }
+                                    var sizeOptionPanel = document.getElementById("sizeOptionPanel");
+                                    if(sizeOptionPanel) sizeOptionPanel.classList.add("hidden");
+
+                                    var optKey = color + "__" + sz;
+                                    window.selectedOptionNo = window.OPTION_NO_MAP[optKey];
+                                    var stock = window.OPTION_STOCK_MAP[optKey] || 0;
+                                    
+                                    var detailOptionSheet = document.getElementById("detailOptionSheet");
+                                    if(detailOptionSheet) detailOptionSheet.setAttribute("data-option-stock", stock);
+                                    
+                                    if(document.getElementById("hiddenOptionNo")) document.getElementById("hiddenOptionNo").value = window.selectedOptionNo;
+
+                                    var sheetBuyNowBtn = document.getElementById("sheetBuyNowBtn");
+                                    var sheetAddCartBtn = document.getElementById("sheetAddCartBtn");
+                                    
+                                    if (stock === 0) {
+                                        if(sheetBuyNowBtn) { sheetBuyNowBtn.disabled = true; sheetBuyNowBtn.textContent = "품절"; }
+                                        if(sheetAddCartBtn) sheetAddCartBtn.disabled = true;
+                                    } else {
+                                        if(sheetBuyNowBtn) { sheetBuyNowBtn.disabled = false; sheetBuyNowBtn.textContent = "구매하기"; }
+                                        if(sheetAddCartBtn) sheetAddCartBtn.disabled = false;
+                                    }
+                                    
+                                    if(window.quantity > stock) window.quantity = Math.max(1, stock);
+                                    window.updateSheetPriceUI();
+                                });
+                                sizeListContainer.appendChild(szBtn);
+                            });
+                        }
+                        window.updateSheetPriceUI();
+                    });
+                    colorListContainer.appendChild(btn);
+                });
+            }
+            window.updateSheetPriceUI();
+
+            document.body.style.overflow = "hidden";
+            var dim = document.getElementById("detailSheetDim");
+            var sheet = document.getElementById("detailOptionSheet");
+            if(dim) dim.classList.remove("hidden");
+            if(sheet) sheet.classList.remove("hidden");
+        })
+        .catch(function(err) { console.error("옵션 로드 에러:", err); });
+};
+
+window.openShareModalFromShorts = function(productNo, title, imgFile) {
+    var ctx = document.body.getAttribute("data-context-path") || "";
+    window.currentShareMeta = {
+        title: title,
+        description: "온담에서 추천하는 숏폼 영상",
+        imageUrl: window.location.origin + ctx + "/uploads/products/" + imgFile,
+        url: window.location.origin + ctx + "/product?action=detail&productNo=" + productNo
     };
+    
+    window.closePurchaseSheet();
+    
+    document.body.style.overflow = "hidden"; 
+    var dim = document.getElementById("shareModalDim");
+    var modal = document.getElementById("shareModal");
+    if(dim) dim.classList.remove("hidden");
+    if(modal) modal.classList.remove("hidden");
+};
 
+window.updateSheetPriceUI = function() {
+    var qtyValue = document.getElementById("qtyValue");
+    var minusQtyBtn = document.getElementById("minusQtyBtn");
+    var hiddenQuantityEl = document.getElementById("hiddenQuantity");
+    var sheetOrderCount = document.getElementById("sheetOrderCount");
+    var sheetOrderTotal = document.getElementById("sheetOrderTotal");
+    var selectedColorText = document.getElementById("selectedColorText");
+    var selectedSizeText = document.getElementById("selectedSizeText");
+
+    if (qtyValue) qtyValue.textContent = String(window.quantity);
+    if (minusQtyBtn) minusQtyBtn.disabled = (window.quantity <= 1);
+    if (hiddenQuantityEl) hiddenQuantityEl.value = window.quantity;
+    
+    if (sheetOrderCount && sheetOrderTotal) {
+        sheetOrderCount.textContent = "총 " + window.quantity + "개";
+        var addPrice = 0;
+        if (selectedColorText && selectedSizeText) {
+            var optKey = selectedColorText.textContent.trim() + "__" + selectedSizeText.textContent.trim();
+            var optNo = window.OPTION_NO_MAP[optKey];
+            if (optNo && window.currentOptions) {
+                var match = window.currentOptions.find(function(o) { return o.productOptionNo === optNo; });
+                if (match) addPrice = match.optionAddPrice;
+            }
+        }
+        var finalPrice = (window.currentUnitPrice + addPrice) * window.quantity;
+        sheetOrderTotal.textContent = finalPrice.toLocaleString("ko-KR") + "원";
+    }
+};
+
+window.toggleVideoPlay = function(video) {
+    video.muted = window.isGlobalMuted;
+    if (video.paused) video.play(); else video.pause();
+};
+
+window.toggleGlobalMute = function() {
+    window.isGlobalMuted = !window.isGlobalMuted;
+    document.querySelectorAll('.shorts-video').forEach(function(v) { v.muted = window.isGlobalMuted; });
+    document.querySelectorAll('.muteIcon').forEach(function(icon) { icon.innerText = window.isGlobalMuted ? 'volume_off' : 'volume_up'; });
+    document.querySelectorAll('.muteText').forEach(function(text) { text.innerText = window.isGlobalMuted ? '소리 끔' : '소리 켬'; });
+};
+
+window.toggleLike = function(buttonElement, productNo) {
+    var icon = buttonElement.querySelector('.material-icons');
+    var isCurrentlyLiked = icon.classList.contains('liked');
+    var on = !isCurrentlyLiked;
+
+    icon.classList.toggle('liked', on);
+    icon.innerText = on ? 'favorite' : 'favorite_border';
+    icon.style.transform = 'scale(1.2)';
+    setTimeout(function() { icon.style.transform = 'scale(1)'; }, 200);
+
+    var ctx = document.body.getAttribute("data-context-path") || "/ondam";
+    if (!document.body.dataset.loginUser) return window.location.href = ctx + "/login";
+
+    fetch(ctx + "/wish?action=toggle&productNo=" + productNo, { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.status === 'error') {
+            icon.classList.toggle('liked', isCurrentlyLiked);
+            icon.innerText = isCurrentlyLiked ? 'favorite' : 'favorite_border';
+        }
+    }).catch(function(err) {
+        icon.classList.toggle('liked', isCurrentlyLiked);
+        icon.innerText = isCurrentlyLiked ? 'favorite' : 'favorite_border';
+    });
+};
+
+// 💡 [완벽 복원] 에러 토스트(빨간색) 
+window.showTopToast = function(message, type) {
+    var el = document.getElementById("option-toast");
+    if (!el) return;
+    
+    var textEl = el.querySelector(".option-toast__text");
+    var iconEl = el.querySelector(".option-toast__icon");
+
+    optionToastActive = true;
+    clearTimeout(optionToastDismissTimer);
+    clearTimeout(optionToastAnimFallbackTimer);
+    
+    el.classList.remove("option-toast--success", "option-toast--error");
+    el.classList.add(type === "success" ? "option-toast--success" : "option-toast--error");
+    
+    if (textEl) textEl.textContent = message || "";
+    if (iconEl) iconEl.textContent = type === "success" ? "check_circle" : "error";
+
+    el.classList.remove("hidden", "option-toast--hiding", "option-toast--show");
+    el.setAttribute("aria-hidden", "false");
+
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            el.classList.add("option-toast--show");
+        });
+    });
+
+    optionToastDismissTimer = setTimeout(function () {
+        el.classList.remove("option-toast--show");
+        el.classList.add("option-toast--hiding");
+
+        var finished = false;
+        function cleanup() {
+            if (finished) return;
+            finished = true;
+            el.removeEventListener("transitionend", onTransitionEnd);
+            clearTimeout(optionToastAnimFallbackTimer);
+            el.classList.add("hidden");
+            el.classList.remove("option-toast--hiding");
+            el.setAttribute("aria-hidden", "true");
+            optionToastActive = false;
+        }
+
+        function onTransitionEnd(e) {
+            if (e.target !== el) return;
+            if (e.propertyName !== "opacity" && e.propertyName !== "transform") return;
+            cleanup();
+        }
+
+        el.addEventListener("transitionend", onTransitionEnd);
+        optionToastAnimFallbackTimer = setTimeout(cleanup, 400);
+    }, 1800);
+};
+
+// 💡 [분리] 성공 토스트(초록색) - product-detail.js 와 동일
+window.showSuccessToast = function(message) {
+    var el = document.getElementById("success-toast");
+    if (!el || successToastActive) return;
+
+    document.getElementById("success-toast-text").innerText = message;
+    successToastActive = true;
+
+    el.style.setProperty("display", "flex", "important"); 
+    el.style.opacity = "1";
+    el.style.visibility = "visible";
+    el.setAttribute("aria-hidden", "false");
+
+    clearTimeout(successToastDismissTimer);
+    successToastDismissTimer = setTimeout(function () {
+        el.style.opacity = "0";
+        setTimeout(function () {
+            el.style.setProperty("display", "none", "important");
+            el.setAttribute("aria-hidden", "true");
+            successToastActive = false;
+        }, 300);
+    }, 2000);
+};
+
+window.showOptionErrorToast = function() { window.showTopToast("먼저 색상과 사이즈를 골라주세요", "error"); };
+window.isOptionSelected = function() { 
+    var selectedColorText = document.getElementById("selectedColorText");
+    var selectedSizeText = document.getElementById("selectedSizeText");
+    
+    if (!selectedColorText || !selectedSizeText) return false;
+    
+    return (
+        !selectedColorText.classList.contains("detail-selected-value--placeholder") &&
+        !selectedSizeText.classList.contains("detail-selected-value--placeholder") &&
+        window.selectedOptionNo !== null
+    );
+};
+
+// === DOM 로드 후 이벤트 바인딩 ===
+document.addEventListener("DOMContentLoaded", function() {
+    var videos = document.querySelectorAll('.shorts-video');
+    var observerOptions = { root: document.querySelector('.shorts-wrapper'), rootMargin: '0px', threshold: 0.6 };
     var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
             var video = entry.target;
             if (entry.isIntersecting) {
-                video.muted = isGlobalMuted; 
+                video.muted = window.isGlobalMuted; 
                 var playPromise = video.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(function(e) { 
-                        video.muted = true; 
-                        video.play(); 
-                    });
-                }
+                if (playPromise !== undefined) playPromise.catch(function(e) { video.muted = true; video.play(); });
             } else {
                 video.pause();
                 video.muted = true; 
@@ -33,457 +391,315 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }, observerOptions);
+    videos.forEach(function(v) { observer.observe(v); });
 
-    videos.forEach(function(video) {
-        observer.observe(video);
-    });
+    var detailSheetDim = document.getElementById("detailSheetDim");
+    if (detailSheetDim) detailSheetDim.addEventListener("click", window.closePurchaseSheet);
+    
+    var colorToggleBtn = document.getElementById("colorToggleBtn");
+    var sizeToggleBtn = document.getElementById("sizeToggleBtn");
+    var colorOptionPanel = document.getElementById("colorOptionPanel");
+    var sizeOptionPanel = document.getElementById("sizeOptionPanel");
 
-    // === 2. 모달 내 대상자 선택 UI 바인딩 ===
-    var pokeBtns = document.querySelectorAll(".poke-person-btn");
-    pokeBtns.forEach(function(btn) {
-        btn.addEventListener("click", function() {
-            pokeBtns.forEach(function(b) { b.classList.remove("active"); });
-            btn.classList.add("active");
-        });
-    });
-
-    var giftBtns = document.querySelectorAll(".gift-person-btn");
-    giftBtns.forEach(function(btn) {
-        btn.addEventListener("click", function() {
-            giftBtns.forEach(function(b) { b.classList.remove("active"); });
-            btn.classList.add("active");
-        });
-    });
-
-	// === 3. 조르기 확정 버튼 이벤트 (shorts.js 내부) ===
-    var confirmPokeBtn = document.getElementById("confirmPokeBtn");
-    if(confirmPokeBtn) {
-        confirmPokeBtn.addEventListener("click", function(e) {
-            e.preventDefault(); // 혹시 모를 기본 submit 동작 방지
+    if (colorToggleBtn) {
+        colorToggleBtn.addEventListener("click", function () {
+            var willOpen = colorOptionPanel.classList.contains("hidden");
+            colorOptionPanel.classList.add("hidden");
+            if(sizeOptionPanel) sizeOptionPanel.classList.add("hidden");
             
-            var activeBtn = document.querySelector(".poke-person-btn.active");
-            if (!activeBtn) {
-                document.querySelector("#option-toast .option-toast__text").innerText = "조를 대상을 선택해주세요.";
-                showOptionErrorToast();
+            if (willOpen) colorOptionPanel.classList.remove("hidden");
+            if (colorToggleBtn) colorToggleBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        });
+    }
+
+    if (sizeToggleBtn) {
+        sizeToggleBtn.addEventListener("click", function () {
+            var selectedColorText = document.getElementById("selectedColorText");
+            if (selectedColorText && selectedColorText.classList.contains("detail-selected-value--placeholder")) {
+                window.showTopToast("먼저 색상을 골라주세요", "error");
+                return;
+            }
+
+            var willOpen = sizeOptionPanel.classList.contains("hidden");
+            if(colorOptionPanel) colorOptionPanel.classList.add("hidden");
+            sizeOptionPanel.classList.add("hidden");
+            
+            if (willOpen) sizeOptionPanel.classList.remove("hidden");
+            if (sizeToggleBtn) sizeToggleBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        });
+    }
+
+    var minusQtyBtn = document.getElementById("minusQtyBtn");
+    var plusQtyBtn = document.getElementById("plusQtyBtn");
+    if (minusQtyBtn) {
+        minusQtyBtn.addEventListener("click", function () {
+            if (window.quantity <= 1) return;
+            window.quantity -= 1;
+            window.updateSheetPriceUI();
+        });
+    }
+    if (plusQtyBtn) {
+        plusQtyBtn.addEventListener("click", function () {
+            var detailOptionSheet = document.getElementById("detailOptionSheet");
+            var maxStock = parseInt(detailOptionSheet.getAttribute("data-option-stock") || "9999", 10);
+            if (window.quantity >= maxStock) {
+                window.showTopToast("선택하신 옵션의 최대 재고수량입니다.", "error");
+                return;
+            }
+            window.quantity += 1;
+            window.updateSheetPriceUI();
+        });
+    }
+
+    // === 장바구니 / 구매하기 ===
+    var sheetAddCartBtn = document.getElementById("sheetAddCartBtn");
+    if (sheetAddCartBtn) {
+        sheetAddCartBtn.addEventListener("click", function (e) {
+            if (!window.isOptionSelected()) return window.showOptionErrorToast();
+            var ctx = document.body.getAttribute("data-context-path") || "/ondam";
+            var form = document.createElement("form");
+            form.method = "POST";
+            form.action = ctx + "/cart?action=add";
+            [["productNo", window.currentProductNo], ["productOptionNo", window.selectedOptionNo], ["quantity", window.quantity]].forEach(function(pair) {
+                var input = document.createElement("input");
+                input.type = "hidden"; input.name = pair[0]; input.value = pair[1];
+                form.appendChild(input);
+            });
+            document.body.appendChild(form);
+            form.submit();
+        });
+    }
+
+    var sheetBuyNowBtn = document.getElementById("sheetBuyNowBtn");
+    if (sheetBuyNowBtn) {
+        sheetBuyNowBtn.addEventListener("click", function (e) {
+            if (!window.isOptionSelected()) return window.showOptionErrorToast();
+            var ctx = document.body.getAttribute("data-context-path") || "/ondam";
+            var form = document.createElement("form");
+            form.method = "GET";
+            form.action = ctx + "/payment";
+            [["productNo", window.currentProductNo], ["productOptionNo", window.selectedOptionNo], ["quantity", window.quantity]].forEach(function(pair) {
+                var input = document.createElement("input");
+                input.type = "hidden"; input.name = pair[0]; input.value = pair[1];
+                form.appendChild(input);
+            });
+            document.body.appendChild(form);
+            form.submit();
+        });
+    }
+    
+    var sheetWishlistBtn = document.getElementById("sheetWishlistBtn");
+    if (sheetWishlistBtn) {
+        sheetWishlistBtn.addEventListener("click", function() {
+            if (!window.currentProductNo) return;
+            
+            var sideBtn = document.querySelector('button[onclick*="toggleLike(this, ' + window.currentProductNo + ')"]');
+            if (sideBtn) {
+                window.toggleLike(sideBtn, window.currentProductNo);
+                
+                var isCurrentlyLiked = sheetWishlistBtn.classList.contains("detail-action-item--wish-on");
+                var on = !isCurrentlyLiked;
+                var sheetWishIcon = sheetWishlistBtn.querySelector(".detail-wish-icon");
+                
+                sheetWishlistBtn.classList.toggle("detail-action-item--wish-on", on);
+                sheetWishlistBtn.setAttribute("aria-pressed", on ? "true" : "false");
+                if (sheetWishIcon) {
+                    if (on) {
+                        sheetWishIcon.classList.remove("material-icons-outlined");
+                        sheetWishIcon.classList.add("material-icons");
+                        sheetWishIcon.textContent = "favorite";
+                    } else {
+                        sheetWishIcon.classList.remove("material-icons");
+                        sheetWishIcon.classList.add("material-icons-outlined");
+                        sheetWishIcon.textContent = "favorite_border";
+                    }
+                }
+            }
+        });
+    }
+
+    var openPokeFromSheetBtn = document.getElementById("openPokeFromSheetBtn");
+    if (openPokeFromSheetBtn) {
+        openPokeFromSheetBtn.addEventListener("click", function (e) {
+            if (!window.isOptionSelected()) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.showOptionErrorToast();
                 return;
             }
             
-            // 1. 받는 사람 번호와 수량 가져오기
-            var receiverNo = activeBtn.getAttribute("data-user-no");
-            var qty = document.getElementById('buyQty').innerText;
-            var ctx = document.body.getAttribute("data-context-path") || "/ondam";
-            
-            // 2. 모달의 textarea에서 사용자가 직접 입력한 메시지 가져오기
-            var customMsg = "";
-            var msgInputEl = document.getElementById("pokeMsgInput");
-            if (msgInputEl && msgInputEl.value.trim() !== "") {
-                customMsg = msgInputEl.value.trim();
-            } else {
-                customMsg = "쇼츠 보고 반했어! 이거 사줘❤️"; // 빈칸일 때 기본 문구
-            }
+            document.getElementById("pokeProductNo").value = window.currentProductNo;
+            document.getElementById("pokeProductOptionNo").value = window.selectedOptionNo;
+            document.getElementById("pokeQuantity").value = window.quantity;
+            document.getElementById("pokeFamilyNo").value = document.getElementById("trueFamilyNoForShorts").value;
 
-            // 3. 더 이상 hidden 폼(joreugiForm, pokeForm 등)을 찾지 않고 직접 데이터 조립
-            // (familyNo는 백엔드 PokeController에서 직접 처리하므로 뺐습니다)
-            var params = new URLSearchParams();
-            params.append('action', 'send');
-            params.append('productNo', currentProductNo);
-            params.append('productOptionNo', selectedOptionNo);
-            params.append('pokeQuantity', qty);
-            params.append('receiverNo', receiverNo);
-            params.append('pokeMsg', customMsg); // 입력한 메시지 추가
-
-            // 4. fetch로 백엔드 전송
-            fetch(ctx + '/poke', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params.toString()
-            })
-            .then(function(response) {
-                // 전송 성공 시 모달 닫기
-                var dim = document.getElementById("pokeModalDim");
-                var modal = document.getElementById("pokeModal");
-                if (dim) dim.classList.add("hidden");
-                if (modal) modal.classList.add("hidden");
-
-                // 💡 다음 조르기를 위해 입력했던 메시지 칸 비워주기
-                if (msgInputEl) msgInputEl.value = "";
-
-                // 성공 토스트 띄우기
-                showSuccessToast("조르기 요청이 전송되었습니다❤️");
-            })
-            .catch(function(err) {
-                console.error("조르기 전송 에러:", err);
-            });
+            window.closePurchaseSheet();
+            document.body.style.overflow = "hidden";
+            var dim = document.getElementById("pokeModalDim");
+            var modal = document.getElementById("pokeModal");
+            if(dim) dim.classList.remove("hidden");
+            if(modal) modal.classList.remove("hidden");
         });
     }
 
-    // ---------------------------------------------
-    // 코드 맨 아래쪽에 이 함수를 추가해 주세요
-    // ---------------------------------------------
-    var successToastActive = false;
-    var successToastDismissTimer = null;
-
-    function showSuccessToast(message) {
-        var el = document.getElementById("success-toast");
-        if (!el || successToastActive) return;
-
-        document.getElementById("success-toast-text").innerText = message;
-        successToastActive = true;
-        clearTimeout(successToastDismissTimer);
-        
-        el.classList.remove("hidden", "option-toast--hiding");
-        el.style.opacity = "1"; 
-
-        successToastDismissTimer = setTimeout(function () {
-            el.style.opacity = "0";
-            setTimeout(function() {
-                el.classList.add("hidden");
-                successToastActive = false;
-                // 문구 원래대로 원복 (option-toast용)
-                document.querySelector("#option-toast .option-toast__text").innerText = "먼저 색상과 사이즈를 골라주세요";
-            }, 300);
-        }, 2000);
+    var openGiftFromSheetBtn = document.getElementById("openGiftFromSheetBtn");
+    if (openGiftFromSheetBtn) {
+        openGiftFromSheetBtn.addEventListener("click", function (e) {
+            if (!window.isOptionSelected()) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.showOptionErrorToast();
+                return;
+            }
+            window.closePurchaseSheet();
+            document.body.style.overflow = "hidden";
+            var dim = document.getElementById("giftModalDim");
+            var modal = document.getElementById("giftModal");
+            if(dim) dim.classList.remove("hidden");
+            if(modal) modal.classList.remove("hidden");
+        });
     }
 
-    // === 4. 선물하기 확정 버튼 이벤트 ===
+    // 💡 [버그 수정] 조르기 대상 선택 클릭 이벤트를 명확하게 바인딩
+    document.querySelectorAll(".poke-person-btn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            document.querySelectorAll(".poke-person-btn").forEach(function(b) { 
+                b.classList.remove("active"); 
+            });
+            this.classList.add("active");
+        });
+    });
+
+    var confirmPokeBtn = document.getElementById("confirmPokeBtn");
+    if (confirmPokeBtn) {
+        confirmPokeBtn.addEventListener("click", function () {
+            var selected = document.querySelector(".poke-person-btn.active");
+            if (!selected) return window.showTopToast("조르기를 보낼 사람을 선택해주세요.", "error");
+
+            document.getElementById("pokeReceiverNo").value = selected.dataset.userNo;
+            document.getElementById("pokeMsgHidden").value = document.getElementById("pokeMsgInput").value;
+
+            var pokeForm = document.getElementById("pokeForm");
+            var formData = new FormData(pokeForm);
+            var body = new URLSearchParams();
+            formData.forEach(function(value, key) { body.append(key, value); });
+
+            confirmPokeBtn.disabled = true;
+            fetch(pokeForm.action, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+                body: body.toString()
+            })
+            .then(function(res) {
+                if (!res.ok) throw new Error("poke failed");
+                var dim = document.getElementById("pokeModalDim");
+                var modal = document.getElementById("pokeModal");
+                if(dim) dim.classList.add("hidden");
+                if(modal) modal.classList.add("hidden");
+                document.body.style.overflow = "";
+                document.getElementById("pokeMsgInput").value = "";
+                document.querySelectorAll(".poke-person-btn").forEach(function(b) { b.classList.remove("active"); });
+                window.showSuccessToast("조르기 요청을 보냈어요");
+            })
+            .catch(function() { window.showTopToast("조르기 요청이 실패됐어요", "error"); })
+            .finally(function() { confirmPokeBtn.disabled = false; });
+        });
+    }
+
     var confirmGiftBtn = document.getElementById("confirmGiftBtn");
     if(confirmGiftBtn) {
         confirmGiftBtn.addEventListener("click", function() {
             var activeBtn = document.querySelector(".gift-person-btn.active");
-            if (!activeBtn) {
-                alert("선물할 대상을 선택해주세요.");
-                return;
-            }
-            var receiverNo = activeBtn.getAttribute("data-user-no");
+            if (!activeBtn) return window.showTopToast("선물할 대상을 선택해주세요.", "error");
             var ctx = document.body.getAttribute("data-context-path") || "/ondam";
-            var qty = document.getElementById('buyQty').innerText;
-            
-            location.href = ctx + "/payment?productNo=" + currentProductNo + "&productOptionNo=" + selectedOptionNo + "&quantity=" + qty + "&isGift=true&receiverNo=" + receiverNo;
+            location.href = ctx + "/payment?productNo=" + window.currentProductNo + "&productOptionNo=" + window.selectedOptionNo + "&quantity=" + window.quantity + "&isGift=true&receiverNo=" + activeBtn.getAttribute("data-user-no");
         });
     }
 
-    // 조르기 모달 닫기 이벤트 바인딩 (옵셔널 체이닝 에러 해결)
-    var closePokeModalBtn = document.getElementById("closePokeModalBtn");
-    if (closePokeModalBtn) {
-        closePokeModalBtn.addEventListener("click", function() {
-            var dim = document.getElementById("pokeModalDim");
-            var modal = document.getElementById("pokeModal");
-            if (dim) dim.classList.add("hidden");
-            if (modal) modal.classList.add("hidden");
+    var openShareFromSheetBtn = document.getElementById("openShareFromSheetBtn");
+    if (openShareFromSheetBtn) {
+        openShareFromSheetBtn.addEventListener("click", function () {
+            window.closePurchaseSheet();
+            var titleEl = document.querySelector(".detail-product-name");
+            window.openShareModalFromShorts(window.currentProductNo, titleEl ? titleEl.textContent : "온담 추천 상품", "logo.png");
         });
     }
 
-    // 선물하기 모달 닫기 이벤트 바인딩
-    var closeGiftModalBtn = document.getElementById("closeGiftModalBtn");
-    if (closeGiftModalBtn) {
-        closeGiftModalBtn.addEventListener("click", function() {
-            var dim = document.getElementById("giftModalDim");
-            var modal = document.getElementById("giftModal");
-            if (dim) dim.classList.add("hidden");
-            if (modal) modal.classList.add("hidden");
-        });
-    }
-
-}); // DOMContentLoaded End
-
-
-// === 비디오 재생 제어 ===
-function toggleVideoPlay(video) {
-    video.muted = isGlobalMuted;
-    if (video.paused) {
-        video.play();
-    } else {
-        video.pause();
-    }
-}
-
-function toggleGlobalMute() {
-    isGlobalMuted = !isGlobalMuted;
-    var allVideos = document.querySelectorAll('.shorts-video');
-    allVideos.forEach(function(v) { v.muted = isGlobalMuted; });
-
-    var allIcons = document.querySelectorAll('.muteIcon');
-    var allTexts = document.querySelectorAll('.muteText');
-
-    allIcons.forEach(function(icon) {
-        icon.innerText = isGlobalMuted ? 'volume_off' : 'volume_up';
-    });
-    allTexts.forEach(function(text) {
-        text.innerText = isGlobalMuted ? '소리 끔' : '소리 켬';
-    });
-}
-
-
-// === 토스트 메시지 ===
-var optionToastActive = false;
-var optionToastDismissTimer = null;
-
-function showOptionErrorToast() {
-    var el = document.getElementById("option-toast");
-    if (!el || optionToastActive) return;
-
-    optionToastActive = true;
-    clearTimeout(optionToastDismissTimer);
-    
-    el.classList.remove("hidden", "option-toast--hiding");
-    el.style.opacity = "1"; 
-
-    optionToastDismissTimer = setTimeout(function () {
-        el.style.opacity = "0";
-        setTimeout(function() {
-            el.classList.add("hidden");
-            optionToastActive = false;
-        }, 300);
-    }, 2000);
-}
-
-
-// === 구매 모달 (BottomSheet) ===
-function openPurchaseModal(productNo, productName, productPrice, imgFile) {
-    var modal = document.getElementById('purchaseModalOverlay');
-    if (modal) modal.classList.add('show');    
-    
-    currentProductNo = productNo;
-    currentUnitPrice = parseInt(productPrice) || 0;
-    currentAddPrice = 0; 
-    selectedOptionNo = null;
-    
-    document.getElementById('modalProductName').innerText = productName;
-    document.getElementById('buyQty').innerText = '1';
-    refreshTotalPrice(); 
-
-    var ctx = document.body.getAttribute("data-context-path") || "/ondam";
-    var fetchUrl = window.location.origin + ctx + "/product?action=getOptions&productNo=" + productNo;
-    
-    fetch(fetchUrl)
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-            currentOptions = data; 
-            var sizeSelect = document.querySelector('select[name="optionSize"]');
-            var colorSelect = document.querySelector('select[name="optionColor"]');
-
-            if(sizeSelect && colorSelect) {
-                sizeSelect.innerHTML = '<option value="">사이즈를 선택하세요</option>';
-                colorSelect.innerHTML = '<option value="">색상을 선택하세요</option>';
-                colorSelect.disabled = true;
-
-                var sizes = [];
-                data.forEach(function(opt) { 
-                    if(opt.optionSize && sizes.indexOf(opt.optionSize) === -1) {
-                        sizes.push(opt.optionSize);
-                    } 
-                });
-                sizes.forEach(function(size) { 
-                    sizeSelect.innerHTML += '<option value="' + size + '">' + size + '</option>'; 
-                });
-
-                sizeSelect.onchange = function() { 
-                    updateColorOptions(this.value); 
-                };
-            }
-        })
-        .catch(function(err) { console.error("옵션 로드 실패:", err); });
-}
-
-function updateColorOptions(selectedSize) {
-    var colorSelect = document.querySelector('select[name="optionColor"]');
-    
-    if (!selectedSize) {
-        colorSelect.innerHTML = '<option value="">색상을 선택하세요</option>';
-        colorSelect.disabled = true;
-        currentAddPrice = 0; 
-        selectedOptionNo = null; 
-        refreshTotalPrice(); 
-        return;
-    }
-
-    var filteredOptions = currentOptions.filter(function(opt) {
-        return opt.optionSize === selectedSize;
-    });
-    
-    colorSelect.innerHTML = '<option value="">색상을 선택하세요</option>';
-    
-    filteredOptions.forEach(function(opt) {
-        var addPriceText = opt.optionAddPrice > 0 ? " (+" + opt.optionAddPrice.toLocaleString() + "원)" : "";
-        colorSelect.innerHTML += '<option value="' + opt.optionColor + '">' + opt.optionColor + addPriceText + '</option>';
-    });
-
-    colorSelect.disabled = false;
-    
-    colorSelect.onchange = function() {
-        var selectedColor = this.value;
-        var sizeSelect = document.querySelector('select[name="optionSize"]');
-        var selectedSizeVal = sizeSelect ? sizeSelect.value : "";
-        
-        var matchOpt = null;
-        for (var i = 0; i < currentOptions.length; i++) {
-            if (currentOptions[i].optionSize === selectedSizeVal && currentOptions[i].optionColor === selectedColor) {
-                matchOpt = currentOptions[i];
-                break;
-            }
-        }
-        
-        if (matchOpt) {
-            currentAddPrice = parseInt(matchOpt.optionAddPrice) || 0;
-            selectedOptionNo = matchOpt.productOptionNo; 
-        } else {
-            currentAddPrice = 0; 
-            selectedOptionNo = null;
-        }
-        refreshTotalPrice(); 
-    };
-}
-
-function refreshTotalPrice() {
-    var qtySpan = document.getElementById('buyQty');
-    var currentQty = parseInt(qtySpan.innerText) || 1;
-    var finalPrice = (currentUnitPrice + currentAddPrice) * currentQty;
-    var totalPriceElement = document.querySelector('.total-price');
-    if (totalPriceElement) {
-        totalPriceElement.innerText = finalPrice.toLocaleString() + "원";
-    }
-}
-
-function updateQty(change) {
-    var qtySpan = document.getElementById('buyQty');
-    var currentQty = parseInt(qtySpan.innerText) + change;
-    if (currentQty < 1) currentQty = 1; 
-    qtySpan.innerText = currentQty;
-    refreshTotalPrice(); 
-}
-
-function closePurchaseModal() {
-    var overlay = document.getElementById('purchaseModalOverlay');
-    if (overlay) overlay.classList.remove('show');
-}
-
-
-// === 조르기 / 선물하기 / 기타 액션 ===
-function openPokeFromShorts() {
-    if (!selectedOptionNo) { 
-        showOptionErrorToast(); 
-        return; 
-    }
-    closePurchaseModal(); 
-    var dim = document.getElementById("pokeModalDim");
-    var modal = document.getElementById("pokeModal");
-    if (dim && modal) {
-        dim.classList.remove("hidden");
-        modal.classList.remove("hidden");
-    }
-}
-
-function openGiftFromShorts() {
-    if (!selectedOptionNo) { 
-        showOptionErrorToast(); 
-        return; 
-    }
-    closePurchaseModal(); 
-    var dim = document.getElementById("giftModalDim");
-    var modal = document.getElementById("giftModal");
-    if (dim && modal) {
-        dim.classList.remove("hidden");
-        modal.classList.remove("hidden");
-    }
-}
-
-function buyNow() {
-    if (!selectedOptionNo) { 
-        showOptionErrorToast(); 
-        return; 
-    }
-    var ctx = document.body.getAttribute("data-context-path") || "/ondam";
-    var qty = document.getElementById('buyQty').innerText;
-    location.href = ctx + "/payment?productNo=" + currentProductNo + "&productOptionNo=" + selectedOptionNo + "&quantity=" + qty;
-}
-
-function addToCart() {
-    if (!selectedOptionNo) { 
-        showOptionErrorToast(); 
-        return; 
-    }
-    var ctx = document.body.getAttribute("data-context-path") || "/ondam";
-    var qty = document.getElementById('buyQty').innerText;
-
-    var form = document.createElement("form");
-    form.method = "POST";
-    form.action = ctx + "/cart?action=add";
-    
-    var params = [
-        ["productNo", currentProductNo], 
-        ["productOptionNo", selectedOptionNo], 
-        ["quantity", qty]
-    ];
-    
-    params.forEach(function(pair) {
-        var input = document.createElement("input");
-        input.type = "hidden"; 
-        input.name = pair[0]; 
-        input.value = pair[1];
-        form.appendChild(input);
-    });
-    
-    document.body.appendChild(form);
-    form.submit();
-}
-
-function shareShorts() {
-    if (navigator.share) {
-        navigator.share({ 
-            title: '온담 추천영상', 
-            url: window.location.href 
-        }).catch(function(err) {
-            console.log("공유 취소 또는 에러:", err);
-        });
-    } else {
-        alert("기기에서 공유하기를 지원하지 않습니다. 링크를 복사해주세요.");
-    }
-}
-
-function toggleLike(buttonElement, productNo) {
-    var icon = buttonElement.querySelector('.material-icons');
-    var isCurrentlyLiked = icon.classList.contains('liked');
-    var nextState = !isCurrentlyLiked;
-
-    if (nextState) {
-        icon.classList.add('liked');
-        icon.innerText = 'favorite';
-    } else {
-        icon.classList.remove('liked');
-        icon.innerText = 'favorite_border';
-    }
-    icon.style.transform = 'scale(1.2)';
-    setTimeout(function() { icon.style.transform = 'scale(1)'; }, 200);
-
-    var formData = "action=toggle&productNo=" + productNo;
-    var ctx = document.body.getAttribute("data-context-path") || "/ondam";
-    
-    fetch(ctx + "/wish", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formData
-    })
-    .then(function(response) { return response.json(); })
-    .then(function(result) {
-        if (result.status === 'error') {
-            alert(result.message);
-            if (isCurrentlyLiked) {
-                icon.classList.add('liked');
-                icon.innerText = 'favorite';
+    var shareCopyLinkBtn = document.getElementById("shareCopyLinkBtn");
+    if (shareCopyLinkBtn) {
+        shareCopyLinkBtn.addEventListener("click", function() {
+            var url = window.currentShareMeta.url || window.location.href;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url);
             } else {
-                icon.classList.remove('liked');
-                icon.innerText = 'favorite_border';
+                var ta = document.createElement("textarea");
+                ta.value = url; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
             }
+            window.showSuccessToast("링크를 복사했어요.");
+        });
+    }
+
+    var shareKakaoBtn = document.getElementById("shareKakaoBtn");
+    if (shareKakaoBtn) {
+        shareKakaoBtn.addEventListener("click", function() {
+            var kakaoKey = document.body.getAttribute("data-kakao-js-key");
+            if (!window.Kakao || !kakaoKey) return window.showTopToast("카카오 공유 설정이 아직 없어요.", "error");
+            try {
+                if (!window.Kakao.isInitialized()) window.Kakao.init(kakaoKey);
+                window.Kakao.Share.sendDefault({
+                    objectType: "feed",
+                    content: {
+                        title: window.currentShareMeta.title,
+                        description: window.currentShareMeta.description,
+                        imageUrl: window.currentShareMeta.imageUrl,
+                        link: { mobileWebUrl: window.currentShareMeta.url, webUrl: window.currentShareMeta.url }
+                    },
+                    buttons: [{ title: "상품 보러가기", link: { mobileWebUrl: window.currentShareMeta.url, webUrl: window.currentShareMeta.url } }]
+                });
+            } catch(e) { window.showTopToast("카카오톡 공유를 실행하지 못했어요.", "error"); }
+        });
+    }
+
+    var shareMoreBtn = document.getElementById("shareMoreBtn");
+    if (shareMoreBtn) {
+        shareMoreBtn.addEventListener("click", function() {
+            if (navigator.share) {
+                navigator.share({ title: window.currentShareMeta.title, url: window.currentShareMeta.url }).catch(function(){});
+            } else {
+                window.showTopToast("공유를 지원하지 않아 링크를 복사해주세요.", "error");
+            }
+        });
+    }
+
+    var modalIds = ["pokeModal", "giftModal", "shareModal"];
+    modalIds.forEach(function(modalId) {
+        var modalDim = document.getElementById(modalId + "Dim");
+        var modalEl = document.getElementById(modalId);
+        
+        if (modalDim) {
+            modalDim.addEventListener("click", function() {
+                modalDim.classList.add("hidden");
+                if (modalEl) modalEl.classList.add("hidden");
+                document.body.style.overflow = ""; 
+            });
         }
-    })
-    .catch(function(err) {
-        console.error("찜 통신 에러:", err);
-        if (isCurrentlyLiked) {
-            icon.classList.add('liked');
-            icon.innerText = 'favorite';
-        } else {
-            icon.classList.remove('liked');
-            icon.innerText = 'favorite_border';
+        
+        if (modalEl) {
+            modalEl.addEventListener("click", function(e) {
+                if (e.target === modalEl) {
+                    modalEl.classList.add("hidden");
+                    if (modalDim) modalDim.classList.add("hidden");
+                    document.body.style.overflow = "";
+                }
+            });
         }
     });
-}
+
+    var closeBtns = document.querySelectorAll("#closePokeModalBtn, #closeGiftModalBtn");
+    closeBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            document.querySelectorAll(".poke-modal, .poke-modal-dim").forEach(function(m) { m.classList.add("hidden"); });
+            document.body.style.overflow = "";
+        });
+    });
+});

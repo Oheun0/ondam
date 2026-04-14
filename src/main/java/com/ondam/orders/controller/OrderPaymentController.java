@@ -98,13 +98,17 @@ public class OrderPaymentController implements Controller {
 		int totalProductDiscount = 0;
 
 		for (CartItemDTO item : selectedItems) {
+		    // 💡 [추가] 옵션 추가 금액을 DB에서 가져옵니다.
+		    ProductOptionDTO optDto = productOptionService.getProductOptionByNo(item.getProductOptionNo());
+		    int addPrice = (optDto != null) ? optDto.getOptionAddPrice() : 0;
+
 			int originPrice = item.getProductOriginPrice();
-			int salePrice = item.getProductPrice();
+			int salePrice = item.getProductPrice(); // (이미 옵션가가 포함된 최종 판매가)
 			int qty = item.getCartQuantity();
 
 			if (originPrice > 0) {
-				totalProductPrice += originPrice * qty;
-				totalProductDiscount += (originPrice - salePrice) * qty;
+				totalProductPrice += (originPrice + addPrice) * qty;
+				totalProductDiscount += ((originPrice + addPrice) - salePrice) * qty;
 			} else {
 				totalProductPrice += salePrice * qty;
 			}
@@ -184,8 +188,17 @@ public class OrderPaymentController implements Controller {
 		// ── 4. 금액 계산 ──────────────────────────────
 		int originPrice = item.getProductOriginPrice();
 		int salePrice = item.getProductPrice();
-		int totalProductPrice = originPrice * quantity;
-		int totalProductDiscount = (originPrice - salePrice) * quantity;
+		int addPrice = (optDto != null) ? optDto.getOptionAddPrice() : 0; // 💡 [추가]
+		
+		int totalProductPrice = 0;
+		int totalProductDiscount = 0;
+
+		if (originPrice > 0) {
+		    totalProductPrice = (originPrice + addPrice) * quantity;
+		    totalProductDiscount = ((originPrice + addPrice) - salePrice) * quantity;
+		} else {
+		    totalProductPrice = salePrice * quantity;
+		}
 
 		request.setAttribute("orderItems", selectedItems);
 		request.setAttribute("orderItemCount", 1);
@@ -303,31 +316,48 @@ public class OrderPaymentController implements Controller {
 			} else {
 				// 장바구니 구매
 				if (cartItemNos == null || cartItemNos.length == 0)
-					return "redirect:/cart";
+				    return "redirect:/cart";
 				Vector<CartItemDTO> allItems = cartService.getCartList(loginUser.getUserNo());
 				for (CartItemDTO item : allItems) {
-					for (String no : cartItemNos) {
-						if (item.getCartItemNo() == Integer.parseInt(no)) {
-							selectedItems.add(item);
-							break;
-						}
-					}
+				    for (String no : cartItemNos) {
+				        if (item.getCartItemNo() == Integer.parseInt(no)) {
+				            // 💡 [수정 내용] 장바구니에서 넘어온 아이템의 옵션 추가금을 조회해서 ProductPrice에 합산해 줍니다!
+				            ProductOptionDTO optDto = productOptionService.getProductOptionByNo(item.getProductOptionNo());
+				            if(optDto != null) {
+				                // 기존 상품가에 옵션 추가금을 더한 값을 최종 가격으로 세팅
+				                item.setProductPrice(item.getProductPrice() + optDto.getOptionAddPrice());
+				            }
+				            selectedItems.add(item);
+				            break;
+				        }
+				    }
 				}
 				if (selectedItems.isEmpty())
 					return "redirect:/cart";
 			}
 
 			// ── 3. 금액 계산 ──────────────────────────────────
-			int orderPrice = selectedItems.stream()
-					.mapToInt(i -> i.getProductOriginPrice() > 0 ? i.getProductOriginPrice() * i.getCartQuantity()
-							: i.getProductPrice() * i.getCartQuantity())
-					.sum();
+			int orderPrice = 0;
+			int productDiscount = 0;
 
-			int productDiscount = selectedItems.stream()
-					.mapToInt(i -> i.getProductOriginPrice() > 0
-							? (i.getProductOriginPrice() - i.getProductPrice()) * i.getCartQuantity()
-							: 0)
-					.sum();
+			for (CartItemDTO item : selectedItems) {
+			    ProductOptionDTO optDto = productOptionService.getProductOptionByNo(item.getProductOptionNo());
+			    int addPrice = (optDto != null) ? optDto.getOptionAddPrice() : 0;
+			    
+			    int qty = item.getCartQuantity();
+			    int originPrice = item.getProductOriginPrice();
+			    int finalPrice = item.getProductPrice(); // (장바구니 로직에서 addPrice가 이미 더해졌거나, direct 구매에서 더해져 있음)
+			    
+			    if (originPrice > 0) {
+			        // 원가 기준 총액 (원가 + 옵션가)
+			        orderPrice += (originPrice + addPrice) * qty;
+			        // 할인 금액 = (원가 + 옵션가) - 최종가격
+			        productDiscount += ((originPrice + addPrice) - finalPrice) * qty;
+			    } else {
+			        // 할인이 없는 경우
+			        orderPrice += finalPrice * qty;
+			    }
+			}
 
 			int walletUsedAmount = (paymentMethod == 0) ? paymentAmount : 0;
 
@@ -479,11 +509,19 @@ public class OrderPaymentController implements Controller {
 
 	    int totalProductPrice = 0, totalProductDiscount = 0;
 	    for (CartItemDTO item : orderItems) {
+	        ProductOptionDTO optDto = productOptionService.getProductOptionByNo(item.getProductOptionNo());
+	        int addPrice = (optDto != null) ? optDto.getOptionAddPrice() : 0;
+	        
 	        int origin = item.getProductOriginPrice();
 	        int sale   = item.getProductPrice();
 	        int qty    = item.getCartQuantity();
-	        totalProductPrice    += (origin > 0 ? origin : sale) * qty;
-	        totalProductDiscount += (origin > 0 ? (origin - sale) * qty : 0);
+	        
+	        if (origin > 0) {
+	            totalProductPrice += (origin + addPrice) * qty;
+	            totalProductDiscount += ((origin + addPrice) - sale) * qty;
+	        } else {
+	            totalProductPrice += sale * qty;
+	        }
 	    }
 
 	    List<UserAddressDTO> addressList = userAddressService.getAddressListByUser(receiverNo);

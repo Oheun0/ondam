@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+import com.ondam.common.ProjectWebappPaths;
 import com.ondam.common.controller.Controller;
 import com.ondam.seller.dao.SellerDAO;
 import com.ondam.seller.dao.VendorDAO;
@@ -24,10 +25,6 @@ public class SellerSettingsController implements Controller {
 
 	private static final String CTX_PARAM_LOGO_DIR = "sellerLogoStorageDirectory";
 
-	private static final String DEFAULT_LOGO_STORAGE_DIR = "C:" + File.separator + "Jsp" + File.separator + "ondam"
-			+ File.separator + "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "images"
-			+ File.separator + "seller" + File.separator + "logo";
-
 	private final VendorDAO vendorDAO = new VendorDAO();
 	private final SellerDAO sellerDAO = new SellerDAO();
 
@@ -39,7 +36,7 @@ public class SellerSettingsController implements Controller {
 				return new File(t);
 			}
 		}
-		return new File(DEFAULT_LOGO_STORAGE_DIR);
+		return ProjectWebappPaths.sellerLogoDirectory(ctx);
 	}
 
 	static final class AddrParts {
@@ -271,8 +268,6 @@ public class SellerSettingsController implements Controller {
 		File realRoot = resolveLogoStorageRoot(request.getServletContext());
 		File inVendorDir = new File(new File(realRoot, String.valueOf(vendorNo)), logoFileName);
 		File flat = new File(realRoot, logoFileName);
-		String legacyRp = request.getServletContext().getRealPath("/images/seller/logo");
-		File legacyFlat = (legacyRp != null) ? new File(legacyRp, logoFileName) : null;
 		String ctx = request.getContextPath();
 		if (inVendorDir.isFile()) {
 			request.setAttribute("vendorLogoImgSrc",
@@ -280,9 +275,15 @@ public class SellerSettingsController implements Controller {
 		} else if (flat.isFile()) {
 			request.setAttribute("vendorLogoImgSrc",
 					ctx + "/images/seller/logo/" + urlEncodePathSegment(logoFileName));
-		} else if (legacyFlat != null && legacyFlat.isFile()) {
-			request.setAttribute("vendorLogoImgSrc",
-					ctx + "/images/seller/logo/" + urlEncodePathSegment(logoFileName));
+		} else {
+			String legacyRp = request.getServletContext().getRealPath("/images/seller/logo");
+			if (legacyRp != null) {
+				File legacyFlat = new File(legacyRp, logoFileName);
+				if (legacyFlat.isFile()) {
+					request.setAttribute("vendorLogoImgSrc",
+							ctx + "/images/seller/logo/" + urlEncodePathSegment(logoFileName));
+				}
+			}
 		}
 	}
 

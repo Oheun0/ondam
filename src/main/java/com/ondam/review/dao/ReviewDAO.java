@@ -77,6 +77,8 @@ public class ReviewDAO {
                 dto.setIsBodyPublic(rs.getInt("isBodyPublic"));
                 dto.setCreatedAt(rs.getString("createdAt"));
                 dto.setUpdatedAt(rs.getString("updatedAt"));
+                dto.setReplyContent(rs.getString("replyContent"));
+                dto.setReplyDate(rs.getString("replyDate"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,6 +112,8 @@ public class ReviewDAO {
                 dto.setIsBodyPublic(rs.getInt("isBodyPublic"));
                 dto.setCreatedAt(rs.getString("createdAt"));
                 dto.setUpdatedAt(rs.getString("updatedAt"));
+                dto.setReplyContent(rs.getString("replyContent"));
+                dto.setReplyDate(rs.getString("replyDate"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,6 +156,9 @@ public class ReviewDAO {
                 dto.setSnapOptionSize(rs.getString("snapOptionSize"));
                 dto.setSnapOptionColor(rs.getString("snapOptionColor"));
                 dto.setProductImg(rs.getString("productImg")); 
+                
+                dto.setReplyContent(rs.getString("replyContent"));
+                dto.setReplyDate(rs.getString("replyDate"));
                 
                 vlist.addElement(dto);
             }

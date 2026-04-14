@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/review-write.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/share-modal.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/inquiry.css">
 
 <div class="review-my-written-panel">
   <c:choose>
@@ -63,6 +64,18 @@
               <p class="review-my-written-body">
                 ${review.reviewContent}
               </p>
+              
+             <c:if test="${not empty review.replyContent && review.replyContent != 'null'}">
+				  <div class="inquiry-list-answer-card" aria-label="판매자 답변" style="margin-top: 16px;">
+				    <p class="inquiry-list-answer-label">
+				      판매자 답변 | ${not empty review.replyDate ? fn:substring(review.replyDate, 0, 10) : ''}
+				    </p>
+				    <p class="inquiry-list-answer-body">
+				      ${review.replyContent}
+				    </p>
+				  </div>
+				</c:if>
+              
             </div>
           </article>
         </c:forEach>

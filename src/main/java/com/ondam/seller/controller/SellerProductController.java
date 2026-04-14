@@ -18,6 +18,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ondam.common.ProjectWebappPaths;
 import com.ondam.common.controller.Controller;
 import com.ondam.product.dao.CategoryDAO;
 import com.ondam.product.dao.ProductDAO;
@@ -593,8 +594,7 @@ public class SellerProductController implements Controller {
 			ext = originalName.substring(dot);
 		}
 		String fileName = UUID.randomUUID().toString() + ext;
-		String uploadPath = request.getServletContext().getRealPath("/uploads/products");
-		File uploadDir = new File(uploadPath);
+		File uploadDir = ProjectWebappPaths.uploadsProductsDirectory(request.getServletContext());
 		if (!uploadDir.exists()) {
 			uploadDir.mkdirs();
 		}

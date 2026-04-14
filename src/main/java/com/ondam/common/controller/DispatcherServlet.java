@@ -1,7 +1,12 @@
 package com.ondam.common.controller;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.ondam.common.ProjectWebappPaths;
 
 import com.ondam.ai.controller.AiIntroController;
 import com.ondam.ai.controller.AiRecommendController;
@@ -26,11 +31,13 @@ import com.ondam.review.controller.ReviewImageController;
 import com.ondam.seller.controller.SellerAuthController;
 import com.ondam.seller.controller.SellerDashboardController;
 import com.ondam.seller.controller.SellerFindIdController;
+import com.ondam.seller.controller.SellerNotificationController;
 import com.ondam.seller.controller.SellerOrderController;
 import com.ondam.seller.controller.SellerProductController;
 import com.ondam.seller.controller.SellerResetPwController;
 import com.ondam.seller.controller.SellerResetPwFormController;
 import com.ondam.seller.controller.SellerResetSendCodeController;
+import com.ondam.seller.controller.SellerReviewController;
 import com.ondam.seller.controller.SellerSettingsController;
 import com.ondam.seller.controller.SellerSettlementController;
 import com.ondam.seller.controller.SellerSettlementDownloadController;
@@ -64,6 +71,7 @@ import com.ondam.user.controller.UserIdCheckController;
 import com.ondam.wallet.controller.WalletController;
 import com.ondam.wish.controller.WishController;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -88,6 +96,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/login", new LoginController());
         handlerMapping.put("/notification", new NotificationController());
         handlerMapping.put("/main", new MainController());
+        handlerMapping.put("/guide", new GuideController());
         handlerMapping.put("/category", new CategoryController());
         handlerMapping.put("/shorts", new ShortsController());
         handlerMapping.put("/group", new FamilyGroupController());
@@ -158,10 +167,13 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/shorts/api", new com.ondam.shorts.controller.ShortsGeneratorController());
         handlerMapping.put("/seller/dashboard", new SellerDashboardController());
         handlerMapping.put("/seller/order", new SellerOrderController());
+        handlerMapping.put("/seller/review", new SellerReviewController());
         handlerMapping.put("/seller/settlement/list", new SellerSettlementController());
         handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
         handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
         handlerMapping.put("/size-recommend", new SizeRecommendController());
+        handlerMapping.put("/seller/notification", new SellerNotificationController());
+
     }
     protected void service(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -170,7 +182,14 @@ public class DispatcherServlet extends HttpServlet {
         String uri = request.getRequestURI();
         String contextPath = request.getContextPath();
         String path = uri.substring(contextPath.length()); 
-        
+
+         * /images/*, /uploads/* 는 먼저 프로젝트 웹앱 경로에서 파일을 찾아 서빙 */
+        if (path.startsWith("/images/") || path.startsWith("/uploads/")) {
+            if (serveFileFromProjectWebappIfPresent(request.getServletContext(), response, path)) {
+                return;
+            }
+        }
+
         // 확장자가 있거나(파일), 특정 정적 폴더 경로인 경우 톰캣 기본 서블릿에 위임
         if (path.contains(".") || path.startsWith("/css/") || path.startsWith("/js/") || path.startsWith("/images/")) {
             request.getServletContext().getNamedDispatcher("default").forward(request, response);
@@ -207,5 +226,32 @@ public class DispatcherServlet extends HttpServlet {
             e.printStackTrace();
             response.sendError(500, "서버 내부 오류 발생");
         }
+    }
+
+    /**
+     * 로컬에서 업로드된 파일이 배포본이 아닌 프로젝트 webapp 에만 있을 때 응답.
+     * @return true 이면 이미 응답을 썼음
+     */
+    private boolean serveFileFromProjectWebappIfPresent(ServletContext servletContext,
+            HttpServletResponse response, String path) throws IOException {
+        File f = ProjectWebappPaths.resolveExistingFileUnderWebapp(servletContext, path);
+        if (f == null) {
+            return false;
+        }
+        String mime = getServletContext().getMimeType(path);
+        if (mime == null) {
+            mime = "application/octet-stream";
+        }
+        response.setContentType(mime);
+        long len = f.length();
+        if (len <= Integer.MAX_VALUE) {
+            response.setContentLength((int) len);
+        } else {
+            response.setContentLengthLong(len);
+        }
+        try (InputStream in = new FileInputStream(f)) {
+            in.transferTo(response.getOutputStream());
+        }
+        return true;
     }
 }

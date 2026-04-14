@@ -78,7 +78,7 @@
 			              data-soldout="${item.optionStock == 0}"
 			              data-option="${item.optionColor} / ${item.optionSize} / ${item.cartQuantity}개"
 			              data-product-name="${item.productName}"
-			              data-image="${pageContext.request.contextPath}/images/product/${item.productImg}">
+			              data-image="${pageContext.request.contextPath}/uploads/products/${item.productImg}">
 			
 			            <label class="cart-item__check">
 			              <input type="checkbox" class="cart-item__checkbox"
@@ -94,7 +94,7 @@
 			
 			            <div class="cart-item__left">
 			              <div class="cart-item__thumb-wrap">
-			                <img src="${pageContext.request.contextPath}/images/product/${item.productImg}"
+			                <img src="${pageContext.request.contextPath}/uploads/products/${item.productImg}"
 			                     alt="${item.productName}"
 			                     class="cart-item__thumb"
 			                     width="96" height="96" loading="lazy"/>
