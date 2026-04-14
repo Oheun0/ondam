@@ -141,4 +141,8 @@ public class GiftService {
 	    }
 	    return list;
 	}
+	
+	public int getFamilyNoBetween(int senderNo, int receiverNo) {
+	    return dao.getFamilyNoBetween(senderNo, receiverNo);
+	}
 }

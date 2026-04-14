@@ -80,8 +80,9 @@
 		               data-helpee-userno="${m.userNo}"
 		               data-family-no="${myGroup.familyNo}">
 		        <div class="member-thumb-wrap">
-		          <img src="${pageContext.request.contextPath}/images/profile/default-profile.png"
-		               alt="${m.userName} 프로필" class="member-thumb">
+		          <img src="${pageContext.request.contextPath}/images/profile/${not empty m.userProfileImg ? m.userProfileImg : 'default-profile.png'}"
+				     alt="${m.userName} 프로필" class="member-thumb"
+				     onerror="this.src='${pageContext.request.contextPath}/images/profile/default-profile.png'">
 		        </div>
 		
 		        <div class="member-content">

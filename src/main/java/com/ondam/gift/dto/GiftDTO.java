@@ -11,6 +11,7 @@ public class GiftDTO {
     private String sentAt;
     private String respondedAt;
     private int addressNo;
+    private int familyNo;
 
     
     private String senderName;    // 보낸 사람 이름
@@ -127,4 +128,7 @@ public class GiftDTO {
 	public void setAddressNo(int addressNo) {
 		this.addressNo = addressNo;
 	}
+	
+	public int getFamilyNo() { return familyNo; }
+	public void setFamilyNo(int familyNo) { this.familyNo = familyNo; }
 }
