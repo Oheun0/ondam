@@ -874,6 +874,20 @@ a.detail-icon-btn.detail-icon-btn--link {
   color: #6c6c6c;
 }
 
+.detail-review-help-btn.active {
+    color: #ff6b6b !important;
+    border-color: #ff6b6b !important;
+    cursor: default;
+}
+
+.detail-review-help-btn.active .detail-review-help-count {
+    color: #ff6b6b !important;
+}
+
+.detail-review-help-btn.active .material-icons {
+    color: #ff6b6b !important;
+}
+
 .detail-review-author {
   display: flex;
   flex-direction: row;

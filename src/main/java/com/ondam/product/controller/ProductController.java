@@ -183,14 +183,13 @@ public class ProductController implements Controller {
 	            .add(opt.getOptionSize());
 	    }
 	    
-	    // 조르기용 그룹 멤버 리스트 추가
 	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
 	    if (loginUser != null) {
-	        FamilyMemberDTO myMember = familyMemberService
-	                .getFamilyMemberByUserNo(loginUser.getUserNo());
+	        Set<Integer> helpfulSet = reviewService.getHelpfulReviewNosByUser(loginUser.getUserNo());
+	        request.setAttribute("helpfulSet", helpfulSet);
+	        FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
 	        if (myMember != null) {
-	            Vector<FamilyMemberDTO> memberList = familyMemberService
-	                    .getFamilyMembersByFamilyNo(myMember.getFamilyNo());
+	            Vector<FamilyMemberDTO> memberList = familyMemberService.getFamilyMembersByFamilyNo(myMember.getFamilyNo());
 	            memberList.removeIf(m -> m.getUserNo() == loginUser.getUserNo());
 	            request.setAttribute("pokeMemberList", memberList);
 	            request.setAttribute("familyNo", myMember.getFamilyNo());
@@ -215,6 +214,7 @@ public class ProductController implements Controller {
 	    
 	    return "product/product-detail";
 	}
+	    
 	private void getOptionsJson(HttpServletRequest request, HttpServletResponse response) throws Exception {
 	    int productNo = Integer.parseInt(request.getParameter("productNo"));
 	    
