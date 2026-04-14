@@ -154,13 +154,17 @@ public class SellerOrderController implements Controller {
                 String invTracking = request.getParameter("tracking");
                 String invItemNos = request.getParameter("itemNos");
 
+                String autoStatus = request.getParameter("status");
+                
                 if (invOrderNoStr == null || invCarrier == null || invTracking == null || invItemNos == null) {
                     return "redirect:/seller/order?action=list";
                 }
 
                 int invOrderNo = Integer.parseInt(invOrderNoStr);
                 sellerOrderDAO.updateItemInvoice(vendorNo, invOrderNo, invCarrier, invTracking, invItemNos);
-
+                if (autoStatus != null && autoStatus.equals("ready")) {
+                    sellerOrderDAO.updateItemDeliveryState(vendorNo, invOrderNo, 1, invItemNos);
+                }
                 return "redirect:/seller/order?action=detail&orderNo=" + invOrderNo;
             }
             
