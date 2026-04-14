@@ -202,16 +202,17 @@
 	    var maxDiscount   = (maxAttr && maxAttr !== "null") ? parseInt(maxAttr, 10) : null;
 
 	    if (base < minOrder) return 0;
-
 	    var discount = 0;
 	    if (discountType === 0) {
-	        discount = discountValue;
+	        discount = Math.round(base * (discountValue / 100));
+	        if (maxDiscount !== null && maxDiscount > 0) {
+	            discount = Math.min(discount, maxDiscount);
+	        }
 	    } else {
-	        discount = Math.round(base * discountValue / 100);
-	        if (maxDiscount !== null) discount = Math.min(discount, maxDiscount);
+	        discount = discountValue;
 	    }
 	    return Math.min(discount, base);
-	}
+	  }
 
     function updateMoneyUI() {
       var couponDiscount = computeCouponDiscount();
