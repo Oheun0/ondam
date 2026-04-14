@@ -956,16 +956,34 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-  document.querySelectorAll(".detail-review-sort-btn").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var sort = btn.getAttribute("data-sort");
-      document.querySelectorAll(".detail-review-sort-btn").forEach(function (b) {
-        var on = b.getAttribute("data-sort") === sort;
-        b.classList.toggle("active", on);
-        b.setAttribute("aria-pressed", on ? "true" : "false");
-      });
-    });
-  });
+
+	document.addEventListener("click", function (e) {
+	  const btn = e.target.closest(".detail-review-sort-btn");
+	  if (!btn) return;
+
+	  const sort = btn.getAttribute("data-sort");
+	  const urlParams = new URLSearchParams(window.location.search);
+	  const productNo = urlParams.get("productNo");
+	  const action = urlParams.get("action") || "detail";
+	  const ctx = document.body.getAttribute("data-context-path") || "";
+
+	  if (!productNo) return;
+	  const fetchUrl = ctx + "/review?action=listByProduct&productNo=" + productNo + "&sort=" + sort + "&ajax=true";
+
+	  fetch(fetchUrl)
+	    .then(response => response.text())
+	    .then(html => {
+	      const container = btn.closest(".detail-tab-panel-card");
+	      
+	      if (container) {
+	        container.innerHTML = html;
+	        const currentPath = window.location.pathname;
+	        const newUrl = currentPath + "?action=" + action + "&productNo=" + productNo + "&sort=" + sort + "#review-anchor";
+	        window.history.replaceState({path: newUrl}, '', newUrl);
+	      }
+	    })
+	    .catch(err => console.error("AJAX 오류:", err));
+	});
 
   if (sizeRecommendBtn && sizeRecommendResult) {
     sizeRecommendBtn.addEventListener("click", function () {

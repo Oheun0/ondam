@@ -74,7 +74,6 @@
                 "${opt.optionColor}__${opt.optionSize}": ${opt.optionStock}${st.last ? '' : ','}
             </c:forEach>
         };
-        // 💡 [중요] 이 부분이 추가금액을 JS로 넘겨주는 핵심입니다!
         const OPTION_ADD_PRICE_MAP = {
             <c:forEach var="opt" items="${optionList}" varStatus="st">
                 "${opt.optionColor}__${opt.optionSize}": ${opt.optionAddPrice}${st.last ? '' : ','}

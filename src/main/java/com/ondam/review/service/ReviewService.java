@@ -1,5 +1,6 @@
 package com.ondam.review.service;
 
+import java.util.Set;
 import java.util.Vector;
 
 import com.ondam.review.dao.ReviewDAO;
@@ -105,5 +106,9 @@ public class ReviewService {
  // 리뷰 '도움돼요' 증가
     public boolean increaseReviewHelpful(int reviewNo, int userNo) {
         return reviewDAO.increaseReviewHelpful(reviewNo, userNo);
+    }
+    
+    public Set<Integer> getHelpfulReviewNosByUser(int userNo) {
+        return reviewDAO.getHelpfulReviewNosByUser(userNo);
     }
 }
