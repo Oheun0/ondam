@@ -24,8 +24,8 @@
 			<div class="slider-viewport">
 				<div class="slider-track" id="sliderTrack">
 					<div class="banner-slide">
-						<a href="${pageContext.request.contextPath}/main" class="banner-slide-link" aria-label="배너 1: 홈으로 이동">
-							<img src="${pageContext.request.contextPath}/images/banner/banner1.png" class="banner-img" alt="온담 메인 배너 1" width="800" height="400" decoding="async">
+						<a href="${pageContext.request.contextPath}/guide" class="banner-slide-link" aria-label="배너 1: 이용 가이드로 이동">
+							<img src="${pageContext.request.contextPath}/images/banner/banner1.png" class="banner-img" alt="온담 이용 가이드 배너" width="800" height="400" decoding="async">
 						</a>
 					</div>
 					<div class="banner-slide">
