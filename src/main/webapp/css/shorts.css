@@ -296,3 +296,6 @@ html, body {
     z-index: 100001 !important;
     position: relative !important; 
 }
+#option-toast, #success-toast {
+    z-index: 999999 !important;
+}
