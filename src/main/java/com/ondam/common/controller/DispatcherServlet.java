@@ -93,6 +93,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/login", new LoginController());
         handlerMapping.put("/notification", new NotificationController());
         handlerMapping.put("/main", new MainController());
+        handlerMapping.put("/guide", new GuideController());
         handlerMapping.put("/category", new CategoryController());
         handlerMapping.put("/shorts", new ShortsController());
         handlerMapping.put("/group", new FamilyGroupController());

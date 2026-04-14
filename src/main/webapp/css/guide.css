@@ -1,0 +1,75 @@
+/* 이용 가이드 — 모바일 풀 블리드
+ * user-guide.svg 는 viewBox 1222 기준으로 본문이 x=62, width=1080 이라
+ * 그대로 두면 좌우에 빈 여백이 보임 → 가로 스케일 + 음수 마진으로 보정 */
+
+body.guide-page {
+	background: #fff;
+}
+
+body.guide-page .app-shell {
+	background: #fff;
+}
+
+body.guide-page .page-wrap.guide-page-main {
+	padding: 0 0 92px;
+	margin: 0;
+	width: 100%;
+	max-width: none;
+	box-sizing: border-box;
+}
+
+@media (max-width: 360px) {
+	body.guide-page .page-wrap.guide-page-main {
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
+}
+
+/* SVG viewBox 1222, 본문 블록 1080 @ x=62 → 가로만 1222/1080 배율, 왼쪽 62px분 당김 */
+body.guide-page .guide-svg-wrap {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	line-height: 0;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+body.guide-page .guide-svg-img {
+	--vb-w: 1222;
+	--content-w: 1080;
+	--pad-l: 62;
+	width: calc(100% * var(--vb-w) / var(--content-w));
+	max-width: none !important;
+	margin-left: calc(-100% * var(--pad-l) / var(--content-w));
+	height: auto;
+	display: block;
+}
+
+body.guide-page .guide-actions {
+	width: 100%;
+	padding: 20px 16px 8px;
+	box-sizing: border-box;
+}
+
+body.guide-page .guide-home-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: var(--touch-size, 48px);
+	padding: 14px 16px;
+	box-sizing: border-box;
+	border-radius: var(--radius-md, 16px);
+	background: #4D7FAC;
+	color: #fff;
+	font-size: 20px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	text-align: center;
+}
+
+body.guide-page .guide-home-btn:active {
+	opacity: 0.92;
+	transform: scale(0.99);
+}
