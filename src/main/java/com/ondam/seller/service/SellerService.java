@@ -1,8 +1,10 @@
 package com.ondam.seller.service;
 
+import java.util.Map;
 import java.util.Vector;
 
 import com.ondam.seller.dao.SellerDAO;
+import com.ondam.seller.dao.SellerDashboardDAO;
 import com.ondam.seller.dao.VendorDAO;
 import com.ondam.seller.dto.SellerDTO;
 import com.ondam.seller.dto.VendorDTO;
@@ -72,16 +74,10 @@ public class SellerService {
 	    return dao.updatePassword(sellerId, newPassword);
 	}
 	
-	public java.util.Map<String, Integer> getDashboardStats(int vendorNo) {
-	    java.util.Map<String, Integer> stats = new java.util.HashMap<>();
-	    
-	    // 나중에 실제 DAO(DB)를 연결할 자리 
-	    stats.put("todayOrderCount", 12);
-	    stats.put("shipReadyCount", 5);
-	    stats.put("inquiryCount", 3);
-	    stats.put("reviewCount", 4);
-	    
-	    return stats;
-	}
+	public Map<String, Object> getDashboardStats(int vendorNo) {
+        SellerDashboardDAO dashDao = new SellerDashboardDAO();
+        return dashDao.getDashboardStats(vendorNo);
+    }
+	
 }
 
