@@ -131,6 +131,7 @@
 		          <input type="checkbox" class="item-checkbox" 
 		                 value="${item.orderItemNo}" 
 		                 id="chk_${item.orderItemNo}"
+		                 data-state="${item.deliveryState}"
 		                 data-courier="${item.courier}" 
 		                 data-tracking="${item.trackingNo}">
 		        </div>
