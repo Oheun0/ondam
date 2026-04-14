@@ -67,9 +67,20 @@ public class SellerSettlementController implements Controller {
         int cardPct = 0, bankPct = 0, walletPct = 0;
 
         if (totalPay > 0) {
-            cardPct = (int) Math.round((double) sumCard / totalPay * 100);
+        	cardPct = (int) Math.round((double) sumCard / totalPay * 100);
             bankPct = (int) Math.round((double) sumBank / totalPay * 100);
-            walletPct = 100 - (cardPct + bankPct);
+            walletPct = (int) Math.round((double) sumWallet / totalPay * 100);
+            
+            int diff = 100 - (cardPct + bankPct + walletPct);
+            if (diff != 0) {
+                if (cardPct >= bankPct && cardPct >= walletPct) {
+                    cardPct += diff;
+                } else if (bankPct >= cardPct && bankPct >= walletPct) {
+                    bankPct += diff;
+                } else {
+                    walletPct += diff;
+                }
+            }
         }
 
         Map<String, Object> payMethodStats = new HashMap<>();

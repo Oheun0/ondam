@@ -67,14 +67,14 @@
     if (searchBtn) {
       searchBtn.addEventListener('click', function () {
         var s = $('startDate').value;
-        var e = $('endDate').value;
+        var eDate = $('endDate').value;
         var status = $('settleStatus').value;
         var pVal = $('periodPreset').value;
 		var pay = $('payMethod').value;
         var contextPath = document.body.getAttribute('data-context-path') || '';
 		location.href = contextPath + "/seller/settlement/list" 
 		              + "?startDate=" + encodeURIComponent(s) 
-		              + "&endDate=" + encodeURIComponent(e) 
+		              + "&endDate=" + encodeURIComponent(eDate)
 		              + "&settleStatus=" + encodeURIComponent(status) 
 		              + "&payMethod=" + encodeURIComponent(pay)
 		              + "&periodPreset=" + encodeURIComponent(pVal);
@@ -103,25 +103,46 @@
 
   // Pagination
   document.addEventListener('click', function (e) {
-      var pageBtn = e.target.closest('.seller-settlement-page-btn');
-      if (!pageBtn) return;
+        var pageBtn = e.target.closest('.seller-settlement-page-btn');
+        if (!pageBtn) return;
+        
+        e.preventDefault();
 
-      var p = pageBtn.getAttribute('data-page');
-      if (!p) return;
+        var p = pageBtn.getAttribute('data-page');
+        if (!p) return;
 
-      var s = $('startDate').value;
-      var eDate = $('endDate').value;
-      var status = $('settleStatus').value;
-      var pVal = $('periodPreset').value;
-	  var pay = $('payMethod').value;
-      var contextPath = document.body.getAttribute('data-context-path') || '';
-	  location.href = contextPath + "/seller/settlement/list" 
-	                + "?startDate=" + encodeURIComponent(s) 
-	                + "&endDate=" + encodeURIComponent(e) 
-	                + "&settleStatus=" + encodeURIComponent(status) 
-	                + "&payMethod=" + encodeURIComponent(pay)
-	                + "&periodPreset=" + encodeURIComponent(pVal);
-				    });
+        var s = $('startDate').value;
+        var eDate = $('endDate').value;
+        var status = $('settleStatus').value;
+        var pVal = $('periodPreset').value;
+        var pay = $('payMethod').value;
+        var contextPath = document.body.getAttribute('data-context-path') || '';
+        
+        var targetUrl = contextPath + "/seller/settlement/list" 
+                      + "?startDate=" + encodeURIComponent(s) 
+                      + "&endDate=" + encodeURIComponent(eDate) 
+                      + "&settleStatus=" + encodeURIComponent(status) 
+                      + "&payMethod=" + encodeURIComponent(pay)
+                      + "&periodPreset=" + encodeURIComponent(pVal)
+                      + "&page=" + p;
+					  
+					  fetch(targetUrl)
+					            .then(function(response) { return response.text(); })
+					            .then(function(html) {
+					                var parser = new DOMParser();
+					                var doc = parser.parseFromString(html, 'text/html');
+					                var newTableArea = doc.querySelector('.seller-settlement-table-wrap');
+					                var currentTableArea = document.querySelector('.seller-settlement-table-wrap');
+					                if (newTableArea && currentTableArea) {
+					                    currentTableArea.innerHTML = newTableArea.innerHTML;
+					                }
+					                window.history.pushState(null, '', targetUrl);
+					            })
+					            .catch(function(err) {
+					                console.error('AJAX 페이징 에러:', err);
+					                location.href = targetUrl;
+					            });
+					    });
 
   // Detail modal
   var modal = $('settleModal');
@@ -201,14 +222,12 @@
     openModal();
   });
 
-  // Empty CTA (dummy)
-  var goOrderBtn = $('goOrderBtn');
-  if (goOrderBtn) {
-    goOrderBtn.addEventListener('click', function () {
-      alert('주문 관리 화면으로 이동(더미)\n\npreview?page=seller/order/list');
-      // 실제 이동은 더미로 남김
-      window.location.href = (document.body.getAttribute('data-context-path') || '') + '/preview?page=seller/order/list';
-    });
-  }
-})();
-
+  // 정산 내역이 없을 때 띄우는 '주문 관리로 가기' 버튼
+    var goOrderBtn = $('goOrderBtn');
+    if (goOrderBtn) {
+      goOrderBtn.addEventListener('click', function () {
+        var contextPath = document.body.getAttribute('data-context-path') || '';
+        window.location.href = contextPath + '/seller/order/list'; 
+      });
+    }
+  })();
