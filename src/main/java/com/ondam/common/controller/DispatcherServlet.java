@@ -183,6 +183,7 @@ public class DispatcherServlet extends HttpServlet {
         String contextPath = request.getContextPath();
         String path = uri.substring(contextPath.length()); 
 
+        /* 업로드는 프로젝트 src/main/webapp 에 저장되는데, GET 은 배포 디렉터리에서만 찾는 경우가 있어
          * /images/*, /uploads/* 는 먼저 프로젝트 웹앱 경로에서 파일을 찾아 서빙 */
         if (path.startsWith("/images/") || path.startsWith("/uploads/")) {
             if (serveFileFromProjectWebappIfPresent(request.getServletContext(), response, path)) {
