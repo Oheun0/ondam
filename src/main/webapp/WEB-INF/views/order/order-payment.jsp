@@ -175,18 +175,19 @@
 			                aria-checked="false">
 			          <span class="op-coupon-title">${uc.couponName}</span>
 			          <span class="op-coupon-desc">
-			            <c:choose>
-			              <c:when test="${uc.discountType == 0}">
-			                <fmt:formatNumber value="${uc.discountValue}" type="number"/>원 할인
-			              </c:when>
-			              <c:otherwise>
-			                ${uc.discountValue}% 할인
-			              </c:otherwise>
-			            </c:choose>
-			            <c:if test="${uc.minOrderAmount > 0}">
-			              (<fmt:formatNumber value="${uc.minOrderAmount}" type="number"/>원 이상 구매 시)
-			            </c:if>
-			          </span>
+						  <c:choose>
+						    <c:when test="${uc.discountType == 0}">
+						      ${uc.discountValue}% 할인
+						    </c:when>
+						    <c:otherwise>
+						      <fmt:formatNumber value="${uc.discountValue}" type="number"/>원 할인
+						    </c:otherwise>
+						  </c:choose>
+						  
+						  <c:if test="${uc.minOrderAmount > 0}">
+						    (<fmt:formatNumber value="${uc.minOrderAmount}" type="number"/>원 이상 구매 시)
+						  </c:if>
+						</span>
 			          <c:if test="${not empty uc.validUntil}">
 			            <span class="op-coupon-expire">~${uc.validUntil}</span>
 			          </c:if>
@@ -236,7 +237,7 @@
             </div>
             <div class="op-price-row">
               <dt class="op-price-label">쿠폰 할인</dt>
-              <dd class="op-price-value op-price-value--minus" id="opCouponDiscount">-3,000원</dd>
+              <dd class="op-price-value op-price-value--minus" id="opCouponDiscount">0원</dd>
             </div>
             <div class="op-price-row op-price-row--ship">
               <dt class="op-price-label">배송비</dt>
@@ -269,11 +270,17 @@
         <div class="op-paybar__row">
           <span class="op-paybar__label">총 결제 금액</span>
           <div class="op-paybar__amounts">
-            <span class="op-paybar__orig hidden" id="opPaybarOrig">88,000원</span>
-            <span class="op-paybar__final" id="opPaybarFinal">72,000원</span>
-          </div>
-        </div>
-        <button type="button" class="op-paybar__btn" id="opPaySubmitBtn">총 72,000원 결제하기</button>
+            <span class="op-paybar__orig ${totalProductDiscount > 0 ? '' : 'hidden'}" id="opPaybarOrig">
+			  <fmt:formatNumber value="${totalProductPrice}" type="number"/>원
+			</span>
+			<span class="op-paybar__final" id="opPaybarFinal">
+			  <fmt:formatNumber value="${totalProductPrice - totalProductDiscount}" type="number"/>원
+			</span>
+			</div>
+			</div>
+			<button type="button" class="op-paybar__btn" id="opPaySubmitBtn">
+			  총 <fmt:formatNumber value="${totalProductPrice - totalProductDiscount}" type="number"/>원 결제하기
+			</button>
       </div>
     </div>
   </div>

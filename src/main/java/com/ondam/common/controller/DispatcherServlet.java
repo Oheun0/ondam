@@ -30,11 +30,13 @@ import com.ondam.review.controller.ReviewImageController;
 import com.ondam.seller.controller.SellerAuthController;
 import com.ondam.seller.controller.SellerDashboardController;
 import com.ondam.seller.controller.SellerFindIdController;
+import com.ondam.seller.controller.SellerNotificationController;
 import com.ondam.seller.controller.SellerOrderController;
 import com.ondam.seller.controller.SellerProductController;
 import com.ondam.seller.controller.SellerResetPwController;
 import com.ondam.seller.controller.SellerResetPwFormController;
 import com.ondam.seller.controller.SellerResetSendCodeController;
+import com.ondam.seller.controller.SellerReviewController;
 import com.ondam.seller.controller.SellerSettingsController;
 import com.ondam.seller.controller.SellerSettlementController;
 import com.ondam.seller.controller.SellerSettlementDownloadController;
@@ -164,8 +166,10 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/shorts/api", new com.ondam.shorts.controller.ShortsGeneratorController());
         handlerMapping.put("/seller/dashboard", new SellerDashboardController());
         handlerMapping.put("/seller/order", new SellerOrderController());
+        handlerMapping.put("/seller/review", new SellerReviewController());
         handlerMapping.put("/seller/settlement/list", new SellerSettlementController());
         handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
+        handlerMapping.put("/seller/notification", new SellerNotificationController());
     }
     protected void service(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {

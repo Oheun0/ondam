@@ -25,7 +25,7 @@ public class ShortsGeneratorService {
         return t;
     });
 
-    public void generateShortsAsync(int vendorNo, int productNo, String title, String content, String realPath) {
+    public void generateShortsAsync(int vendorNo, int productNo, String title, String content, String webappRootPath) {
         
         ShortsDTO existing = shortsDAO.getShortByProductNo(productNo);
         if (existing == null) {
@@ -67,15 +67,15 @@ public class ShortsGeneratorService {
                 
                 for (int i = 0; i < imageCount; i++) {
                     if (i > 0) imagesArg.append(",");
-                    imagesArg.append(realPath).append("uploads").append(File.separator)
+                    imagesArg.append(webappRootPath).append("uploads").append(File.separator)
                              .append("products").append(File.separator).append(imageFiles.get(i));
                 }
 
-                String scriptPath = realPath + "scripts" + File.separator + "shorts_generator.py";
+                String scriptPath = webappRootPath + "scripts" + File.separator + "shorts_generator.py";
                 String outputFileName = "shorts_" + productNo + "_" + System.currentTimeMillis() + ".mp4";
-                String outputPath = realPath + "uploads" + File.separator + "shorts" + File.separator + outputFileName;
+                String outputPath = webappRootPath + "uploads" + File.separator + "shorts" + File.separator + outputFileName;
                 
-                File outputDir = new File(realPath + "uploads" + File.separator + "shorts");
+                File outputDir = new File(webappRootPath + "uploads" + File.separator + "shorts");
                 if (!outputDir.exists() && !outputDir.mkdirs()) {
                     throw new RuntimeException("디렉토리 생성 실패: " + outputDir.getAbsolutePath());
                 }

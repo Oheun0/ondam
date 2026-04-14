@@ -11,6 +11,13 @@ window.OPTION_STOCK_MAP = {};
 window.currentOptions = [];
 window.currentShareMeta = {};
 
+// === 토스트 변수 ===
+var optionToastActive = false;
+var optionToastDismissTimer = null;
+var optionToastAnimFallbackTimer = null;
+var successToastActive = false;
+var successToastDismissTimer = null;
+
 // === 바텀 시트 닫기 함수 ===
 window.closePurchaseSheet = function() {
     document.body.style.overflow = ""; 
@@ -37,7 +44,7 @@ window.openPurchaseSheet = function(productNo, productPrice) {
     window.quantity = 1;
     window.selectedOptionNo = null;
 
-    // 💡 찜(하트) 상태 동기화
+    // 찜 상태 동기화
     var sheetWishlistBtn = document.getElementById("sheetWishlistBtn");
     if (sheetWishlistBtn) {
         var sideIcon = document.querySelector('button[onclick*="toggleLike(this, ' + productNo + ')"] .material-icons');
@@ -97,11 +104,9 @@ window.openPurchaseSheet = function(productNo, productPrice) {
             var hiddenProductNoEl = document.getElementById("hiddenProductNo");
             if (hiddenProductNoEl) hiddenProductNoEl.value = productNo;
 
-            // 💡 [핵심 복원] 색상 버튼 생성
             var colorListContainer = document.querySelector("#colorOptionPanel .detail-option-list");
             var sizeListContainer = document.getElementById("sizeOptionList");
             
-            // 처음 열 때는 사이즈 목록을 비워둡니다 (색상을 골라야 나타남)
             if (sizeListContainer) sizeListContainer.innerHTML = "";
 
             if(colorListContainer) {
@@ -125,14 +130,12 @@ window.openPurchaseSheet = function(productNo, productPrice) {
                         var colorOptionPanel = document.getElementById("colorOptionPanel");
                         if(colorOptionPanel) colorOptionPanel.classList.add("hidden");
                         
-                        // 색상이 바뀌면 사이즈 선택 초기화
                         if(selectedSizeText) {
                             selectedSizeText.textContent = "눌러서 선택하기";
                             selectedSizeText.classList.add("detail-selected-value--placeholder");
                         }
                         window.selectedOptionNo = null;
 
-                        // 💡 [핵심 복원] 선택한 색상에 맞는 사이즈 버튼만 동적 생성
                         if(sizeListContainer) {
                             sizeListContainer.innerHTML = "";
                             window.COLOR_SIZE_MAP[color].forEach(function(sz) {
@@ -177,9 +180,6 @@ window.openPurchaseSheet = function(productNo, productPrice) {
                                 sizeListContainer.appendChild(szBtn);
                             });
                         }
-                        // 색상을 골랐으니 사이즈 패널을 자동으로 열어주는 센스 (선택사항)
-                        // document.getElementById("sizeOptionPanel").classList.remove("hidden");
-                        
                         window.updateSheetPriceUI();
                     });
                     colorListContainer.appendChild(btn);
@@ -281,30 +281,86 @@ window.toggleLike = function(buttonElement, productNo) {
     });
 };
 
-// 💡 Z-index 강제 적용 토스트
+// 💡 [완벽 복원] 에러 토스트(빨간색) 
 window.showTopToast = function(message, type) {
     var el = document.getElementById("option-toast");
     if (!el) return;
     
-    el.style.setProperty("z-index", "999999", "important"); 
-    
     var textEl = el.querySelector(".option-toast__text");
     var iconEl = el.querySelector(".option-toast__icon");
-    if(textEl) textEl.textContent = message;
-    if(iconEl) iconEl.textContent = type === "success" ? "check_circle" : "error";
+
+    optionToastActive = true;
+    clearTimeout(optionToastDismissTimer);
+    clearTimeout(optionToastAnimFallbackTimer);
     
-    el.classList.remove("hidden", "option-toast--success", "option-toast--error");
+    el.classList.remove("option-toast--success", "option-toast--error");
     el.classList.add(type === "success" ? "option-toast--success" : "option-toast--error");
     
+    if (textEl) textEl.textContent = message || "";
+    if (iconEl) iconEl.textContent = type === "success" ? "check_circle" : "error";
+
+    el.classList.remove("hidden", "option-toast--hiding", "option-toast--show");
+    el.setAttribute("aria-hidden", "false");
+
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            el.classList.add("option-toast--show");
+        });
+    });
+
+    optionToastDismissTimer = setTimeout(function () {
+        el.classList.remove("option-toast--show");
+        el.classList.add("option-toast--hiding");
+
+        var finished = false;
+        function cleanup() {
+            if (finished) return;
+            finished = true;
+            el.removeEventListener("transitionend", onTransitionEnd);
+            clearTimeout(optionToastAnimFallbackTimer);
+            el.classList.add("hidden");
+            el.classList.remove("option-toast--hiding");
+            el.setAttribute("aria-hidden", "true");
+            optionToastActive = false;
+        }
+
+        function onTransitionEnd(e) {
+            if (e.target !== el) return;
+            if (e.propertyName !== "opacity" && e.propertyName !== "transform") return;
+            cleanup();
+        }
+
+        el.addEventListener("transitionend", onTransitionEnd);
+        optionToastAnimFallbackTimer = setTimeout(cleanup, 400);
+    }, 1800);
+};
+
+// 💡 [분리] 성공 토스트(초록색) - product-detail.js 와 동일
+window.showSuccessToast = function(message) {
+    var el = document.getElementById("success-toast");
+    if (!el || successToastActive) return;
+
+    document.getElementById("success-toast-text").innerText = message;
+    successToastActive = true;
+
+    el.style.setProperty("display", "flex", "important"); 
     el.style.opacity = "1";
-    setTimeout(function() { el.style.opacity = "0"; }, 1800);
-    setTimeout(function() { el.classList.add("hidden"); }, 2100);
+    el.style.visibility = "visible";
+    el.setAttribute("aria-hidden", "false");
+
+    clearTimeout(successToastDismissTimer);
+    successToastDismissTimer = setTimeout(function () {
+        el.style.opacity = "0";
+        setTimeout(function () {
+            el.style.setProperty("display", "none", "important");
+            el.setAttribute("aria-hidden", "true");
+            successToastActive = false;
+        }, 300);
+    }, 2000);
 };
 
 window.showOptionErrorToast = function() { window.showTopToast("먼저 색상과 사이즈를 골라주세요", "error"); };
-window.showSuccessToast = function(msg) { window.showTopToast(msg, "success"); };
 window.isOptionSelected = function() { 
-    // 💡 [수정] 플레이스홀더 텍스트인지 직접 체크 (더 확실한 방어)
     var selectedColorText = document.getElementById("selectedColorText");
     var selectedSizeText = document.getElementById("selectedSizeText");
     
@@ -316,7 +372,6 @@ window.isOptionSelected = function() {
         window.selectedOptionNo !== null
     );
 };
-
 
 // === DOM 로드 후 이벤트 바인딩 ===
 document.addEventListener("DOMContentLoaded", function() {
@@ -346,7 +401,6 @@ document.addEventListener("DOMContentLoaded", function() {
     var colorOptionPanel = document.getElementById("colorOptionPanel");
     var sizeOptionPanel = document.getElementById("sizeOptionPanel");
 
-    // 💡 [수정] 옵션 패널 열고 닫기 로직 방어 (사이즈는 색상이 골라져야 열림)
     if (colorToggleBtn) {
         colorToggleBtn.addEventListener("click", function () {
             var willOpen = colorOptionPanel.classList.contains("hidden");
@@ -360,7 +414,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (sizeToggleBtn) {
         sizeToggleBtn.addEventListener("click", function () {
-            // 색상을 먼저 고르지 않았으면 에러 토스트 띄우기
             var selectedColorText = document.getElementById("selectedColorText");
             if (selectedColorText && selectedColorText.classList.contains("detail-selected-value--placeholder")) {
                 window.showTopToast("먼저 색상을 골라주세요", "error");
@@ -435,7 +488,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
-    // 바텀 시트 안의 "찜하기" 버튼 로직 연동
     var sheetWishlistBtn = document.getElementById("sheetWishlistBtn");
     if (sheetWishlistBtn) {
         sheetWishlistBtn.addEventListener("click", function() {
@@ -466,7 +518,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 조르기 오픈
     var openPokeFromSheetBtn = document.getElementById("openPokeFromSheetBtn");
     if (openPokeFromSheetBtn) {
         openPokeFromSheetBtn.addEventListener("click", function (e) {
@@ -491,7 +542,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 선물 오픈
     var openGiftFromSheetBtn = document.getElementById("openGiftFromSheetBtn");
     if (openGiftFromSheetBtn) {
         openGiftFromSheetBtn.addEventListener("click", function (e) {
@@ -510,7 +560,16 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 조르기 확정 전송 (Fetch)
+    // 💡 [버그 수정] 조르기 대상 선택 클릭 이벤트를 명확하게 바인딩
+    document.querySelectorAll(".poke-person-btn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            document.querySelectorAll(".poke-person-btn").forEach(function(b) { 
+                b.classList.remove("active"); 
+            });
+            this.classList.add("active");
+        });
+    });
+
     var confirmPokeBtn = document.getElementById("confirmPokeBtn");
     if (confirmPokeBtn) {
         confirmPokeBtn.addEventListener("click", function () {
@@ -540,14 +599,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.body.style.overflow = "";
                 document.getElementById("pokeMsgInput").value = "";
                 document.querySelectorAll(".poke-person-btn").forEach(function(b) { b.classList.remove("active"); });
-                window.showTopToast("조르기 요청을 보냈어요", "success");
+                window.showSuccessToast("조르기 요청을 보냈어요");
             })
             .catch(function() { window.showTopToast("조르기 요청이 실패됐어요", "error"); })
             .finally(function() { confirmPokeBtn.disabled = false; });
         });
     }
 
-    // 선물 확정 전송
     var confirmGiftBtn = document.getElementById("confirmGiftBtn");
     if(confirmGiftBtn) {
         confirmGiftBtn.addEventListener("click", function() {
@@ -558,7 +616,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 공유 버튼
     var openShareFromSheetBtn = document.getElementById("openShareFromSheetBtn");
     if (openShareFromSheetBtn) {
         openShareFromSheetBtn.addEventListener("click", function () {
@@ -578,7 +635,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 var ta = document.createElement("textarea");
                 ta.value = url; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
             }
-            window.showTopToast("링크를 복사했어요.", "success");
+            window.showSuccessToast("링크를 복사했어요.");
         });
     }
 
@@ -614,7 +671,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 모달 닫기
     var modalIds = ["pokeModal", "giftModal", "shareModal"];
     modalIds.forEach(function(modalId) {
         var modalDim = document.getElementById(modalId + "Dim");

@@ -105,6 +105,15 @@
 					      data-coupon-sort-received="${coupon.issuedAt}"
 					      data-coupon-sort-expiry="${coupon.validUntil}">
 					      
+					      <c:set var="now" value="<%= new java.util.Date() %>" />
+							<fmt:formatDate var="todayStr" value="${now}" pattern="yyyy-MM-dd" />
+							<c:if test="${coupon.validUntil eq todayStr}"> 
+							  <span class="coupon-card__urgent-inline">
+							    <span class="material-icons-outlined coupon-card__urgent-icon">alarm</span>
+							    <span class="coupon-card__urgent-text">오늘 마감!</span>
+							  </span>
+							</c:if>
+					      
 					    <div class="coupon-card__title-row">
 					      <h3 class="coupon-card__title">
 					        <c:choose>
@@ -156,15 +165,6 @@
 			                </c:otherwise>
 			              </c:choose>
 			            </h3>
-			            
-			            <c:set var="now" value="<%= new java.util.Date() %>" />
-					      <fmt:formatDate var="todayStr" value="${now}" pattern="yyyy-MM-dd" />
-					      <c:if test="${past.validUntil eq todayStr}">
-					        <span class="coupon-card__urgent-inline">
-					          <span class="material-icons-outlined coupon-card__urgent-icon">alarm</span>
-					          <span class="coupon-card__urgent-text">오늘 마감!</span>
-					        </span>
-					      </c:if>
 					    </div>
 			            
 			            <p class="coupon-card__desc">${past.couponName}</p>

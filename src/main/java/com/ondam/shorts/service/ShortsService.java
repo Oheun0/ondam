@@ -72,7 +72,7 @@ public class ShortsService {
     }
 
     // [FIXED] AI 영상 생성 시 기존 영상 덮어쓰기 방지 검증 추가
-    public String requestGenerateShorts(int vendorNo, int productNo, String title, String content, String realPath) {
+    public String requestGenerateShorts(int vendorNo, int productNo, String title, String content, String webappRootPath) {
         ShortsDTO current = dao.getShortByProductNo(productNo);
         if (current != null) {
             if (current.getShortsState() == 0) {
@@ -84,7 +84,7 @@ public class ShortsService {
             // 상태가 -1(생성 실패)인 경우에만 통과시켜서 재시도(덮어쓰기)를 허용함
         }
         
-        generator.generateShortsAsync(vendorNo, productNo, title, content, realPath);
+        generator.generateShortsAsync(vendorNo, productNo, title, content, webappRootPath);
         return "success";
     }
 

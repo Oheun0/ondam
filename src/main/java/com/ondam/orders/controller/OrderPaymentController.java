@@ -98,13 +98,17 @@ public class OrderPaymentController implements Controller {
 		int totalProductDiscount = 0;
 
 		for (CartItemDTO item : selectedItems) {
+		    // 💡 [추가] 옵션 추가 금액을 DB에서 가져옵니다.
+		    ProductOptionDTO optDto = productOptionService.getProductOptionByNo(item.getProductOptionNo());
+		    int addPrice = (optDto != null) ? optDto.getOptionAddPrice() : 0;
+
 			int originPrice = item.getProductOriginPrice();
-			int salePrice = item.getProductPrice();
+			int salePrice = item.getProductPrice(); // (이미 옵션가가 포함된 최종 판매가)
 			int qty = item.getCartQuantity();
 
 			if (originPrice > 0) {
-				totalProductPrice += originPrice * qty;
-				totalProductDiscount += (originPrice - salePrice) * qty;
+				totalProductPrice += (originPrice + addPrice) * qty;
+				totalProductDiscount += ((originPrice + addPrice) - salePrice) * qty;
 			} else {
 				totalProductPrice += salePrice * qty;
 			}
@@ -184,8 +188,17 @@ public class OrderPaymentController implements Controller {
 		// ── 4. 금액 계산 ──────────────────────────────
 		int originPrice = item.getProductOriginPrice();
 		int salePrice = item.getProductPrice();
-		int totalProductPrice = originPrice * quantity;
-		int totalProductDiscount = (originPrice - salePrice) * quantity;
+		int addPrice = (optDto != null) ? optDto.getOptionAddPrice() : 0; // 💡 [추가]
+		
+		int totalProductPrice = 0;
+		int totalProductDiscount = 0;
+
+		if (originPrice > 0) {
+		    totalProductPrice = (originPrice + addPrice) * quantity;
+		    totalProductDiscount = ((originPrice + addPrice) - salePrice) * quantity;
+		} else {
+		    totalProductPrice = salePrice * quantity;
+		}
 
 		request.setAttribute("orderItems", selectedItems);
 		request.setAttribute("orderItemCount", 1);
@@ -496,11 +509,19 @@ public class OrderPaymentController implements Controller {
 
 	    int totalProductPrice = 0, totalProductDiscount = 0;
 	    for (CartItemDTO item : orderItems) {
+	        ProductOptionDTO optDto = productOptionService.getProductOptionByNo(item.getProductOptionNo());
+	        int addPrice = (optDto != null) ? optDto.getOptionAddPrice() : 0;
+	        
 	        int origin = item.getProductOriginPrice();
 	        int sale   = item.getProductPrice();
 	        int qty    = item.getCartQuantity();
-	        totalProductPrice    += (origin > 0 ? origin : sale) * qty;
-	        totalProductDiscount += (origin > 0 ? (origin - sale) * qty : 0);
+	        
+	        if (origin > 0) {
+	            totalProductPrice += (origin + addPrice) * qty;
+	            totalProductDiscount += ((origin + addPrice) - sale) * qty;
+	        } else {
+	            totalProductPrice += sale * qty;
+	        }
 	    }
 
 	    List<UserAddressDTO> addressList = userAddressService.getAddressListByUser(receiverNo);

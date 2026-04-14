@@ -28,20 +28,17 @@
       data-login-user="${not empty sessionScope.loginUser ? 'true' : ''}"
       data-kakao-js-key="${initParam.kakaoJavascriptKey}">
 
-<div id="option-toast" class="option-toast hidden" role="alert" aria-live="assertive" aria-hidden="true" 
-     style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:9999; 
-            background:rgba(0,0,0,0.8); color:#fff; padding:10px 20px; border-radius:20px; 
-            display:flex; align-items:center; gap:8px; transition: opacity 0.3s ease;">
-  <span class="material-icons option-toast__icon" aria-hidden="true" style="color:#ff5252;">error</span>
+<div id="option-toast" class="option-toast hidden" role="alert" aria-live="assertive" aria-hidden="true">
+  <span class="material-icons option-toast__icon" aria-hidden="true">error</span>
   <span class="option-toast__text">먼저 색상과 사이즈를 골라주세요</span>
 </div>
 
 <div id="success-toast" class="option-toast hidden" role="status" aria-live="polite" aria-hidden="true"
-     style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:9999;
+     style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:999999;
             background:rgba(76, 175, 80, 0.9); color:#fff; padding:10px 20px; border-radius:20px;
             display:flex; align-items:center; gap:8px; transition: opacity 0.3s ease;">
   <span class="material-icons option-toast__icon" aria-hidden="true" style="color:#fff;">check_circle</span>
-  <span id="success-toast-text">성공</span>
+  <span id="success-toast-text"></span>
 </div>
 
 <div class="app-shell">

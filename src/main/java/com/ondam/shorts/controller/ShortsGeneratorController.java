@@ -2,6 +2,7 @@ package com.ondam.shorts.controller;
 
 import java.io.IOException;
 import java.io.File;
+import com.ondam.common.ProjectWebappPaths;
 import com.ondam.common.controller.Controller;
 import com.ondam.common.ProjectWebappPaths;
 import com.ondam.seller.dto.SellerDTO;
