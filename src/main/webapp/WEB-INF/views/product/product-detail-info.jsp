@@ -119,13 +119,13 @@
   </div>
 </section>
 
-  <!-- 연관 추천 상품 — 추후 연동 예정, 현재 섹션만 유지 -->
+  <%-- <!-- 연관 추천 상품 — 추후 연동 예정, 현재 섹션만 유지 -->
   <section class="detail-related-card" aria-labelledby="detailRelatedHeading">
     <h2 class="detail-section-title" id="detailRelatedHeading">연관 추천 상품</h2>
     <div class="related-product-scroll" role="list">
-      <%-- 추후 relatedProducts setAttribute 후 c:forEach로 교체 --%>
+      추후 relatedProducts setAttribute 후 c:forEach로 교체
     </div>
-  </section>
+  </section> --%>
 
   <!-- 탭: 상세정보 / 후기 / 문의 — 구조 유지, 상세정보만 DTO 연동 -->
   <div class="detail-tabs-wrap">

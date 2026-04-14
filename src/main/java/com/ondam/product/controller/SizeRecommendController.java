@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +36,8 @@ public class SizeRecommendController implements Controller {
     private final ProductSeasonDAO seasonDAO = new ProductSeasonDAO();
     private final UserHobbyDAO hobbyDAO = new UserHobbyDAO();
     private final UserPreferColorDAO colorDAO = new UserPreferColorDAO();
+    private static final ResourceBundle rb = ResourceBundle.getBundle("config");
+    private final String API_KEY2 = rb.getString("openai.api.key2");
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -83,8 +86,7 @@ public class SizeRecommendController implements Controller {
                                            hobbies, preferColors, product.getProductName(), optionStr, productContext);
 
         // 4. OpenAI 호출 (이미 성공했던 로직 유지)
-        String rawKey = request.getServletContext().getInitParameter("openaiApiKey2");
-        String apiKey = (rawKey != null) ? rawKey.replaceAll("\\s", "") : "";
+        String apiKey = (API_KEY2 != null) ? API_KEY2.replaceAll("\\s", "") : "";
 
         String aiResponse = callOpenAI(apiKey, prompt);
         
@@ -99,7 +101,7 @@ public class SizeRecommendController implements Controller {
 
     private String buildStylistPrompt(String name, int h, int w, String hobby, String color, String pName, String options, String context) {
         return "너는 시니어 맞춤 쇼핑몰 '온담'의 인공지능 스타일리스트다.\n"
-             + "다음 정보를 바탕으로 고객에게 가장 잘 어울리는 옵션을 추천하고 따뜻하게 설명해주고 반드시 '쉬운 우리말'만 사용하고 영어 단어는 쓰지 마 아예 포함시키지마 답변에.\n\n"
+             + "다음 정보를 바탕으로 고객에게 가장 잘 어울리는 옵션을 추천하고 따뜻하게 설명해주고 반드시 '쉬운 우리말'만 사용하고 영어 단어는 쓰지 마 아예 포함시키지마 답변에. 레귤러핏 이런거 아예 쓰지마\n\n"
              + "### [고객 정보]\n"
              + "- 성함: " + name + "\n"
              + "- 체형: " + h + "cm / " + w + "kg\n"

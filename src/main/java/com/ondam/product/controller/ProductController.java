@@ -1,5 +1,6 @@
 package com.ondam.product.controller;
 
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
@@ -32,6 +33,7 @@ public class ProductController implements Controller {
 	private SituationService situationService = new SituationService();
 	private WishService wishService = new WishService();
 	private FamilyMemberService familyMemberService = new FamilyMemberService();
+	private static final ResourceBundle rb = ResourceBundle.getBundle("config");
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -166,6 +168,9 @@ public class ProductController implements Controller {
 	    ProductDTO product = productService.getProductById(productNo);
 	    Vector<String> images = productService.getProductImages(productNo);
 	    Vector<ProductOptionDTO> options = productService.getProductOptions(productNo);
+	    
+	    String kakaoJsKey = rb.getString("kakao.javascript.key");
+	    request.setAttribute("kakaoJsKey", kakaoJsKey);
 
 	    java.util.LinkedHashSet<String> colorSet = new java.util.LinkedHashSet<>();
 	    java.util.LinkedHashMap<String, java.util.List<String>> colorSizeMap = new java.util.LinkedHashMap<>();
