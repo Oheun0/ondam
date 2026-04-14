@@ -88,7 +88,7 @@
                                     <img src="${pageContext.request.contextPath}/uploads/products/${shorts.imgFile}" onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'" alt="상품 이미지">
                                 </div>
                                 <div class="card-info">
-                                    <span class="product-name">${shorts.shortsTitle}</span>
+                                    <span class="product-name">${shorts.productName}</span>
                                     <span class="product-price">
                                         <c:if test="${shorts.discountRate > 0}">
                                             <span class="discount">${shorts.discountRate}%</span> 

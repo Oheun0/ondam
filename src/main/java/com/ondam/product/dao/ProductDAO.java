@@ -479,11 +479,6 @@ public class ProductDAO {
 
 			sql.append("SELECT DISTINCT p.* " + "FROM product p ");
 
-			if ("situation".equals(viewMode)) {
-				sql.append("JOIN situationmapping sm ON p.productNo = sm.productNo "
-						+ "JOIN situation s ON sm.situationNo = s.situationNo ");
-			}
-
 			sql.append("WHERE p.productState = 1 ");
 
 			// 카테고리 / 상황 조건
@@ -493,7 +488,14 @@ public class ProductDAO {
 							+ "  WHERE categoryName = ? AND categoryLevel = 1 LIMIT 1) ");
 					params.add(category);
 				} else {
-					sql.append("AND s.situationName = ? AND s.situationLevel = 2 ");
+					sql.append("AND (");
+					sql.append("p.situationNo = (SELECT situationNo FROM situation WHERE situationName = ? LIMIT 1) ");
+					sql.append("OR EXISTS (");
+					sql.append("SELECT 1 FROM situationmapping sm ");
+					sql.append("JOIN situation s ON sm.situationNo = s.situationNo ");
+					sql.append("WHERE sm.productNo = p.productNo AND s.situationName = ?");
+					sql.append(")) ");
+					params.add(category);
 					params.add(category);
 				}
 			}

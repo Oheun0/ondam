@@ -25,7 +25,7 @@ public class SituationMappingDAO {
 		Vector<SituationMappingDTO> vlist = new Vector<SituationMappingDTO>();
 		try {
 			con = pool.getConnection();
-			sql = "SELECT * FROM situationMapping";
+			sql = "SELECT * FROM situationmapping";
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -51,7 +51,7 @@ public class SituationMappingDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "INSERT SituationMapping (situationNo, productNo) VALUES (?, ?)";
+			sql = "INSERT INTO situationmapping (situationNo, productNo) VALUES (?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getSituationNo());
 			pstmt.setInt(2, dto.getProductNo());
@@ -73,7 +73,7 @@ public class SituationMappingDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "UPDATE SituationMapping SET situationNo = ?, productNo = ? WHERE situationMapNo = ?";
+			sql = "UPDATE situationmapping SET situationNo = ?, productNo = ? WHERE situationMapNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getSituationNo());
 			pstmt.setInt(2, dto.getProductNo());
@@ -96,7 +96,7 @@ public class SituationMappingDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			sql = "DELETE FROM SituationMapping WHERE situationMapNo = ?";
+			sql = "DELETE FROM situationmapping WHERE situationMapNo = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, situationMapNo);
 			if (pstmt.executeUpdate() > 0)
@@ -105,6 +105,64 @@ public class SituationMappingDAO {
 			e.printStackTrace();
 		} finally {
 			pool.freeConnection(con, pstmt);
+		}
+		return flag;
+	}
+
+	// 특정 상품의 매핑 전체 삭제
+	public boolean deleteByProductNo(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			String sql = "DELETE FROM situationmapping WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			pstmt.executeUpdate();
+			flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return flag;
+	}
+
+	// 상품 기준 단일 상황 매핑 동기화 (기존 삭제 후 1건 삽입)
+	public boolean syncSingleMapping(int productNo, int situationNo) {
+		Connection con = null;
+		PreparedStatement deleteStmt = null;
+		PreparedStatement insertStmt = null;
+		boolean flag = false;
+		try {
+			con = pool.getConnection();
+			con.setAutoCommit(false);
+
+			String deleteSql = "DELETE FROM situationmapping WHERE productNo = ?";
+			deleteStmt = con.prepareStatement(deleteSql);
+			deleteStmt.setInt(1, productNo);
+			deleteStmt.executeUpdate();
+
+			String insertSql = "INSERT INTO situationmapping (situationNo, productNo) VALUES (?, ?)";
+			insertStmt = con.prepareStatement(insertSql);
+			insertStmt.setInt(1, situationNo);
+			insertStmt.setInt(2, productNo);
+			insertStmt.executeUpdate();
+
+			con.commit();
+			flag = true;
+		} catch (Exception e) {
+			try {
+				if (con != null) con.rollback();
+			} catch (Exception ignore) {}
+			e.printStackTrace();
+		} finally {
+			try {
+				if (con != null) con.setAutoCommit(true);
+			} catch (Exception ignore) {}
+			pool.freeConnection(con, deleteStmt);
+			pool.freeConnection(null, insertStmt);
 		}
 		return flag;
 	}

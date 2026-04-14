@@ -1,7 +1,9 @@
 package com.ondam.shorts.controller;
 
 import java.io.IOException;
+import java.io.File;
 import com.ondam.common.controller.Controller;
+import com.ondam.common.ProjectWebappPaths;
 import com.ondam.seller.dto.SellerDTO;
 import com.ondam.shorts.service.ShortsService;
 
@@ -36,7 +38,10 @@ public class ShortsGeneratorController implements Controller {
         int vendorNo = loginSeller.getVendorNo();
         String action = request.getParameter("action");
         String productNoStr = request.getParameter("productNo");
-        String realPath = request.getServletContext().getRealPath("/");
+        String webappRootPath = ProjectWebappPaths.getWebappRoot(request.getServletContext()).getAbsolutePath();
+        if (!webappRootPath.endsWith(File.separator)) {
+            webappRootPath = webappRootPath + File.separator;
+        }
 
         if (action == null || action.trim().isEmpty() || productNoStr == null || productNoStr.trim().isEmpty()) {
             sendJson(response, "error", "필수 파라미터가 누락되었습니다.");
@@ -64,13 +69,13 @@ public class ShortsGeneratorController implements Controller {
                         return null;
                     }
                     
-                    resultMsg = shortsService.requestGenerateShorts(vendorNo, productNo, genTitle, genContent, realPath);
+                    resultMsg = shortsService.requestGenerateShorts(vendorNo, productNo, genTitle, genContent, webappRootPath);
                     if ("success".equals(resultMsg)) sendJson(response, "success", "숏폼 생성이 시작되었습니다.");
                     else sendJson(response, "error", resultMsg);
                     break;
                     
                 case "delete":
-                    resultMsg = shortsService.removeShortsWithValidation(vendorNo, productNo, realPath);
+                    resultMsg = shortsService.removeShortsWithValidation(vendorNo, productNo, webappRootPath);
                     if ("success".equals(resultMsg)) sendJson(response, "success", "영상과 데이터가 완전히 삭제되었습니다.");
                     else sendJson(response, "error", resultMsg);
                     break;
@@ -87,7 +92,7 @@ public class ShortsGeneratorController implements Controller {
                     String content = request.getParameter("shortsContent");
                     String thumbnailBase64 = request.getParameter("thumbnailBase64");
                     
-                    resultMsg = shortsService.uploadManualShorts(vendorNo, productNo, title, content, videoPart, thumbnailBase64, realPath);
+                    resultMsg = shortsService.uploadManualShorts(vendorNo, productNo, title, content, videoPart, thumbnailBase64, webappRootPath);
                     if ("success".equals(resultMsg)) sendJson(response, "success", "수동 영상 업로드가 완료되었습니다.");
                     else sendJson(response, "error", resultMsg);
                     break;

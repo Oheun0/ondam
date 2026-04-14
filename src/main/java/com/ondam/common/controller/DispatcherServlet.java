@@ -183,6 +183,12 @@ public class DispatcherServlet extends HttpServlet {
             }
         }
 
+        // 쇼츠 영상/썸네일은 프로젝트 고정 경로만 사용 (배포 경로 fallback 차단)
+        if (path.startsWith("/uploads/shorts/")) {
+            response.sendError(404, "쇼츠 파일을 찾을 수 없습니다.");
+            return;
+        }
+
         // 확장자가 있거나(파일), 특정 정적 폴더 경로인 경우 톰캣 기본 서블릿에 위임
         if (path.contains(".") || path.startsWith("/css/") || path.startsWith("/js/") || path.startsWith("/images/")) {
             request.getServletContext().getNamedDispatcher("default").forward(request, response);

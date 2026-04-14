@@ -133,9 +133,17 @@
   });
 
   $('videoBox').addEventListener('click', function() { realVideoInput.click(); });
-  $('videoPickBtn').addEventListener('click', function(e) { e.preventDefault(); realVideoInput.click(); });
+  $('videoPickBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    realVideoInput.click();
+  });
   $('thumbBox').addEventListener('click', function() { realThumbInput.click(); });
-  $('thumbPickBtn').addEventListener('click', function(e) { e.preventDefault(); realThumbInput.click(); });
+  $('thumbPickBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    realThumbInput.click();
+  });
 
   var aiVideoBtn = $('aiVideoBtn');
   if (aiVideoBtn) {
