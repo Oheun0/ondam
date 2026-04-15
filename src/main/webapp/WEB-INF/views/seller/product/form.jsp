@@ -414,7 +414,7 @@
 
             <div class="seller-filter-grid">
               <div class="seller-product-tag-block seller-product-tag-block--filter">
-                <div class="seller-product-tag-title">계절 (단일 선택)</div>
+                <div class="seller-product-tag-title">계절감 (단일 선택)</div>
                 <div class="chip-wrap seller-filter-chips" role="radiogroup" aria-label="계절">
                   <label class="season-pill"><input type="radio" name="productSeason" value="따뜻해요" <c:if test="${editSeasonUi == '따뜻해요'}">checked</c:if>><span>따뜻해요</span></label>
                   <label class="season-pill"><input type="radio" name="productSeason" value="시원해요" <c:if test="${editSeasonUi == '시원해요'}">checked</c:if>><span>시원해요</span></label>

@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+
+#sizeRecommendText {
+    white-space: pre-wrap;
+}
 :root {
   --bg: #f6f6f6;
   --card: #ffffff;
@@ -872,6 +876,20 @@ a.detail-icon-btn.detail-icon-btn--link {
   font-size: 16px;
   font-weight: 800;
   color: #6c6c6c;
+}
+
+.detail-review-help-btn.active {
+    color: #ff6b6b !important;
+    border-color: #ff6b6b !important;
+    cursor: default;
+}
+
+.detail-review-help-btn.active .detail-review-help-count {
+    color: #ff6b6b !important;
+}
+
+.detail-review-help-btn.active .material-icons {
+    color: #ff6b6b !important;
 }
 
 .detail-review-author {

@@ -7,7 +7,7 @@ public class GiftChatDTO {
     private int senderNo;
     private int receiverNo;
     private int chatType;       // 0: 선물카드, 1: 감사카드
-    private String cardImg;     // 'gift_card_01.png', 'thanks_card_01.png'
+    private String cardImg;     // 예: gift-card1.png, thanks_card_01.png
     private String sentAt;
 
     // 조회 시 JOIN 없이 Service에서 채워줄 부가 정보

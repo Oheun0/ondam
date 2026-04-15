@@ -81,6 +81,13 @@ public class GiftController implements Controller {
         Vector<GiftDTO> receivedList = giftService.getMyReceivedGifts(userNo);
         Vector<GiftDTO> sentList = giftService.getMySentGifts(userNo);
 
+        for (GiftDTO gift : receivedList) {
+            gift.setCardImg(giftChatService.getGiftCardImageByGiftNo(gift.getGiftNo()));
+        }
+        for (GiftDTO gift : sentList) {
+            gift.setCardImg(giftChatService.getGiftCardImageByGiftNo(gift.getGiftNo()));
+        }
+
         request.setAttribute("addressList", addressList);
         request.setAttribute("receivedList", receivedList);
         request.setAttribute("sentList", sentList);
@@ -104,16 +111,11 @@ public class GiftController implements Controller {
         // A↔B 전체 채팅 목록 (선물카드 + 감사카드 sentAt ASC)
         Vector<GiftChatDTO> chatList = giftChatService.getChatListBetween(myUserNo, otherNo);
 
-        // gift 정보도 같이 넘겨야 선물 상품명/이미지/상태 렌더링 가능
+        // gift-chat에서도 gift-box와 동일하게 상품명/이미지 보강 데이터 사용
         java.util.Map<Integer, GiftDTO> giftMap = new java.util.HashMap<>();
-        for (GiftChatDTO chat : chatList) {
-            int giftNo = chat.getGiftNo();
-            if (!giftMap.containsKey(giftNo)) {
-                GiftDTO gift = giftService.getGiftById(giftNo);
-                if (gift != null) {
-                    giftMap.put(giftNo, gift);
-                }
-            }
+        Vector<GiftDTO> giftListBetween = giftService.getGiftsBetween(myUserNo, otherNo);
+        for (GiftDTO gift : giftListBetween) {
+            giftMap.put(gift.getGiftNo(), gift);
         }
 
         // JSP에서 ${thanksMap[gift.giftNo] != null} 로 고마움 버튼 활성/비활성 분기
@@ -220,7 +222,7 @@ public class GiftController implements Controller {
         noti.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()).toString());
         notificationService.createNotification(noti);
 
-        return "redirect:/gift?action=sent";
+        return "redirect:/gift?action=chat&receiverNo=" + receiverNo;
     }
 
     // -------------------------

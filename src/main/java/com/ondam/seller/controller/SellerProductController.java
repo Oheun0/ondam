@@ -7,10 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
@@ -25,8 +26,8 @@ import com.ondam.product.dao.ProductFeatureDAO;
 import com.ondam.product.dao.ProductImageDAO;
 import com.ondam.product.dao.ProductOptionDAO;
 import com.ondam.product.dao.ProductSeasonDAO;
-import com.ondam.product.dto.ProductDTO;
 import com.ondam.product.dto.CategoryDTO;
+import com.ondam.product.dto.ProductDTO;
 import com.ondam.product.dto.ProductFeatureDTO;
 import com.ondam.product.dto.ProductImageDTO;
 import com.ondam.product.dto.ProductOptionDTO;
@@ -56,6 +57,7 @@ public class SellerProductController implements Controller {
 	private final ProductOptionDAO productOptionDAO = new ProductOptionDAO();
 	private final ProductImageDAO productImageDAO = new ProductImageDAO();
 	private final AiSearchService aiSearchService = new AiSearchService(); // AI 서비스 추가
+	private static final ResourceBundle rb = ResourceBundle.getBundle("config");
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -779,7 +781,7 @@ public class SellerProductController implements Controller {
 			return null;
 		}
 
-		String apiKey = trim(request.getServletContext().getInitParameter("openaiApiKey"));
+		String apiKey = rb.getString("openai.api.key");
 		if (apiKey.isEmpty()) {
 			writeJson(response, false, "OpenAI API Key가 설정되지 않았어요. web.xml의 openaiApiKey를 입력해 주세요.", "", "", "");
 			return null;

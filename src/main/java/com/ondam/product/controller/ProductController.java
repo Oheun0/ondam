@@ -1,5 +1,6 @@
 package com.ondam.product.controller;
 
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
@@ -32,6 +33,7 @@ public class ProductController implements Controller {
 	private SituationService situationService = new SituationService();
 	private WishService wishService = new WishService();
 	private FamilyMemberService familyMemberService = new FamilyMemberService();
+	private static final ResourceBundle rb = ResourceBundle.getBundle("config");
 	private com.ondam.review.service.ReviewService reviewService = new com.ondam.review.service.ReviewService();
 	private com.ondam.inquiry.service.InquiryService inquiryService = new com.ondam.inquiry.service.InquiryService();
 
@@ -172,8 +174,10 @@ public class ProductController implements Controller {
 	    ProductDTO product        = productService.getProductById(productNo);
 	    Vector<String> images     = productService.getProductImages(productNo);
 	    Vector<ProductOptionDTO> options = productService.getProductOptions(productNo);
+	    
+	    String kakaoJsKey = rb.getString("kakao.javascript.key");
+	    request.setAttribute("kakaoJsKey", kakaoJsKey);
 
-	    // 색상 중복 제거
 	    java.util.LinkedHashSet<String> colorSet = new java.util.LinkedHashSet<>();
 	    java.util.LinkedHashMap<String, java.util.List<String>> colorSizeMap = new java.util.LinkedHashMap<>();
 	    for (ProductOptionDTO opt : options) {
@@ -182,16 +186,24 @@ public class ProductController implements Controller {
 	            .computeIfAbsent(opt.getOptionColor(), k -> new java.util.ArrayList<>())
 	            .add(opt.getOptionSize());
 	    }
-	    
-	    // 조르기용 그룹 멤버 리스트 추가
-	    UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+
+	    boolean isWished = false;
+	    HttpSession session = request.getSession(false);
+	    UserDTO loginUser = (session != null) ? (UserDTO) session.getAttribute("loginUser") : null;
+
 	    if (loginUser != null) {
-	        FamilyMemberDTO myMember = familyMemberService
-	                .getFamilyMemberByUserNo(loginUser.getUserNo());
+	        Set<Integer> wishedNos = wishService.getWishedProductNos(loginUser.getUserNo());
+          Set<Integer> helpfulSet = reviewService.getHelpfulReviewNosByUser(loginUser.getUserNo());
+	        request.setAttribute("helpfulSet", helpfulSet);
+	        if (wishedNos != null && wishedNos.contains(productNo)) {
+	            isWished = true;
+	        }
+
+	        FamilyMemberDTO myMember = familyMemberService.getFamilyMemberByUserNo(loginUser.getUserNo());
 	        if (myMember != null) {
-	            Vector<FamilyMemberDTO> memberList = familyMemberService
-	                    .getFamilyMembersByFamilyNo(myMember.getFamilyNo());
+	            Vector<FamilyMemberDTO> memberList = familyMemberService.getFamilyMembersByFamilyNo(myMember.getFamilyNo());
 	            memberList.removeIf(m -> m.getUserNo() == loginUser.getUserNo());
+	            
 	            request.setAttribute("pokeMemberList", memberList);
 	            request.setAttribute("familyNo", myMember.getFamilyNo());
 	        } else {
@@ -199,12 +211,13 @@ public class ProductController implements Controller {
 	        }
 	    }
 
-	    request.setAttribute("product",      product);
-	    request.setAttribute("images",       images);
-	    request.setAttribute("options",      options);
-	    request.setAttribute("colorSet",     colorSet);
+	    request.setAttribute("product", product);
+	    request.setAttribute("images", images);
+	    request.setAttribute("options", options);
+	    request.setAttribute("colorSet", colorSet);
 	    request.setAttribute("colorSizeMap", colorSizeMap);
-	    request.setAttribute("optionList",   options);
+	    request.setAttribute("optionList", options);
+	    request.setAttribute("isWished", isWished); 
 
 	    Vector<com.ondam.review.dto.ReviewDTO> reviewList = reviewService.getReviewsByProductNo(productNo, sort);
 	    request.setAttribute("currentSort", sort);
@@ -215,6 +228,7 @@ public class ProductController implements Controller {
 	    
 	    return "product/product-detail";
 	}
+	    
 	private void getOptionsJson(HttpServletRequest request, HttpServletResponse response) throws Exception {
 	    int productNo = Integer.parseInt(request.getParameter("productNo"));
 	    

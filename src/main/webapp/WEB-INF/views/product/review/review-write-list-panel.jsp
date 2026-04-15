@@ -16,12 +16,12 @@
             <div class="review-my-write-card__main">
               <div class="review-my-write-card__thumb-wrap">
                 <c:set var="imgSrc" value="${empty item.productImg ? 'type-top-knit.jpg' : item.productImg}" />
-                <img src="${pageContext.request.contextPath}/images/category/${imgSrc}" 
+                <img src="${pageContext.request.contextPath}/uploads/products/${imgSrc}" 
                      alt="" 
                      class="review-my-write-card__thumb" 
                      width="96" height="96" 
                      loading="lazy"
-                     onerror="this.src='${pageContext.request.contextPath}/images/category/type-top-knit.jpg'"/>
+                     onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'"/>
               </div>
               <div class="review-my-write-card__info">
                 <p class="review-my-write-brand">온담</p> <p class="review-my-write-name">${item.snapProductName}</p>

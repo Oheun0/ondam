@@ -111,22 +111,22 @@
 
   <!-- 사이즈 추천 — 하드코딩 유지 (추후 로직 구현 예정) -->
   <section class="detail-size-recommend-card">
-    <div class="size-recommend-head">
-      <h2 class="detail-section-title size-recommend-heading">사이즈 추천</h2>
-      <button type="button" class="size-recommend-btn" id="sizeRecommendBtn">나에게 맞는 사이즈 추천받기</button>
-    </div>
-    <div class="size-recommend-result hidden" id="sizeRecommendResult" aria-live="polite">
-      <p class="size-recommend-main">추천 사이즈를 불러오는 중입니다.</p>
-    </div>
-  </section>
+  <div class="size-recommend-head">
+    <h2 class="detail-section-title size-recommend-heading">사이즈 추천</h2>
+    <button type="button" class="size-recommend-btn" id="sizeRecommendBtn">나에게 맞는 사이즈 추천받기</button>
+  </div>
+  <div class="size-recommend-result hidden" id="sizeRecommendResult" aria-live="polite">
+    <p class="size-recommend-main" id="sizeRecommendText">추천 사이즈를 불러오는 중입니다.</p>
+  </div>
+</section>
 
-  <!-- 연관 추천 상품 — 추후 연동 예정, 현재 섹션만 유지 -->
+  <%-- <!-- 연관 추천 상품 — 추후 연동 예정, 현재 섹션만 유지 -->
   <section class="detail-related-card" aria-labelledby="detailRelatedHeading">
     <h2 class="detail-section-title" id="detailRelatedHeading">연관 추천 상품</h2>
     <div class="related-product-scroll" role="list">
-      <%-- 추후 relatedProducts setAttribute 후 c:forEach로 교체 --%>
+      추후 relatedProducts setAttribute 후 c:forEach로 교체
     </div>
-  </section>
+  </section> --%>
 
   <!-- 탭: 상세정보 / 후기 / 문의 — 구조 유지, 상세정보만 DTO 연동 -->
   <div class="detail-tabs-wrap">

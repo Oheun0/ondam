@@ -30,6 +30,44 @@ public class CartController implements Controller {
             response.getWriter().write("{\"count\": " + count + "}");
             return null;
         }
+        
+     //리뷰에서 해당 옵션으로 장바구니 담기 (AJAX)
+        if ("addFromReview".equals(action)) {
+            response.setContentType("application/json;charset=UTF-8");
+            java.io.PrintWriter out = response.getWriter();
+            
+            UserDTO loginUserForAjax = (UserDTO) session.getAttribute("loginUser");
+            if (loginUserForAjax == null) {
+                out.print("{\"status\":\"login_required\"}");
+                return null;
+            }
+
+            try {
+                int productNo = Integer.parseInt(request.getParameter("productNo"));
+                String color = request.getParameter("color");
+                String size = request.getParameter("size");
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+                // DB에서 색상과 사이즈로 정확한 '옵션 번호' 찾아오기
+                int productOptionNo = cartService.findOptionNoByColorAndSize(productNo, color, size);
+
+                if (productOptionNo > 0) {
+                    cartService.addItemToCart(loginUserForAjax.getUserNo(), productNo, productOptionNo, quantity);
+                    syncCartSession(request, loginUserForAjax.getUserNo());
+                    out.print("{\"status\":\"success\"}");
+                } else {
+                    out.print("{\"status\":\"error\", \"message\":\"해당 옵션이 품절되었거나 존재하지 않습니다.\"}");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                out.print("{\"status\":\"error\", \"message\":\"서버 오류가 발생했습니다.\"}");
+            } finally {
+                out.flush();
+                out.close();
+            }
+            return null;
+        }
+        
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
         // 로그인 체크

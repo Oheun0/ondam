@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -10,7 +12,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
 </head>
-<body data-context-path="${pageContext.request.contextPath}">
+<body data-context-path="${pageContext.request.contextPath}"
+data-login-user="${loginUser != null}">
 <div class="app-shell">
 	<div class="top-header-cluster">
 		<jsp:include page="../layout/header.jsp" />
@@ -133,113 +136,60 @@
         </section>
 
         <section class="section-box">
-            <div class="section-title">
-                <h2>추천 상품</h2>
-                <a href="#">더 보기</a>
-            </div>
-            <!-- 상품 카드: product-detail '연관 추천 상품' 톤으로 통일 -->
-            <div class="home-reco-scroll" role="list" aria-label="추천 상품 목록">
-                <article class="related-product-item" role="listitem">
-                    <a href="#" class="related-product-item__anchor">
-                        <div class="related-thumb-wrap">
-                            <img src="${pageContext.request.contextPath}/images/category/comfort-soft.jpg" alt="" class="related-thumb-img" loading="lazy" />
-                        </div>
-                        <div class="related-product-info">
-                            <span class="related-brand">ANDAR</span>
-                            <span class="related-name">부드러운 라운드 니트 가디건</span>
-                            <span class="related-price">39,000원</span>
-                            <div class="home-reco-discount-row">
-                                <span class="home-reco-original">48,750원</span>
-                                <span class="related-discount">20% 할인</span>
-                            </div>
-                        </div>
-                    </a>
-                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
-                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
-                    </button>
-                </article>
-
-                <article class="related-product-item" role="listitem">
-                    <a href="#" class="related-product-item__anchor">
-                        <div class="related-thumb-wrap">
-                            <img src="${pageContext.request.contextPath}/images/category/out-walking.jpg" alt="" class="related-thumb-img" loading="lazy" />
-                        </div>
-                        <div class="related-product-info">
-                            <span class="related-brand">온담</span>
-                            <span class="related-name">편하게 입는 면 혼방 긴팔 티셔츠</span>
-                            <span class="related-price">28,500원</span>
-                            <div class="home-reco-discount-row">
-                                <span class="home-reco-original">33,500원</span>
-                                <span class="related-discount">15% 할인</span>
-                            </div>
-                        </div>
-                    </a>
-                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
-                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
-                    </button>
-                </article>
-
-                <article class="related-product-item" role="listitem">
-                    <a href="#" class="related-product-item__anchor">
-                        <div class="related-thumb-wrap">
-                            <img src="${pageContext.request.contextPath}/images/category/home-light.jpg" alt="" class="related-thumb-img" loading="lazy" />
-                        </div>
-                        <div class="related-product-info">
-                            <span class="related-brand">B라벨</span>
-                            <span class="related-name">가볍게 걸치기 좋은 바람막이 점퍼</span>
-                            <span class="related-price">52,000원</span>
-                            <div class="home-reco-discount-row">
-                                <span class="home-reco-original">57,800원</span>
-                                <span class="related-discount">10% 할인</span>
-                            </div>
-                        </div>
-                    </a>
-                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
-                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
-                    </button>
-                </article>
-
-                <article class="related-product-item" role="listitem">
-                    <a href="#" class="related-product-item__anchor">
-                        <div class="related-thumb-wrap">
-                            <img src="${pageContext.request.contextPath}/images/category/comfort-stretch.jpg" alt="" class="related-thumb-img" loading="lazy" />
-                        </div>
-                        <div class="related-product-info">
-                            <span class="related-brand">시니어웨어</span>
-                            <span class="related-name">허리 밴딩 편한 바지</span>
-                            <span class="related-price">31,900원</span>
-                            <div class="home-reco-discount-row">
-                                <span class="home-reco-original">42,500원</span>
-                                <span class="related-discount">25% 할인</span>
-                            </div>
-                        </div>
-                    </a>
-                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
-                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
-                    </button>
-                </article>
-
-                <article class="related-product-item" role="listitem">
-                    <a href="#" class="related-product-item__anchor">
-                        <div class="related-thumb-wrap">
-                            <img src="${pageContext.request.contextPath}/images/category/out-meeting.jpg" alt="" class="related-thumb-img" loading="lazy" />
-                        </div>
-                        <div class="related-product-info">
-                            <span class="related-brand">C마켓</span>
-                            <span class="related-name">집에서 입기 좋은 조거 팬츠</span>
-                            <span class="related-price">24,000원</span>
-                            <div class="home-reco-discount-row">
-                                <span class="home-reco-original">25,300원</span>
-                                <span class="related-discount">5% 할인</span>
-                            </div>
-                        </div>
-                    </a>
-                    <button type="button" class="related-wish-btn" aria-label="찜하기" aria-pressed="false">
-                        <span class="material-icons-outlined" aria-hidden="true">favorite_border</span>
-                    </button>
-                </article>
-            </div>
-        </section>
+		    <div class="section-title">
+		        <h2>최신 상품</h2>
+		        <a href="${pageContext.request.contextPath}/product?action=list&categoryName=&sort=최신순">더 보기</a>
+		    </div>
+		
+		    <%-- 1. 가로 스크롤 컨테이너는 반복문 '바깥'에 있어야 합니다! --%>
+		    <div class="home-reco-scroll" role="list" aria-label="추천 상품 목록">
+		        
+		        <c:forEach var="p" items="${newProducts}">
+		            <%-- 2. 여기서부터 하드코딩했던 <article> 구조를 그대로 사용합니다 --%>
+		            <article class="related-product-item" role="listitem">
+		                <a href="${pageContext.request.contextPath}/product?action=detail&productNo=${p.productNo}" class="related-product-item__anchor">
+		                    <div class="related-thumb-wrap">
+		                        <%-- 이미지 경로 주의! DB에 저장된 파일명을 불러옵니다 --%>
+		                        <img src="${pageContext.request.contextPath}/uploads/products/${newThumbnailMap[p.productNo]}" 
+		                             alt="${p.productName}" class="related-thumb-img" loading="lazy" />
+		                    </div>
+		                    <div class="related-product-info">
+		                        <span class="related-brand">${p.productBrand}</span>
+		                        <span class="related-name">${p.productName}</span>
+		                        <span class="related-price">
+		                            <fmt:formatNumber value="${p.productPrice}" pattern="#,###"/>원
+		                        </span>
+		                        
+		                        <%-- 할인이 있을 때만 노출 --%>
+		                        <c:if test="${p.productOriginPrice > p.productPrice}">
+		                            <div class="home-reco-discount-row">
+		                                <span class="home-reco-original">
+		                                    <fmt:formatNumber value="${p.productOriginPrice}" pattern="#,###"/>원
+		                                </span>
+		                                <span class="related-discount">
+		                                    <fmt:parseNumber var="discountRate" value="${(1 - p.productPrice / p.productOriginPrice) * 100}" integerOnly="true" />
+		                                    ${discountRate}% 할인
+		                                </span>
+		                            </div>
+		                        </c:if>
+		                    </div>
+		                </a>
+		                
+		                <%-- 찜 버튼 상태값 연동 (wishSet은 컨트롤러에서 넣어준다고 가정) --%>
+		                <button type="button" 
+		                        class="related-wish-btn ${wishSet.contains(p.productNo) ? 'is-active' : ''}" 
+		                        aria-label="찜하기" 
+		                        aria-pressed="${wishSet.contains(p.productNo) ? 'true' : 'false'}"
+		                        data-product-no="${p.productNo}">
+		                    <span class="${wishSet.contains(p.productNo) ? 'material-icons' : 'material-icons-outlined'}" aria-hidden="true">
+		                        ${wishSet.contains(p.productNo) ? 'favorite' : 'favorite_border'}
+		                    </span>
+		                </button>
+		            </article>
+		        </c:forEach>
+		
+		    </div> <%-- .home-reco-scroll 끝 --%>
+		</section>
 
         <section class="section-box">
             <div class="section-title">

@@ -7,8 +7,8 @@ import java.util.Vector;
 
 import com.ondam.product.dto.ProductDTO;
 import com.ondam.product.dto.ProductImageDTO;
-import com.ondam.product.service.ProductService;
 import com.ondam.product.service.ProductImageService;
+import com.ondam.product.service.ProductService;
 import com.ondam.user.dto.UserDTO;
 import com.ondam.wish.service.WishService;
 
@@ -29,10 +29,9 @@ public class MainController implements Controller {
             action = "main";
         }
         switch (action) {
-            case "spring-sale":
-                Vector<ProductDTO> productList = productService.getProductListByFilter(
-                    "type", "", "인기순", null, "따뜻해요", null
-                );
+            case "spring-sale": {
+            	Vector<ProductDTO> productList = productService.getProductsBySeason("봄");
+            	
                 Map<Integer, String> thumbnailMap = new HashMap<>();
                 if (productList != null) {
                     for (ProductDTO p : productList) {
@@ -55,13 +54,40 @@ public class MainController implements Controller {
                 request.setAttribute("thumbnailMap", thumbnailMap); 
                 
                 return "home/spring-sale";
+            }
 
             case "guide":
                 return "home/guide";
 
             case "main":
-            default:
+            default: {
+                Vector<ProductDTO> newProducts = productService.getNewProducts();
+                Map<Integer, String> newThumbnailMap = new HashMap<>();
+                
+                if (newProducts != null) {
+                    for (ProductDTO p : newProducts) {
+                        Vector<ProductImageDTO> imgs = productImageService.getImagesByProductNo(p.getProductNo());
+                        for (ProductImageDTO img : imgs) {
+                            if (img.getImgType() == 0) {
+                                newThumbnailMap.put(p.getProductNo(), img.getImgFile());
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                HttpSession session = request.getSession(false);
+                if (session != null && session.getAttribute("loginUser") != null) {
+                    UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+                    Set<Integer> wishSet = wishService.getWishedProductNos(loginUser.getUserNo());
+                    request.setAttribute("wishSet", wishSet);
+                }
+                // ---------------------------------------------------------
+
+                request.setAttribute("newProducts", newProducts);
+                request.setAttribute("newThumbnailMap", newThumbnailMap);
                 return "home/home"; 
+            }
         }
     }
 }

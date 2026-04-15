@@ -18,14 +18,14 @@
             <div class="review-my-written-top">
               <div class="review-my-written-top__left">
                 <div class="review-my-written-thumb-wrap">
-                  <c:set var="imgSrc" value="${empty review.productImg ? 'type-top-knit.jpg' : review.productImg}" />
-                  
-                  <img src="${pageContext.request.contextPath}/images/category/${imgSrc}" 
-                       alt="" 
-                       class="review-my-written-thumb" 
-                       width="72" height="72" 
-                       loading="lazy" 
-                       onerror="this.src='${pageContext.request.contextPath}/images/category/type-top-knit.jpg'"/>
+                 <c:set var="imgSrc" value="${empty review.productImg ? '' : review.productImg}" />
+
+				<img src="${pageContext.request.contextPath}/uploads/products/${imgSrc}" 
+				     alt="상품 이미지" 
+				     class="review-my-written-thumb" 
+				     width="72" height="72" 
+				     loading="lazy" 
+				     onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'"/>
                 </div>
                 <div class="review-my-written-meta">
                   <p class="review-my-written-product">${review.snapProductName}</p>
@@ -61,9 +61,22 @@
                 </div>
                 <time class="review-my-written-date">${fn:substring(review.createdAt, 0, 10)}</time>
               </div>
+              
               <p class="review-my-written-body">
                 ${review.reviewContent}
               </p>
+
+              <%-- ✅ 사용자가 업로드한 리뷰 사진 목록 추가 (uploads/reviews 경로 적용) --%>
+              <c:if test="${not empty review.imageList}">
+                <div class="review-my-written-photos" style="display: flex; gap: 8px; margin-top: 12px; overflow-x: auto;">
+                  <c:forEach var="img" items="${review.imageList}">
+                    <img src="${pageContext.request.contextPath}/uploads/reviews/${img.reviewImg}" 
+                         alt="리뷰 사진" 
+                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; flex-shrink: 0;"
+                         onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'; this.onerror=null;"/>
+                  </c:forEach>
+                </div>
+              </c:if>
               
              <c:if test="${not empty review.replyContent && review.replyContent != 'null'}">
 				  <div class="inquiry-list-answer-card" aria-label="판매자 답변" style="margin-top: 16px;">
@@ -91,6 +104,7 @@
   </c:choose>
 </div> 
 
+<%-- 삭제 모달 영역 --%>
 <div class="review-write-modal hidden" id="reviewWriteModalDelete" role="dialog" aria-modal="true" aria-labelledby="reviewWriteModalDeleteTitle">
   <div class="review-write-modal-dim" data-modal-dismiss="delete"></div>
   <div class="review-write-modal-card">
