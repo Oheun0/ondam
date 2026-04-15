@@ -31,7 +31,8 @@
           <jsp:include page="/WEB-INF/views/layout/back-header.jsp"/>
           <h1 class="favorite-list-title">찜한 상품</h1>
           <div class="favorite-list-header-actions">
-            <button type="button" class="detail-icon-btn cart-icon-wrap" aria-label="장바구니">
+            <button type="button" class="detail-icon-btn cart-icon-wrap" aria-label="장바구니" 
+			        onclick="location.href='${pageContext.request.contextPath}/cart'">
 			  <span class="material-icons-outlined" aria-hidden="true">shopping_cart</span>
 			  <c:if test="${sessionScope.cartCount > 0}">
 			    <span class="cart-badge">${sessionScope.cartCount}</span>
