@@ -56,9 +56,6 @@ public class ShortsController implements Controller {
                 prop.load(input);
                 String kakaoKeyFromConfig = prop.getProperty("kakao.javascript.key");
                 request.setAttribute("kakaoKey", kakaoKeyFromConfig);
-                System.out.println("[Shorts Debug] 읽어온 카카오 키: " + kakaoKeyFromConfig);
-            } else {
-                System.out.println("[Shorts Debug] config.properties 파일을 찾을 수 없습니다.");
             }
         } catch (Exception e) {
             e.printStackTrace();
