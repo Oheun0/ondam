@@ -109,4 +109,11 @@ public class ProductService {
 		return dao.decreaseWishCount(productNo);
 	}
 	
+	public Vector<ProductDTO> getProductsBySeason(String season) {
+	    return dao.getProductsBySeason(season);
+	}
+	
+	public Vector<ProductDTO> getNewProducts() {
+	    return dao.getNewProducts();
+	}
 }

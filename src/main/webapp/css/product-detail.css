@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+
+#sizeRecommendText {
+    white-space: pre-wrap;
+}
 :root {
   --bg: #f6f6f6;
   --card: #ffffff;

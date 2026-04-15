@@ -25,6 +25,7 @@ import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
 import com.ondam.product.controller.SearchController;
+import com.ondam.product.controller.SizeRecommendController;
 import com.ondam.review.controller.ReviewController;
 import com.ondam.review.controller.ReviewImageController;
 import com.ondam.seller.controller.SellerAuthController;
@@ -169,7 +170,10 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/review", new SellerReviewController());
         handlerMapping.put("/seller/settlement/list", new SellerSettlementController());
         handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
+        handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
+        handlerMapping.put("/size-recommend", new SizeRecommendController());
         handlerMapping.put("/seller/notification", new SellerNotificationController());
+
     }
     protected void service(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {

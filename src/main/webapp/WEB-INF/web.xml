@@ -34,14 +34,6 @@
 		<param-name>mailFrom</param-name>
 		<param-value>ondam@gmail.com</param-value>
 	</context-param>
-	<context-param>
-		<param-name>openaiApiKey</param-name>
-		<param-value>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</param-value>
-	</context-param>
-	<context-param>
-		<param-name>kakaoJavascriptKey</param-name>
-		<param-value></param-value>
-	</context-param>
 
 	<servlet>
 		<servlet-name>default</servlet-name>

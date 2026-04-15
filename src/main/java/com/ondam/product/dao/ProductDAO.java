@@ -859,4 +859,62 @@ public class ProductDAO {
 	    }
 	    return vlist;
 	}
+	
+	// 계절이 season인 상품 리스트 반환
+	public Vector<ProductDTO> getProductsBySeason(String season) {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<ProductDTO> vlist = new Vector<ProductDTO>();
+	    
+	    try {
+	        con = pool.getConnection();
+	        String sql = "SELECT p.* FROM product p " +
+	                     "JOIN productseason ps ON p.productNo = ps.productNo " +
+	                     "WHERE ps.season = ? ORDER BY p.wishCount desc";
+	        
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, season);
+	        rs = pstmt.executeQuery();
+	        
+	        while (rs.next()) {
+	            ProductDTO dto = new ProductDTO();
+	            mapResultSetToDTO(rs, dto);
+	            vlist.addElement(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vlist;
+	}
+	
+	// 최신 상품 5개만 가져오기
+	public Vector<ProductDTO> getNewProducts() {
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    Vector<ProductDTO> vlist = new Vector<ProductDTO>();
+	    
+	    try {
+	        con = pool.getConnection();
+	        // 최신 등록순으로 5개만 가져오는 쿼리
+	        String sql = "SELECT * FROM product ORDER BY productDate DESC LIMIT 5";
+	        
+	        pstmt = con.prepareStatement(sql);
+	        rs = pstmt.executeQuery();
+	        
+	        while (rs.next()) {
+	            ProductDTO dto = new ProductDTO();
+	            mapResultSetToDTO(rs, dto);
+	            vlist.addElement(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        pool.freeConnection(con, pstmt, rs);
+	    }
+	    return vlist;
+	}
 }
