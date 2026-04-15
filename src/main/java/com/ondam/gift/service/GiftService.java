@@ -49,6 +49,7 @@ public class GiftService {
         for (GiftDTO gift : list) {
             gift.setSenderName(userDao.getUserName(gift.getSenderNo()));
             int productNo = ordersProductDao.getOrderProductNo(gift.getOrderNo());
+            gift.setProductBrand(productDao.getProductBrand(productNo));
             gift.setProductName(productDao.getProductName(productNo));
             gift.setProductImg(productDao.getProductImage(productNo));
             
@@ -80,6 +81,7 @@ public class GiftService {
             gift.setSenderName(userDao.getUserName(userNo));
             gift.setReceiverName(userDao.getUserName(gift.getReceiverNo()));
             int productNo = ordersProductDao.getOrderProductNo(gift.getOrderNo());
+            gift.setProductBrand(productDao.getProductBrand(productNo));
             gift.setProductName(productDao.getProductName(productNo));
             gift.setProductImg(productDao.getProductImage(productNo));
         }
@@ -136,6 +138,7 @@ public class GiftService {
 	        gift.setSenderName(userDao.getUserName(gift.getSenderNo()));
 	        gift.setReceiverName(userDao.getUserName(gift.getReceiverNo()));
 	        int productNo = ordersProductDao.getOrderProductNo(gift.getOrderNo());
+	        gift.setProductBrand(productDao.getProductBrand(productNo));
 	        gift.setProductName(productDao.getProductName(productNo));
 	        gift.setProductImg(productDao.getProductImage(productNo));
 	    }

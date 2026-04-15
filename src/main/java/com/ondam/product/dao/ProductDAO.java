@@ -285,6 +285,29 @@ public class ProductDAO {
 		return productName;
 	}
 
+	// 상품 번호를 통해 브랜드명 조회
+	public String getProductBrand(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String productBrand = null;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT productBrand FROM product WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				productBrand = rs.getString("productBrand");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return productBrand;
+	}
+
 	public int getProductPrice(int productNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -456,11 +479,6 @@ public class ProductDAO {
 
 			sql.append("SELECT DISTINCT p.* " + "FROM product p ");
 
-			if ("situation".equals(viewMode)) {
-				sql.append("JOIN situationmapping sm ON p.productNo = sm.productNo "
-						+ "JOIN situation s ON sm.situationNo = s.situationNo ");
-			}
-
 			sql.append("WHERE p.productState = 1 ");
 
 			// 카테고리 / 상황 조건
@@ -470,7 +488,14 @@ public class ProductDAO {
 							+ "  WHERE categoryName = ? AND categoryLevel = 1 LIMIT 1) ");
 					params.add(category);
 				} else {
-					sql.append("AND s.situationName = ? AND s.situationLevel = 2 ");
+					sql.append("AND (");
+					sql.append("p.situationNo = (SELECT situationNo FROM situation WHERE situationName = ? LIMIT 1) ");
+					sql.append("OR EXISTS (");
+					sql.append("SELECT 1 FROM situationmapping sm ");
+					sql.append("JOIN situation s ON sm.situationNo = s.situationNo ");
+					sql.append("WHERE sm.productNo = p.productNo AND s.situationName = ?");
+					sql.append(")) ");
+					params.add(category);
 					params.add(category);
 				}
 			}

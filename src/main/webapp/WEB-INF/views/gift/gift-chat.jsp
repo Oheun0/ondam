@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/profile.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/group.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wallet.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/gift.css">
 </head>
 
 <body data-context-path="${pageContext.request.contextPath}">
@@ -129,6 +130,7 @@
                                              onerror="this.src='${pageContext.request.contextPath}/images/no-image.png'; this.onerror=null;">
                                     </div>
                                     <div class="gift-product-info">
+                                        <p class="gift-product-brand">${gift.productBrand}</p>
                                         <p class="gift-product-name">${gift.productName}</p>
                                     </div>
                                 </div>
@@ -163,21 +165,12 @@
 
                                 <%-- 고마움 표시하기: 내가 받은 선물일 때만 노출 --%>
                                 <c:if test="${chat.senderNo != myUserNo}">
-                                    <c:choose>
-                                        <c:when test="${thanksMap[gift.giftNo] != null}">
-                                            <button type="button"
-                                                    class="gift-go-btn gift-go-btn--secondary"
-                                                    disabled>
-                                                고마움 표시 완료
-                                            </button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a href="${pageContext.request.contextPath}/gift?action=thanks&giftNo=${gift.giftNo}&otherNo=${otherNo}"
-                                               class="gift-go-btn gift-go-btn--secondary">
-                                                고마움 표시하기
-                                            </a>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <c:if test="${thanksMap[gift.giftNo] == null}">
+                                        <a href="${pageContext.request.contextPath}/gift?action=thanks&giftNo=${gift.giftNo}&otherNo=${otherNo}"
+                                           class="gift-go-btn gift-go-btn--secondary">
+                                            고마움 표시하기
+                                        </a>
+                                    </c:if>
                                 </c:if>
 
                             </div>
