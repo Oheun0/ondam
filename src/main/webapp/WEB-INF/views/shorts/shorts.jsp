@@ -26,7 +26,7 @@
 
 <body data-context-path="${pageContext.request.contextPath}" 
       data-login-user="${not empty sessionScope.loginUser ? 'true' : ''}"
-      data-kakao-js-key="${initParam.kakaoJavascriptKey}">
+      data-kakao-js-key="${kakaoKey}">
 
 <div id="option-toast" class="option-toast hidden" role="alert" aria-live="assertive" aria-hidden="true">
   <span class="material-icons option-toast__icon" aria-hidden="true">error</span>
