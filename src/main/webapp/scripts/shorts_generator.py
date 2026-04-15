@@ -28,7 +28,7 @@ def create_shorts(image_paths, product_name, output_path, font_path, audio_path=
     total_duration = 10.0  
     clips = []
 
-    # [요구사항 반영] 유효한 이미지만 필터링 후 최대 3장까지 자름
+    # 유효한 이미지만 필터링 후 최대 3장까지 자름
     valid_image_paths = [img for img in image_paths if os.path.exists(img)]
     valid_image_paths = valid_image_paths[:3] 
     
@@ -55,7 +55,6 @@ def create_shorts(image_paths, product_name, output_path, font_path, audio_path=
     actual_font = font_path if os.path.exists(font_path) else ('Arial' if os.name == 'nt' else 'Liberation-Sans')
     
     try:
-        # 전달받은 쇼츠 제목(product_name 변수명 유지)을 자막으로 렌더링
         txt_clip = TextClip(
             product_name,
             fontsize=80,
@@ -75,9 +74,17 @@ def create_shorts(image_paths, product_name, output_path, font_path, audio_path=
 
     final_video = CompositeVideoClip([base_video, txt_clip])
 
+    # 💡 [수정된 로직] 배경음악 삽입 시 영상 길이(10초)보다 짧은 경우 에러가 나지 않도록 처리
     if audio_path and os.path.exists(audio_path):
-        audio = AudioFileClip(audio_path).subclip(0, final_video.duration)
-        final_video = final_video.set_audio(audio)
+        try:
+            audio = AudioFileClip(audio_path)
+            # 음악과 영상 중 더 짧은 시간에 맞춤 (음악이 짧아도 에러 안나게)
+            audio_duration = min(audio.duration, final_video.duration)
+            audio = audio.subclip(0, audio_duration)
+            final_video = final_video.set_audio(audio)
+            print(f"[Info] Background music added successfully: {audio_path}")
+        except Exception as e:
+            print(f"[Warning] Background music failed to load. Proceeding without audio: {e}")
 
     output_dir = os.path.dirname(output_path)
     if output_dir:
