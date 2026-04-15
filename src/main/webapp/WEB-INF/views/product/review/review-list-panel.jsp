@@ -102,7 +102,12 @@
                     </div>
                   </c:if>
                   
-                  <button type="button" class="detail-review-cart-btn">해당 옵션으로 장바구니에 담기</button>
+                  <button type="button" class="detail-review-cart-btn" 
+				        data-product-no="${param.productNo}" 
+				        data-color="${review.snapOptionColor}" 
+				        data-size="${review.snapOptionSize}">
+				  해당 옵션으로 장바구니에 담기
+				</button>
                 </article>
               </c:forEach>
             </c:when>

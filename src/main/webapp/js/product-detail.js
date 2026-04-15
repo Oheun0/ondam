@@ -1090,3 +1090,39 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+
+document.addEventListener("click", function (e) {
+  const cartBtn = e.target.closest(".detail-review-cart-btn");
+  if (!cartBtn) return;
+
+  const productNo = cartBtn.getAttribute("data-product-no");
+  const color = cartBtn.getAttribute("data-color");
+  const size = cartBtn.getAttribute("data-size");
+  const ctx = document.body.getAttribute("data-context-path") || "";
+  const formData = new URLSearchParams();
+  formData.append("productNo", productNo);
+  formData.append("color", color);
+  formData.append("size", size);
+  formData.append("quantity", 1); 
+
+  fetch(ctx + "/cart?action=addFromReview", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: formData.toString()
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === "success") {
+      location.href = ctx + "/cart"; 
+      
+    } else if (data.status === "login_required") {
+      alert("로그인이 필요한 서비스입니다.");
+      location.href = ctx + "/login";
+    } else {
+      alert("장바구니 담기에 실패했습니다: " + data.message);
+    }
+  })
+  .catch(error => console.error("장바구니 담기 오류:", error));
+});

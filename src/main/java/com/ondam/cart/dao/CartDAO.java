@@ -35,4 +35,29 @@ public class CartDAO {
         return cartNo;
     }
 
+    public int findOptionNoByColorAndSize(int productNo, String color, String size) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int optionNo = 0;
+        
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT productOptionNo FROM productOption WHERE productNo = ? AND optionColor = ? AND optionSize = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productNo);
+            pstmt.setString(2, color);
+            pstmt.setString(3, size);
+            
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                optionNo = rs.getInt("productOptionNo");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return optionNo;
+    }
 }
