@@ -215,7 +215,7 @@
                     <td>
                       <c:choose>
                         <c:when test="${p.productState == 1}"><span class="seller-product-badge seller-product-badge--selling">판매중</span></c:when>
-                        <c:when test="${p.productState == 2}"><span class="seller-product-badge seller-product-badge--soldout">품절</span></c:when>
+                        <c:when test="${p.productState == 0}"><span class="seller-product-badge seller-product-badge--soldout">품절</span></c:when>
                         <c:otherwise><span class="seller-product-badge seller-product-badge--hidden">숨김</span></c:otherwise>
                       </c:choose>
                     </td>

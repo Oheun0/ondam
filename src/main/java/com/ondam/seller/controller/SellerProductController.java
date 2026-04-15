@@ -726,9 +726,9 @@ public class SellerProductController implements Controller {
 			return 1;
 		}
 		if ("soldout".equalsIgnoreCase(saleStatus)) {
-			return 2;
+			return 0;
 		}
-		return 0;
+		return 2;
 	}
 
 	private static int mapSaleFilterToState(String saleFilter) {
@@ -736,10 +736,10 @@ public class SellerProductController implements Controller {
 			return 1;
 		}
 		if ("soldout".equalsIgnoreCase(saleFilter)) {
-			return 2;
+			return 0;
 		}
 		if ("hidden".equalsIgnoreCase(saleFilter)) {
-			return 0;
+			return 2;
 		}
 		return Integer.MIN_VALUE;
 	}
