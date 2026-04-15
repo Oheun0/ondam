@@ -187,40 +187,43 @@
 		}
 		
 		function applyHelpState(card) {
-		  const badge = card.querySelector('.help-badge');
-		  const btnRow = card.querySelector('.member-btn-row--manage');
-		  const helpBtn = card.querySelector('.help-toggle-btn');
-		
-		  helpBtn.textContent = '배송지 수정 도와주기';
-		  helpBtn.classList.remove('member-btn--help');
-		  helpBtn.classList.add('member-btn--soft');
-		  helpBtn.onclick = null;
-		
-		  if (badge) badge.style.display = 'inline-flex';
-		
-		  if (!card.querySelector('.help-cancel-btn')) {
-		    const cancelBtn = document.createElement('a');
-		    cancelBtn.href = '#';
-		    cancelBtn.className = 'member-btn member-btn--soft member-btn--solo-row help-cancel-btn';
-		    cancelBtn.textContent = '도움 주기 취소';
-		    cancelBtn.addEventListener('click', e => { e.preventDefault(); cancelHelp(card); });
-		    btnRow.appendChild(cancelBtn);
-		  }
-		}
-		
-		function applyCancelState(card) {
-		  const badge = card.querySelector('.help-badge');
-		  const cancelBtn = card.querySelector('.help-cancel-btn');
-		  const helpBtn = card.querySelector('.help-toggle-btn');
-		
-		  if (badge) badge.style.display = 'none';
-		  if (cancelBtn) cancelBtn.remove();
-		
-		  helpBtn.textContent = '도움 주기';
-		  helpBtn.classList.remove('member-btn--soft');
-		  helpBtn.classList.add('member-btn--help');
-		  helpBtn.onclick = function() { toggleHelp(helpBtn); return false; };
-		}
+			  const badge = card.querySelector('.help-badge');
+			  const btnRow = card.querySelector('.member-btn-row--manage');
+			  const helpBtn = card.querySelector('.help-toggle-btn');
+			  const helpeeUserNo = card.dataset.helpeeUserno;
+			
+			  helpBtn.textContent = '배송지 수정 도와주기';
+			  helpBtn.classList.remove('member-btn--help');
+			  helpBtn.classList.add('member-btn--soft');
+			  helpBtn.href = contextPath + '/profile-address?targetUserNo=' + helpeeUserNo;
+			  helpBtn.onclick = null;
+			
+			  if (badge) badge.style.display = 'inline-flex';
+			
+			  if (!card.querySelector('.help-cancel-btn')) {
+			    const cancelBtn = document.createElement('a');
+			    cancelBtn.href = '#';
+			    cancelBtn.className = 'member-btn member-btn--soft member-btn--solo-row help-cancel-btn';
+			    cancelBtn.textContent = '도움 주기 취소';
+			    cancelBtn.addEventListener('click', e => { e.preventDefault(); cancelHelp(card); });
+			    btnRow.appendChild(cancelBtn);
+			  }
+			}
+			
+			function applyCancelState(card) {
+			  const badge = card.querySelector('.help-badge');
+			  const cancelBtn = card.querySelector('.help-cancel-btn');
+			  const helpBtn = card.querySelector('.help-toggle-btn');
+			
+			  if (badge) badge.style.display = 'none';
+			  if (cancelBtn) cancelBtn.remove();
+			
+			  helpBtn.textContent = '도움 주기';
+			  helpBtn.classList.remove('member-btn--soft');
+			  helpBtn.classList.add('member-btn--help');
+			  helpBtn.href = '#';
+			  helpBtn.onclick = function() { toggleHelp(this); return false; };
+			}
 		
 		const leaveModal = document.getElementById('groupModalLeave');
 
