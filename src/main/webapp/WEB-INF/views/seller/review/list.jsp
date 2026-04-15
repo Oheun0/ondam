@@ -189,7 +189,7 @@
 		  </c:forEach>
 		</div>
 
-        <section class="seller-card seller-review-empty" aria-label="빈 상태(더미)" hidden>
+        <section class="seller-card seller-review-empty" aria-label="빈 상태" hidden>
           <div class="seller-review-empty-inner">
             <div class="seller-review-empty-icon" aria-hidden="true">
               <span class="material-icons-outlined">rate_review</span>

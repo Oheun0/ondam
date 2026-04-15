@@ -154,8 +154,8 @@
                 <div class="seller-product-split">
                   <select id="saleStatus" name="saleStatus" class="seller-product-control">
                     <option value="selling" <c:if test="${editProduct.productState == 1}">selected</c:if>>판매중</option>
-                    <option value="hidden" <c:if test="${editProduct.productState == 0}">selected</c:if>>숨김</option>
-                    <option value="soldout" <c:if test="${editProduct.productState == 2}">selected</c:if>>품절</option>
+                    <option value="hidden" <c:if test="${editProduct.productState == 2}">selected</c:if>>숨김</option>
+                    <option value="soldout" <c:if test="${editProduct.productState == 0}">selected</c:if>>품절</option>
                   </select>
                   <div class="chip-wrap" aria-label="성별 선택">
                     <label class="chip chip--plain">
@@ -504,7 +504,7 @@
           </section>
 
           <div class="seller-product-actions">
-            <button type="button" class="seller-secondary-btn" id="tempSaveBtn">임시 저장</button>
+            <!-- <button type="button" class="seller-secondary-btn" id="tempSaveBtn">임시 저장</button>-->
             <button type="submit" class="seller-primary-btn" id="submitBtn"><c:out value="${editMode ? '수정하기' : '등록하기'}" /></button>
           </div>
 
