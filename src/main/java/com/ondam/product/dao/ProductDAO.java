@@ -965,8 +965,8 @@ public class ProductDAO {
 			// 판매상태 필터
 			if (sale != null && !sale.isEmpty() && !"all".equalsIgnoreCase(sale)) {
 				if ("selling".equals(sale)) { sql.append(" AND p.productState = 1 "); }
-				else if ("soldout".equals(sale)) { sql.append(" AND p.productState = 2 "); }
-				else if ("hidden".equals(sale)) { sql.append(" AND p.productState = 0 "); }
+				else if ("soldout".equals(sale)) { sql.append(" AND p.productState = 0 "); }
+				else if ("hidden".equals(sale)) { sql.append(" AND p.productState = 2 "); }
 			}
 			// 재고 필터 (서브쿼리 활용)
 			if (stock != null && !stock.isEmpty() && !"all".equalsIgnoreCase(stock)) {
@@ -1014,8 +1014,8 @@ public class ProductDAO {
 			}
 			if (sale != null && !sale.isEmpty() && !"all".equalsIgnoreCase(sale)) {
 				if ("selling".equals(sale)) { sql.append(" AND p.productState = 1 "); }
-				else if ("soldout".equals(sale)) { sql.append(" AND p.productState = 2 "); }
-				else if ("hidden".equals(sale)) { sql.append(" AND p.productState = 0 "); }
+				else if ("soldout".equals(sale)) { sql.append(" AND p.productState = 0 "); }
+				else if ("hidden".equals(sale)) { sql.append(" AND p.productState = 2 "); }
 			}
 			if (stock != null && !stock.isEmpty() && !"all".equalsIgnoreCase(stock)) {
 				String stockSubQuery = "(SELECT IFNULL(SUM(optionStock), 0) FROM productoption WHERE productNo = p.productNo)";

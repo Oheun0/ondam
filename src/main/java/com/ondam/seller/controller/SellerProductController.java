@@ -106,12 +106,33 @@ public class SellerProductController implements Controller {
 	    int amount = 10;
 	    int offset = (pageNum - 1) * amount;
 	    int totalCount = productDAO.getTotalCountByVendorFilter(vendorNo, query, categoryFilter, saleFilter, stockFilter);
-
+	    int lowStock = 0; // 💡 품절 임박 카운트 변수 추가
+	    
 	    Vector<ProductDTO> list = productDAO.getProductsWithPaging(vendorNo, query, categoryFilter, saleFilter, stockFilter, offset, amount);
 	    int endPage = (int)(Math.ceil(pageNum / 10.0)) * 10;
 	    int startPage = endPage - 9;
 	    int realEnd = (int)(Math.ceil((totalCount * 1.0) / amount));
+	    
+	    int countSelling = 0;
+	    int countHidden = 0;
+	    int countLowStock = 0;
+	    Vector<ProductDTO> allList = productDAO.getProductsByVendor(vendorNo);
+	    if (allList != null) {
+	        for (ProductDTO p : allList) {
+	            int state = p.getProductState();
+	            if (state == 1) countSelling++;       // 1: 판매중
+	            else if (state == 2) countHidden++;  // 2: 숨김
 
+	            int totalStock = 0;
+	            Vector<ProductOptionDTO> opts = productDAO.getProductOptions(p.getProductNo());
+	            if (opts != null) {
+	                for (ProductOptionDTO o : opts) totalStock += o.getOptionStock();
+	            }
+	            // 총 재고가 1~5개 사이면 품절 임박
+	            if (totalStock > 0 && totalStock <= 5) countLowStock++;
+	        }
+	    }
+	    
 	    if (realEnd < endPage) {
 	        endPage = realEnd;
 	    }
@@ -128,16 +149,27 @@ public class SellerProductController implements Controller {
 	        row.put("thumb", productDAO.getProductImage(p.getProductNo()));
 
 	        int totalStock = 0;
-	        Vector<ProductOptionDTO> opts = productDAO.getProductOptions(p.getProductNo());
-	        if (opts != null) {
-	            for (ProductOptionDTO o : opts) totalStock += o.getOptionStock();
-	        }
+		    Vector<ProductOptionDTO> opts = productDAO.getProductOptions(p.getProductNo());
+		    if (opts != null) {
+		        for (ProductOptionDTO o : opts) totalStock += o.getOptionStock();
+		    }
+		    
+		    // 💡 [추가] 총 재고가 1~5개 사이면 '품절 임박'으로 카운트
+		    if (totalStock > 0 && totalStock <= 5) {
+		        lowStock++;
+		    }
 	        row.put("stock", totalStock);
 	        row.put("shortsCount", productDAO.getShortsCountByProductNo(p.getProductNo()));
 
 	        rows.add(row);
 	    }
 	    request.setAttribute("productRows", rows);
+	    request.setAttribute("productLowStock", lowStock);
+	    
+	    request.setAttribute("productSelling", countSelling);
+	    request.setAttribute("productHidden", countHidden);
+	    request.setAttribute("productLowStock", countLowStock);
+	    
 	    request.setAttribute("productTotal", totalCount);
 	    request.setAttribute("pageNum", pageNum);
 	    request.setAttribute("startPage", startPage);
