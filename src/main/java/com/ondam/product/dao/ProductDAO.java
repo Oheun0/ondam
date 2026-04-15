@@ -917,4 +917,134 @@ public class ProductDAO {
 	    }
 	    return vlist;
 	}
+	
+	public int getShortsCountByProductNo(int productNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int count = 0;
+		try {
+			con = pool.getConnection();
+			String sql = "SELECT COUNT(*) FROM shorts WHERE productNo = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, productNo);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return count;
+	}
+
+	// 필터가 적용된 전체 상품 개수 조회 (페이징 계산용)
+	public int getTotalCountByVendorFilter(int vendorNo, String query, String category, String sale, String stock) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int count = 0;
+		try {
+			con = pool.getConnection();
+			StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM product p WHERE p.vendorNo = ? AND p.productState >= 0 ");
+			Vector<Object> params = new Vector<>();
+			params.add(vendorNo);
+
+			// 검색어 필터
+			if (query != null && !query.trim().isEmpty()) {
+				sql.append(" AND p.productName LIKE ? ");
+				params.add("%" + query.trim() + "%");
+			}
+			// 카테고리 필터
+			if (category != null && !category.isEmpty() && !"all".equalsIgnoreCase(category)) {
+				sql.append(" AND p.categoryNo = ? ");
+				params.add(Integer.parseInt(category));
+			}
+			// 판매상태 필터
+			if (sale != null && !sale.isEmpty() && !"all".equalsIgnoreCase(sale)) {
+				if ("selling".equals(sale)) { sql.append(" AND p.productState = 1 "); }
+				else if ("soldout".equals(sale)) { sql.append(" AND p.productState = 2 "); }
+				else if ("hidden".equals(sale)) { sql.append(" AND p.productState = 0 "); }
+			}
+			// 재고 필터 (서브쿼리 활용)
+			if (stock != null && !stock.isEmpty() && !"all".equalsIgnoreCase(stock)) {
+				String stockSubQuery = "(SELECT IFNULL(SUM(optionStock), 0) FROM productoption WHERE productNo = p.productNo)";
+				if ("in".equals(stock)) { sql.append(" AND ").append(stockSubQuery).append(" > 0 "); }
+				else if ("out".equals(stock)) { sql.append(" AND ").append(stockSubQuery).append(" <= 0 "); }
+				else if ("low".equals(stock)) { sql.append(" AND ").append(stockSubQuery).append(" BETWEEN 1 AND 5 "); }
+			}
+
+			pstmt = con.prepareStatement(sql.toString());
+			for (int i = 0; i < params.size(); i++) {
+				pstmt.setObject(i + 1, params.get(i));
+			}
+			
+			rs = pstmt.executeQuery();
+			if (rs.next()) { count = rs.getInt(1); }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return count;
+	}
+
+	// 필터가 적용된 현재 페이지의 상품 목록 조회
+	public Vector<ProductDTO> getProductsWithPaging(int vendorNo, String query, String category, String sale, String stock, int offset, int amount) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<ProductDTO> vlist = new Vector<>();
+		try {
+			con = pool.getConnection();
+			StringBuilder sql = new StringBuilder("SELECT * FROM product p WHERE p.vendorNo = ? AND p.productState >= 0 ");
+			Vector<Object> params = new Vector<>();
+			params.add(vendorNo);
+
+			// 필터 조건 적용 (위 getTotalCount와 동일 로직)
+			if (query != null && !query.trim().isEmpty()) {
+				sql.append(" AND p.productName LIKE ? ");
+				params.add("%" + query.trim() + "%");
+			}
+			if (category != null && !category.isEmpty() && !"all".equalsIgnoreCase(category)) {
+				sql.append(" AND p.categoryNo = ? ");
+				params.add(Integer.parseInt(category));
+			}
+			if (sale != null && !sale.isEmpty() && !"all".equalsIgnoreCase(sale)) {
+				if ("selling".equals(sale)) { sql.append(" AND p.productState = 1 "); }
+				else if ("soldout".equals(sale)) { sql.append(" AND p.productState = 2 "); }
+				else if ("hidden".equals(sale)) { sql.append(" AND p.productState = 0 "); }
+			}
+			if (stock != null && !stock.isEmpty() && !"all".equalsIgnoreCase(stock)) {
+				String stockSubQuery = "(SELECT IFNULL(SUM(optionStock), 0) FROM productoption WHERE productNo = p.productNo)";
+				if ("in".equals(stock)) { sql.append(" AND ").append(stockSubQuery).append(" > 0 "); }
+				else if ("out".equals(stock)) { sql.append(" AND ").append(stockSubQuery).append(" <= 0 "); }
+				else if ("low".equals(stock)) { sql.append(" AND ").append(stockSubQuery).append(" BETWEEN 1 AND 5 "); }
+			}
+
+			// 정렬 및 페이징 LIMIT 적용
+			sql.append(" ORDER BY p.productNo DESC LIMIT ?, ?");
+			params.add(offset);
+			params.add(amount);
+
+			pstmt = con.prepareStatement(sql.toString());
+			for (int i = 0; i < params.size(); i++) {
+				pstmt.setObject(i + 1, params.get(i));
+			}
+
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ProductDTO dto = new ProductDTO();
+				mapResultSetToDTO(rs, dto);
+				vlist.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
 }

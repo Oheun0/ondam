@@ -54,25 +54,33 @@
         </c:if>
 
         <section class="seller-product-summary" aria-label="요약">
-          <div class="seller-product-summary-grid">
-            <div class="seller-product-summary-card">
-              <div class="seller-product-summary-label">전체 상품</div>
-              <div class="seller-product-summary-value"><c:out value="${productTotal}" /><span class="seller-product-summary-unit">개</span></div>
-            </div>
-            <div class="seller-product-summary-card">
-              <div class="seller-product-summary-label">판매중</div>
-              <div class="seller-product-summary-value"><c:out value="${productSelling}" /><span class="seller-product-summary-unit">개</span></div>
-            </div>
-            <div class="seller-product-summary-card">
-              <div class="seller-product-summary-label">품절 임박</div>
-              <div class="seller-product-summary-value">-<span class="seller-product-summary-unit">개</span></div>
-            </div>
-            <div class="seller-product-summary-card">
-              <div class="seller-product-summary-label">숨김</div>
-              <div class="seller-product-summary-value"><c:out value="${productHidden}" /><span class="seller-product-summary-unit">개</span></div>
-            </div>
-          </div>
-        </section>
+		  <div class="seller-product-summary-grid">
+		    <div class="seller-product-summary-card">
+		      <div class="seller-product-summary-label">전체 상품</div>
+		      <div class="seller-product-summary-value">
+		        <c:out value="${empty productTotal or productTotal == 0 ? '0' : productTotal}" /><span class="seller-product-summary-unit">개</span>
+		      </div>
+		    </div>
+		    <div class="seller-product-summary-card">
+		      <div class="seller-product-summary-label">판매중</div>
+		      <div class="seller-product-summary-value">
+		        <c:out value="${empty productSelling or productSelling == 0 ? '0' : productSelling}" /><span class="seller-product-summary-unit">개</span>
+		      </div>
+		    </div>
+		    <div class="seller-product-summary-card">
+		      <div class="seller-product-summary-label">품절 임박</div>
+		      <div class="seller-product-summary-value">
+		        <c:out value="${empty productLowStock or productLowStock == 0 ? '0' : productLowStock}" /><span class="seller-product-summary-unit">개</span>
+		      </div>
+		    </div>
+		    <div class="seller-product-summary-card">
+		      <div class="seller-product-summary-label">숨김</div>
+		      <div class="seller-product-summary-value">
+		        <c:out value="${empty productHidden or productHidden == 0 ? '0' : productHidden}" /><span class="seller-product-summary-unit">개</span>
+		      </div>
+		    </div>
+		  </div>
+		</section>
 
         <section class="seller-product-toolbar seller-card" aria-label="검색 및 필터">
           <form id="sellerProductFilterForm" method="get" action="${pageContext.request.contextPath}/seller/product">
@@ -170,7 +178,7 @@
               <tbody>
                 <c:forEach var="row" items="${productRows}">
                   <c:set var="p" value="${row.product}" />
-                  <c:set var="thumbUrl" value="${pageContext.request.contextPath}/images/category/type-top-knit.jpg" />
+                  <c:set var="thumbUrl" value="${pageContext.request.contextPath}/images/common/no-image.png" />
                   <c:if test="${not empty row.thumb}">
                     <c:set var="thumbUrl" value="${pageContext.request.contextPath}/uploads/products/${row.thumb}" />
                   </c:if>
@@ -185,15 +193,24 @@
                       <div class="seller-product-subline">상품No: <c:out value="${p.productNo}" /></div>
                     </td>
                     <td><c:out value="${row.categoryName}" /></td>
-                    <td><strong><c:out value="${p.productPrice}" />원</strong></td>
                     <td>
-                      <c:choose>
-                        <c:when test="${p.productOriginPrice > p.productPrice}">
-                          <c:out value="${p.productPrice}" />원
-                        </c:when>
-                        <c:otherwise>-</c:otherwise>
-                      </c:choose>
-                    </td>
+					  <c:choose>
+					    <c:when test="${p.productOriginPrice > p.productPrice}">
+					      <strong><c:out value="${p.productOriginPrice}" />원</strong>
+					    </c:when>
+					    <c:otherwise>
+					      <strong><c:out value="${p.productPrice}" />원</strong>
+					    </c:otherwise>
+					  </c:choose>
+					</td>
+					<td>
+					  <c:choose>
+					    <c:when test="${p.productOriginPrice > p.productPrice}">
+					      <c:out value="${p.productPrice}" />원
+					    </c:when>
+					    <c:otherwise>-</c:otherwise>
+					  </c:choose>
+					</td>
                     <td><c:out value="${row.stock}" />개</td>
                     <td>
                       <c:choose>
@@ -202,7 +219,16 @@
                         <c:otherwise><span class="seller-product-badge seller-product-badge--hidden">숨김</span></c:otherwise>
                       </c:choose>
                     </td>
-                    <td>-</td>
+                    <td>
+					  <c:choose>
+					    <c:when test="${row.shortsCount > 0}">
+					      <span class="seller-product-badge seller-product-badge--linked"><c:out value="${row.shortsCount}"/>개 연결됨</span>
+					    </c:when>
+					    <c:otherwise>
+					      <span class="seller-product-txt--muted">미연결</span>
+					    </c:otherwise>
+					  </c:choose>
+					</td>
                     <td class="seller-product-row-actions">
                       <button type="button" class="seller-mini-btn" data-action="edit" data-product-no="${p.productNo}">수정</button>
                     </td>
@@ -212,16 +238,25 @@
             </table>
           </div>
 
-          <div class="seller-product-pagination" aria-label="페이지네이션(더미)">
-            <button type="button" class="seller-page-btn" data-page="prev">이전</button>
-            <button type="button" class="seller-page-btn active" data-page="1">1</button>
-            <button type="button" class="seller-page-btn" data-page="2">2</button>
-            <button type="button" class="seller-page-btn" data-page="3">3</button>
-            <button type="button" class="seller-page-btn" data-page="next">다음</button>
-          </div>
+          <div class="seller-product-pagination" aria-label="페이지네이션">
+			  <c:if test="${prev}">
+			    <a href="?pageNum=${startPage - 1}&query=${filterQuery}&category=${filterCategory}&sale=${filterSale}&stock=${filterStock}" 
+			       class="seller-product-page-btn">&lt;</a>
+			  </c:if>
+			  <c:forEach var="num" begin="${startPage}" end="${endPage}">
+			    <a href="?pageNum=${num}&query=${filterQuery}&category=${filterCategory}&sale=${filterSale}&stock=${filterStock}" 
+			       class="seller-product-page-btn ${pageNum == num ? 'active' : ''}">
+			      ${num}
+			    </a>
+			  </c:forEach>
+			  <c:if test="${next}">
+			    <a href="?pageNum=${endPage + 1}&query=${filterQuery}&category=${filterCategory}&sale=${filterSale}&stock=${filterStock}" 
+			       class="seller-product-page-btn">&gt;</a>
+			  </c:if>
+			</div>
         </section>
 
-        <section class="seller-card seller-product-empty" aria-label="빈 상태(더미)" <c:if test="${productTotal != 0}">hidden</c:if>>
+        <section class="seller-card seller-product-empty" aria-label="등록된 상품 없음" <c:if test="${productTotal != 0}">hidden</c:if>>
           <div class="seller-product-empty-inner">
             <div class="seller-product-empty-icon" aria-hidden="true">
               <span class="material-icons-outlined">inventory_2</span>
