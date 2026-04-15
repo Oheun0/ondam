@@ -33,6 +33,7 @@ import com.ondam.product.dto.ProductImageDTO;
 import com.ondam.product.dto.ProductOptionDTO;
 import com.ondam.product.dto.ProductSeasonDTO;
 import com.ondam.seller.dto.SellerDTO;
+import com.ondam.ai.service.AiSearchService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,6 +56,7 @@ public class SellerProductController implements Controller {
 	private final ProductFeatureDAO productFeatureDAO = new ProductFeatureDAO();
 	private final ProductOptionDAO productOptionDAO = new ProductOptionDAO();
 	private final ProductImageDAO productImageDAO = new ProductImageDAO();
+	private final AiSearchService aiSearchService = new AiSearchService(); // AI 서비스 추가
 	private static final ResourceBundle rb = ResourceBundle.getBundle("config");
 
 	@Override
@@ -268,7 +270,6 @@ public class SellerProductController implements Controller {
 
 			int productState = mapSaleStatusToState(saleStatus);
 			if ("temp".equalsIgnoreCase(saveMode)) {
-				// 임시 저장은 항상 숨김 상태로 저장
 				productState = 0;
 			}
 
@@ -300,9 +301,19 @@ public class SellerProductController implements Controller {
 			saveFeatures(productNo, request.getParameterValues("clothesFeature"));
 			saveOptions(productNo, request.getParameterValues("optionColor"),
 					request.getParameterValues("optionSize"), request.getParameterValues("optionStock"));
-			saveImages(request, productNo);
+			
+			// 대표 이미지 저장 및 AI 인덱싱 트리거
+			String savedMainImg = saveMainImage(request, productNo);
+			saveDetailImages(request, productNo, 2, 5);
 
 			if (!"temp".equalsIgnoreCase(saveMode)) {
+				// 개별 인덱싱 수행
+				if (savedMainImg != null) {
+					String realPath = request.getServletContext().getRealPath("/");
+					String scriptPath = realPath + "scripts" + File.separator + "shop_search.py";
+					aiSearchService.updateSingleProductIndex(scriptPath, productNo, savedMainImg);
+				}
+
 				int optionCount = countSavedOptions(productNo);
 				int imageCount = countSavedImages(productNo);
 				if (optionCount == 0 || imageCount == 0) {
@@ -412,8 +423,19 @@ public class SellerProductController implements Controller {
 
 			boolean hasNewThumb = hasUpload(request.getPart("thumbImage"));
 			if (hasNewThumb) {
+				ProductImageDTO oldThumb = productImageDAO.getProductImageById(productNo);
+			    if (oldThumb != null) {
+			        deletePhysicalFile(request, oldThumb.getImgFile()); // 물리적 삭제 실행
+			    }
 				productImageDAO.deleteByProductNoAndType(productNo, 0);
-				saveMainImage(request, productNo);
+				String updatedMainImg = saveMainImage(request, productNo);
+				
+				// 대표 이미지가 변경되었을 때 AI 인덱스 업데이트
+				if (updatedMainImg != null) {
+					String realPath = request.getServletContext().getRealPath("/");
+					String scriptPath = realPath + "scripts" + File.separator + "shop_search.py";
+					aiSearchService.updateSingleProductIndex(scriptPath, productNo, updatedMainImg);
+				}
 			}
 
 			updateDetailImages(request, productNo);
@@ -458,11 +480,11 @@ public class SellerProductController implements Controller {
 		saveDetailImages(request, productNo, 2, 5);
 	}
 
-	private void saveMainImage(HttpServletRequest request, int productNo) throws Exception {
+	private String saveMainImage(HttpServletRequest request, int productNo) throws Exception {
 		Part thumb = request.getPart("thumbImage");
 		String thumbFile = saveUploadedImage(request, thumb);
 		if (thumbFile == null) {
-			return;
+			return null;
 		}
 		ProductImageDTO thumbDto = new ProductImageDTO();
 		thumbDto.setProductNo(productNo);
@@ -472,6 +494,7 @@ public class SellerProductController implements Controller {
 		if (!productImageDAO.insertProductImage(thumbDto)) {
 			throw new IllegalStateException("대표 이미지 DB 저장 실패");
 		}
+		return thumbFile; // 저장된 파일명 반환
 	}
 
 	private int saveDetailImages(HttpServletRequest request, int productNo, int startOrder, int limit) throws Exception {
@@ -505,6 +528,7 @@ public class SellerProductController implements Controller {
 		String[] keepNos = request.getParameterValues("keepDetailImageNos");
 		Set<Integer> keepSet = new HashSet<>();
 		List<Integer> keepOrder = new ArrayList<>();
+		
 		if (keepNos != null) {
 			for (String no : keepNos) {
 				int imageNo = parseIntOrZero(no);
@@ -523,21 +547,34 @@ public class SellerProductController implements Controller {
 				existingDetailMap.put(Integer.valueOf(img.getProductImgNo()), img);
 			}
 		}
+		
 		int uploadedDetailCount = countUploadsByName(request.getParts(), "detailImages");
+		
+		// 💡 [원인 해결] 아무 수정도 안 했을 때 기존 이미지를 보호 명단(keepSet)에 추가!
 		if (keepOrder.isEmpty() && uploadedDetailCount == 0 && !existingDetailMap.isEmpty()) {
-			// 프론트에서 keep 파라미터를 못 보낸 경우 기존 상세 이미지를 그대로 유지
 			for (ProductImageDTO img : existingImages) {
 				if (img.getImgType() == 1) {
 					keepOrder.add(Integer.valueOf(img.getProductImgNo()));
+					keepSet.add(Integer.valueOf(img.getProductImgNo())); // 이 한 줄이 빠져서 실제 파일이 다 지워졌습니다!
 				}
 			}
 		}
 
+		// 1. 보호 명단(keepSet)에 없는 옛날 파일들 물리적 삭제
+		for (ProductImageDTO img : existingImages) {
+		    if (img.getImgType() == 1 && !keepSet.contains(img.getProductImgNo())) {
+		        deletePhysicalFile(request, img.getImgFile());
+		    }
+		}
+		
+		// 2. DB 초기화
 		productImageDAO.deleteByProductNoAndType(productNo, 1);
-
+		
 		int maxDetailCount = 5;
 		int savedCount = 0;
 		int order = 2;
+		
+		// 3. 유지할 이미지들 DB에 다시 등록
 		for (Integer keepNo : keepOrder) {
 			if (savedCount >= maxDetailCount) {
 				break;
@@ -557,6 +594,7 @@ public class SellerProductController implements Controller {
 			savedCount++;
 		}
 
+		// 4. 새로 업로드된 상세 이미지들 처리
 		if (savedCount < maxDetailCount) {
 			saveDetailImages(request, productNo, order, maxDetailCount - savedCount);
 		}
@@ -693,7 +731,6 @@ public class SellerProductController implements Controller {
 		if ("soldout".equalsIgnoreCase(saleStatus)) {
 			return 2;
 		}
-		// hidden/unknown
 		return 0;
 	}
 
@@ -946,5 +983,17 @@ public class SellerProductController implements Controller {
 		String t = s.replaceAll("[^0-9]", "");
 		return t.trim();
 	}
+	private void deletePhysicalFile(HttpServletRequest request, String fileName) {
+	    if (fileName == null || fileName.isEmpty()) return;
+	    try {
+	        File uploadDir = ProjectWebappPaths.uploadsProductsDirectory(request.getServletContext());
+	        File file = new File(uploadDir, fileName);
+	        if (file.exists()) {
+	            file.delete(); // 실제 파일 삭제
+	            System.out.println("[File Delete] Success: " + fileName);
+	        }
+	    } catch (Exception e) {
+	        System.err.println("[File Delete] Error: " + e.getMessage());
+	    }
+	}
 }
-
