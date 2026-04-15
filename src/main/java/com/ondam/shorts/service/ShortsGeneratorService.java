@@ -80,7 +80,7 @@ public class ShortsGeneratorService {
                 }
 
                 StringBuilder imagesArg = new StringBuilder();
-                int imageCount = Math.min(imageFiles.size(), 3); 
+                int imageCount = Math.min(imageFiles.size(), 6);
                 
                 for (int i = 0; i < imageCount; i++) {
                     if (i > 0) imagesArg.append(",");
@@ -138,23 +138,14 @@ public class ShortsGeneratorService {
                 streamGobbler.setDaemon(true);
                 streamGobbler.start();
 
-                boolean finished = process.waitFor(5, TimeUnit.MINUTES);
+                // 💡 시간제한 없이 파이썬 프로세스가 끝날 때까지 무한정 기다립니다.
+                int exitCode = process.waitFor();
                 
-                if (!finished) {
-                    process.destroyForcibly();
-                    System.err.println("[ShortsService] 파이썬 스크립트 실행 시간 초과.");
-                    shortsDAO.updateShortsState(productNo, -1);
-                    return;
-                }
-
-                int exitCode = process.exitValue();
                 if (exitCode == 0) {
-                    // 💡 생성이 완료되면 상태만 1(공개)로 변경합니다. 파일명은 이미 DB에 있습니다.
                     shortsDAO.updateShortsState(productNo, 1);
                 } else {
                     shortsDAO.updateShortsState(productNo, -1);
                 }
-
             } catch (Exception e) {
                 System.err.println("[ShortsService] Exception 발생: " + e.getMessage());
                 shortsDAO.updateShortsState(productNo, -1);
