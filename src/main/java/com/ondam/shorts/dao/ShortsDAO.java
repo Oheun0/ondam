@@ -48,7 +48,7 @@ public class ShortsDAO {
 		boolean flag = false;
 		try {
 			con = pool.getConnection();
-			String sql = "INSERT INTO shorts (vendorNo, productNo, shortsTitle, shortsContent, videoFile, thumbnailImg, shortsState, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO shorts (vendorNo, productNo, shortsTitle, shortsContent, videoFile, thumbnailImg, shortsState) VALUES (?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, dto.getVendorNo());
 			pstmt.setInt(2, dto.getProductNo());
@@ -57,7 +57,6 @@ public class ShortsDAO {
 			pstmt.setString(5, dto.getVideoFile());
 			pstmt.setString(6, dto.getThumbnailImg());
 			pstmt.setInt(7, dto.getShortsState());
-			pstmt.setString(8, dto.getCreatedAt());
 			if (pstmt.executeUpdate() > 0) flag = true;
 		} catch (Exception e) { e.printStackTrace(); } 
 		finally { pool.freeConnection(con, pstmt); }
