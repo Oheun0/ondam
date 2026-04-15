@@ -113,6 +113,11 @@ public class CartService {
         }
     }
     
+ // 상품번호, 색상, 사이즈로 옵션 고유번호 찾기
+    public int findOptionNoByColorAndSize(int productNo, String color, String size) {
+        return cartDao.findOptionNoByColorAndSize(productNo, color, size);
+    }
+    
     // 세션 갱신을 위한 장바구니 전체 수량 조회
     public int refreshCartTotalQuantity(int userNo) {
         int cartNo = cartDao.getOrCreateCart(userNo);

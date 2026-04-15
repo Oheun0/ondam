@@ -25,6 +25,7 @@ import com.ondam.poke.controller.PokeController;
 import com.ondam.product.controller.CategoryController;
 import com.ondam.product.controller.ProductController;
 import com.ondam.product.controller.SearchController;
+import com.ondam.product.controller.SizeRecommendController;
 import com.ondam.review.controller.ReviewController;
 import com.ondam.review.controller.ReviewImageController;
 import com.ondam.seller.controller.SellerAuthController;
@@ -169,7 +170,10 @@ public class DispatcherServlet extends HttpServlet {
         handlerMapping.put("/seller/review", new SellerReviewController());
         handlerMapping.put("/seller/settlement/list", new SellerSettlementController());
         handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
+        handlerMapping.put("/seller/settlement/download", new SellerSettlementDownloadController());
+        handlerMapping.put("/size-recommend", new SizeRecommendController());
         handlerMapping.put("/seller/notification", new SellerNotificationController());
+
     }
     protected void service(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -185,6 +189,12 @@ public class DispatcherServlet extends HttpServlet {
             if (serveFileFromProjectWebappIfPresent(request.getServletContext(), response, path)) {
                 return;
             }
+        }
+
+        // 쇼츠 영상/썸네일은 프로젝트 고정 경로만 사용 (배포 경로 fallback 차단)
+        if (path.startsWith("/uploads/shorts/")) {
+            response.sendError(404, "쇼츠 파일을 찾을 수 없습니다.");
+            return;
         }
 
         // 확장자가 있거나(파일), 특정 정적 폴더 경로인 경우 톰캣 기본 서블릿에 위임

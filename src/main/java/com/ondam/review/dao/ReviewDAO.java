@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import com.ondam.common.DBConnectionMgr;
@@ -159,6 +163,9 @@ public class ReviewDAO {
                 
                 dto.setReplyContent(rs.getString("replyContent"));
                 dto.setReplyDate(rs.getString("replyDate"));
+                
+                Vector<ReviewImageDTO> imageList = getReviewImages(dto.getReviewNo());
+                dto.setImageList(imageList);
                 
                 
                 vlist.addElement(dto);
@@ -348,12 +355,12 @@ public class ReviewDAO {
                 orderBy = "r.reviewHelpful DESC, r.createdAt DESC";
             }
 
-            String sql = "SELECT r.*, u.userName, op.snapOptionSize, op.snapOptionColor " +
-                         "FROM review r " +
-                         "JOIN user u ON r.userNo = u.userNo " +
-                         "JOIN ordersproduct op ON r.orderItemNo = op.orderItemNo " +
-                         "WHERE op.productNo = ? " +
-                         "ORDER BY " + orderBy; // 변수 대입
+            String sql = "SELECT r.*, u.userName, u.userProfileImg, op.snapOptionSize, op.snapOptionColor " +
+                    "FROM review r " +
+                    "JOIN user u ON r.userNo = u.userNo " +
+                    "JOIN ordersproduct op ON r.orderItemNo = op.orderItemNo " +
+                    "WHERE op.productNo = ? " +
+                    "ORDER BY " + orderBy;
                          
             pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, productNo);
@@ -361,6 +368,7 @@ public class ReviewDAO {
             
             while (rs.next()) {
                 ReviewDTO dto = new ReviewDTO();
+                dto.setUserNo(rs.getInt("userNo"));
                 dto.setReviewNo(rs.getInt("reviewNo"));
                 dto.setUserName(rs.getString("userName")); 
                 dto.setReviewHelpful(rs.getInt("reviewHelpful"));
@@ -371,6 +379,9 @@ public class ReviewDAO {
                 dto.setSnapOptionColor(rs.getString("snapOptionColor"));
                 dto.setReplyContent(rs.getString("replyContent"));
                 dto.setReplyDate(rs.getString("replyDate"));
+                dto.setUserProfileImg(rs.getString("userProfileImg"));
+                Vector<ReviewImageDTO> imageList = getReviewImages(dto.getReviewNo());
+                dto.setImageList(imageList);
                 vlist.add(dto);
             }
         } catch (Exception e) { e.printStackTrace(); }
@@ -417,5 +428,79 @@ public class ReviewDAO {
             pool.freeConnection(con, pstmt, rs);
         }
         return flag;
+    }
+    
+ // 특정 리뷰의 사진 목록만 싹 가져오는 도우미 메서드
+    public Vector<ReviewImageDTO> getReviewImages(int reviewNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Vector<ReviewImageDTO> vlist = new Vector<>();
+        
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT * FROM reviewimage WHERE reviewNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, reviewNo);
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                ReviewImageDTO imgDto = new ReviewImageDTO();
+                imgDto.setReviewNo(rs.getInt("reviewNo"));
+                imgDto.setReviewImg(rs.getString("reviewImg")); 
+                vlist.add(imgDto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return vlist;
+    }
+    
+    public Set<Integer> getHelpfulReviewNosByUser(int userNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Set<Integer> set = new HashSet<>();
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT reviewNo FROM reviewhelpful WHERE userNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, userNo);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                set.add(rs.getInt("reviewNo"));
+            }
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+        } finally { 
+            pool.freeConnection(con, pstmt, rs); 
+        }
+        return set;
+    }
+    
+    public List<Integer> getMyHelpfulReviews(int userNo) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Integer> myList = new ArrayList<>();
+        
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT reviewNo FROM review_helpful WHERE userNo = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, userNo);
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                myList.add(rs.getInt("reviewNo"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(con, pstmt, rs);
+        }
+        return myList;
     }
 }
