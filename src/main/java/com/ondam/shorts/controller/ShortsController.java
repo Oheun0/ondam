@@ -49,6 +49,18 @@ public class ShortsController implements Controller {
             request.setAttribute("pokeMemberList", memberList);
         }
 
+        java.util.Properties prop = new java.util.Properties();
+
+        try (java.io.InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            if (input != null) {
+                prop.load(input);
+                String kakaoKeyFromConfig = prop.getProperty("kakao.javascript.key");
+                request.setAttribute("kakaoKey", kakaoKeyFromConfig);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return "shorts/shorts";
     }
 }
