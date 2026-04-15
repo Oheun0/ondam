@@ -900,7 +900,7 @@ public class ProductDAO {
 	    try {
 	        con = pool.getConnection();
 	        // 최신 등록순으로 5개만 가져오는 쿼리
-	        String sql = "SELECT * FROM product ORDER BY productDate DESC LIMIT 5";
+	        String sql = "SELECT * FROM product where productState = 1 ORDER BY productDate DESC LIMIT 5";
 	        
 	        pstmt = con.prepareStatement(sql);
 	        rs = pstmt.executeQuery();

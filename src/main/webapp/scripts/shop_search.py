@@ -135,7 +135,7 @@ def add_single_to_index(p_id, img_name):
         print(f"Error: {e}")
         return False
 
-def search_index(query_img_path, top_k=10):
+def search_index(query_img_path, top_k=50):
     try:
         if not INDEX_PATH.exists() or not META_PATH.exists(): return []
         
