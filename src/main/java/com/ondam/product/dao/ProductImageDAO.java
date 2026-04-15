@@ -230,4 +230,31 @@ public class ProductImageDAO {
 	    }
 	    return imgFile; // String을 직접 리턴
 	}
+	public Vector<ProductImageDTO> getAllMainImages() {
+		java.sql.Connection con = null;
+		java.sql.PreparedStatement pstmt = null;
+		java.sql.ResultSet rs = null;
+		Vector<ProductImageDTO> vlist = new Vector<>();
+		try {
+			con = pool.getConnection();
+			// imgType이 0인 대표 이미지만 싹 가져옵니다.
+			String sql = "SELECT * FROM productimage WHERE imgType = 0";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ProductImageDTO dto = new ProductImageDTO();
+				dto.setProductImgNo(rs.getInt("productImgNo"));
+				dto.setProductNo(rs.getInt("productNo"));
+				dto.setImgFile(rs.getString("imgFile"));
+				dto.setImgType(rs.getInt("imgType"));
+				dto.setImgOrder(rs.getInt("imgOrder"));
+				vlist.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return vlist;
+	}
 }
