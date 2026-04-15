@@ -6,9 +6,9 @@
       <h2 class="seller-dashboard__heading">대시보드</h2>
       <p class="seller-dashboard__sub">오늘의 판매 현황을 한눈에 확인해보세요</p>
     </div>
-    <div class="seller-dashboard__date" aria-label="기준일(더미)">
+    <div class="seller-dashboard__date" aria-label="기준일">
       <span class="material-icons-outlined" aria-hidden="true">event</span>
-      <span>2026.04.08 (수)</span>
+      <span>${todayDateStr}</span>
     </div>
   </header>
 
@@ -95,8 +95,12 @@
             </c:choose>
           </td>
           <td>
-             <span class="seller-chip ${order.paymentMethod == 2 ? 'seller-chip--wallet' : ''}">
-               ${order.paymentMethod == 2 ? '함께지갑' : '카드'}
+             <span class="seller-chip ${order.paymentMethod == 0 ? 'seller-chip--wallet' : ''}">
+               <c:choose>
+                 <c:when test="${order.paymentMethod == 0}">함께지갑</c:when>
+                 <c:when test="${order.paymentMethod == 1}">카드결제</c:when>
+                 <c:otherwise>계좌이체</c:otherwise>
+               </c:choose>
              </span>
           </td>
           <td>
@@ -129,15 +133,11 @@
       <div class="seller-ops__list">
         <div class="seller-ops__item">
           <span class="seller-ops__label">현재 공개 중인 쇼츠</span>
-          <span class="seller-ops__value">8개</span>
+          <span class="seller-ops__value">${empty stats.activeShortsCount ? '0' : stats.activeShortsCount}개</span>
         </div>
         <div class="seller-ops__item">
-          <span class="seller-ops__label">품절 임박 상품</span>
-          <span class="seller-ops__value">3개</span>
-        </div>
-        <div class="seller-ops__item">
-          <span class="seller-ops__label">오늘 가장 많이 본 상품</span>
-          <span class="seller-ops__value">데일리 코튼 가디건</span>
+          <span class="seller-ops__label">품절 임박 상품 (재고 5개 이하)</span>
+          <span class="seller-ops__value">${empty stats.lowStockCount ? '0' : stats.lowStockCount}개</span>
         </div>
       </div>
     </section>
@@ -164,4 +164,3 @@
     </section>
   </div>
 </section>
-

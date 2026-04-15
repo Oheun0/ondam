@@ -1,4 +1,7 @@
 package com.ondam.review.dto;
+import java.util.Vector;
+
+import com.ondam.review.dto.ReviewImageDTO;
 
 public class ReviewDTO {
 
@@ -17,6 +20,11 @@ public class ReviewDTO {
     private String productImg;
     private String replyContent;
     private String replyDate;
+    private String userName;
+    private int reviewHelpful;
+    private Vector<ReviewImageDTO> imageList;
+    private String userProfileImg;
+    
 
     public ReviewDTO() {}
 
@@ -144,4 +152,36 @@ public class ReviewDTO {
 	public void setReplyDate(String replyDate) {
 		this.replyDate = replyDate;
 	}
+	
+	public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+	public int getReviewHelpful() {
+		return reviewHelpful;
+	}
+
+	public void setReviewHelpful(int reviewHelpful) {
+		this.reviewHelpful = reviewHelpful;
+	}
+	
+	public Vector<ReviewImageDTO> getImageList() {
+        return imageList;
+    }
+
+    public void setImageList(Vector<ReviewImageDTO> imageList) {
+        this.imageList = imageList;
+    }
+    
+    public String getUserProfileImg() {
+        return userProfileImg;
+    }
+    
+    public void setUserProfileImg(String userProfileImg) {
+        this.userProfileImg = userProfileImg;
+    }
 }

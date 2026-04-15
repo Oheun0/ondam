@@ -109,6 +109,24 @@ public class GiftChatDAO {
         return exists;
     }
 
+    // 4-1. 특정 선물의 "선물카드(chatType=0)" 이미지 조회
+    public String getGiftCardImageByGiftNo(int giftNo) {
+        Connection con = null; PreparedStatement pstmt = null; ResultSet rs = null;
+        String cardImg = null;
+        try {
+            con = pool.getConnection();
+            String sql = "SELECT cardImg FROM giftChat WHERE giftNo = ? AND chatType = 0 ORDER BY chatNo ASC LIMIT 1";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, giftNo);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                cardImg = rs.getString("cardImg");
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally { pool.freeConnection(con, pstmt, rs); }
+        return cardImg;
+    }
+
     // 5. 단건 조회 (chatNo 기준)
     public GiftChatDTO getChatByChatNo(int chatNo) {
         Connection con = null; PreparedStatement pstmt = null; ResultSet rs = null;

@@ -17,7 +17,9 @@ public class GiftDTO {
     private String senderName;    // 보낸 사람 이름
     private String receiverName;  // 받는 사람 이름
     private String productName;   // 상품명
+    private String productBrand;  // 브랜드명
     private String productImg;    // 상품 이미지 파일명 
+    private String cardImg;       // 선물 카드 이미지 파일명 (giftChat.cardImg)
     
     private String receiverAddressName;
     private String receiverAddress;
@@ -31,8 +33,12 @@ public class GiftDTO {
 	public void setReceiverName(String receiverName) {this.receiverName = receiverName;}
 	public String getProductName() {return productName;}
 	public void setProductName(String productName) {this.productName = productName;}
+	public String getProductBrand() {return productBrand;}
+	public void setProductBrand(String productBrand) {this.productBrand = productBrand;}
 	public String getProductImg() {return productImg;}
 	public void setProductImg(String productImg) {this.productImg = productImg;}
+	public String getCardImg() {return cardImg;}
+	public void setCardImg(String cardImg) {this.cardImg = cardImg;}
 
 	public String getReceiverAddressName() {return receiverAddressName;}
 	public void setReceiverAddressName(String receiverAddressName) {this.receiverAddressName = receiverAddressName;}

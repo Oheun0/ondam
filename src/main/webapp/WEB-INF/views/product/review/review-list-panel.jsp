@@ -1,20 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-        <div class="detail-review-toolbar">
-          <span class="detail-review-total" id="detailReviewTotal">
-            <c:choose>
-              <c:when test="${not empty reviewList}">총 ${fn:length(reviewList)}개</c:when>
-              <c:otherwise>총 0개</c:otherwise>
-            </c:choose>
-          </span>
-          
-          <div class="detail-review-sort" role="group" aria-label="리뷰 정렬">
-            <button type="button" class="detail-review-sort-btn active" data-sort="popular" id="detailReviewSortPopular" aria-pressed="true">인기순</button>
-            <span class="detail-review-sort-sep" aria-hidden="true">|</span>
-            <button type="button" class="detail-review-sort-btn" data-sort="recent" id="detailReviewSortRecent" aria-pressed="false">최신순</button>
-          </div>
-        </div>
+        <div class="detail-review-toolbar" id="review-anchor"> <span class="detail-review-total" id="detailReviewTotal">
+		    <c:choose>
+		      <c:when test="${not empty reviewList}">총 ${fn:length(reviewList)}개</c:when>
+		      <c:otherwise>총 0개</c:otherwise>
+		    </c:choose>
+		  </span>
+		  
+		  <div class="detail-review-sort" role="group" aria-label="리뷰 정렬">
+		    <button type="button" 
+		            class="detail-review-sort-btn ${empty currentSort || currentSort == 'popular' ? 'active' : ''}" 
+		            data-sort="popular">인기순</button>
+		    <span class="detail-review-sort-sep" aria-hidden="true">|</span>
+		    <button type="button" 
+		            class="detail-review-sort-btn ${currentSort == 'recent' ? 'active' : ''}" 
+		            data-sort="recent">최신순</button>
+		  </div>
+		</div>
 
         <div class="detail-review-list">
           <c:choose>
@@ -24,8 +27,13 @@
                 <article class="detail-review-card">
                   <div class="detail-review-card__top">
                     <div class="detail-review-author">
-                      <img class="detail-review-avatar" src="${pageContext.request.contextPath}/images/profile/default-profile.png" width="52" height="52" alt="프로필" />
-                      <div class="detail-review-author-meta">
+                      <img class="detail-review-avatar" 
+					       src="${pageContext.request.contextPath}/images/profile/${review.userProfileImg != null ? review.userProfileImg : 'default-profile.png'}" 
+					       width="52" height="52" 
+					       alt="사용자 프로필 사진" 
+					       onerror="this.src='${pageContext.request.contextPath}/images/profile/default-profile.png'; this.onerror=null;" />
+					       
+					  <div class="detail-review-author-meta">
                         <div class="detail-review-name-row">
                           <%-- 작성자 이름 및 작성일 --%>
                           <span class="detail-review-nickname">${review.userName != null ? review.userName : '익명'}</span>
@@ -50,10 +58,34 @@
                         </div>
                       </div>
                     </div>
-                    <button type="button" class="detail-review-help-btn" aria-label="도움이 돼요 누르기">
-                      <span class="material-icons" aria-hidden="true">thumb_up</span>
-                      <span class="detail-review-help-count">0</span>
-                    </button>
+                    <c:choose>
+                    <c:when test="${not empty sessionScope.loginUser and sessionScope.loginUser.userNo == review.userNo}">
+                      <%--내 글일 때: 버튼 비활성화--%>
+                      <button type="button" class="detail-review-help-btn" disabled 
+                              style="opacity: 0.5; cursor: not-allowed;" 
+                              title="내가 작성한 후기입니다.">
+                        <span class="material-icons" aria-hidden="true">thumb_up</span>
+                        <span class="detail-review-help-count">${review.reviewHelpful}</span>
+                      </button>
+                    </c:when>
+                    <c:otherwise>
+					  <%-- 남의 글일 때 --%>
+						<c:choose>
+						  <c:when test="${not empty helpfulSet and helpfulSet.contains(review.reviewNo)}">
+						    <button type="button" class="detail-review-help-btn active" data-review-no="${review.reviewNo}" disabled>
+						      <span class="material-icons" aria-hidden="true">thumb_up</span>
+						      <span class="detail-review-help-count">${review.reviewHelpful}</span>
+						    </button>
+						  </c:when>
+						  <c:otherwise>
+						    <button type="button" class="detail-review-help-btn" data-review-no="${review.reviewNo}" aria-label="도움이 돼요 누르기">
+						      <span class="material-icons" aria-hidden="true">thumb_up</span>
+						      <span class="detail-review-help-count">${review.reviewHelpful}</span>
+						    </button>
+						  </c:otherwise>
+						</c:choose>
+					</c:otherwise>
+                  </c:choose>
                   </div>
                   
                   <%-- 리뷰 본문 --%>
@@ -65,7 +97,7 @@
                   <c:if test="${not empty review.imageList}">
                     <div class="detail-review-photos">
                       <c:forEach var="img" items="${review.imageList}">
-                        <img src="${pageContext.request.contextPath}/upload/review/${img.reviewImg}" alt="리뷰 사진">
+                        <img src="${pageContext.request.contextPath}/uploads/reviews/${img.reviewImg}" alt="리뷰 사진">
                       </c:forEach>
                     </div>
                   </c:if>
@@ -88,8 +120,6 @@
         </div>
 
         <c:if test="${param.showMoreButton == 'true'}">
-          <c:url var="reviewsAllUrl" value="/preview">
-            <c:param name="page" value="product/review/all"/>
-          </c:url>
-          <a href="${reviewsAllUrl}" class="detail-review-more-btn">후기 전체보기</a>
-        </c:if>
+		  <a href="${pageContext.request.contextPath}/review?action=listByProduct&productNo=${param.productNo}" 
+		     class="detail-review-more-btn">후기 전체보기</a>
+		</c:if>

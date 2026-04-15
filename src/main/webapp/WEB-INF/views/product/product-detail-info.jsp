@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <main class="detail-content">
 
@@ -191,8 +192,82 @@
 			  상품 문의하기
 			</button>
         </div>
-        <div class="detail-inquiry-list">
-          <%-- 추후 inquiryList 연동 예정 --%>
+        <div class="detail-inquiry-list" style="margin-top: 24px;">
+          <c:choose>
+            <c:when test="${empty inquiryList}">
+              <div style="text-align: center; padding: 40px 0; color: #999;">
+                등록된 문의가 없습니다.<br>첫 문의를 남겨보세요!
+              </div>
+            </c:when>
+            <c:otherwise>
+              <c:forEach var="inquiry" items="${inquiryList}">
+                <article class="detail-inquiry-item" style="border-bottom: 1px solid #eee; padding: 20px 0;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #777;">
+					  <c:choose>
+					    <c:when test="${inquiry.isNameHidden == 1}">
+					      <span>
+					        ${fn:substring(inquiry.userName, 0, 1)}*<c:if test="${fn:length(inquiry.userName) > 2}">${fn:substring(inquiry.userName, 2, 3)}</c:if>
+					      </span>
+					    </c:when>
+					    <c:otherwise>
+					      <span>${inquiry.userName}</span>
+					    </c:otherwise>
+					  </c:choose>
+					  
+					  <span>${inquiry.createdAt}</span>
+				  </div>
+
+                  <%-- 비밀글 처리 --%>
+                  <c:choose>
+                    <c:when test="${inquiry.isSecret == 1}">
+                      <c:choose>
+                        <c:when test="${not empty sessionScope.loginUser and sessionScope.loginUser.userNo == inquiry.userNo}">
+                          <p style="font-size: 15px; color: #333; margin-bottom: 16px;">
+                            <span style="font-size:12px; color:#999;">🔒 (내가 쓴 비밀글)</span><br>
+                            ${inquiry.inquiryContent}
+                          </p>
+                        </c:when>
+                        <c:otherwise>
+                          <p style="font-size: 15px; color: #aaa; margin-bottom: 16px; font-style: italic;">
+                            🔒 비밀글입니다.
+                          </p>
+                        </c:otherwise>
+                      </c:choose>
+                    </c:when>
+                    <c:otherwise>
+                      <p style="font-size: 15px; color: #333; margin-bottom: 16px;">
+                        ${inquiry.inquiryContent}
+                      </p>
+                    </c:otherwise>
+                  </c:choose>
+
+                  <%-- 판매자 답변 상태 --%>
+                  <c:choose>
+                    <c:when test="${inquiry.inquiryStatus == 0}">
+                      <div class="inquiry-list-answer-wait" role="status">아직 답변 전이에요</div>
+                    </c:when>
+                    <c:otherwise>
+                      <c:choose>
+                        <c:when test="${inquiry.isSecret == 1 and (empty sessionScope.loginUser or sessionScope.loginUser.userNo != inquiry.userNo)}">
+                          <div class="inquiry-list-answer-card" aria-label="판매자 답변" style="background-color: #f9f9f9; padding: 16px; border-radius: 8px;">
+                            <p class="inquiry-list-answer-body" style="color: #aaa; font-style: italic; margin: 0;">
+                              🔒 비밀글의 답변입니다.
+                            </p>
+                          </div>
+                        </c:when>
+                        <c:otherwise>
+                          <div class="inquiry-list-answer-card" aria-label="판매자 답변" style="background-color: #f4f5f7; padding: 16px; border-radius: 8px;">
+                            <p class="inquiry-list-answer-label" style="font-size: 13px; font-weight: 700; color: #555; margin-bottom: 6px; margin-top: 0;">판매자 답변 | ${inquiry.answeredAt}</p>
+                            <p class="inquiry-list-answer-body" style="font-size: 14px; color: #333; line-height: 1.5; margin: 0;">${inquiry.answerContent}</p>
+                          </div>
+                        </c:otherwise>
+                      </c:choose>
+                    </c:otherwise>
+                  </c:choose>
+                </article>
+              </c:forEach> 
+            </c:otherwise> 
+          </c:choose> 
         </div>
       </div>
     </section>

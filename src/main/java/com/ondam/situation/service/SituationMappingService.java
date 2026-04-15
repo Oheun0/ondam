@@ -28,4 +28,12 @@ public class SituationMappingService {
 	public boolean removeSituationMapping(int situationMapNo) {
 		return dao.deleteSituationMapping(situationMapNo);
 	}
+
+	public boolean removeByProductNo(int productNo) {
+		return dao.deleteByProductNo(productNo);
+	}
+
+	public boolean syncSingleMapping(int productNo, int situationNo) {
+		return dao.syncSingleMapping(productNo, situationNo);
+	}
 }

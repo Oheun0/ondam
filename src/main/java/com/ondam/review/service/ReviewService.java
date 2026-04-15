@@ -1,5 +1,6 @@
 package com.ondam.review.service;
 
+import java.util.Set;
 import java.util.Vector;
 
 import com.ondam.review.dao.ReviewDAO;
@@ -95,5 +96,19 @@ public class ReviewService {
     //13. 파일 삭제
     public void removeReviewImage(int imgNo, String savePath) {
         reviewImageDAO.deleteReviewImage(imgNo);
+    }
+    
+ // 특정 상품(productNo)에 달린 모든 리뷰 가져오기 (상품 상세 페이지용)
+    public Vector<ReviewDTO> getReviewsByProductNo(int productNo, String sort) {
+        return reviewDAO.getReviewsByProductNo(productNo, sort);
+    }
+    
+ // 리뷰 '도움돼요' 증가
+    public boolean increaseReviewHelpful(int reviewNo, int userNo) {
+        return reviewDAO.increaseReviewHelpful(reviewNo, userNo);
+    }
+    
+    public Set<Integer> getHelpfulReviewNosByUser(int userNo) {
+        return reviewDAO.getHelpfulReviewNosByUser(userNo);
     }
 }

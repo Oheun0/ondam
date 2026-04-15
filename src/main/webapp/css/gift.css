@@ -666,6 +666,13 @@
   min-width: 0;
 }
 
+.gift-product-brand {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #888;
+}
+
 .gift-product-name {
   margin: 0;
   font-size: 15px;

@@ -896,25 +896,69 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.querySelectorAll(".detail-review-help-btn").forEach(function (btn) {
-    var countEl = btn.querySelector(".detail-review-help-count");
-    if (!countEl) return;
-    btn.addEventListener("click", function () {
-      var n = parseInt(countEl.textContent, 10);
-      if (Number.isNaN(n)) n = 0;
-      countEl.textContent = String(n + 1);
-    });
-  });
+      btn.addEventListener("click", function () {
+        if (this.classList.contains("active") || this.disabled) return;
 
-  document.querySelectorAll(".detail-review-sort-btn").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var sort = btn.getAttribute("data-sort");
-      document.querySelectorAll(".detail-review-sort-btn").forEach(function (b) {
-        var on = b.getAttribute("data-sort") === sort;
-        b.classList.toggle("active", on);
-        b.setAttribute("aria-pressed", on ? "true" : "false");
+        var countEl = this.querySelector(".detail-review-help-count");
+        var reviewNo = this.getAttribute("data-review-no");
+        if (!countEl || !reviewNo) return;
+
+        var ctx = document.body.getAttribute("data-context-path") || "";
+        fetch(ctx + "/review?action=increaseHelpful&reviewNo=" + reviewNo)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            if (data.status === "success") {
+              var n = parseInt(countEl.textContent, 10);
+              if (Number.isNaN(n)) n = 0;
+              countEl.textContent = String(n + 1);
+              btn.classList.add("active");
+              btn.style.color = "#ff5722";
+              var icon = btn.querySelector(".material-icons");
+              if (icon) {
+                icon.style.color = "#ff5722";
+              }
+              btn.disabled = true;
+            } else {
+              alert("처리에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+            }
+          })
+          .catch(function (error) {
+            console.error("Error:", error);
+            alert("네트워크 오류가 발생했습니다.");
+          });
       });
     });
-  });
+
+
+	document.addEventListener("click", function (e) {
+	  const btn = e.target.closest(".detail-review-sort-btn");
+	  if (!btn) return;
+
+	  const sort = btn.getAttribute("data-sort");
+	  const urlParams = new URLSearchParams(window.location.search);
+	  const productNo = urlParams.get("productNo");
+	  const action = urlParams.get("action") || "detail";
+	  const ctx = document.body.getAttribute("data-context-path") || "";
+
+	  if (!productNo) return;
+	  const fetchUrl = ctx + "/review?action=listByProduct&productNo=" + productNo + "&sort=" + sort + "&ajax=true";
+
+	  fetch(fetchUrl)
+	    .then(response => response.text())
+	    .then(html => {
+	      const container = btn.closest(".detail-tab-panel-card");
+	      
+	      if (container) {
+	        container.innerHTML = html;
+	        const currentPath = window.location.pathname;
+	        const newUrl = currentPath + "?action=" + action + "&productNo=" + productNo + "&sort=" + sort + "#review-anchor";
+	        window.history.replaceState({path: newUrl}, '', newUrl);
+	      }
+	    })
+	    .catch(err => console.error("AJAX 오류:", err));
+	});
 
   // JS 파일 내 sizeRecommendBtn 이벤트 리스너 부분
   if (sizeRecommendBtn && sizeRecommendResult) {
