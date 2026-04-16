@@ -639,26 +639,72 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    var shareKakaoBtn = document.getElementById("shareKakaoBtn");
-    if (shareKakaoBtn) {
-        shareKakaoBtn.addEventListener("click", function() {
-            var kakaoKey = document.body.getAttribute("data-kakao-js-key");
-            if (!window.Kakao || !kakaoKey) return window.showTopToast("카카오 공유 설정이 아직 없어요.", "error");
-            try {
-                if (!window.Kakao.isInitialized()) window.Kakao.init(kakaoKey);
-                window.Kakao.Share.sendDefault({
-                    objectType: "feed",
-                    content: {
-                        title: window.currentShareMeta.title,
-                        description: window.currentShareMeta.description,
-                        imageUrl: window.currentShareMeta.imageUrl,
-                        link: { mobileWebUrl: window.currentShareMeta.url, webUrl: window.currentShareMeta.url }
-                    },
-                    buttons: [{ title: "상품 보러가기", link: { mobileWebUrl: window.currentShareMeta.url, webUrl: window.currentShareMeta.url } }]
-                });
-            } catch(e) { window.showTopToast("카카오톡 공유를 실행하지 못했어요.", "error"); }
-        });
-    }
+	var shareKakaoBtn = document.getElementById("shareKakaoBtn");
+	if (shareKakaoBtn) {
+	    shareKakaoBtn.addEventListener("click", function() {
+	        var kakaoKey = document.body.getAttribute("data-kakao-js-key");
+	        var shareData = {
+	            title: window.currentShareMeta.title || "온담 추천 상품",
+	            text: window.currentShareMeta.description || "온담에서 추천하는 숏폼 영상",
+	            url: window.currentShareMeta.url || window.location.href
+	        };
+
+	        // [단계 1: 카카오톡 공유 시도]
+	        if (window.Kakao && kakaoKey && kakaoKey !== "") {
+	            try {
+	                if (!window.Kakao.isInitialized()) window.Kakao.init(kakaoKey);
+	                window.Kakao.Share.sendDefault({
+	                    objectType: "feed",
+	                    content: {
+	                        title: shareData.title,
+	                        description: shareData.text,
+	                        imageUrl: window.currentShareMeta.imageUrl,
+	                        link: { mobileWebUrl: shareData.url, webUrl: shareData.url }
+	                    },
+	                    buttons: [{ title: "상품 보러가기", link: { mobileWebUrl: shareData.url, webUrl: shareData.url } }]
+	                });
+	                return; // 카카오 성공 시 종료
+	            } catch (e) {
+	                console.log("카카오 공유 실패, 다음 단계로 이동...");
+	            }
+	        }
+
+	        // [단계 2: OS 기본 공유창 시도 (Web Share API)]
+	        // HTTPS 환경이거나 모바일에서만 작동합니다.
+	        if (navigator.share) {
+	            navigator.share({
+	                title: shareData.title,
+	                text: shareData.text,
+	                url: shareData.url
+	            }).then(function() {
+	                console.log("OS 공유 성공");
+	            }).catch(function() {
+	                // 사용자가 취소했거나 에러 시 다음 단계로
+	                fallbackCopyToClipboard(shareData.url);
+	            });
+	        } else {
+	            // [단계 3: 최후의 보루 - 클립보드 복사]
+	            fallbackCopyToClipboard(shareData.url);
+	        }
+	    });
+	}
+
+	// 최후의 방어선을 위한 별도 함수
+	function fallbackCopyToClipboard(url) {
+	    if (navigator.clipboard && navigator.clipboard.writeText) {
+	        navigator.clipboard.writeText(url).then(function() {
+	            window.showSuccessToast("링크를 복사했어요. 원하는 곳에 붙여넣어 주세요!");
+	        });
+	    } else {
+	        var ta = document.createElement("textarea");
+	        ta.value = url;
+	        document.body.appendChild(ta);
+	        ta.select();
+	        document.execCommand("copy");
+	        document.body.removeChild(ta);
+	        window.showSuccessToast("링크가 복사되었습니다.");
+	    }
+	}
 
     var shareMoreBtn = document.getElementById("shareMoreBtn");
     if (shareMoreBtn) {
