@@ -46,7 +46,7 @@
             <header class="seller-shorts-section-head">
               <div>
                 <h3 class="seller-shorts-section-title">기본 정보</h3>
-                <p class="seller-shorts-section-sub">쇼츠 제목은 AI 영상 생성 시 자막으로 들어갑니다.</p>
+                <p class="seller-shorts-section-sub">쇼츠 제목은 영상 생성 시 자막으로 들어갑니다.</p>
               </div>
             </header>
 
@@ -83,7 +83,7 @@
               </div>
               <button type="button" class="seller-shorts-secondary-btn seller-shorts-auto-thumb-btn" id="aiVideoBtn">
                 <span class="material-icons-outlined" aria-hidden="true">auto_awesome</span>
-                AI 영상 자동 생성
+                영상 자동 생성
               </button>
             </header>
 

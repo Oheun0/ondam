@@ -545,27 +545,34 @@
   }
 
   function serializeOptionsForSubmit() {
-    clearOptionHiddenInputs();
-    if (!optionBody) return 0;
-    var rows = optionBody.querySelectorAll('tr:not(.seller-product-option-empty)');
-    var count = 0;
-    rows.forEach(function (tr) {
-      var tds = tr.querySelectorAll('td');
-      if (!tds || tds.length < 4) return;
-      var color = (tds[0].textContent || '').trim();
-      var size = (tds[1].textContent || '').trim();
-      var stockInput = tr.querySelector('input[data-opt="stock"]');
-      var soldoutInput = tr.querySelector('input[data-opt="soldout"]');
-      var stock = Number(onlyNumberText(stockInput ? stockInput.value : '0'));
-      if (soldoutInput && soldoutInput.checked) stock = 0;
-      if (!color || !size) return;
-      appendOptionHidden('optionColor', color);
-      appendOptionHidden('optionSize', size);
-      appendOptionHidden('optionStock', String(stock));
-      count++;
-    });
-    return count;
-  }
+      clearOptionHiddenInputs();
+      if (!optionBody) return 0;
+      var rows = optionBody.querySelectorAll('tr:not(.seller-product-option-empty)');
+      var count = 0;
+      var combinedOptions = []; // 옵션을 뭉칠 배열
+
+      rows.forEach(function (tr) {
+        var tds = tr.querySelectorAll('td');
+        if (!tds || tds.length < 4) return;
+        var color = (tds[0].textContent || '').trim();
+        var size = (tds[1].textContent || '').trim();
+        var stockInput = tr.querySelector('input[data-opt="stock"]');
+        var soldoutInput = tr.querySelector('input[data-opt="soldout"]');
+        var stock = Number(onlyNumberText(stockInput ? stockInput.value : '0'));
+        if (soldoutInput && soldoutInput.checked) stock = 0;
+        if (!color || !size) return;
+
+        // "색상|||사이즈|||재고" 형태로 1줄씩 문자열 결합
+        combinedOptions.push(color + "|||" + size + "|||" + stock);
+        count++;
+      });
+
+      if (count > 0) {
+        // 배열 전체를 "@@@"로 이어붙여서 단 1개의 hidden input으로 폼에 추가 (파라미터 이름: optionDataString)
+        appendOptionHidden('optionDataString', combinedOptions.join("@@@"));
+      }
+      return count;
+    }
 
   form.addEventListener('submit', function (e) {
     var saveModeEl = $('saveMode');
