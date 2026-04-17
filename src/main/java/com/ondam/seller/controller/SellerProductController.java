@@ -96,63 +96,92 @@ public class SellerProductController implements Controller {
 	}
 
 	private String handleList(HttpServletRequest request, int vendorNo) {
-		Vector<ProductDTO> list = productDAO.getProductsByVendor(vendorNo);
-		Map<Integer, String> categoryNames = loadCategoryNameMap();
-		List<Map<String, Object>> rows = new ArrayList<>();
-		String query = trim(request.getParameter("query"));
-		String categoryFilter = trim(request.getParameter("category"));
-		String saleFilter = trim(request.getParameter("sale"));
-		String stockFilter = trim(request.getParameter("stock"));
+	    String query = trim(request.getParameter("query"));
+	    String categoryFilter = trim(request.getParameter("category"));
+	    String saleFilter = trim(request.getParameter("sale"));
+	    String stockFilter = trim(request.getParameter("stock"));
+	    String pageNumStr = request.getParameter("pageNum");
+	    
+	    int pageNum = (pageNumStr == null || pageNumStr.isEmpty()) ? 1 : Integer.parseInt(pageNumStr);
+	    int amount = 10;
+	    int offset = (pageNum - 1) * amount;
+	    int totalCount = productDAO.getTotalCountByVendorFilter(vendorNo, query, categoryFilter, saleFilter, stockFilter);
+	    int lowStock = 0; // 💡 품절 임박 카운트 변수 추가
+	    
+	    Vector<ProductDTO> list = productDAO.getProductsWithPaging(vendorNo, query, categoryFilter, saleFilter, stockFilter, offset, amount);
+	    int endPage = (int)(Math.ceil(pageNum / 10.0)) * 10;
+	    int startPage = endPage - 9;
+	    int realEnd = (int)(Math.ceil((totalCount * 1.0) / amount));
+	    
+	    int countSelling = 0;
+	    int countHidden = 0;
+	    int countLowStock = 0;
+	    Vector<ProductDTO> allList = productDAO.getProductsByVendor(vendorNo);
+	    if (allList != null) {
+	        for (ProductDTO p : allList) {
+	            int state = p.getProductState();
+	            if (state == 1) countSelling++;       // 1: 판매중
+	            else if (state == 2) countHidden++;  // 2: 숨김
 
-		int total = 0;
-		int selling = 0;
-		int hidden = 0;
-		int soldout = 0;
+	            int totalStock = 0;
+	            Vector<ProductOptionDTO> opts = productDAO.getProductOptions(p.getProductNo());
+	            if (opts != null) {
+	                for (ProductOptionDTO o : opts) totalStock += o.getOptionStock();
+	            }
+	            // 총 재고가 1~5개 사이면 품절 임박
+	            if (totalStock > 0 && totalStock <= 5) countLowStock++;
+	        }
+	    }
+	    
+	    if (realEnd < endPage) {
+	        endPage = realEnd;
+	    }
+	    boolean prev = startPage > 1;
+	    boolean next = endPage < realEnd;
+	    
+	    Map<Integer, String> categoryNames = loadCategoryNameMap();
+	    List<Map<String, Object>> rows = new ArrayList<>();
 
-		for (ProductDTO p : list) {
-			int stock = 0;
-			Vector<ProductOptionDTO> opts = productDAO.getProductOptions(p.getProductNo());
-			if (opts != null && !opts.isEmpty()) {
-				for (ProductOptionDTO o : opts) {
-					stock += o.getOptionStock();
-				}
-			}
-			if (!matchesFilter(p, stock, query, categoryFilter, saleFilter, stockFilter)) {
-				continue;
-			}
+	    for (ProductDTO p : list) {
+	        Map<String, Object> row = new HashMap<>();
+	        row.put("product", p);
+	        row.put("categoryName", categoryNames.getOrDefault(p.getCategoryNo(), "기타"));
+	        row.put("thumb", productDAO.getProductImage(p.getProductNo()));
 
-			total++;
-			int state = p.getProductState();
-			if (state == 1) {
-				selling++;
-			} else if (state == 0) {
-				hidden++;
-			} else if (state == 2) {
-				soldout++;
-			}
+	        int totalStock = 0;
+		    Vector<ProductOptionDTO> opts = productDAO.getProductOptions(p.getProductNo());
+		    if (opts != null) {
+		        for (ProductOptionDTO o : opts) totalStock += o.getOptionStock();
+		    }
+		    
+		    // 💡 [추가] 총 재고가 1~5개 사이면 '품절 임박'으로 카운트
+		    if (totalStock > 0 && totalStock <= 5) {
+		        lowStock++;
+		    }
+	        row.put("stock", totalStock);
+	        row.put("shortsCount", productDAO.getShortsCountByProductNo(p.getProductNo()));
 
-			Map<String, Object> row = new HashMap<>();
-			row.put("product", p);
-			row.put("categoryName", categoryNames.getOrDefault(Integer.valueOf(p.getCategoryNo()), String.valueOf(p.getCategoryNo())));
-
-			String thumb = productDAO.getProductImage(p.getProductNo());
-			row.put("thumb", thumb);
-			row.put("stock", Integer.valueOf(stock));
-
-			rows.add(row);
-		}
-
-		request.setAttribute("productRows", rows);
-		request.setAttribute("productTotal", Integer.valueOf(total));
-		request.setAttribute("productSelling", Integer.valueOf(selling));
-		request.setAttribute("productHidden", Integer.valueOf(hidden));
-		request.setAttribute("productSoldout", Integer.valueOf(soldout));
-		request.setAttribute("filterQuery", query);
-		request.setAttribute("filterCategory", categoryFilter.isEmpty() ? "all" : categoryFilter);
-		request.setAttribute("filterSale", saleFilter.isEmpty() ? "all" : saleFilter);
-		request.setAttribute("filterStock", stockFilter.isEmpty() ? "all" : stockFilter);
-
-		return "seller/product/list";
+	        rows.add(row);
+	    }
+	    request.setAttribute("productRows", rows);
+	    request.setAttribute("productLowStock", lowStock);
+	    
+	    request.setAttribute("productSelling", countSelling);
+	    request.setAttribute("productHidden", countHidden);
+	    request.setAttribute("productLowStock", countLowStock);
+	    
+	    request.setAttribute("productTotal", totalCount);
+	    request.setAttribute("pageNum", pageNum);
+	    request.setAttribute("startPage", startPage);
+	    request.setAttribute("endPage", endPage);
+	    request.setAttribute("prev", prev);
+	    request.setAttribute("next", next);
+	    request.setAttribute("filterQuery", query);
+	    request.setAttribute("filterCategory", categoryFilter.isEmpty() ? "all" : categoryFilter);
+	    request.setAttribute("filterSale", saleFilter.isEmpty() ? "all" : saleFilter);
+	    request.setAttribute("filterStock", stockFilter.isEmpty() ? "all" : stockFilter);
+	    
+	    return "seller/product/list";
 	}
 
 	private boolean matchesFilter(ProductDTO p, int stock, String query, String categoryFilter, String saleFilter, String stockFilter) {
@@ -729,9 +758,9 @@ public class SellerProductController implements Controller {
 			return 1;
 		}
 		if ("soldout".equalsIgnoreCase(saleStatus)) {
-			return 2;
+			return 0;
 		}
-		return 0;
+		return 2;
 	}
 
 	private static int mapSaleFilterToState(String saleFilter) {
@@ -739,10 +768,10 @@ public class SellerProductController implements Controller {
 			return 1;
 		}
 		if ("soldout".equalsIgnoreCase(saleFilter)) {
-			return 2;
+			return 0;
 		}
 		if ("hidden".equalsIgnoreCase(saleFilter)) {
-			return 0;
+			return 2;
 		}
 		return Integer.MIN_VALUE;
 	}

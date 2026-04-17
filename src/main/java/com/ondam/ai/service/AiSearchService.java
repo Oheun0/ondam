@@ -90,9 +90,23 @@ public class AiSearchService {
         if (jsonResult == null || jsonResult.isEmpty()) return resultList;
 
         Vector<ParsedItem> items = parsePythonJson(jsonResult);
+        java.util.Set<Integer> addedProducts = new java.util.HashSet<>();
+
         for (ParsedItem item : items) {
+            // 💡 [핵심 1] 정상적인 상품이 딱 10개가 채워지면 더 이상 찾지 않고 즉시 종료!
+            if (resultList.size() >= 10) {
+                break;
+            }
+
+            // 💡 [핵심 2] 이미 리스트에 들어간 상품 번호(중복)면 건너뜀!
+            if (addedProducts.contains(item.productNo)) {
+                continue;
+            }
+
             ProductDTO p = productDAO.getProductById(item.productNo);
-            if (p != null) {
+            
+            // 상태가 1(판매중)일 때만 추가
+            if (p != null && p.getProductState() == 1) { 
                 AiSearchDTO dto = new AiSearchDTO();
                 dto.setProductNo(p.getProductNo());
                 dto.setProductName(p.getProductName());
@@ -101,10 +115,9 @@ public class AiSearchService {
                 dto.setProductOriginPrice(p.getProductOriginPrice());
                 dto.setScore(item.score);
                 dto.setImgFile(productDAO.getProductImage(p.getProductNo())); 
+                
                 resultList.add(dto);
-            } else {
-                // 인덱스에는 있는데 DB에는 없는 상품일 경우 로그 출력
-                System.out.println("[AiSearch Debug] DB 조회 실패 (삭제된 상품일 수 있음) - productNo: " + item.productNo);
+                addedProducts.add(item.productNo); // 💡 중복 방지를 위해 번호 기억
             }
         }
         // 최종 반환되는 결과 개수 확인

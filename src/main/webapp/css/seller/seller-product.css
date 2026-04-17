@@ -1051,3 +1051,40 @@ select.seller-product-control{
   .seller-filter-grid{grid-template-columns:1fr}
 }
 
+.seller-product-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.seller-product-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--seller-border, #E5E7EB);
+  background: var(--seller-card, #FFFFFF);
+  color: var(--seller-text, #374151);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.seller-product-page-btn:hover {
+  background: #F3F4F6;
+  border-color: #D1D5DB;
+}
+
+.seller-product-page-btn.active {
+  background: var(--seller-primary, #4C65AF);
+  color: #FFFFFF;
+  border-color: var(--seller-primary, #4C65AF);
+}
+
